@@ -16,9 +16,18 @@ files_list = ["digi_hakukaytto_v1.csv",
 								"digi_nidekaytto_v1.csv",
 								"digi_sivukaytto_v1.csv"]
 
-usr = os.environ['HOME']
-dpath = f"{usr}/Datasets/Nationalbiblioteket/no_ip_logs"
+usr_ = {'alijani': '/lustre/sgn-data/vision', 
+				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/no_ip_logs',
+				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs"
+				}
+
+#dpath = f"{user_}/Datasets/Nationalbiblioteket/no_ip_logs"
+dpath = usr_[os.environ['USER']]
+print(dpath)
+#sys.exit()
+
 search_idx, volume_idx, page_idx = 0, 1, 2
+
 #chk_sz = 21e6
 
 """
