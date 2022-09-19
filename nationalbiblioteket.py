@@ -111,12 +111,12 @@ def save_dfs():
 	search_df = get_df(idx=search_idx)
 
 	dfs_dict = {
-		"search_df":	search_df,
-		"volume_df":	volume_df,
-		"page_df":		page_df,
+		"search":	search_df,
+		"vol":	volume_df,
+		"pg":		page_df,
 	}
 
-	fname = "_".join(list(dfs_dict.keys()))+"_dict.dump"
+	fname = "_".join(list(dfs_dict.keys()))+"_dfs.dump"
 	print(f">> Dumping {fname} ...")
 	joblib.dump(	dfs_dict, 
 								os.path.join( dpath, f"{fname}" ),
@@ -124,11 +124,35 @@ def save_dfs():
 								)
 	fsize = os.stat( os.path.join( dpath, f"{fname}" ) ).st_size / 1e6
 
-	print(f">> Dumping Done => size: {fsize:.3f}MB ...")
+	print(f">> Dumping Done => size: {fsize:.1f}MB ...")
+
+
+def load_dfs(fpath=""):
+	print(f">> Loading {fpath} ...")
+	d = joblib.load(fpath)
+	print(list(d.keys()))
+
+	search_df = d["search"]
+	volume_df = d["vol"]
+	search_df = d["pg"]
+
+	print(f"\n>> Search DF: {search_df.shape}...")
+	print(search_df.head(20))
+	print("#"*100)
+
+	print(f"\n>> Volume DF: {volume_df.shape}...")
+	print(volume_df.head(20))
+	print("#"*100)
+
+	print(f"\n>> Page DF: {page_df.shape}...")
+	print(page_df.head(20))
+	print("#"*100)
+
+	print(f">> LOADING COMPLETED!")
 
 def main():
 	save_dfs()
-	#load_dfs()
+	load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
 
 if __name__ == '__main__':
 	os.system('clear')
