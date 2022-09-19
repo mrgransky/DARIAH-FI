@@ -18,7 +18,7 @@ files_list = ["digi_hakukaytto_v1.csv",
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/no_ip_logs',
-				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs"
+				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs",
 				}
 
 dpath = usr_[os.environ['USER']]
