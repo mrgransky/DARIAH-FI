@@ -124,17 +124,19 @@ def save_dfs():
 								)
 	fsize = os.stat( os.path.join( dpath, f"{fname}" ) ).st_size / 1e6
 
-	print(f">> Dumping Done => size: {fsize:.1f}MB ...")
+	print(f">> Dumping Done => size: {fsize:.1f} MB ...")
 
 
 def load_dfs(fpath=""):
-	print(f">> Loading {fpath} ...")
+	fsize = os.stat( fpath ).st_size / 1e9
+	print(f">> Loading {fpath} | size: {fsize:.1f} GB ...")
+
 	d = joblib.load(fpath)
 	print(list(d.keys()))
 
 	search_df = d["search"]
 	volume_df = d["vol"]
-	search_df = d["pg"]
+	page_df = d["pg"]
 
 	print(f"\n>> Search DF: {search_df.shape}...")
 	print(search_df.head(20))
@@ -151,7 +153,7 @@ def load_dfs(fpath=""):
 	print(f">> LOADING COMPLETED!")
 
 def main():
-	save_dfs()
+	#save_dfs()
 	load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
 
 if __name__ == '__main__':
