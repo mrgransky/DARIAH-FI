@@ -21,7 +21,6 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs"
 				}
 
-#dpath = f"{user_}/Datasets/Nationalbiblioteket/no_ip_logs"
 dpath = usr_[os.environ['USER']]
 print(dpath)
 #sys.exit()
@@ -106,7 +105,8 @@ def get_df(idx, custom_chunk_size=None):
 def save_dfs():
 	print(">> Saving...")
 
-	page_df = get_df(idx=page_idx, custom_chunk_size=23e6)
+	#page_df = get_df(idx=page_idx, custom_chunk_size=23e6)
+	page_df = get_df(idx=page_idx)
 	volume_df = get_df(idx=volume_idx)
 	search_df = get_df(idx=search_idx)
 
