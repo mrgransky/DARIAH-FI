@@ -1,2 +1,10 @@
 # DARIAH-FI
-DARIAH-FI project
+This is repository of DARIAH-FI project
+
+Tampere University, Finland
+
+Developer:
+- Farid Alijani
+
+Supervisor: 
+- Sanna Kumpulainen
