@@ -132,6 +132,7 @@ def visuzalize_nan(df, name=""):
 	ax.set_yticks([])
 	ax.xaxis.tick_top()
 	ax.tick_params(axis='x', labelrotation=90)
+	plt.suptitle(f"Missing {name} Data (NaN)")
 	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
 
 	print(f">>>>> Barplot >>>>>")
