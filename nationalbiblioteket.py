@@ -177,7 +177,7 @@ def load_dfs(fpath=""):
 	print( s_df["authors"].value_counts() )
 
 	print("-"*150)
-	print( s_df["collection"].value_counts() )
+	print( s_df["collections"].value_counts() )
 
 	print("-"*150)
 	print( s_df["type"].value_counts() )
