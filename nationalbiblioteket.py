@@ -183,8 +183,11 @@ def load_dfs(fpath=""):
 	print( s_df["type"].value_counts() )
 
 	print("-"*150)
-	print( s_df["rights"].value_counts() )
-	
+	print( s_df["require_all_words"].value_counts() )
+
+	print("-"*150)
+	print( s_df["no_access_results"].value_counts() )
+
 	"""
 	print(f"\n>> Volume_DF: {v_df.shape}")
 	print( list(v_df.columns ) )
