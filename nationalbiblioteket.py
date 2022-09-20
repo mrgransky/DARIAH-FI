@@ -159,7 +159,7 @@ def load_dfs(fpath=""):
 	print(f">> LOADING COMPLETED!")
 
 def main():
-	#save_dfs()
+	save_dfs()
 	load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
 
 if __name__ == '__main__':
