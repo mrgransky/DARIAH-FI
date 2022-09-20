@@ -146,6 +146,19 @@ def visuzalize_nan(df, name=""):
 			aspect=1.4,
 	)
 	g.set_axis_labels("Counts", "Features")
+	for ax in g.axes.ravel():
+		# add annotations
+		for c in ax.containers:
+			# custom label calculates percent and add an empty string so 0 value bars don't have a number
+			labels = [f"{(v.get_width()/df.shape[0]*100):.1f} %" if v.get_width() > 0 else "" for v in c]
+			ax.bar_label(c,
+										labels=labels,
+										label_type='edge',
+										#fontsize=13,
+										rotation=0,
+										padding=5,
+										)
+			break; # only annotate the first!
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
 
 def get_df(idx, custom_chunk_size=None):
