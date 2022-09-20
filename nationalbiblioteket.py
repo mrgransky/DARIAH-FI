@@ -18,10 +18,10 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
-sz=18
+sz=15
 params = {
-	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # H, W
-	'figure.dpi':				700,
+	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # W, H
+	'figure.dpi':				400,
 	'legend.fontsize':	int(sz*1.0),
 	'axes.labelsize':		int(sz*1.0),
 	'axes.titlesize':		int(sz*1.1),
@@ -141,7 +141,7 @@ def visuzalize_nan(df, name=""):
 			y="variable",
 			hue="NaN",
 			multiple="stack",
-			height=18,
+			height=12,
 			#kde=True,
 			aspect=1.3,
 	)

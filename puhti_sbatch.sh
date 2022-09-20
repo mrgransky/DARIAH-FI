@@ -6,9 +6,9 @@
 
 #SBATCH --account=project_2004072
 #SBATCH -J vis_heatmap_barplot
-#SBATCH -o LOG_q%a_%x_%N_%j.out
+#SBATCH -o LOG_%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem=740G
+#SBATCH --mem=609G
 #SBATCH --time=1-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
