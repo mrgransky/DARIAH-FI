@@ -145,8 +145,8 @@ def load_dfs(fpath=""):
 	elapsed_t = time.time() - st_t
 
 	s_df = d["search"]
-	#v_df = d["vol"]
-	#p_df = d["pg"]
+	v_df = d["vol"]
+	p_df = d["pg"]
 	elapsed_t = time.time() - st_t
 
 	print(f"\n>> Search_DF: {s_df.shape}")
@@ -157,10 +157,33 @@ def load_dfs(fpath=""):
 	#print(s_df.info(verbose=True, memory_usage='deep'))
 	print("#"*130)
 
+	print( s_df["material_type"].value_counts() )
+	print("-"*150)
 	print( s_df["publishers"].value_counts() )
+	print("-"*150)
 	print( s_df["publication_places"].value_counts() )
+	print("-"*150)
 	print( s_df["languages"].value_counts() )
+	print("-"*150)
+	print( s_df["rights"].value_counts() )
+	print("-"*150)
 	print( s_df["fuzzy"].value_counts() )
+	print("-"*150)
+	print( s_df["illustrations"].value_counts() )
+	print("-"*150)
+	print( s_df["tags"].value_counts() )
+
+	print("-"*150)
+	print( s_df["authors"].value_counts() )
+
+	print("-"*150)
+	print( s_df["collection"].value_counts() )
+
+	print("-"*150)
+	print( s_df["type"].value_counts() )
+
+	print("-"*150)
+	print( s_df["rights"].value_counts() )
 	
 	"""
 	print(f"\n>> Volume_DF: {v_df.shape}")
