@@ -18,7 +18,7 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
-sz=15
+sz=14
 params = {
 	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # W, H
 	'figure.dpi':				400,
@@ -143,7 +143,7 @@ def visuzalize_nan(df, name=""):
 			multiple="stack",
 			height=12,
 			#kde=True,
-			aspect=1.3,
+			aspect=1.4,
 	)
 	g.set_axis_labels("Counts", "Features")
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
