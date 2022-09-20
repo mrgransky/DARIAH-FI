@@ -18,10 +18,10 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
-sz=19
+sz=15
 params = {
 	'figure.figsize':		(int(sz*1.5), int(sz*1.0)), # H, W
-	'figure.dpi':				700,
+	'figure.dpi':				100,
 	'legend.fontsize':	int(sz*1.0),
 	'axes.labelsize':		int(sz*1.0),
 	'axes.titlesize':		int(sz*1.1),
@@ -111,7 +111,7 @@ name_dict = {
 							],
 							}
 
-def vis_missing(df, name=""):
+def visuzalize_nan(df, name=""):
 	print(f">> Visualizing missing data of {name} ...")
 
 	sns.heatmap(df.isna().transpose(),
@@ -256,9 +256,9 @@ def load_dfs(fpath=""):
 def main():
 	#save_dfs()
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
-	vis_missing(search_df, name="search")
-	vis_missing(vol_df, name="volume")
-	vis_missing(pg_df, name="page")
+	visuzalize_nan(search_df, name="search")
+	visuzalize_nan(vol_df, name="volume")
+	visuzalize_nan(pg_df, name="page")
 
 if __name__ == '__main__':
 	os.system('clear')
