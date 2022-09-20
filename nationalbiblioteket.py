@@ -12,6 +12,27 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 import matplotlib.pyplot as plt
+import matplotlib.pylab as pylab
+import seaborn as sns
+
+import matplotlib
+matplotlib.use("Agg")
+
+sz=19
+params = {
+	'figure.figsize':		(int(sz*1.5), int(sz*1.0)), # H, W
+	'figure.dpi':				700,
+	'legend.fontsize':	int(sz*1.0),
+	'axes.labelsize':		int(sz*1.0),
+	'axes.titlesize':		int(sz*1.1),
+	'xtick.labelsize':	int(sz*1.0),
+	'ytick.labelsize':	int(sz*1.0),
+	'lines.linewidth' :	int(sz*0.1),
+	'lines.markersize':	int(sz*0.8),
+	'font.family':			"serif",
+	'figure.constrained_layout.use': True,
+}
+pylab.rcParams.update(params)
 
 files_list = ["digi_hakukaytto_v1.csv", 
 							"digi_nidekaytto_v1.csv",
@@ -24,6 +45,12 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 				}
 
 dpath = usr_[os.environ['USER']]
+rpath = os.path.join( dpath[:dpath.rfind("/")], "results")
+
+if not os.path.exists(rpath): 
+	print(f"\n>> Creating DIR:\n{rpath}")
+	os.makedirs( rpath )
+
 #sys.exit()
 
 search_idx, volume_idx, page_idx = 0, 1, 2
@@ -83,6 +110,20 @@ name_dict = {
 								"user_agent", 
 							],
 							}
+
+def vis_missing(df):
+	sns.displot(
+			data=df.isna().melt(value_name="missing"),
+			y="Features",
+			hue="Missing",
+			multiple="fill",
+			aspect=1.25
+	)
+
+	plt.savefig(os.path.join( rpath, "missing_barplot.png" ), 
+							dpi=500,
+							)
+
 
 def get_df(idx, custom_chunk_size=None):
 	fname = os.path.join(dpath, files_list[idx])
@@ -149,7 +190,7 @@ def load_dfs(fpath=""):
 	p_df = d["pg"]
 	elapsed_t = time.time() - st_t
 
-	print(f"\n>> Search_DF: {s_df.shape}")
+	print(f"\n>> Search_DF: {s_df.shape} Tot. missing data: {s_df.isnull().values.sum()}")
 	print( list(s_df.columns ) )
 	print()
 	print(s_df.head(25))
@@ -189,7 +230,7 @@ def load_dfs(fpath=""):
 	print( s_df["no_access_results"].value_counts() )
 
 	"""
-	print(f"\n>> Volume_DF: {v_df.shape}")
+	print(f"\n>> Volume_DF: {v_df.shape} Tot. missing data: {v_df.isnull().values.sum()}")
 	print( list(v_df.columns ) )
 	print()
 	print(v_df.head(5))
@@ -197,7 +238,7 @@ def load_dfs(fpath=""):
 	print(v_df.info(verbose=True, memory_usage='deep'))
 	print("#"*130)
 
-	print(f"\n>> Page_DF: {p_df.shape}")
+	print(f"\n>> Page_DF: {p_df.shape} Tot. missing data: {p_df.isnull().values.sum()}")
 	print( list(p_df.columns ) )
 	print()
 	print(p_df.head(5))
