@@ -145,17 +145,24 @@ def load_dfs(fpath=""):
 	elapsed_t = time.time() - st_t
 
 	s_df = d["search"]
-	v_df = d["vol"]
-	p_df = d["pg"]
+	#v_df = d["vol"]
+	#p_df = d["pg"]
+	elapsed_t = time.time() - st_t
 
 	print(f"\n>> Search_DF: {s_df.shape}")
 	print( list(s_df.columns ) )
 	print()
 	print(s_df.head(25))
-	#print(s_df.isna().sum())
-	print(s_df.info(verbose=True, memory_usage='deep'))
+	print(s_df.isna().sum())
+	#print(s_df.info(verbose=True, memory_usage='deep'))
 	print("#"*130)
 
+	print( s_df["publishers"].value_counts() )
+	print( s_df["publication_places"].value_counts() )
+	print( s_df["languages"].value_counts() )
+	print( s_df["fuzzy"].value_counts() )
+	
+	"""
 	print(f"\n>> Volume_DF: {v_df.shape}")
 	print( list(v_df.columns ) )
 	print()
@@ -171,7 +178,7 @@ def load_dfs(fpath=""):
 	#print(p_df.isna().sum())
 	print(p_df.info(verbose=True, memory_usage='deep'))
 	print("#"*130)
-
+	"""
 	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
 	return s_df, v_df, p_df
 
