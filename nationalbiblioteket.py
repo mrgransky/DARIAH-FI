@@ -112,6 +112,13 @@ name_dict = {
 							}
 
 def vis_missing(df, name=""):
+	print(f">> Visualizing missing data of {name} ...")
+
+	sns.heatmap(df.isna().transpose(),
+							cmap="YlGnBu",
+							cbar_kws={'label': 'Missing Data'})
+	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
+
 	sns.displot(
 			data=df.isna().melt(value_name="missing"),
 			y="Features",
@@ -119,9 +126,7 @@ def vis_missing(df, name=""):
 			multiple="fill",
 			aspect=1.25
 	)
-
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
-
 
 def get_df(idx, custom_chunk_size=None):
 	fname = os.path.join(dpath, files_list[idx])
@@ -245,6 +250,7 @@ def load_dfs(fpath=""):
 	print("#"*130)
 	"""
 	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
+	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
 	return s_df, v_df, p_df
 
 def main():
