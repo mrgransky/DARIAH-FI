@@ -18,7 +18,7 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
-sz=15
+sz=14
 params = {
 	'figure.figsize':		(int(sz*1.5), int(sz*1.0)), # H, W
 	'figure.dpi':				100,
