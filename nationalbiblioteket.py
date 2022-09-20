@@ -111,7 +111,7 @@ name_dict = {
 							],
 							}
 
-def vis_missing(df):
+def vis_missing(df, name=""):
 	sns.displot(
 			data=df.isna().melt(value_name="missing"),
 			y="Features",
@@ -120,9 +120,7 @@ def vis_missing(df):
 			aspect=1.25
 	)
 
-	plt.savefig(os.path.join( rpath, "missing_barplot.png" ), 
-							dpi=500,
-							)
+	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
 
 
 def get_df(idx, custom_chunk_size=None):
@@ -252,6 +250,9 @@ def load_dfs(fpath=""):
 def main():
 	#save_dfs()
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
+	vis_missing(search_df, name="search")
+	vis_missing(vol_df, name="volume")
+	vis_missing(pg_df, name="page")
 
 if __name__ == '__main__':
 	os.system('clear')
