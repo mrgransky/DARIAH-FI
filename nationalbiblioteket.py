@@ -18,9 +18,10 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
-sz=16
+sz=18
 params = {
-	'figure.figsize':		(int(sz*1.5), int(sz*1.0)), # H, W
+	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # H, W
+	'figure.dpi':				700,
 	'legend.fontsize':	int(sz*1.0),
 	'axes.labelsize':		int(sz*1.0),
 	'axes.titlesize':		int(sz*1.1),
@@ -32,6 +33,13 @@ params = {
 	'figure.constrained_layout.use': True,
 }
 pylab.rcParams.update(params)
+
+sns.set(font_scale=1.5, 
+				style="white", 
+				palette='deep', 
+				font="serif", 
+				color_codes=True,
+				)
 
 files_list = ["digi_hakukaytto_v1.csv", 
 							"digi_nidekaytto_v1.csv",
@@ -114,19 +122,29 @@ def visuzalize_nan(df, name=""):
 	print(f">> Visualizing missing data of {name} ...")
 
 	print(f">>>>> Heatmap >>>>>")
-	sns.heatmap(df.isna().transpose(),
-							cmap="YlGnBu",
-							cbar_kws={'label': 'Missing Data'})
+	ax = sns.heatmap(
+			df.isna(),
+			cmap=sns.color_palette("Greys"),
+			cbar_kws={'label': 'NaN (Missing Data)', 'ticks': [0.0, 1.0]},
+			)
+
+	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
+	ax.set_yticks([])
+	ax.xaxis.tick_top()
+	ax.tick_params(axis='x', labelrotation=90)
 	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
 
 	print(f">>>>> Barplot >>>>>")
-	sns.displot(
-			data=df.isna().melt(value_name="missing"),
-			y="Features",
-			hue="Missing",
-			multiple="fill",
-			aspect=1.25
+	g = sns.displot(
+			data=df.isna().melt(value_name="NaN"),
+			y="variable",
+			hue="NaN",
+			multiple="stack",
+			height=18,
+			#kde=True,
+			aspect=1.3,
 	)
+	g.set_axis_labels("Counts", "Features")
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
 
 def get_df(idx, custom_chunk_size=None):
