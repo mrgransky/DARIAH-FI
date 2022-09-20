@@ -18,10 +18,9 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
-sz=14
+sz=16
 params = {
 	'figure.figsize':		(int(sz*1.5), int(sz*1.0)), # H, W
-	'figure.dpi':				100,
 	'legend.fontsize':	int(sz*1.0),
 	'axes.labelsize':		int(sz*1.0),
 	'axes.titlesize':		int(sz*1.1),
@@ -114,11 +113,13 @@ name_dict = {
 def visuzalize_nan(df, name=""):
 	print(f">> Visualizing missing data of {name} ...")
 
+	print(f">>>>> Heatmap >>>>>")
 	sns.heatmap(df.isna().transpose(),
 							cmap="YlGnBu",
 							cbar_kws={'label': 'Missing Data'})
 	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
 
+	print(f">>>>> Barplot >>>>>")
 	sns.displot(
 			data=df.isna().melt(value_name="missing"),
 			y="Features",
