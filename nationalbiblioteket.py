@@ -3,6 +3,7 @@ import string
 import os
 import sys
 import joblib
+import time
 
 import numpy as np
 import pandas as pd
@@ -137,30 +138,37 @@ def save_dfs():
 def load_dfs(fpath=""):
 	fsize = os.stat( fpath ).st_size / 1e9
 	print(f">> Loading {fpath} | size: {fsize:.1f} GB ...")
+	st_t = time.time()
 
 	d = joblib.load(fpath)
 
-	search_df = d["search"]
-	volume_df = d["vol"]
-	page_df = d["pg"]
+	elapsed_t = time.time() - st_t
 
-	print(f"\n>> Search DF: {search_df.shape}...")
-	print(search_df.head(20))
+	s_df = d["search"]
+	v_df = d["vol"]
+	p_df = d["pg"]
+
+	print(f"\n>> Search_DF: {s_df.shape}...")
+	print( list(s_df.columns ) )
+	print(s_df.head(20))
 	print("#"*100)
 
-	print(f"\n>> Volume DF: {volume_df.shape}...")
-	print(volume_df.head(20))
+	print(f"\n>> Volume_DF: {v_df.shape}...")
+	print( list(v_df.columns ) )
+	print(v_df.head(20))
 	print("#"*100)
 
-	print(f"\n>> Page DF: {page_df.shape}...")
-	print(page_df.head(20))
+	print(f"\n>> Page_DF: {p_df.shape}...")
+	print( list(p_df.columns ) )
+	print(p_df.head(20))
 	print("#"*100)
 
-	print(f">> LOADING COMPLETED!")
+	print(f">> LOADING COMPLETED in {elapsed_t:.2f} ms!")
+	return s_df, v_df, p_df
 
 def main():
-	save_dfs()
-	load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
+	#save_dfs()
+	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
 
 if __name__ == '__main__':
 	os.system('clear')
