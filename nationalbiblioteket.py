@@ -148,22 +148,28 @@ def load_dfs(fpath=""):
 	v_df = d["vol"]
 	p_df = d["pg"]
 
-	print(f"\n>> Search_DF: {s_df.shape}...")
+	print(f"\n>> Search_DF: {s_df.shape}")
 	print( list(s_df.columns ) )
-	print(s_df.head(20))
-	print("#"*100)
+	print()
+	print(s_df.head(25))
+	print(s_df.isna().sum())
+	print("#"*130)
 
-	print(f"\n>> Volume_DF: {v_df.shape}...")
+	print(f"\n>> Volume_DF: {v_df.shape}")
 	print( list(v_df.columns ) )
-	print(v_df.head(20))
-	print("#"*100)
+	print()
+	print(v_df.head(5))
+	print(v_df.isna().sum())
+	print("#"*130)
 
-	print(f"\n>> Page_DF: {p_df.shape}...")
+	print(f"\n>> Page_DF: {p_df.shape}")
 	print( list(p_df.columns ) )
-	print(p_df.head(20))
-	print("#"*100)
+	print()
+	print(p_df.head(5))
+	print(p_df.isna().sum())
+	print("#"*130)
 
-	print(f">> LOADING COMPLETED in {elapsed_t:.2f} ms!")
+	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
 	return s_df, v_df, p_df
 
 def main():
