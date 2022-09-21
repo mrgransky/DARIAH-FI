@@ -20,10 +20,10 @@ matplotlib.use("Agg")
 
 # more info for adjustment of rcparams:
 # https://matplotlib.org/stable/tutorials/introductory/customizing.html
-sz=15
+sz=14
 params = {
 	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # W, H
-	'figure.dpi':				600,
+	'figure.dpi':				400,
 	'figure.autolayout': True,
 	#'figure.constrained_layout.use': True,
 	'legend.fontsize':	int(sz*0.8),
@@ -38,7 +38,7 @@ params = {
 }
 pylab.rcParams.update(params)
 
-sns.set(font_scale=1.0, 
+sns.set(font_scale=1.3, 
 				style="white", 
 				palette='deep', 
 				font="serif", 
@@ -143,11 +143,11 @@ def visuzalize_nan(df, name=""):
 			y="variable",
 			hue="Missing",
 			multiple="stack",
-			height=12,
+			height=15,
 			#kde=True,
-			aspect=1.4,
+			aspect=1.2,
 	)
-	g.set_axis_labels("Counts", "Features")
+	g.set_axis_labels("Samples", "Features")
 	for axb in g.axes.ravel():
 		# add annotations
 		for c in axb.containers:
@@ -236,8 +236,8 @@ def load_dfs(fpath=""):
 	print(s_df.head(25))
 	print(s_df.isna().sum())
 	print(s_df.info(verbose=True, memory_usage='deep'))
-	print("/"*150)
-	print(s_df.dtypes)
+	#print("/"*150)
+	#print(s_df.dtypes)
 	print("#"*130)
 
 	print( s_df["material_type"].value_counts() )
