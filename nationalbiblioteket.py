@@ -57,11 +57,9 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 
 
 languages={"FINNSIH": False, "ENGLISH": True}
-qlang = "FINNISH"
-#qlang = "ENGLISH"
 
 dpath = usr_[os.environ['USER']]
-rpath = os.path.join( dpath[:dpath.rfind("/")], f"results_{qlang}")
+rpath = os.path.join( dpath[:dpath.rfind("/")], f"results")
 search_idx, volume_idx, page_idx = 0, 1, 2
 
 if not os.path.exists(rpath): 
@@ -177,7 +175,7 @@ def visualize(df, name=""):
 	plt.savefig(os.path.join( rpath, f"{name}_histogram.png" ), )
 	plt.clf()
 
-def get_df(idx, custom_chunk_size=None, column_names=True):
+def get_df(idx, custom_chunk_size=None, adjust_cols=True):
 	fname = os.path.join(dpath, files_list[idx])
 	print(f">> Reading {fname} ...")
 
@@ -199,17 +197,18 @@ def get_df(idx, custom_chunk_size=None, column_names=True):
 		return df
 	else:
 		df = pd.read_csv(fname, low_memory=False,)
-		if english:
+		if adjust_cols:
 			df.columns = name_dict.get(idx)
 		return df
 
-def save_dfs(rename_columns=True):
-	print(">> Saving...")
+def save_dfs(qlang="ENGLISH"):
+	rename_columns = languages[qlang]
+	print(f">> Saving in {qlang} => rename_columns: {rename_columns} ...")
 
 	#page_df = get_df(idx=page_idx, custom_chunk_size=23e6)
-	page_df = get_df(idx=page_idx, column_names=rename_columns)
-	volume_df = get_df(idx=volume_idx, column_names=rename_columns)
-	search_df = get_df(idx=search_idx, column_names=rename_columns)
+	page_df = get_df(idx=page_idx, adjust_cols=rename_columns)
+	volume_df = get_df(idx=volume_idx, adjust_cols=rename_columns)
+	search_df = get_df(idx=search_idx, adjust_cols=rename_columns)
 
 	dfs_dict = {
 		"search":	search_df,
@@ -217,7 +216,7 @@ def save_dfs(rename_columns=True):
 		"pg":		page_df,
 	}
 
-	fname = "_".join(list(dfs_dict.keys()))+"_dfs.dump"
+	fname = "_".join(list(dfs_dict.keys()))+f"_dfs_{qlang}.dump"
 	print(f">> Dumping {fname} ...")
 	joblib.dump(	dfs_dict, 
 								os.path.join( dpath, f"{fname}" ),
@@ -308,12 +307,16 @@ def load_dfs(fpath=""):
 def main():
 	# rename_columns: True: saving doc in english
 	# rename_columns: False: saving doc in Finnish (Original) => no modification!
+	QUERY_LANGUAGE = "FINNISH"
+	#QUERY_LANGUAGE = "ENGLISH"
 
-	save_dfs(rename_columns=languages[qlang])
-	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
-	visualize(search_df, name=f"search_{qlang}")
-	visualize(vol_df, name=f"volume_{qlang}")
-	visualize(pg_df, name=f"page_{qlang}")
+	save_dfs(qlang=QUERY_LANGUAGE)
+
+	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
+	
+	visualize(search_df, name=f"search_{QUERY_LANGUAGE}")
+	visualize(vol_df, name=f"volume_{QUERY_LANGUAGE}")
+	visualize(pg_df, name=f"page_{QUERY_LANGUAGE}")
 
 if __name__ == '__main__':
 	os.system('clear')
