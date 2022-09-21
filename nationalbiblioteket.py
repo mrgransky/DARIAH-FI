@@ -20,21 +20,21 @@ matplotlib.use("Agg")
 
 # more info for adjustment of rcparams:
 # https://matplotlib.org/stable/tutorials/introductory/customizing.html
-sz=14
+sz=12
 params = {
-	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # W, H
-	'figure.dpi':				400,
+	'figure.figsize':	(sz*1.4, sz*1.0),  # W, H
+	'figure.dpi':		200,
 	'figure.autolayout': True,
 	#'figure.constrained_layout.use': True,
-	'legend.fontsize':	int(sz*0.8),
-	'axes.labelsize':		int(sz*1.0),
-	'axes.titlesize':		int(sz*1.1),
-	'xtick.labelsize':	int(sz*1.0),
-	'ytick.labelsize':	int(sz*1.0),
-	'lines.linewidth' :	int(sz*0.1),
-	'lines.markersize':	int(sz*0.8),
-	'font.family':			"serif",
-	'font.size':				int(sz*1.0),
+	'legend.fontsize':	sz*0.8,
+	'axes.labelsize':	sz*0.2,
+	'axes.titlesize':	sz*0.2,
+	'xtick.labelsize':	sz*1.0,
+	'ytick.labelsize':	sz*1.0,
+	'lines.linewidth' :	sz*0.1,
+	'lines.markersize':	sz*0.8,
+	'font.size':		sz*1.0,
+	'font.family':		"serif",
 }
 pylab.rcParams.update(params)
 
@@ -119,7 +119,7 @@ name_dict = {
 							],
 							}
 
-def visuzalize_nan(df, name=""):
+def visualize(df, name=""):
 	print(f">> Visualizing missing data of {name} ...")
 
 	print(f">>>>> Barplot >>>>>")
@@ -151,6 +151,7 @@ def visuzalize_nan(df, name=""):
 	plt.clf()
 
 	print(f">>>>> Heatmap >>>>>")
+	f, ax = plt.subplots()
 	ax = sns.heatmap(
 			df.isna(),
 			cmap=sns.color_palette("Greys"),
@@ -164,6 +165,13 @@ def visuzalize_nan(df, name=""):
 	plt.suptitle(f"Missing {name} Data (NaN)")
 	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
 	plt.clf()
+
+	print(f">>>>> Histogram >>>>>")
+	hist = df.hist()
+	plt.suptitle(f"Histogram {name} Data")
+	plt.savefig(os.path.join( rpath, f"{name}_histogram.png" ), )
+	plt.clf()
+
 
 def get_df(idx, custom_chunk_size=None):
 	fname = os.path.join(dpath, files_list[idx])
@@ -297,9 +305,9 @@ def load_dfs(fpath=""):
 def main():
 	#save_dfs()
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, "search_vol_pg_dfs.dump") )
-	visuzalize_nan(search_df, name="search")
-	visuzalize_nan(vol_df, name="volume")
-	visuzalize_nan(pg_df, name="page")
+	visualize(search_df, name="search")
+	visualize(vol_df, name="volume")
+	visualize(pg_df, name="page")
 
 if __name__ == '__main__':
 	os.system('clear')
