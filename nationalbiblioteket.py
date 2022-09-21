@@ -56,7 +56,7 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 				}
 
 
-languages={"FINNSIH": False, "ENGLISH": True}
+languages={"FINNISH": False, "ENGLISH": True}
 
 dpath = usr_[os.environ['USER']]
 rpath = os.path.join( dpath[:dpath.rfind("/")], f"results")
