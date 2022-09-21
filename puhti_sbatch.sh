@@ -6,7 +6,7 @@
 
 #SBATCH --account=project_2004072
 #SBATCH -J vis_heatmap_barplot
-#SBATCH -o LOG_%N_%j.out
+#SBATCH -o LOG_%x_%N_%j.out
 #SBATCH --partition=hugemem
 #SBATCH --mem=609G
 #SBATCH --time=1-23:59:58

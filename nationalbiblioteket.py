@@ -232,7 +232,9 @@ def load_dfs(fpath=""):
 	print()
 	print(s_df.head(25))
 	print(s_df.isna().sum())
-	#print(s_df.info(verbose=True, memory_usage='deep'))
+	print(s_df.info(verbose=True, memory_usage='deep'))
+	print("/"*150)
+	print(s_df.dtypes)
 	print("#"*130)
 
 	print( s_df["material_type"].value_counts() )
@@ -272,6 +274,7 @@ def load_dfs(fpath=""):
 	print()
 	print(v_df.head(5))
 	#print(v_df.isna().sum())
+	print(v_df.dtypes)
 	print(v_df.info(verbose=True, memory_usage='deep'))
 	print("#"*130)
 
@@ -280,7 +283,8 @@ def load_dfs(fpath=""):
 	print()
 	print(p_df.head(5))
 	#print(p_df.isna().sum())
-	print(p_df.info(verbose=True, memory_usage='deep'))
+	#print(p_df.info(verbose=True, memory_usage='deep'))
+	print(p_df.dtypes)
 	print("#"*130)
 	"""
 	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
