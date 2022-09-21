@@ -20,10 +20,12 @@ matplotlib.use("Agg")
 
 # more info for adjustment of rcparams:
 # https://matplotlib.org/stable/tutorials/introductory/customizing.html
-sz=14
+sz=15
 params = {
 	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # W, H
-	'figure.dpi':				400,
+	'figure.dpi':				600,
+	'figure.autolayout': True,
+	#'figure.constrained_layout.use': True,
 	'legend.fontsize':	int(sz*0.8),
 	'axes.labelsize':		int(sz*1.0),
 	'axes.titlesize':		int(sz*1.1),
@@ -32,12 +34,11 @@ params = {
 	'lines.linewidth' :	int(sz*0.1),
 	'lines.markersize':	int(sz*0.8),
 	'font.family':			"serif",
-	'font.size':				int(sz*0.8),
-	#'figure.constrained_layout.use': True,
+	'font.size':				int(sz*1.0),
 }
 pylab.rcParams.update(params)
 
-sns.set(font_scale=1.5, 
+sns.set(font_scale=1.0, 
 				style="white", 
 				palette='deep', 
 				font="serif", 
@@ -134,6 +135,7 @@ def visuzalize_nan(df, name=""):
 	ax.tick_params(axis='x', labelrotation=90)
 	plt.suptitle(f"Missing {name} Data (NaN)")
 	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
+	plt.clf()
 
 	print(f">>>>> Barplot >>>>>")
 	g = sns.displot(
@@ -146,12 +148,12 @@ def visuzalize_nan(df, name=""):
 			aspect=1.4,
 	)
 	g.set_axis_labels("Counts", "Features")
-	for ax in g.axes.ravel():
+	for axb in g.axes.ravel():
 		# add annotations
-		for c in ax.containers:
+		for c in axb.containers:
 			# custom label calculates percent and add an empty string so 0 value bars don't have a number
 			labels = [f"{(v.get_width()/df.shape[0]*100):.1f} %" if v.get_width() > 0 else "" for v in c]
-			ax.bar_label(c,
+			axb.bar_label(c,
 										labels=labels,
 										label_type='edge',
 										#fontsize=13,
@@ -159,8 +161,9 @@ def visuzalize_nan(df, name=""):
 										padding=5,
 										)
 			break; # only annotate the first!
-		ax.margins(y=0.3)
+		axb.margins(y=0.3)
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
+	#plt.clf()
 
 def get_df(idx, custom_chunk_size=None):
 	fname = os.path.join(dpath, files_list[idx])
