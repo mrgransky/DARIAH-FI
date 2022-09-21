@@ -18,11 +18,13 @@ import seaborn as sns
 import matplotlib
 matplotlib.use("Agg")
 
+# more info for adjustment of rcparams:
+# https://matplotlib.org/stable/tutorials/introductory/customizing.html
 sz=14
 params = {
 	'figure.figsize':		(int(sz*1.4), int(sz*1.0)), # W, H
 	'figure.dpi':				400,
-	'legend.fontsize':	int(sz*1.0),
+	'legend.fontsize':	int(sz*0.8),
 	'axes.labelsize':		int(sz*1.0),
 	'axes.titlesize':		int(sz*1.1),
 	'xtick.labelsize':	int(sz*1.0),
@@ -30,7 +32,8 @@ params = {
 	'lines.linewidth' :	int(sz*0.1),
 	'lines.markersize':	int(sz*0.8),
 	'font.family':			"serif",
-	'figure.constrained_layout.use': True,
+	'font.size':				int(sz*0.8),
+	#'figure.constrained_layout.use': True,
 }
 pylab.rcParams.update(params)
 
@@ -53,14 +56,11 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 
 dpath = usr_[os.environ['USER']]
 rpath = os.path.join( dpath[:dpath.rfind("/")], "results")
+search_idx, volume_idx, page_idx = 0, 1, 2
 
 if not os.path.exists(rpath): 
 	print(f"\n>> Creating DIR:\n{rpath}")
 	os.makedirs( rpath )
-
-#sys.exit()
-
-search_idx, volume_idx, page_idx = 0, 1, 2
 
 name_dict = {
 	search_idx: [	"search_usage_id", 
@@ -137,9 +137,9 @@ def visuzalize_nan(df, name=""):
 
 	print(f">>>>> Barplot >>>>>")
 	g = sns.displot(
-			data=df.isna().melt(value_name="NaN"),
+			data=df.isna().melt(value_name="Missing"),
 			y="variable",
-			hue="NaN",
+			hue="Missing",
 			multiple="stack",
 			height=12,
 			#kde=True,
@@ -159,6 +159,7 @@ def visuzalize_nan(df, name=""):
 										padding=5,
 										)
 			break; # only annotate the first!
+		ax.margins(y=0.3)
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
 
 def get_df(idx, custom_chunk_size=None):
