@@ -122,28 +122,13 @@ name_dict = {
 def visuzalize_nan(df, name=""):
 	print(f">> Visualizing missing data of {name} ...")
 
-	print(f">>>>> Heatmap >>>>>")
-	ax = sns.heatmap(
-			df.isna(),
-			cmap=sns.color_palette("Greys"),
-			cbar_kws={'label': 'NaN (Missing Data)', 'ticks': [0.0, 1.0]},
-			)
-
-	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
-	ax.set_yticks([])
-	ax.xaxis.tick_top()
-	ax.tick_params(axis='x', labelrotation=90)
-	plt.suptitle(f"Missing {name} Data (NaN)")
-	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
-	plt.clf()
-
 	print(f">>>>> Barplot >>>>>")
 	g = sns.displot(
 			data=df.isna().melt(value_name="Missing"),
 			y="variable",
 			hue="Missing",
 			multiple="stack",
-			height=15,
+			height=16,
 			#kde=True,
 			aspect=1.2,
 	)
@@ -163,7 +148,22 @@ def visuzalize_nan(df, name=""):
 			break; # only annotate the first!
 		axb.margins(y=0.3)
 	plt.savefig(os.path.join( rpath, f"{name}_missing_barplot.png" ), )
-	#plt.clf()
+	plt.clf()
+
+	print(f">>>>> Heatmap >>>>>")
+	ax = sns.heatmap(
+			df.isna(),
+			cmap=sns.color_palette("Greys"),
+			cbar_kws={'label': 'NaN (Missing Data)', 'ticks': [0.0, 1.0]},
+			)
+
+	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
+	ax.set_yticks([])
+	ax.xaxis.tick_top()
+	ax.tick_params(axis='x', labelrotation=90)
+	plt.suptitle(f"Missing {name} Data (NaN)")
+	plt.savefig(os.path.join( rpath, f"{name}_missing_heatmap.png" ), )
+	plt.clf()
 
 def get_df(idx, custom_chunk_size=None):
 	fname = os.path.join(dpath, files_list[idx])
