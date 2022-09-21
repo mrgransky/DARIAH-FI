@@ -250,6 +250,7 @@ def load_dfs(fpath=""):
 	#print(s_df.dtypes)
 	print("#"*130)
 
+	"""
 	print( s_df["material_type"].value_counts() )
 	print("-"*150)
 	print( s_df["publishers"].value_counts() )
@@ -280,14 +281,14 @@ def load_dfs(fpath=""):
 
 	print("-"*150)
 	print( s_df["no_access_results"].value_counts() )
-
 	"""
+
 	print(f"\n>> Volume_DF: {v_df.shape} Tot. missing data: {v_df.isnull().values.sum()}")
 	print( list(v_df.columns ) )
 	print()
 	print(v_df.head(5))
-	#print(v_df.isna().sum())
-	print(v_df.dtypes)
+	print(v_df.isna().sum())
+	#print(v_df.dtypes)
 	print(v_df.info(verbose=True, memory_usage='deep'))
 	print("#"*130)
 
@@ -295,11 +296,11 @@ def load_dfs(fpath=""):
 	print( list(p_df.columns ) )
 	print()
 	print(p_df.head(5))
-	#print(p_df.isna().sum())
-	#print(p_df.info(verbose=True, memory_usage='deep'))
-	print(p_df.dtypes)
+	print(p_df.isna().sum())
+	print(p_df.info(verbose=True, memory_usage='deep'))
+	#print(p_df.dtypes)
 	print("#"*130)
-	"""
+
 	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
 	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
 	return s_df, v_df, p_df
