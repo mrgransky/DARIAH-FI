@@ -308,8 +308,8 @@ def load_dfs(fpath=""):
 def main():
 	# rename_columns: True: saving doc in english
 	# rename_columns: False: saving doc in Finnish (Original) => no modification!
-	QUERY_LANGUAGE = "FINNISH"
-	#QUERY_LANGUAGE = "ENGLISH"
+	#QUERY_LANGUAGE = "FINNISH"
+	QUERY_LANGUAGE = "ENGLISH"
 
 	save_dfs(qlang=QUERY_LANGUAGE)
 
