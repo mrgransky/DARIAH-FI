@@ -298,7 +298,7 @@ def load_dfs(fpath=""):
 	return s_df, v_df, p_df
 
 def plt_bar(df, name=""):
-	plt.figure()
+	#plt.figure()
 	df["languages"].value_counts().sort_values().plot(kind="barh")
 	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
 	plt.clf()
@@ -314,7 +314,8 @@ def main():
 	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
-	plt_bar(search_df, name=f"search_{QUERY_LANGUAGE})
+
+	plt_bar( search_df, name=f"search_{QUERY_LANGUAGE} )
 
 
 
