@@ -188,6 +188,7 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 		df['kielet'] = df['kielet'].str.replace('ENG','EN', regex=True)
 		df['kielet'] = df['kielet'].str.replace('RUS','RU', regex=True)
 		df['kielet'] = df['kielet'].str.replace('GER','DE', regex=True)
+		df['kielet'] = df['kielet'].str.replace('FRE','FR', regex=True)
 		
 		df['kielet'] = df['kielet'].str.replace('SE,FI','FI,SE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('FI,FI','FI', regex=True)
@@ -197,6 +198,7 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 		df['kielet'] = df['kielet'].str.replace('DE,FI','FI,DE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('KRL,FI','FI,KRL', regex=True)
 		df['kielet'] = df['kielet'].str.replace('EST,FI','FI,EST', regex=True)
+		df['kielet'] = df['kielet'].str.replace('FR,FI','FI,FR', regex=True)
 
 		df['kielet'] = df['kielet'].str.replace('EN,SE','SE,EN', regex=True)
 		df['kielet'] = df['kielet'].str.replace('RU,FI','FI,RU', regex=True)
