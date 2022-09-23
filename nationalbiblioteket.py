@@ -189,9 +189,13 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 		df['kielet'] = df['kielet'].str.replace('RUS','RU', regex=True)
 		
 		df['kielet'] = df['kielet'].str.replace('SE,FI','FI,SE', regex=True)
+		df['kielet'] = df['kielet'].str.replace('FI,FI','FI', regex=True)
+		df['kielet'] = df['kielet'].str.replace('FIU,FI','FI,FIU', regex=True)
+		df['kielet'] = df['kielet'].str.replace('SE,SE','SE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('EN,FI','FI,EN', regex=True)
 		df['kielet'] = df['kielet'].str.replace('EN,SE','SE,EN', regex=True)
 		df['kielet'] = df['kielet'].str.replace('RU,FI','FI,RU', regex=True)
+		df['kielet'] = df['kielet'].str.replace('RU,EN','EN,RU', regex=True)
 
 
 
@@ -320,11 +324,11 @@ def plt_bar(df, name="", N=40):
 	"""
 
 	plt.figure()
-	df["languages"].value_counts().sort_values(ascending=False)[:N].plot(kind="barh")
+	df["languages"].value_counts().sort_values(ascending=False)[:N].plot(	kind="barh", 
+																																				title=f"{N} most frequent Language in NLF search Engine")
 	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
-	plt.title(f"Distribution of {N} most frequent Language in NLF search Engine")
-	plt.xlabel("Counts")
 	plt.ylabel("Languages")
+	plt.xlabel("Counts")
 	
 	plt.clf()
 
