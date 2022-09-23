@@ -178,49 +178,32 @@ def basic_visualization(df, name=""):
 
 
 
-def get_df(idx, custom_chunk_size=None, adjust_cols=True):
+def get_df(idx, adjust_cols=True):
 	fname = os.path.join(dpath, files_list[idx])
 	print(f">> Reading {fname} ...")
 
-	def modify_text(txt):
-		txt = re.sub('FIN','FI',txt)
-		txt = re.sub('SWE','SE',txt)				
-		return txt
+	def modify_text(s):
+		return s.replace('FIN', 'FI').replace('SWE', 'SE')
 
 	modified_text = lambda x: modify_text(x)
 
-	if custom_chunk_size:
-		print(f">> into {custom_chunk_size} chunks...")
-		
-		chnk_df = pd.read_csv(fname, 
-													low_memory=False, 
-													chunksize=custom_chunk_size,
-													iterator=True,
-													)
-		mylist = []
-		for ch in chnk_df:
-			print(ch.shape)
-			mylist.append(ch)
-
-		df=pd.concat(mylist, axis=0)
-		del mylist
-		return df
-	else:
-		df = pd.read_csv(fname, low_memory=False,)
-		if 'kielet' in list(df.columns):
-			df['kielet'] = pd.DataFrame( df.kielet.apply( modified_text ) )
-		if adjust_cols:
-			df.columns = name_dict.get(idx)
-		return df
+	df = pd.read_csv(fname, low_memory=False,)
+	
+	if 'kielet' in list(df.columns):
+		df['kielet'] = pd.DataFrame( df.kielet.apply( modified_text ) )
+	
+	if adjust_cols:
+		df.columns = name_dict.get(idx)
+	
+	return df
 
 def save_dfs(qlang="ENGLISH"):
 	rename_columns = languages[qlang]
 	print(f">> Saving in {qlang} => rename_columns: {rename_columns} ...")
 
-	#page_df = get_df(idx=page_idx, custom_chunk_size=23e6)
+	search_df = get_df(idx=search_idx, adjust_cols=rename_columns)
 	page_df = get_df(idx=page_idx, adjust_cols=rename_columns)
 	volume_df = get_df(idx=volume_idx, adjust_cols=rename_columns)
-	search_df = get_df(idx=search_idx, adjust_cols=rename_columns)
 
 	dfs_dict = {
 		"search":	search_df,
