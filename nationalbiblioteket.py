@@ -78,9 +78,9 @@ name_dict = {
 								"titles",
 								"languages",
 								"pages",
-								"scores", #TODO: must be verified: Finnish: 'tulokset'
+								"results",
 								"rights",
-								"fuzzy", #TODO: must be verified: Finnish: 'sumea'
+								"fuzzy_search", 
 								"illustrations",
 								"index_prefix",
 								"tags",
@@ -95,7 +95,7 @@ name_dict = {
 								"clip_generated",
 								"duration_ms",
 								"order",
-								"require_all_words",
+								"require_all_search_terms",
 								"find_volumes",
 								"last_page",
 								"no_access_results",
@@ -122,7 +122,7 @@ name_dict = {
 							],
 							}
 
-def visualize(df, name=""):
+def basic_visualization(df, name=""):
 	print(f">> Visualizing missing data of {name} ...")
 
 	print(f">>>>> Barplot >>>>>")
@@ -175,9 +175,19 @@ def visualize(df, name=""):
 	plt.savefig(os.path.join( rpath, f"{name}_histogram.png" ), )
 	plt.clf()
 
+
+
+
 def get_df(idx, custom_chunk_size=None, adjust_cols=True):
 	fname = os.path.join(dpath, files_list[idx])
 	print(f">> Reading {fname} ...")
+
+	def modify_text(txt):
+		txt = re.sub('FIN','FI',txt)
+		txt = re.sub('SWE','SE',txt)				
+		return txt
+
+	modified_text = lambda x: modify_text(x)
 
 	if custom_chunk_size:
 		print(f">> into {custom_chunk_size} chunks...")
@@ -199,6 +209,11 @@ def get_df(idx, custom_chunk_size=None, adjust_cols=True):
 		df = pd.read_csv(fname, low_memory=False,)
 		if adjust_cols:
 			df.columns = name_dict.get(idx)
+		  # cleaning in english
+    	df['languages'] = pd.DataFrame( df.languages.apply( modified_text ) )
+		else:
+		  # cleaning in finnish
+			df['kielet'] = pd.DataFrame( df.languages.apply( modified_text ) )
 		return df
 
 def save_dfs(qlang="ENGLISH"):
@@ -260,7 +275,7 @@ def load_dfs(fpath=""):
 	print("-"*150)
 	print( s_df["rights"].value_counts() )
 	print("-"*150)
-	print( s_df["fuzzy"].value_counts() )
+	print( s_df["fuzzy_search"].value_counts() )
 	print("-"*150)
 	print( s_df["illustrations"].value_counts() )
 	print("-"*150)
@@ -276,7 +291,7 @@ def load_dfs(fpath=""):
 	print( s_df["type"].value_counts() )
 
 	print("-"*150)
-	print( s_df["require_all_words"].value_counts() )
+	print( s_df["require_all_search_terms"].value_counts() )
 
 	print("-"*150)
 	print( s_df["no_access_results"].value_counts() )
@@ -308,16 +323,19 @@ def load_dfs(fpath=""):
 def main():
 	# rename_columns: True: saving doc in english
 	# rename_columns: False: saving doc in Finnish (Original) => no modification!
+
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	#save_dfs(qlang=QUERY_LANGUAGE)
+	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 	
-	visualize(search_df, name=f"search_{QUERY_LANGUAGE}")
-	visualize(vol_df, name=f"volume_{QUERY_LANGUAGE}")
-	visualize(pg_df, name=f"page_{QUERY_LANGUAGE}")
+	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
+	#basic_visualization(vol_df, name=f"volume_{QUERY_LANGUAGE}")
+	#basic_visualization(pg_df, name=f"page_{QUERY_LANGUAGE}")
+
+
 
 if __name__ == '__main__':
 	os.system('clear')
