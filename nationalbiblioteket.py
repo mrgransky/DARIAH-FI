@@ -186,8 +186,14 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 		df['kielet'] = df['kielet'].str.replace('FIN','FI', regex=True)
 		df['kielet'] = df['kielet'].str.replace('SWE','SE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('ENG','EN', regex=True)
+		df['kielet'] = df['kielet'].str.replace('RUS','RU', regex=True)
 		
-		#df['kielet'] = df['kielet'].str.replace('SE, FI','FI, SE', regex=True)
+		df['kielet'] = df['kielet'].str.replace('SE,FI','FI,SE', regex=True)
+		df['kielet'] = df['kielet'].str.replace('EN,FI','FI,EN', regex=True)
+		df['kielet'] = df['kielet'].str.replace('EN,SE','SE,EN', regex=True)
+		df['kielet'] = df['kielet'].str.replace('RU,FI','FI,RU', regex=True)
+
+
 
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
@@ -297,10 +303,29 @@ def load_dfs(fpath=""):
 	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
 	return s_df, v_df, p_df
 
-def plt_bar(df, name=""):
+def plt_bar(df, name="", N=40):
+	"""
+	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
+	#fig, axs = plt.subplots(nrows=1, ncols=2)
+
+	clrs = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
+
+	axs[0].pie(gender_counts, 
+						labels=gender_ung, 
+						autopct='%1.1f%%', 
+						startangle=90,
+						colors=clrs)
+	axs[0].axis('equal')
+	axs[0].set_title(f"Gender Distribution")
+	"""
+
 	plt.figure()
-	df["languages"].value_counts().sort_values(ascending=False)[:20].plot(kind="barh")
+	df["languages"].value_counts().sort_values(ascending=False)[:N].plot(kind="barh")
 	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
+	plt.title(f"Distribution of {N} most frequent Language in NLF search Engine")
+	plt.xlabel("Counts")
+	plt.ylabel("Languages")
+	
 	plt.clf()
 
 def main():
