@@ -209,10 +209,10 @@ def get_df(idx, custom_chunk_size=None, adjust_cols=True):
 		df = pd.read_csv(fname, low_memory=False,)
 		if adjust_cols:
 			df.columns = name_dict.get(idx)
-		  # cleaning in english
-    	df['languages'] = pd.DataFrame( df.languages.apply( modified_text ) )
+			# cleaning in english
+			df['languages'] = pd.DataFrame( df.languages.apply( modified_text ) )
 		else:
-		  # cleaning in finnish
+			# cleaning in finnish
 			df['kielet'] = pd.DataFrame( df.languages.apply( modified_text ) )
 		return df
 
