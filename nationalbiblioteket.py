@@ -314,7 +314,7 @@ def main():
 	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
-	plt_bar(search_df, f"search_{QUERY_LANGUAGE})
+	plt_bar(search_df, name=f"search_{QUERY_LANGUAGE})
 
 
 
