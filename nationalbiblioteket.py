@@ -207,7 +207,8 @@ def get_df(idx, custom_chunk_size=None, adjust_cols=True):
 		return df
 	else:
 		df = pd.read_csv(fname, low_memory=False,)
-		df['kielet'] = pd.DataFrame( df.kielet.apply( modified_text ) )
+		if 'kielet' in list(df.columns):
+			df['kielet'] = pd.DataFrame( df.kielet.apply( modified_text ) )
 		if adjust_cols:
 			df.columns = name_dict.get(idx)
 		return df
