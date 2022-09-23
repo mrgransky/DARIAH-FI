@@ -178,20 +178,16 @@ def basic_visualization(df, name=""):
 
 
 
-def get_df(idx, adjust_cols=True):
+def get_df(idx, adjust_cols=True, keep_original=True):
 	fname = os.path.join(dpath, files_list[idx])
 	print(f">> Reading {fname} ...")
 
-	def modify_text(s):
-		return s.replace('FIN', 'FI').replace('SWE', 'SE')
-
-	modified_text = lambda x: modify_text(x)
-
 	df = pd.read_csv(fname, low_memory=False,)
 	
-	if 'kielet' in list(df.columns):
-		df['kielet'] = df['kielet'].str.replace('FIN','FI')
-		df['kielet'] = df['kielet'].str.replace('SWE','SE')
+	if ('kielet' in list(df.columns)) and (keep_original==False):
+		df['kielet'] = df['kielet'].str.replace('FIN','FI', regex=True)
+		df['kielet'] = df['kielet'].str.replace('SWE','SE', regex=True)
+		df['kielet'] = df['kielet'].str.replace('SE, FI','FI, SE', regex=True)
 
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
@@ -301,6 +297,13 @@ def load_dfs(fpath=""):
 	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
 	return s_df, v_df, p_df
 
+def plt_bar(df, name=""):
+	plt.figure()
+	df["languages"].value_counts().sort_values().plot(kind="barh")
+	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
+	plt.clf()
+
+
 def main():
 	# rename_columns: True: saving doc in english
 	# rename_columns: False: saving doc in Finnish (Original) => no modification!
@@ -311,7 +314,10 @@ def main():
 	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
-	
+	plt_bar(search_df, f"search_{QUERY_LANGUAGE})
+
+
+
 	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
 	#basic_visualization(vol_df, name=f"volume_{QUERY_LANGUAGE}")
 	#basic_visualization(pg_df, name=f"page_{QUERY_LANGUAGE}")
