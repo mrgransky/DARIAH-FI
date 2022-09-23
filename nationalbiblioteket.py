@@ -207,13 +207,9 @@ def get_df(idx, custom_chunk_size=None, adjust_cols=True):
 		return df
 	else:
 		df = pd.read_csv(fname, low_memory=False,)
+		df['kielet'] = pd.DataFrame( df.kielet.apply( modified_text ) )
 		if adjust_cols:
 			df.columns = name_dict.get(idx)
-			# cleaning in english
-			df['languages'] = pd.DataFrame( df.languages.apply( modified_text ) )
-		else:
-			# cleaning in finnish
-			df['kielet'] = pd.DataFrame( df.languages.apply( modified_text ) )
 		return df
 
 def save_dfs(qlang="ENGLISH"):
