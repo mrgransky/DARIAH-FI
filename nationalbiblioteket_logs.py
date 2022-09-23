@@ -10,6 +10,8 @@ infile = os.path.join(dpath, fname)
 
 #print(f">> Loading: {infile}")
 
+# https://note.nkmk.me/en/python-str-replace-translate-re-sub/
+
 
 important = []
 with open(infile) as f:

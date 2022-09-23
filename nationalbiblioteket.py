@@ -190,8 +190,9 @@ def get_df(idx, adjust_cols=True):
 	df = pd.read_csv(fname, low_memory=False,)
 	
 	if 'kielet' in list(df.columns):
-		df['kielet'] = pd.DataFrame( df.kielet.apply( modified_text ) )
-	
+		df['kielet'] = df['kielet'].str.replace('FIN','FI')
+		df['kielet'] = df['kielet'].str.replace('SWE','SE')
+
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
 	
