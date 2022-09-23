@@ -303,7 +303,6 @@ def plt_bar(df, name=""):
 	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
 	plt.clf()
 
-
 def main():
 	# rename_columns: True: saving doc in english
 	# rename_columns: False: saving doc in Finnish (Original) => no modification!
