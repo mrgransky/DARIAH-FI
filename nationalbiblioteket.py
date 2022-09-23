@@ -250,7 +250,6 @@ def load_dfs(fpath=""):
 	#print(s_df.dtypes)
 	print("#"*130)
 
-	"""
 	print( s_df["material_type"].value_counts() )
 	print("-"*150)
 	print( s_df["publishers"].value_counts() )
@@ -281,8 +280,8 @@ def load_dfs(fpath=""):
 
 	print("-"*150)
 	print( s_df["no_access_results"].value_counts() )
-	"""
 
+	"""
 	print(f"\n>> Volume_DF: {v_df.shape} Tot. missing data: {v_df.isnull().values.sum()}")
 	print( list(v_df.columns ) )
 	print()
@@ -300,6 +299,7 @@ def load_dfs(fpath=""):
 	print(p_df.info(verbose=True, memory_usage='deep'))
 	#print(p_df.dtypes)
 	print("#"*130)
+	"""
 
 	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
 	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
@@ -311,7 +311,7 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	save_dfs(qlang=QUERY_LANGUAGE)
+	#save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 	
