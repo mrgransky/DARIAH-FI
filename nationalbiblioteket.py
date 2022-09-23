@@ -175,19 +175,19 @@ def basic_visualization(df, name=""):
 	plt.savefig(os.path.join( rpath, f"{name}_histogram.png" ), )
 	plt.clf()
 
-
-
-
-def get_df(idx, adjust_cols=True, keep_original=True):
+def get_df(idx, adjust_cols=True, keep_original=False):
 	fname = os.path.join(dpath, files_list[idx])
 	print(f">> Reading {fname} ...")
 
 	df = pd.read_csv(fname, low_memory=False,)
 	
 	if ('kielet' in list(df.columns)) and (keep_original==False):
+		df['kielet'] = df['kielet'].str.replace(' ','', regex=True)
 		df['kielet'] = df['kielet'].str.replace('FIN','FI', regex=True)
 		df['kielet'] = df['kielet'].str.replace('SWE','SE', regex=True)
-		df['kielet'] = df['kielet'].str.replace('SE, FI','FI, SE', regex=True)
+		df['kielet'] = df['kielet'].str.replace('ENG','EN', regex=True)
+		
+		#df['kielet'] = df['kielet'].str.replace('SE, FI','FI, SE', regex=True)
 
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
@@ -310,7 +310,7 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	#save_dfs(qlang=QUERY_LANGUAGE)
+	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
@@ -321,8 +321,6 @@ def main():
 	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
 	#basic_visualization(vol_df, name=f"volume_{QUERY_LANGUAGE}")
 	#basic_visualization(pg_df, name=f"page_{QUERY_LANGUAGE}")
-
-
 
 if __name__ == '__main__':
 	os.system('clear')
