@@ -189,10 +189,10 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 		df['kielet'] = df['kielet'].str.replace('RUS','RU', regex=True)
 		df['kielet'] = df['kielet'].str.replace('GER','DE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('FRE','FR', regex=True)
-		
+
+		df['kielet'] = df['kielet'].str.replace('FIU,FI','FI,FIU', regex=True)
 		df['kielet'] = df['kielet'].str.replace('SE,FI','FI,SE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('FI,FI','FI', regex=True)
-		df['kielet'] = df['kielet'].str.replace('FIU,FI','FI,FIU', regex=True)
 		df['kielet'] = df['kielet'].str.replace('SE,SE','SE', regex=True)
 		df['kielet'] = df['kielet'].str.replace('EN,FI','FI,EN', regex=True)
 		df['kielet'] = df['kielet'].str.replace('DE,FI','FI,DE', regex=True)
@@ -314,7 +314,7 @@ def load_dfs(fpath=""):
 	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
 	return s_df, v_df, p_df
 
-def plt_bar(df, name="", N=40):
+def plt_bar(df, name="", N=60):
 	"""
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	#fig, axs = plt.subplots(nrows=1, ncols=2)
@@ -332,7 +332,7 @@ def plt_bar(df, name="", N=40):
 
 	plt.figure()
 	df["languages"].value_counts().sort_values(ascending=False)[:N].plot(	kind="barh", 
-																																				title=f"{N} most frequent Language in NLF search Engine")
+																																				title=f"Top {N} most frequent languages in NLF search engine")
 	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
 	plt.ylabel("Languages")
 	plt.xlabel("Counts")
