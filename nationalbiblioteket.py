@@ -341,18 +341,16 @@ def plt_bar(df, name="", N=25):
 	plt.clf()
 
 def plot_language_year(df, name="", N=12):
+
 	#language_ung, language_counts = np.unique(df["languages"], return_counts=True)
 	#print(language_ung.shape[0], language_ung)
 
-	#df['date'] = pd.to_datetime(df['date'])
-	print(df['date'].dt.date)
 
-	print(df['date'].dt.year)
-	
-	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.strptime('%Y'), return_counts=True)
+	print( df["languages"].value_counts().sort_values(ascending=False)[:N] )
+
+	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.year, return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
-	"""
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	#fig, axs = plt.subplots(nrows=1, ncols=2)
 
@@ -408,6 +406,8 @@ def plot_language_year(df, name="", N=12):
 	plt.suptitle(f"{distribution} Distribution")
 	
 	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
+
+	"""
 	"""
 
 def main():
