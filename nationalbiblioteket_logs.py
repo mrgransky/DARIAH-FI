@@ -80,7 +80,7 @@ def get_df_no_ip_logs(infile=""):
 
 if __name__ == '__main__':
 	os.system('clear')
-	fname = "nike6.docworks.lib.helsinki.fi_access_log.2021-02-07.log"
+	fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-01.log"
 
 	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
 	print(df.shape)
