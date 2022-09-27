@@ -65,15 +65,15 @@ def get_df_no_ip_logs(infile=""):
 
 			cleaned_lines.append({
 				"timestamp": 						l[0],
-				"date": 								YYYYMMDD,
-				"time": 								HMS,
-				"timezone": 						TZ,
 				"client_request_line": 	l[1],
 				"status": 							l[2],
 				"bytes_sent": 					l[3],
 				"referer": 							l[4],
 				"user_agent": 					l[5],
 				"session_id": 					l[6], #TODO: must be check if key is a right name!
+				"date": 								YYYYMMDD,
+				"time": 								HMS,
+				"timezone": 						TZ,
 				})
 	
 	return pd.DataFrame.from_dict(cleaned_lines)
