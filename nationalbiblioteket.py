@@ -341,14 +341,14 @@ def plt_bar(df, name="", N=25):
 	plt.clf()
 
 def plot_language_year(df, name="", N=12):
+	df_tmp = df.dropna(axis=0, how="any", subset=["languages"])
+	language_ung, language_counts = np.unique(df_tmp["languages"], return_counts=True)
+	print(language_ung.shape[0], language_ung)
 
-	#language_ung, language_counts = np.unique(df["languages"], return_counts=True)
-	#print(language_ung.shape[0], language_ung)
 
+	#print( df["languages"].value_counts().sort_values(ascending=False)[:N] )
 
-	print( df["languages"].value_counts().sort_values(ascending=False)[:N] )
-
-	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.year, return_counts=True)
+	year_unq, year_counts = np.unique(df['date'].dt.year, return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
