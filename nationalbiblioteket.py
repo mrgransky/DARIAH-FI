@@ -375,9 +375,9 @@ def plot_language_year(df, name="", N=6):
 
 	for lng in language_ung:
 			lst = []
-			for yr in year_unq:
-					#print(lng, yr)
-					c = df.query(f"year=='{str(yr)}' and languages=='{str(lng)}'").languages.count()
+			for y in yq:
+					print(lng, y)
+					c = df.query(f"year=='{str(y)}' and languages=='{str(lng)}'").languages.count()
 					lst.append(c)
 			LANGUAGES[g] = lst
 
