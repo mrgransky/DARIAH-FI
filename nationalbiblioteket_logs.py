@@ -55,15 +55,18 @@ def get_df_no_ip_logs(infile=""):
 		for line in f:
 			l = re.match(ACCESS_LOG_PATTERN, line).groups()
 
-			dt_tz = l[0].replace("[", "").replace("]", "")#.replace("/", "-")
+			dt_tz = l[0].replace("[", "").replace("]", "")
 			
 			DDMMYYYY = dt_tz[:dt_tz.find(":")]
 			YYYYMMDD = convert_date( DDMMYYYY )
 			HMS = dt_tz[dt_tz.find(":")+1:dt_tz.find(" ")]
-			tz = dt_tz[dt_tz.find(" ")+1:]
+			TZ = dt_tz[dt_tz.find(" ")+1:]
 
 			cleaned_lines.append({
-				"date": 								l[0].replace("[", "").replace("]", "").replace("/", "-"),
+				"timestamp": 						l[0],
+				"date": 								YYYYMMDD,
+				"time": 								HMS,
+				"timezone": 						TZ,
 				"client_request_line": 	l[1],
 				"status": 							l[2],
 				"bytes_sent": 					l[3],
@@ -77,7 +80,7 @@ def get_df_no_ip_logs(infile=""):
 if __name__ == '__main__':
 	os.system('clear')
 	fname = "nike6.docworks.lib.helsinki.fi_access_log.2021-02-07.log"
-	"""
+
 	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
 	print(df.shape)
 	print("-"*130)
@@ -86,9 +89,10 @@ if __name__ == '__main__':
 	print("-"*130)
 
 	print( df.tail(40) )
-	"""
-	new_d = convert_date("31-Oct-1995")
-	print(new_d)
+
+
+
+
 
 """
 #ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]+)" "(.*?)" (\d+)'
