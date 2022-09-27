@@ -180,7 +180,7 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 	print(f">> Reading {fname} ...")
 
 	df = pd.read_csv(fname, low_memory=False,)
-	df['pvm'] = pd.to_datetime(df['pvm'])
+	#df['pvm'] = pd.to_datetime(df['pvm'])
 
 	if ('kielet' in list(df.columns)) and (keep_original==False):
 		df['kielet'] = df['kielet'].str.replace(' ','', regex=True)
@@ -204,8 +204,6 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 		df['kielet'] = df['kielet'].str.replace('EN,SE','SE,EN', regex=True)
 		df['kielet'] = df['kielet'].str.replace('RU,FI','FI,RU', regex=True)
 		df['kielet'] = df['kielet'].str.replace('RU,EN','EN,RU', regex=True)
-
-
 
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
@@ -347,7 +345,10 @@ def plot_language_year(df, name="", N=12):
 	print(language_ung.shape[0], language_ung)
 
 	df['date'] = pd.to_datetime(df['date'])
-
+	print(df['date'].dt.date)
+	
+	print(df['date'].dt.year)
+	
 	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.strptime('%Y'), return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
