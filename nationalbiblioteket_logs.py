@@ -29,7 +29,7 @@ def get_df_no_ip_logs(infile=""):
 	with open(infile, mode="r") as f:
 		for line in f:
 			l = re.match(ACCESS_LOG_PATTERN, line).groups()
-			cleaned_lines.append({"time_received": 				l[0].replace("[", "").replace("]", "").replace("/", "-"),
+			cleaned_lines.append({"time_received": 				l[0].replace("[|]", "").replace("/", "-"),
 														"client_request_line": 	l[1],
 														"status": 							l[2],
 														"bytes_sent": 					l[3],
