@@ -344,7 +344,7 @@ def plot_language_year(df, name="", N=6):
 	o_year_unq, o_year_count = np.unique(df['date'].dt.year, return_counts=True)
 	print(f"\n\n\n>> Orig DF: {o_year_unq.shape[0]}\n{o_year_unq}\n{o_year_count}\n\n")
 	
-	df_tmp = df.dropna(axis=0, how="any", subset=["languages"])
+	df_tmp = df.dropna(axis=0, how="any", subset=["languages"]).reset_index(drop=True)
 
 	df_tmp['year'] = df_tmp['date'].dt.year
 
@@ -362,9 +362,6 @@ def plot_language_year(df, name="", N=6):
 	language_counts = lc[lc_sorted_idx][:N]
 	print(language_ung.shape[0], language_ung, language_counts)
 	
-
-	
-
 	year_unq, year_count = np.unique(df_tmp["year"], return_counts=True)
 
 	print(year_unq.shape[0], year_unq, year_count)
