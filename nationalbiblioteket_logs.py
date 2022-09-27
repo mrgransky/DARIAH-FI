@@ -54,6 +54,7 @@ def get_df_no_ip_logs(infile=""):
 	cleaned_lines = []
 	with open(infile, mode="r") as f:
 		for line in f:
+			print(line)
 			l = re.match(ACCESS_LOG_PATTERN, line).groups()
 
 			dt_tz = l[0].replace("[", "").replace("]", "")
