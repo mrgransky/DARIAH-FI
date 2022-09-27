@@ -87,8 +87,8 @@ if __name__ == '__main__':
 
 	print( df.tail(40) )
 	"""
-	convert_date("07-Feb-2021")
-
+	new_d = convert_date("07-Feb-2021")
+	print(new_d)
 
 """
 #ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]+)" "(.*?)" (\d+)'
