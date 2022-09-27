@@ -370,13 +370,12 @@ def plot_language_year(df, name="", N=6):
 	axs[0].axis('equal')
 	axs[0].set_title(f"Top {N} Searched Languages Distribution")
 
-
 	LANGUAGES = {}
 
 	for l in language_ung:
 			lst = []
 			for y in year_unq:
-					print(lng, y)
+					print(l, y)
 					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					lst.append(c)
 			LANGUAGES[l] = lst
