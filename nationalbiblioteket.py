@@ -349,6 +349,7 @@ def plot_language_year(df, name="", N=6):
 	df_tmp['year'] = df_tmp['date'].dt.year
 
 	print(df_tmp.shape)
+	print(df_tmp.head(36))
 	print(list(df_tmp.columns))
 
 
