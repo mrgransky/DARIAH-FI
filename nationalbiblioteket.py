@@ -344,7 +344,9 @@ def plot_language_year(df, name="", N=12):
 	language_ung, language_counts = np.unique(df["languages"], return_counts=True)
 	print(language_ung.shape[0], language_ung)
 
-	year_unq, year_counts = np.unique(df["date"], return_counts=True)
+
+
+	year_unq, year_counts = np.unique(df['date'].dt.year, return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
 	"""
@@ -418,7 +420,7 @@ def main():
 
 	#plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
 	
-	#plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
+	plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
 
 
 	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
