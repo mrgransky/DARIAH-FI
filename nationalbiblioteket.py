@@ -359,13 +359,13 @@ def plot_language_year(df, name="", N=6):
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	#fig, axs = plt.subplots(nrows=1, ncols=2)
 
-	clrs = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
+	clrs = ['#ff9999','#16b3ff','#99ff99','#cc9911', '#ffcc99', '#ffc9', '#0ecd19']
 
 	axs[0].pie(language_counts,
 						labels=language_ung, 
 						autopct='%1.1f%%', 
 						startangle=90,
-						#colors=clrs,
+						colors=clrs,
 						)
 	axs[0].axis('equal')
 	axs[0].set_title(f"Top {N} Searched Languages Distribution")
@@ -373,43 +373,65 @@ def plot_language_year(df, name="", N=6):
 
 	LANGUAGES = {}
 
-	for lng in language_ung:
+	for l in language_ung:
 			lst = []
 			for y in year_unq:
 					print(lng, y)
-					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(lng)}'").languages.count()
+					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					lst.append(c)
-			LANGUAGES[g] = lst
+			LANGUAGES[l] = lst
 
 	print(LANGUAGES)
-	gndrs = list(LANGUAGES.keys())
+	langs = list(LANGUAGES.keys())
 
 	width = 0.35
 	axs[1].bar(year_unq, 
-						GENDERS[gndrs[0]], 
+						LANGUAGES[langs[0]], 
 						width,
 						color=clrs[0], 
-						label=gndrs[0])
+						label=langs[0])
 
 	axs[1].bar(year_unq, 
-						GENDERS[gndrs[1]], 
+						LANGUAGES[langs[1]], 
 						width, 
-						bottom=GENDERS[gndrs[0]], 
+						bottom=LANGUAGES[langs[0]], 
 						color=clrs[1], 
-						label=gndrs[1])
+						label=langs[1])
 
 	axs[1].bar(year_unq, 
-						GENDERS[gndrs[2]], 
+						LANGUAGES[langs[2]], 
 						width, 
-						bottom=np.array(GENDERS[gndrs[0]])+np.array(GENDERS[gndrs[1]]), 
+						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]]), 
 						color=clrs[2], 
-						label=gndrs[2])
+						label=langs[2])
+
+	axs[1].bar(year_unq, 
+						LANGUAGES[langs[3]], 
+						width, 
+						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]])+np.array(LANGUAGES[langs[2]]), 
+						color=clrs[3], 
+						label=langs[3])
+
+	axs[1].bar(year_unq, 
+						LANGUAGES[langs[4]], 
+						width, 
+						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]])+np.array(LANGUAGES[langs[2]])+np.array(LANGUAGES[langs[3]]), 
+						color=clrs[4],
+						label=langs[4])
+
+	axs[1].bar(year_unq, 
+						LANGUAGES[langs[5]], 
+						width, 
+						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]])+np.array(LANGUAGES[langs[2]])+np.array(LANGUAGES[langs[3]])+np.array(LANGUAGES[langs[4]]), 
+						color=clrs[5], 
+						label=langs[5])
+
 
 	axs[1].set_ylabel('Counts')
 	axs[1].set_xlabel('Year')
 	axs[1].set_title(f'Top {N} Languages by Year')
 
-	axs[1].legend(ncol=len(GENDERS), loc="best", frameon=False)
+	axs[1].legend(ncol=len(LANGUAGES), loc="best", frameon=False)
 
 	plt.suptitle(f"Distribution")
 	plt.savefig(os.path.join( rpath, f"{name}_lang_year.png" ), )
