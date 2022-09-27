@@ -346,8 +346,6 @@ def plot_language_year(df, name="", N=12):
 	language_ung, language_counts = np.unique(df["languages"], return_counts=True)
 	print(language_ung.shape[0], language_ung)
 
-
-
 	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.strptime('%Y'), return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
@@ -416,7 +414,7 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	#save_dfs(qlang=QUERY_LANGUAGE)
+	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
