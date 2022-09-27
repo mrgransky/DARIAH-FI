@@ -342,6 +342,9 @@ def plt_bar(df, name="", N=25):
 
 def plot_language_year(df, name="", N=6):
 	df_tmp = df.dropna(axis=0, how="any", subset=["languages"])
+	print(list(df_tmp.columns))
+
+
 	lu, lc = np.unique(df_tmp["languages"], return_counts=True)
 	print(lu.shape[0], lu, lc)
 	
