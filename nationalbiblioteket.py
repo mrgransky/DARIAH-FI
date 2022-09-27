@@ -341,7 +341,14 @@ def plt_bar(df, name="", N=25):
 	plt.clf()
 
 def plot_language_year(df, name="", N=6):
+	o_year_unq, o_year_count = np.unique(df['date'].dt.year, return_counts=True)
+	print(f"\n\n\n>> Orig DF: {o_year_unq.shape[0]}\n{o_year_unq}\n{o_year_count}\n\n")
+	
 	df_tmp = df.dropna(axis=0, how="any", subset=["languages"])
+
+	df_tmp['year'] = df_tmp['date'].dt.year
+
+	print(df_tmp.shape)
 	print(list(df_tmp.columns))
 
 
@@ -356,9 +363,8 @@ def plot_language_year(df, name="", N=6):
 	print(language_ung.shape[0], language_ung, language_counts)
 	
 
-	df_tmp["year"] = df_tmp['date'].dt.year
 	
-	#year_unq, year_count = np.unique(df['date'].dt.year, return_counts=True)
+
 	year_unq, year_count = np.unique(df_tmp["year"], return_counts=True)
 
 	print(year_unq.shape[0], year_unq, year_count)
@@ -382,7 +388,7 @@ def plot_language_year(df, name="", N=6):
 	for l in language_ung:
 			lst = []
 			for y in year_unq:
-					#print(l, y)
+					print(l, y)
 					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					lst.append(c)
 			LANGUAGES[l] = lst
