@@ -341,12 +341,12 @@ def plt_bar(df, name="", N=25):
 	plt.clf()
 
 def plot_language_year(df, name="", N=12):
-	language_ung, language_counts = np.unique(df["languages"], return_counts=True)
-	print(language_ung.shape[0], language_ung)
+	#language_ung, language_counts = np.unique(df["languages"], return_counts=True)
+	#print(language_ung.shape[0], language_ung)
 
-	df['date'] = pd.to_datetime(df['date'])
+	#df['date'] = pd.to_datetime(df['date'])
 	print(df['date'].dt.date)
-	
+
 	print(df['date'].dt.year)
 	
 	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.strptime('%Y'), return_counts=True)
