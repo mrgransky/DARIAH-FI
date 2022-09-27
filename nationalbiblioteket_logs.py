@@ -46,6 +46,8 @@ if __name__ == '__main__':
 	fname = "nike6.docworks.lib.helsinki.fi_access_log.2021-02-07.log"
 	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
 	print( df.head(20) )
+	print("-"*130)
+	print( df.tail(20) )
 
 
 """
