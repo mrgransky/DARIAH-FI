@@ -360,7 +360,8 @@ def plot_language_year(df, name="", N=12):
 						labels=language_ung, 
 						autopct='%1.1f%%', 
 						startangle=90,
-						colors=clrs)
+						#colors=clrs,
+						)
 	axs[0].axis('equal')
 	axs[0].set_title(f"Top {N} Searched Languages Distribution")
 
