@@ -180,7 +180,8 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 	print(f">> Reading {fname} ...")
 
 	df = pd.read_csv(fname, low_memory=False,)
-	
+	df['pvm'] = pd.to_datetime(df['pvm'])
+
 	if ('kielet' in list(df.columns)) and (keep_original==False):
 		df['kielet'] = df['kielet'].str.replace(' ','', regex=True)
 		df['kielet'] = df['kielet'].str.replace('FIN','FI', regex=True)
@@ -209,6 +210,7 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
 	
+
 	return df
 
 def save_dfs(qlang="ENGLISH"):
@@ -346,7 +348,7 @@ def plot_language_year(df, name="", N=12):
 
 
 
-	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).year, return_counts=True)
+	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).dt.strptime('%Y'), return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
 	"""
