@@ -1,6 +1,8 @@
 import os
 import re
 import datetime
+import glob
+from natsort import natsorted
 import numpy as np
 import pandas as pd
 
@@ -15,11 +17,12 @@ import pandas as pd
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/no_ip_logs',
+				#'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/broken',
 				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs",
+				#"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/broken",
 				}
 
 dpath = usr_[os.environ['USER']]
-
 
 def convert_date(INP_DATE):
 	months_dict = {
@@ -47,14 +50,15 @@ def convert_date(INP_DATE):
 	return yyyy_mm_dd
 
 def get_df_no_ip_logs(infile=""):
-	print(f">> Loading {infile} ...")
+	print(f"\n\n>> Loading {infile} ...")
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]+)" "(.*?)" (\d+)'
 	ACCESS_LOG_PATTERN = '- - (?P<time>\[.*?\]) "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "(.*?)" (.*)'
+	#ACCESS_LOG_PATTERN = '- - (?P<time>\[.*?\]) "(.*?)" (?P<status>\d{3}) (.*) "([^\"]+)" "(.*?)" (.*)'
 
 	cleaned_lines = []
 	with open(infile, mode="r") as f:
 		for line in f:
-			print(line)
+			#print(line)
 			l = re.match(ACCESS_LOG_PATTERN, line).groups()
 
 			dt_tz = l[0].replace("[", "").replace("]", "")
@@ -79,11 +83,10 @@ def get_df_no_ip_logs(infile=""):
 	
 	return pd.DataFrame.from_dict(cleaned_lines)
 
-
-if __name__ == '__main__':
-	os.system('clear')
-	fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-03.log"
-
+def run():
+	"""
+	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
+	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
 	print(df.shape)
 	print("-"*130)
@@ -92,36 +95,29 @@ if __name__ == '__main__':
 	print("-"*130)
 
 	print( df.tail(40) )
+	print(f"\n>> Loading {os.path.join(dpath, fname)} COMPLETE!")
+	# fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
+	# - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 5
+	
+	# fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
+	# - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
+	"""
 
+	log_files = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
+	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files]
+	print(len(log_files_date), log_files_date)
 
+	for f in log_files:
+		df = get_df_no_ip_logs( infile=f )
+		print(df.shape)
+		#print("-"*130)
 
+		#print( df.head(40) )
+		#print("-"*130)
 
+		#print( df.tail(40) )
+		print(f"\n>> Loading {f} COMPLETED!")
 
-"""
-#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]+)" "(.*?)" (\d+)'
-ACCESS_LOG_PATTERN = '- - (?P<time>\[.*?\]) "(.*?)" (?P<status>\d{3}) (.*) "([^\"]+)" "(.*?)" (.*)'
-
-cleaned_lines = []
-with open(infile, mode="r") as f:
-	for line in f:
-		l = re.match(ACCESS_LOG_PATTERN, line).groups()
-		cleaned_lines.append({"time_received": l[0], 
-													"client_request_line": l[1],
-													"status": l[2],
-													"bytes_sent": l[3],
-													"referer": l[4],
-													"user_agent": l[5],
-													"session_id": l[6], #TODO: must be check if key is a right name!
-													})
-
-
-
-print(f">> Loading complete! no_logs: {len(cleaned_lines)}")
-
-qidx = int( np.random.randint(0, len(cleaned_lines)+1, size=1) )
-print(f">> q:{qidx}: {cleaned_lines[qidx]}")	
-
-df = pd.DataFrame.from_dict(cleaned_lines)
-print( df.head() )
-"""
-
+if __name__ == '__main__':
+	os.system('clear')
+	run()
