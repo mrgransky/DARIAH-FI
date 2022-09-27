@@ -331,21 +331,6 @@ def load_dfs(fpath=""):
 	return s_df, v_df, p_df
 
 def plt_bar(df, name="", N=25):
-	"""
-	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
-	#fig, axs = plt.subplots(nrows=1, ncols=2)
-
-	clrs = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
-
-	axs[0].pie(gender_counts, 
-						labels=gender_ung, 
-						autopct='%1.1f%%', 
-						startangle=90,
-						colors=clrs)
-	axs[0].axis('equal')
-	axs[0].set_title(f"Gender Distribution")
-	"""
-
 	plt.figure()
 	df["languages"].value_counts().sort_values(ascending=False)[:N].plot(	kind="barh", 
 																																				title=f"Top {N} most frequent languages in NLF search engine")
@@ -355,6 +340,71 @@ def plt_bar(df, name="", N=25):
 	
 	plt.clf()
 
+def plot_language_year(df, name="", N=12):
+	language_ung, language_counts = np.unique(df["languages"], return_counts=True)
+	print(language_ung.shape[0], language_ung)
+
+	year_unq, year_counts = np.unique(df["date"], return_counts=True)
+	print(year_unq.shape[0], year_unq)
+
+	"""
+	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
+	#fig, axs = plt.subplots(nrows=1, ncols=2)
+
+	clrs = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
+
+	axs[0].pie(language_counts, 
+						labels=language_ung, 
+						autopct='%1.1f%%', 
+						startangle=90,
+						colors=clrs)
+	axs[0].axis('equal')
+	axs[0].set_title(f"Top {N} Searched Languages Distribution")
+
+	GENDERS = {}
+
+	for g in language_ung:
+			lst = []
+			for p in year_unq:
+					#print(g, p)
+					c = df.query(f"Profession=='{str(p)}' and Gender=='{str(g)}'").Gender.count()
+					lst.append(c)
+			GENDERS[g] = lst
+
+	#print(GENDERS)
+	gndrs = list(GENDERS.keys())
+
+	width = 0.35
+	axs[1].bar(year_unq, 
+						GENDERS[gndrs[0]], 
+						width,
+						color=clrs[0], 
+						label=gndrs[0])
+
+	axs[1].bar(year_unq, 
+						GENDERS[gndrs[1]], 
+						width, 
+						bottom=GENDERS[gndrs[0]], 
+						color=clrs[1], 
+						label=gndrs[1])
+
+	axs[1].bar(year_unq, 
+						GENDERS[gndrs[2]], 
+						width, 
+						bottom=np.array(GENDERS[gndrs[0]])+np.array(GENDERS[gndrs[1]]), 
+						color=clrs[2], 
+						label=gndrs[2])
+
+	axs[1].set_ylabel('Counts')
+	axs[1].set_xlabel('Year')
+	axs[1].set_title(f'Top {N} Languages by Year')
+
+	axs[1].legend(ncol=len(GENDERS), loc="best", frameon=False)
+	plt.suptitle(f"{distribution} Distribution")
+	
+	plt.savefig(os.path.join( rpath, f"{name}_lang.png" ), )
+	"""
+
 def main():
 	# rename_columns: True: saving doc in english
 	# rename_columns: False: saving doc in Finnish (Original) => no modification!
@@ -362,12 +412,13 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	save_dfs(qlang=QUERY_LANGUAGE)
+	#save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
-	plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
-
+	#plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
+	
+	#plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
 
 
 	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
