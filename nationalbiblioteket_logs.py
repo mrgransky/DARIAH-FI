@@ -38,6 +38,7 @@ def convert_date(INP_DATE):
 		}
 
 	d_list = INP_DATE.split("-")
+	print(d_list)
 	d_list[1] = months_dict.get(d_list[1])
 	MODIDFIED_DATE = '/'.join(d_list)
 	print(MODIDFIED_DATE)
