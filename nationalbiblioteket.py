@@ -248,6 +248,7 @@ def load_dfs(fpath=""):
 	v_df = d["vol"]
 	p_df = d["pg"]
 	elapsed_t = time.time() - st_t
+	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
 
 	print(f"\n>> Search_DF: {s_df.shape} Tot. missing data: {s_df.isnull().values.sum()}")
 	#print( list(s_df.columns ) )
@@ -326,11 +327,10 @@ def load_dfs(fpath=""):
 	print("#"*130)
 	"""
 
-	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
 	print(f"\nSearch_DF: {s_df.shape} Volume_DF: {v_df.shape} Page_DF: {p_df.shape}")
 	return s_df, v_df, p_df
 
-def plt_bar(df, name="", N=60):
+def plt_bar(df, name="", N=25):
 	"""
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	#fig, axs = plt.subplots(nrows=1, ncols=2)
@@ -362,11 +362,11 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	#save_dfs(qlang=QUERY_LANGUAGE)
+	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
-	#plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
+	plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
 
 
 
