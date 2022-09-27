@@ -79,6 +79,7 @@ def get_df_no_ip_logs(infile=""):
 	
 	return pd.DataFrame.from_dict(cleaned_lines)
 
+
 if __name__ == '__main__':
 	os.system('clear')
 	fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
