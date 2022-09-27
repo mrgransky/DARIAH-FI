@@ -340,22 +340,29 @@ def plt_bar(df, name="", N=25):
 	
 	plt.clf()
 
-def plot_language_year(df, name="", N=12):
+def plot_language_year(df, name="", N=6):
 	df_tmp = df.dropna(axis=0, how="any", subset=["languages"])
-	language_ung, language_counts = np.unique(df_tmp["languages"], return_counts=True)
-	#print(language_ung.shape[0], language_ung, language_counts)
-	language_counts_sorted_idx = np.argsort(-language_counts)
+	lu, lc = np.unique(df_tmp["languages"], return_counts=True)
+	#print(lu.shape[0], lu, lc)
+	lc_sorted_idx = np.argsort(-lc)
 
-	year_unq, year_counts = np.unique(df['date'].dt.year, return_counts=True)
-	print(year_unq.shape[0], year_unq)
+	language_ung = lu[lc_sorted_idx][:N]
+	language_counts = lc[lc_sorted_idx][:N]
+
+	df_tmp["year"] = df_tmp['date'].dt.year
+	
+	#yq, yc = np.unique(df['date'].dt.year, return_counts=True)
+	yq, yc = np.unique(df_tmp["year"], return_counts=True)
+
+	print(yq.shape[0], yq, yc)
 
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	#fig, axs = plt.subplots(nrows=1, ncols=2)
 
 	clrs = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
 
-	axs[0].pie(language_counts[language_counts_sorted_idx][:N],
-						labels=language_ung[language_counts_sorted_idx][:N], 
+	axs[0].pie(language_counts,
+						labels=language_ung, 
 						autopct='%1.1f%%', 
 						startangle=90,
 						#colors=clrs,
@@ -364,19 +371,18 @@ def plot_language_year(df, name="", N=12):
 	axs[0].set_title(f"Top {N} Searched Languages Distribution")
 
 
-	"""
-	GENDERS = {}
+	LANGUAGES = {}
 
-	for g in language_ung:
+	for lng in language_ung:
 			lst = []
-			for p in year_unq:
-					#print(g, p)
-					c = df.query(f"Profession=='{str(p)}' and Gender=='{str(g)}'").Gender.count()
+			for yr in year_unq:
+					#print(lng, yr)
+					c = df.query(f"year=='{str(yr)}' and languages=='{str(lng)}'").languages.count()
 					lst.append(c)
-			GENDERS[g] = lst
+			LANGUAGES[g] = lst
 
-	#print(GENDERS)
-	gndrs = list(GENDERS.keys())
+	print(LANGUAGES)
+	gndrs = list(LANGUAGES.keys())
 
 	width = 0.35
 	axs[1].bar(year_unq, 
@@ -404,7 +410,7 @@ def plot_language_year(df, name="", N=12):
 	axs[1].set_title(f'Top {N} Languages by Year')
 
 	axs[1].legend(ncol=len(GENDERS), loc="best", frameon=False)
-	"""
+
 	plt.suptitle(f"Distribution")
 	plt.savefig(os.path.join( rpath, f"{name}_lang_year.png" ), )
 
