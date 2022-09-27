@@ -250,15 +250,32 @@ def load_dfs(fpath=""):
 	elapsed_t = time.time() - st_t
 
 	print(f"\n>> Search_DF: {s_df.shape} Tot. missing data: {s_df.isnull().values.sum()}")
-	print( list(s_df.columns ) )
-	print()
+	#print( list(s_df.columns ) )
+	#print()
+
 	print(s_df.head(25))
-	print(s_df.isna().sum())
-	print(s_df.info(verbose=True, memory_usage='deep'))
+	print("-"*130)
+	print(s_df.tail(25))
+
+	#print(s_df.isna().sum())
+	#print(s_df.info(verbose=True, memory_usage='deep'))
 	#print("/"*150)
 	#print(s_df.dtypes)
 	print("#"*130)
 
+	print(f"\n>> Volume_DF: {v_df.shape} Tot. missing data: {v_df.isnull().values.sum()}")
+	print(v_df.head(25))
+	print("-"*130)
+	print(v_df.tail(25))
+	print("#"*130)
+
+	print(f"\n>> Page_DF: {p_df.shape} Tot. missing data: {p_df.isnull().values.sum()}")
+	print(p_df.head(25))
+	print("-"*130)
+	print(p_df.tail(25))
+	print("#"*130)
+
+	"""
 	print( s_df["material_type"].value_counts() )
 	print("-"*150)
 	print( s_df["publishers"].value_counts() )
@@ -290,7 +307,6 @@ def load_dfs(fpath=""):
 	print("-"*150)
 	print( s_df["no_access_results"].value_counts() )
 
-	"""
 	print(f"\n>> Volume_DF: {v_df.shape} Tot. missing data: {v_df.isnull().values.sum()}")
 	print( list(v_df.columns ) )
 	print()
