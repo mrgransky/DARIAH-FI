@@ -48,8 +48,8 @@ def convert_date(INP_DATE):
 
 def get_df_no_ip_logs(infile=""):
 	print(f">> Loading {infile} ...")
-	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]+)" "(.*?)" (\d+)'
-	ACCESS_LOG_PATTERN = '- - (?P<time>\[.*?\]) "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "([^"]*)" (.*)'
+	ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]+)" "(.*?)" (\d+)'
+	#ACCESS_LOG_PATTERN = '- - (?P<time>\[.*?\]) "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "([^"]*)" (.*)'
 
 	cleaned_lines = []
 	with open(infile, mode="r") as f:
