@@ -38,10 +38,10 @@ def convert_date(INP_DATE):
 		}
 
 	d_list = INP_DATE.split("/")
-	print(d_list)
+	#print(d_list)
 	d_list[1] = months_dict.get(d_list[1])
 	MODIDFIED_DATE = '/'.join(d_list)
-	print(MODIDFIED_DATE)
+	#print(MODIDFIED_DATE)
 
 	yyyy_mm_dd = datetime.datetime.strptime(MODIDFIED_DATE, "%d/%m/%Y").strftime("%Y-%m-%d")
 	return yyyy_mm_dd
