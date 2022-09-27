@@ -343,11 +343,15 @@ def plt_bar(df, name="", N=25):
 def plot_language_year(df, name="", N=6):
 	df_tmp = df.dropna(axis=0, how="any", subset=["languages"])
 	lu, lc = np.unique(df_tmp["languages"], return_counts=True)
-	#print(lu.shape[0], lu, lc)
+	print(lu.shape[0], lu, lc)
+	
+	print(f"\n>> sorting for Top {N} ...")
 	lc_sorted_idx = np.argsort(-lc)
 
 	language_ung = lu[lc_sorted_idx][:N]
 	language_counts = lc[lc_sorted_idx][:N]
+	print(language_ung.shape[0], language_ung, language_counts)
+	
 
 	df_tmp["year"] = df_tmp['date'].dt.year
 	
@@ -368,14 +372,14 @@ def plot_language_year(df, name="", N=6):
 						colors=clrs,
 						)
 	axs[0].axis('equal')
-	axs[0].set_title(f"Top {N} Searched Languages Distribution")
+	axs[0].set_title(f"Top {N} Searched Languages in NLF")
 
 	LANGUAGES = {}
 
 	for l in language_ung:
 			lst = []
 			for y in year_unq:
-					print(l, y)
+					#print(l, y)
 					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					lst.append(c)
 			LANGUAGES[l] = lst
