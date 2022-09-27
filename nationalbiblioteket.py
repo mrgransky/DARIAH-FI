@@ -351,10 +351,10 @@ def plot_language_year(df, name="", N=6):
 
 	df_tmp["year"] = df_tmp['date'].dt.year
 	
-	#yq, yc = np.unique(df['date'].dt.year, return_counts=True)
-	yq, yc = np.unique(df_tmp["year"], return_counts=True)
+	#year_unq, year_count = np.unique(df['date'].dt.year, return_counts=True)
+	year_unq, year_count = np.unique(df_tmp["year"], return_counts=True)
 
-	print(yq.shape[0], yq, yc)
+	print(year_unq.shape[0], year_unq, year_count)
 
 	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	#fig, axs = plt.subplots(nrows=1, ncols=2)
@@ -375,9 +375,9 @@ def plot_language_year(df, name="", N=6):
 
 	for lng in language_ung:
 			lst = []
-			for y in yq:
+			for y in year_unq:
 					print(lng, y)
-					c = df.query(f"year=='{str(y)}' and languages=='{str(lng)}'").languages.count()
+					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(lng)}'").languages.count()
 					lst.append(c)
 			LANGUAGES[g] = lst
 
