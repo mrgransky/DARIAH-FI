@@ -346,7 +346,7 @@ def plot_language_year(df, name="", N=12):
 
 
 
-	year_unq, year_counts = np.unique(df['date'].dt.year, return_counts=True)
+	year_unq, year_counts = np.unique(pd.DatetimeIndex(df['date']).year, return_counts=True)
 	print(year_unq.shape[0], year_unq)
 
 	"""
