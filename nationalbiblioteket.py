@@ -208,7 +208,6 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 	if adjust_cols:
 		df.columns = name_dict.get(idx)
 	
-
 	return df
 
 def save_dfs(qlang="ENGLISH"):
@@ -387,7 +386,10 @@ def plot_language_year(df, name="", N=6):
 			lst = []
 			for y in year_unq:
 					print(l, y)
-					c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
+					#c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
+					c = df[(df["year"] == y) & (df["languages"] == l) ].languages.count()
+					print(c)
+        
 					lst.append(c)
 			LANGUAGES[l] = lst
 
@@ -453,13 +455,13 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	#save_dfs(qlang=QUERY_LANGUAGE)
+	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
 	#plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
 	
-	plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
+	#plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
 
 
 	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
@@ -469,4 +471,3 @@ def main():
 if __name__ == '__main__':
 	os.system('clear')
 	main()
-	sys.exit(0)
