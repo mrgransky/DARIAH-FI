@@ -93,6 +93,8 @@ def run():
 	print( df.head(40) )
 	print("-"*130)
 
+	df["referer"][1]
+
 	print( df.tail(40) )
 	print(f"\n>> Loading {os.path.join(dpath, fname)} COMPLETE!")
 	# fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
