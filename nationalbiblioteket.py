@@ -20,9 +20,9 @@ matplotlib.use("Agg")
 
 # more info for adjustment of rcparams:
 # https://matplotlib.org/stable/tutorials/introductory/customizing.html
-sz=15 # >>>>>>>>> 12 original <<<<<<<<<<<
+sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
 params = {
-	'figure.figsize':	(sz*1.4, sz*1.0),  # W, H
+	'figure.figsize':	(sz*1.7, sz*1.0),  # W, H
 	'figure.dpi':		200,
 	'figure.autolayout': True,
 	#'figure.constrained_layout.use': True,
@@ -393,10 +393,10 @@ def plot_language_year(df, name="", N=10):
 																				autopct='%1.1f%%', 
 																				#startangle=180,
 																				radius=8,
-																				pctdistance=1.5,
-																				labeldistance=0.9,
-																				rotatelabels =True,
-																				counterclock=False,
+																				#pctdistance=1.5,
+																				#labeldistance=0.5,
+																				rotatelabels=True,
+																				#counterclock=False,
 																				colors=clrs,
 																				)
 	for lbl, pct_text in zip(lbls, pct_texts):
@@ -410,7 +410,6 @@ def plot_language_year(df, name="", N=10):
 			lst = []
 			for y in year_unq:
 					#print(l, y)
-					#c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					c = df_tmp[(df_tmp["year"] == y) & (df_tmp["languages"] == l) ].languages.count()
 					#print(c)
 				
@@ -418,49 +417,21 @@ def plot_language_year(df, name="", N=10):
 			LANGUAGES[l] = lst
 
 	print(LANGUAGES)
-	langs = list(LANGUAGES.keys())
 
-	width = 0.35
-	axs[1].bar(year_unq, 
-						LANGUAGES[langs[0]], 
-						width,
-						color=clrs[0], 
-						label=langs[0])
 
-	axs[1].bar(year_unq, 
-						LANGUAGES[langs[1]], 
-						width, 
-						bottom=LANGUAGES[langs[0]], 
-						color=clrs[1], 
-						label=langs[1])
+	WIDTH = 0.35
+	BOTTOM = 0
 
-	axs[1].bar(year_unq, 
-						LANGUAGES[langs[2]], 
-						width, 
-						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]]), 
-						color=clrs[2], 
-						label=langs[2])
-
-	axs[1].bar(year_unq, 
-						LANGUAGES[langs[3]], 
-						width, 
-						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]])+np.array(LANGUAGES[langs[2]]), 
-						color=clrs[3], 
-						label=langs[3])
-
-	axs[1].bar(year_unq, 
-						LANGUAGES[langs[4]], 
-						width, 
-						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]])+np.array(LANGUAGES[langs[2]])+np.array(LANGUAGES[langs[3]]), 
-						color=clrs[4],
-						label=langs[4])
-
-	axs[1].bar(year_unq, 
-						LANGUAGES[langs[5]], 
-						width, 
-						bottom=np.array(LANGUAGES[langs[0]])+np.array(LANGUAGES[langs[1]])+np.array(LANGUAGES[langs[2]])+np.array(LANGUAGES[langs[3]])+np.array(LANGUAGES[langs[4]]), 
-						color=clrs[5], 
-						label=langs[5])
+	for k, v in LANGUAGES.items():
+		print(k, v)
+		axs[1].bar(x=year_unq, 
+							height=v, 
+							width=WIDTH,
+							bottom=BOTTOM, 
+							color=clrs[list(LANGUAGES.keys()).index(k)],
+							label=k,
+							)
+		BOTTOM += np.array(v)
 
 
 	axs[1].set_ylabel('Counts')
