@@ -180,7 +180,7 @@ def get_df(idx, adjust_cols=True, keep_original=False):
 	print(f">> Reading {fname} ...")
 
 	df = pd.read_csv(fname, low_memory=False,)
-	#df['pvm'] = pd.to_datetime(df['pvm'])
+	df['pvm'] = pd.to_datetime(df['pvm']) # ESSENTIAL to get datetime behavior in pandas
 
 	if ('kielet' in list(df.columns)) and (keep_original==False):
 		df['kielet'] = df['kielet'].str.replace(' ','', regex=True)
