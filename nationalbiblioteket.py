@@ -339,7 +339,7 @@ def plt_bar(df, name="", N=25):
 	
 	plt.clf()
 
-def plot_language_year(df, name="", N=6):
+def plot_language_year(df, name="", N=10):
 	o_year_unq, o_year_count = np.unique(df['date'].dt.year, return_counts=True)
 	print(f"\n\n\n>> Orig DF: {o_year_unq.shape[0]}\n{o_year_unq}\n{o_year_count}\n\n")
 	
@@ -366,10 +366,27 @@ def plot_language_year(df, name="", N=6):
 
 	print(year_unq.shape[0], year_unq, year_count)
 
-	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
-	#fig, axs = plt.subplots(nrows=1, ncols=2)
+	#fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
+	fig, axs = plt.subplots(nrows=1, ncols=2)
 
-	clrs = ['#ff9999','#16b3ff','#99ff99','#cc9911', '#ffcc99', '#ffc9', '#0ecd19']
+	clrs = ['#16b3ff',
+					'#bcbd22', 
+					'#e377c2', 
+					'#0ecd19', 
+					'#ff7f0e', 
+					'#9467bd', 
+					'#cc9911', 
+					'#d62728', 
+					'#ffcc99', 
+					'#1f77b4', 
+					'#99ff99',
+					'#ffc9', 
+					'#17becf',
+					'#2ca02c', 
+					'#8c564b', 
+					'#ff9999',
+					'#7f7f7f', 
+					]
 
 	axs[0].pie(language_counts,
 						labels=language_ung, 
@@ -378,7 +395,7 @@ def plot_language_year(df, name="", N=6):
 						colors=clrs,
 						)
 	axs[0].axis('equal')
-	axs[0].set_title(f"Top {N} Searched Languages in NLF")
+	#axs[0].set_title(f"Top {N} Searched Languages in NLF")
 
 	LANGUAGES = {}
 
@@ -441,11 +458,11 @@ def plot_language_year(df, name="", N=6):
 
 	axs[1].set_ylabel('Counts')
 	axs[1].set_xlabel('Year')
-	axs[1].set_title(f'Top {N} Languages by Year')
+	#axs[1].set_title(f'Top {N} Languages by Year')
 
 	axs[1].legend(ncol=len(LANGUAGES), loc="best", frameon=False)
 
-	plt.suptitle(f"Distribution")
+	plt.suptitle(f"Top {N} searched languages in NLF by year")
 	plt.savefig(os.path.join( rpath, f"{name}_lang_year.png" ), )
 
 def main():
