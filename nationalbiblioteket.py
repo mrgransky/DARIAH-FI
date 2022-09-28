@@ -387,7 +387,7 @@ def plot_language_year(df, name="", N=6):
 			for y in year_unq:
 					print(l, y)
 					#c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
-					c = df[(df["year"] == y) & (df["languages"] == l) ].languages.count()
+					c = df_tmp[(df_tmp["year"] == y) & (df_tmp["languages"] == l) ].languages.count()
 					print(c)
 				
 					lst.append(c)
@@ -455,7 +455,7 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	save_dfs(qlang=QUERY_LANGUAGE)
+	#save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
