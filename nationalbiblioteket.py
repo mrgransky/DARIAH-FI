@@ -461,7 +461,7 @@ def main():
 
 	#plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
 	
-	#plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
+	plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
 
 
 	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
