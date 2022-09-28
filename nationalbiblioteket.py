@@ -339,7 +339,7 @@ def plt_bar(df, name="", N=25):
 	
 	plt.clf()
 
-def plot_language_year(df, name="", N=10):
+def plot_language_year(df, name="", N=6):
 	o_year_unq, o_year_count = np.unique(df['date'].dt.year, return_counts=True)
 	print(f"\n\n\n>> Orig DF: {o_year_unq.shape[0]}\n{o_year_unq}\n{o_year_count}\n\n")
 	
@@ -347,10 +347,9 @@ def plot_language_year(df, name="", N=10):
 
 	df_tmp['year'] = df_tmp['date'].dt.year
 
-	print(df_tmp.shape)
-	print(df_tmp.head(36))
-	print(list(df_tmp.columns))
-
+	#print(df_tmp.shape)
+	#print(df_tmp.head(36))
+	#print(list(df_tmp.columns))
 
 	lu, lc = np.unique(df_tmp["languages"], return_counts=True)
 	print(lu.shape[0], lu, lc)
@@ -366,7 +365,6 @@ def plot_language_year(df, name="", N=10):
 
 	print(year_unq.shape[0], year_unq, year_count)
 
-	#fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	fig, axs = plt.subplots(nrows=1, ncols=2)
 
 	clrs = ['#1f77b4', 
@@ -392,7 +390,7 @@ def plot_language_year(df, name="", N=10):
 																				labels=language_ung, 
 																				autopct='%1.1f%%', 
 																				#startangle=180,
-																				radius=3,
+																				#radius=3, USELESS IF axs[0].axis('equal')
 																				#pctdistance=1.5,
 																				#labeldistance=0.5,
 																				rotatelabels=True,
@@ -402,7 +400,7 @@ def plot_language_year(df, name="", N=10):
 	for lbl, pct_text in zip(lbls, pct_texts):
 		pct_text.set_rotation(lbl.get_rotation())
 
-	#axs[0].axis('equal')
+	axs[0].axis('equal')
 	#axs[0].set_title(f"Top {N} Searched Languages in NLF")
 
 
