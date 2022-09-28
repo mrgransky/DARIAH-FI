@@ -93,7 +93,7 @@ def run():
 	print( df.head(40) )
 	print("-"*130)
 
-	df["referer"][1]
+	print(df["referer"][1])
 
 	print( df.tail(40) )
 	print(f"\n>> Loading {os.path.join(dpath, fname)} COMPLETE!")
