@@ -389,7 +389,7 @@ def plot_language_year(df, name="", N=6):
 					#c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					c = df[(df["year"] == y) & (df["languages"] == l) ].languages.count()
 					print(c)
-        
+				
 					lst.append(c)
 			LANGUAGES[l] = lst
 
