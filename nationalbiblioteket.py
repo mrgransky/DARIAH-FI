@@ -369,30 +369,30 @@ def plot_language_year(df, name="", N=10):
 	#fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(17,7))
 	fig, axs = plt.subplots(nrows=1, ncols=2)
 
-	clrs = ['#16b3ff',
-					'#bcbd22', 
-					'#e377c2', 
-					'#0ecd19', 
-					'#ff7f0e', 
-					'#9467bd', 
+	clrs = ['#1f77b4', 
 					'#cc9911', 
-					'#d62728', 
-					'#ffcc99', 
-					'#1f77b4', 
+					'#e377c2', 
+					'#7f7f7f', 
 					'#99ff99',
+					'#ff7f0e', 
+					'#16b3ff',
+					'#9467bd', 
+					'#d62728', 
+					'#0ecd19', 
+					'#ffcc99', 
+					'#bcbd22', 
 					'#ffc9', 
 					'#17becf',
 					'#2ca02c', 
 					'#8c564b', 
 					'#ff9999',
-					'#7f7f7f', 
 					]
 
 	patches, lbls, pct_texts = axs[0].pie(language_counts,
 																				labels=language_ung, 
 																				autopct='%1.1f%%', 
 																				#startangle=180,
-																				radius=8,
+																				radius=5,
 																				#pctdistance=1.5,
 																				#labeldistance=0.5,
 																				rotatelabels=True,
@@ -401,8 +401,11 @@ def plot_language_year(df, name="", N=10):
 																				)
 	for lbl, pct_text in zip(lbls, pct_texts):
 		pct_text.set_rotation(lbl.get_rotation())
-	axs[0].axis('equal')
+
+	#axs[0].axis('equal')
 	#axs[0].set_title(f"Top {N} Searched Languages in NLF")
+
+
 
 	LANGUAGES = {}
 
@@ -423,7 +426,7 @@ def plot_language_year(df, name="", N=10):
 	BOTTOM = 0
 
 	for k, v in LANGUAGES.items():
-		print(k, v)
+		#print(k, v)
 		axs[1].bar(x=year_unq, 
 							height=v, 
 							width=WIDTH,
