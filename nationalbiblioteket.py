@@ -391,7 +391,11 @@ def plot_language_year(df, name="", N=10):
 	axs[0].pie(language_counts,
 						labels=language_ung, 
 						autopct='%1.1f%%', 
-						startangle=90,
+						#startangle=180,
+						radius=5,
+						labeldistance=0.9,
+						rotatelabels =True,
+						counterclock=False,
 						colors=clrs,
 						)
 	axs[0].axis('equal')
@@ -402,10 +406,10 @@ def plot_language_year(df, name="", N=10):
 	for l in language_ung:
 			lst = []
 			for y in year_unq:
-					print(l, y)
+					#print(l, y)
 					#c = df_tmp.query(f"year=='{str(y)}' and languages=='{str(l)}'").languages.count()
 					c = df_tmp[(df_tmp["year"] == y) & (df_tmp["languages"] == l) ].languages.count()
-					print(c)
+					#print(c)
 				
 					lst.append(c)
 			LANGUAGES[l] = lst
