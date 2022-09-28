@@ -84,7 +84,6 @@ def get_df_no_ip_logs(infile=""):
 	return pd.DataFrame.from_dict(cleaned_lines)
 
 def run():
-	"""
 	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
@@ -117,6 +116,7 @@ def run():
 
 		#print( df.tail(40) )
 		print(f"\n>> Loading {f} COMPLETED!")
+	"""
 
 if __name__ == '__main__':
 	os.system('clear')
