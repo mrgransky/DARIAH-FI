@@ -20,7 +20,7 @@ matplotlib.use("Agg")
 
 # more info for adjustment of rcparams:
 # https://matplotlib.org/stable/tutorials/introductory/customizing.html
-sz=12
+sz=15 # >>>>>>>>> 12 original <<<<<<<<<<<
 params = {
 	'figure.figsize':	(sz*1.4, sz*1.0),  # W, H
 	'figure.dpi':		200,
@@ -388,16 +388,19 @@ def plot_language_year(df, name="", N=10):
 					'#7f7f7f', 
 					]
 
-	axs[0].pie(language_counts,
-						labels=language_ung, 
-						autopct='%1.1f%%', 
-						#startangle=180,
-						radius=5,
-						labeldistance=0.9,
-						rotatelabels =True,
-						counterclock=False,
-						colors=clrs,
-						)
+	patches, lbls, pct_texts = axs[0].pie(language_counts,
+																				labels=language_ung, 
+																				autopct='%1.1f%%', 
+																				#startangle=180,
+																				radius=8,
+																				pctdistance=1.5,
+																				labeldistance=0.9,
+																				rotatelabels =True,
+																				counterclock=False,
+																				colors=clrs,
+																				)
+	for lbl, pct_text in zip(lbls, pct_texts):
+		pct_text.set_rotation(lbl.get_rotation())
 	axs[0].axis('equal')
 	#axs[0].set_title(f"Top {N} Searched Languages in NLF")
 
@@ -464,7 +467,10 @@ def plot_language_year(df, name="", N=10):
 	axs[1].set_xlabel('Year')
 	#axs[1].set_title(f'Top {N} Languages by Year')
 
-	axs[1].legend(ncol=len(LANGUAGES), loc="best", frameon=False)
+	axs[1].legend(loc="best", 
+								frameon=False,
+								#ncol=len(LANGUAGES), 
+								)
 
 	plt.suptitle(f"Top {N} searched languages in NLF by year")
 	plt.savefig(os.path.join( rpath, f"{name}_lang_year.png" ), )
