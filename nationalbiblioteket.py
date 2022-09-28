@@ -392,7 +392,7 @@ def plot_language_year(df, name="", N=10):
 																				labels=language_ung, 
 																				autopct='%1.1f%%', 
 																				#startangle=180,
-																				radius=5,
+																				radius=3,
 																				#pctdistance=1.5,
 																				#labeldistance=0.5,
 																				rotatelabels=True,
