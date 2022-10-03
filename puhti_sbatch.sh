@@ -8,8 +8,8 @@
 #SBATCH -J vis_heatmap_barplot
 #SBATCH -o LOG_%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem=680G
-#SBATCH --time=1-23:59:58
+#SBATCH --mem=360G
+#SBATCH --time=0-07:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 
