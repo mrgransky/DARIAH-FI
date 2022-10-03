@@ -464,7 +464,6 @@ def main():
 	#basic_visualization(vol_df, name=f"volume_{QUERY_LANGUAGE}")
 	#basic_visualization(pg_df, name=f"page_{QUERY_LANGUAGE}")
 
-
 if __name__ == '__main__':
 	os.system('clear')
 	main()
