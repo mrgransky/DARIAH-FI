@@ -38,7 +38,8 @@ elif [ $user == 'alijanif' ]; then
 	source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
 fi
 
-python nationalbiblioteket.py
+#python nationalbiblioteket.py
+python nationalbiblioteket_logs.py
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

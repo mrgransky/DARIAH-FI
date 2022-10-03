@@ -191,9 +191,8 @@ def get_single_ocr_text(df, browser_show=False):
 	"""
 
 def get_ocr_texts(df):
-	print(f">> Getting OCR text from df: {df.shape}")
+	print(f">> Extracting OCR text from df: {df.shape}")
 	
-	print(f">> cleaning urls...")
 	df['referer'] = df['referer'].replace("-", pd.NA, regex=True)
 	#df['referer'] = df['referer'].replace("-", np.nan, regex=True)
 	"""
@@ -248,7 +247,13 @@ def get_ocr_texts(df):
 	# cleaning
 	df["ocr_text"] = pd.DataFrame( df.referer.apply( check_urls ) )
 	print(list(df.columns))
+	print("#"*150)
 	print(df.head(50))
+	print("#"*150)
+	print(df.info(verbose=True, memory_usage="deep"))
+	print("#"*150)
+	print(f"\n\n>> NaN referer: {df['ocr_text'].isna().sum()} / {df.shape[0]}\n\n")
+	
 
 def run():
 	
