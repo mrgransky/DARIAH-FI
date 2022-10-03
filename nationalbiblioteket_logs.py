@@ -95,9 +95,35 @@ def get_df_no_ip_logs(infile=""):
 	
 	return pd.DataFrame.from_dict(cleaned_lines)
 
-def get_ocr_texts(df, browser_show=False):
-	qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
-	#qlink = 6462 # 349904 # 227199  #  # with txt ocr available
+def get_single_ocr_text(df, browser_show=False):
+	print(f">> Analyze single df: {df.shape}")
+	
+	print(f">> cleaning urls...")
+
+	# with pandas:
+	df['referer'] = df['referer'].replace("-", pd.NA, regex=True)
+	df['user_agent'] = df['user_agent'].replace("-", pd.NA, regex=True)
+	
+	# with numpy:
+	#df['referer'] = df['referer'].replace("-", np.nan, regex=True)
+	#df['user_agent'] = df['user_agent'].replace("-", np.nan, regex=True)
+
+	print(list(df.columns))
+	print("-"*180)
+	print(df.info(verbose=True, memory_usage="deep"))
+	print("-"*180)
+	print(f"\n\n>> NaN referer: {df['referer'].isna().sum()} / {df.shape[0]}\n\n")
+	print("#"*180)
+	
+	print( df.head(40) )
+	print("-"*130)
+	print( df.tail(40) )
+
+	print(f"\n>> Generating a sample query...")
+	#qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
+	qlink = 52
+	#qlink = 1402 # google.fi
+	qlink = 6462 # 349904 # 227199  #  # with txt ocr available
 	#qlink = 389518 # 4383 # no link!
 	#qlink = 5882 # ERROR due to login credintial
 	#qlink = 277939 # MARC is not available for this page.
@@ -110,14 +136,12 @@ def get_ocr_texts(df, browser_show=False):
 		print(f">> no link is available! => exit")
 		return 0
 
+	print(f">> Manipulate header with user-agent...")
+
 	if browser_show:
 		print(f"\topening in browser... ")
 		webbrowser.open(s_url, new=2)
 	
-	print(f">> OCR available?")
-	txt_ocr = True if requests.get(f"{s_url}&ocr=true").status_code==200 else False
-	print(txt_ocr)
-
 	print(f"\n>> Parsing url ...")
 	parsed_url = urllib.parse.urlparse(s_url)
 	print(parsed_url)
@@ -126,13 +150,17 @@ def get_ocr_texts(df, browser_show=False):
 	parameters = urllib.parse.parse_qs( parsed_url.query, keep_blank_values=True)
 	print(parameters)
 	
-	print(f">> Search Page?")
-	search_pg = True if "search" in parsed_url.path else False
-	print(search_pg)
+	print(f">> Search Parameter?")
+	SRCH_PARAM = True if "search" in parsed_url.path else False
+	print(SRCH_PARAM)
+
+	print(f">> Page Parameter?")
+	PG_PARAM = True if "page" in parsed_url.query else False
+	print(PG_PARAM)
 
 	print("#"*130)
 
-	if txt_ocr and not search_pg:
+	if PG_PARAM and not SRCH_PARAM:
 		print(f">> Generating txt page ...")
 		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 		txt_resp = requests.get(txt_pg_url)
@@ -162,23 +190,13 @@ def get_ocr_texts(df, browser_show=False):
 		print(f">> Loading xlsx file...")
 	"""
 
-
-
-	return None
-
-
-def run():
+def get_ocr_texts(df):
+	print(f">> Getting OCR text from df: {df.shape}")
 	
-	"""
-	# working with single log file:
-	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"
-	
-	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
-	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
+	print(f">> cleaning urls...")
 	df['referer'] = df['referer'].replace("-", pd.NA, regex=True)
 	#df['referer'] = df['referer'].replace("-", np.nan, regex=True)
-
-	print(df.shape)
+	"""
 	print(list(df.columns))
 	print("-"*180)
 	print(df.info(verbose=True, memory_usage="deep"))
@@ -189,8 +207,60 @@ def run():
 	print( df.head(40) )
 	print("-"*130)
 	print( df.tail(40) )
-	
+	"""
+	def analyze_(in_url):
+		#print(f"\n>> input url: {in_url}")
 		
+		if in_url is pd.NA:
+			#print(f">> no link is available! => exit")
+			return 0
+		
+		#print(f"\n>> Parsing url ...")
+		parsed_url = urllib.parse.urlparse(in_url)
+		#print(parsed_url)
+
+		#print(f">> Explore url parameters ...")
+		parameters = urllib.parse.parse_qs( parsed_url.query, keep_blank_values=True)
+		#print(parameters)
+		
+		#print(f">> Search Page?")
+		SRCH_PARAM = True if "search" in parsed_url.path else False
+		#print(SRCH_PARAM)
+
+		#print(f">> Page Parameter?")
+		PG_PARAM = True if "page" in parsed_url.query else False
+		#print(PG_PARAM)
+
+		if PG_PARAM and not SRCH_PARAM:
+			#print(f">> Generating txt page ...")
+			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
+			txt_resp = requests.get(txt_pg_url)
+
+			#print(f">> Page: {txt_pg_url} exists? {txt_resp.status_code}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
+
+			if txt_resp.status_code==200:
+				#print(f"\n>> Loading txt page...\n")
+				#print(txt_resp.text)
+				return txt_resp.text
+
+	check_urls = lambda x:analyze_(x)
+	
+	# cleaning
+	df["ocr_text"] = pd.DataFrame( df.referer.apply( check_urls ) )
+	print(list(df.columns))
+	print(df.head(50))
+
+def run():
+	
+	# working with single log file:
+	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
+	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
+
+	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
+
+	#get_single_ocr_text(df, browser_show=False)
+	get_ocr_texts(df)
+	
 	"""
 	log_files = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
 	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files]
@@ -206,6 +276,7 @@ def run():
 
 		#print( df.tail(40) )
 		print(f"\t\tCOMPLETED!")
+	"""
 
 if __name__ == '__main__':
 	os.system('clear')
