@@ -302,13 +302,13 @@ def run():
 	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
 	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 
-	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
-	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
+	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
+	#df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
 
-	get_single_ocr_text(df, browser_show=False)
+	#get_single_ocr_text(df, browser_show=False)
 	#get_ocr_texts(df)
 	
-	"""
+	#"""
 	log_files = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
 	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files]
 	#print(len(log_files_date), log_files_date)
@@ -323,7 +323,8 @@ def run():
 
 		#print( df.tail(40) )
 		print(f"\t\tCOMPLETED!")
-	"""
+	
+	#"""
 
 if __name__ == '__main__':
 	os.system('clear')
