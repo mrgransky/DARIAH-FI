@@ -94,7 +94,6 @@ def get_df_no_ip_logs(infile=""):
 			#print(l)
 
 			#dt_tz = l[0].replace("[", "").replace("]", "")
-			
 			#DDMMYYYY = dt_tz[:dt_tz.find(":")]
 			#YYYYMMDD = convert_date( DDMMYYYY )
 			#HMS = dt_tz[dt_tz.find(":")+1:dt_tz.find(" ")]
