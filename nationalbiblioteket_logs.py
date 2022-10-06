@@ -76,7 +76,7 @@ def broken_connection(url):
 		#print ("Failed to open url")
 		return True
 
-def get_df_no_ip_logs(infile=""):
+def get_df_no_ip_logs(infile="", timespan=False):
 	print(f">> Reading {infile} ...")
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "(.*?)" (.*)' # original working!
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^"]+)" "(.*?)" (.*)' # original working!
@@ -125,10 +125,19 @@ def get_df_no_ip_logs(infile=""):
 	# with numpy:
 	#df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', np.nan, regex=True)
 	
+	if timespan:
+		s = "10:00:00"
+		e = "11:00:00"
+		print(f"\t\t\tdf between timeframe: {s} - {e}")
+		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ]
+		df_ts = df_ts.reset_index(drop=True)
+		#return df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ].reset_index(drop=True, inplace=True)
+		return df_ts
+
 	return df
 
 def get_single_ocr_text(df, browser_show=True):
-	print(f">> Analyze single df: {df.shape}")
+	print(f">> Given single df: {df.shape}")
 	
 	"""
 	print(list(df.columns))
@@ -143,7 +152,7 @@ def get_single_ocr_text(df, browser_show=True):
 	print( df.tail(40) )
 	"""
 	print(f">> Generating a sample query...")
-	#qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
+	qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
 	#qlink = 52 # no "page="" in query
 	#qlink = 1402 # google.fi # no "page="" in query
 	#qlink = 5882 # ERROR due to login credintial
@@ -155,7 +164,7 @@ def get_single_ocr_text(df, browser_show=True):
 	#qlink = 158 # short link
 	#qlink = 21888 # broken connection
 	#qlink = 30219 #30219 # 15033 #  # "" nothing in url
-	qlink = 96624 # both referer and user_agent pd.NA
+	#qlink = 96624 # both referer and user_agent pd.NA
 
 	print(df.iloc[qlink])
 	s_url = df["referer"][qlink] #if df["referer"][qlink].notnull() else None
@@ -171,7 +180,7 @@ def get_single_ocr_text(df, browser_show=True):
 
 	print(f">> updating url ...")
 	s_url = update_url(s_url)
-	print(f"\t>> {s_url}")
+	print(f"\t\t{s_url}")
 
 	if browser_show:
 		print(f"\topening in browser... ")
@@ -302,7 +311,7 @@ def run():
 	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 
 	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
-	#df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
+	#df = get_df_no_ip_logs(infile=os.path.join(dpath, fname), timespan=True)
 
 	#get_single_ocr_text(df, browser_show=False)
 	#get_ocr_texts(df)
@@ -313,7 +322,7 @@ def run():
 	#print(len(log_files_date), log_files_date)
 	
 	for f in log_files:
-		df = get_df_no_ip_logs( infile=f )
+		df = get_df_no_ip_logs( infile=f, timespan=True )
 		print(df.shape)
 		#print("-"*130)
 
