@@ -93,12 +93,12 @@ def get_df_no_ip_logs(infile=""):
 			l = matched_line.groups()
 			#print(l)
 
-			dt_tz = l[0].replace("[", "").replace("]", "")
+			#dt_tz = l[0].replace("[", "").replace("]", "")
 			
-			DDMMYYYY = dt_tz[:dt_tz.find(":")]
-			YYYYMMDD = convert_date( DDMMYYYY )
-			HMS = dt_tz[dt_tz.find(":")+1:dt_tz.find(" ")]
-			TZ = dt_tz[dt_tz.find(" ")+1:]
+			#DDMMYYYY = dt_tz[:dt_tz.find(":")]
+			#YYYYMMDD = convert_date( DDMMYYYY )
+			#HMS = dt_tz[dt_tz.find(":")+1:dt_tz.find(" ")]
+			#TZ = dt_tz[dt_tz.find(" ")+1:]
 
 			cleaned_lines.append({
 				#"timestamp": 						l[0], # original: 01/Feb/2017:12:34:51 +0200
