@@ -51,20 +51,31 @@ files_list = ["digi_hakukaytto_v1.csv",
 							]
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
-				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/no_ip_logs',
-				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs",
+				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
+				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
 				}
 
 
 languages={"FINNISH": False, "ENGLISH": True}
 
-dpath = usr_[os.environ['USER']]
-rpath = os.path.join( dpath[:dpath.rfind("/")], f"results")
+NLF_DATASET_PATH = usr_[os.environ['USER']]
+
+#dpath = os.path.join( usr_[os.environ['USER']], f"no_ip_logs" )
+#rpath = os.path.join( dpath[:dpath.rfind("/")], f"results" )
+
+dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
+rpath = os.path.join( NLF_DATASET_PATH, f"results" )
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
+
 search_idx, volume_idx, page_idx = 0, 1, 2
 
 if not os.path.exists(rpath): 
 	print(f"\n>> Creating DIR:\n{rpath}")
 	os.makedirs( rpath )
+
+if not os.path.exists(dfs_path): 
+	print(f"\n>> Creating DIR:\n{dfs_path}")
+	os.makedirs( dfs_path )
 
 name_dict = {
 	search_idx: [	"search_usage_id", 
@@ -227,10 +238,10 @@ def save_dfs(qlang="ENGLISH"):
 	fname = "_".join(list(dfs_dict.keys()))+f"_dfs_{qlang}.dump"
 	print(f">> Dumping {fname} ...")
 	joblib.dump(	dfs_dict, 
-								os.path.join( dpath, f"{fname}" ),
+								os.path.join( dfs_path, f"{fname}" ),
 								compress='lz4', # zlib more info: https://joblib.readthedocs.io/en/latest/auto_examples/compressors_comparison.html#sphx-glr-auto-examples-compressors-comparison-py
 								)
-	fsize = os.stat( os.path.join( dpath, f"{fname}" ) ).st_size / 1e6
+	fsize = os.stat( os.path.join( dfs_path, f"{fname}" ) ).st_size / 1e6
 
 	print(f">> Dumping Done => size: {fsize:.1f} MB ...")
 

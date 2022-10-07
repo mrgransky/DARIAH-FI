@@ -5,6 +5,10 @@ import glob
 import urllib
 import requests
 import webbrowser
+import string
+import sys
+import joblib
+import time
 
 from bs4 import BeautifulSoup
 from natsort import natsorted
@@ -26,15 +30,29 @@ import pandas as pd
 # fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 # - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
 
-
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
-				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/no_ip_logs',
-				#'alijanif':	'/scratch/project_2004072/Nationalbiblioteket/broken',
-				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/no_ip_logs",
-				#"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket/broken",
+				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
+				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
 				}
 
-dpath = usr_[os.environ['USER']]
+
+NLF_DATASET_PATH = usr_[os.environ['USER']]
+
+dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
+#dpath = os.path.join( NLF_DATASET_PATH, f"broken" )
+
+rpath = os.path.join( NLF_DATASET_PATH, f"results" )
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
+
+search_idx, volume_idx, page_idx = 0, 1, 2
+
+if not os.path.exists(rpath): 
+	print(f"\n>> Creating DIR:\n{rpath}")
+	os.makedirs( rpath )
+
+if not os.path.exists(dfs_path): 
+	print(f"\n>> Creating DIR:\n{dfs_path}")
+	os.makedirs( dfs_path )
 
 def convert_date(INP_DATE):
 	months_dict = {
@@ -83,16 +101,17 @@ def broken_connection(url):
 		#print ("Failed to open url")
 		return True
 
-def get_df_no_ip_logs(infile="", timespan=None):
-	print(f">> Reading {infile} ...")
+def get_df_no_ip_logs(infile="", TIMESTAMP=None):
+	file_path = os.path.join(dpath, infile)
+
+	print(f">> Reading {file_path} ...")
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "(.*?)" (.*)' # original working!
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^"]+)" "(.*?)" (.*)' # original working!
 	ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:-|.*(http://\D.*))" "(.*?)" (.*)'
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:|-|.*(://\D.*))" "(.*?)" (.*)'
-	
 	cleaned_lines = []
-	with open(infile, mode="r") as f:
+	with open(file_path, mode="r") as f:
 		for line in f:
 			#print(line)
 			matched_line = re.match(ACCESS_LOG_PATTERN, line)
@@ -132,22 +151,21 @@ def get_df_no_ip_logs(infile="", timespan=None):
 	# with numpy:
 	#df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', np.nan, regex=True)
 	
-	if timespan:
-		#s = "23:00:00"
-		#e = "23:59:59"
-		
-		print(f"\t\t\twithin timeframe: {timespan[0]} - {timespan[1]}")
-		#df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ]
-		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(timespan[0], timespan[1]) ]
-		
+	if TIMESTAMP:
+		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
+		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
 		df_ts = df_ts.reset_index(drop=True)
-		#return df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ].reset_index(drop=True, inplace=True)
 		return df_ts
 
 	return df
 
-def get_single_ocr_text(df, browser_show=True):
-	print(f">> Given single df: {df.shape}")
+def single_query(file_="", ts=None, browser_show=False):
+	ocr_txt = np.nan
+
+	print(f">> Single query analysis...")
+	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
+	
+	print(f"df: {df.shape}")
 	
 	"""
 	print(list(df.columns))
@@ -223,10 +241,22 @@ def get_single_ocr_text(df, browser_show=True):
 
 		if txt_resp.ok: # 200
 			print(f"\t\t\tYES >> loading...\n")
-			print(txt_resp.text)
-			
-def get_ocr_texts(df):
-	print(f">> Extracting OCR text from df: {df.shape}")
+			ocr_txt = txt_resp.text
+			#print(ocr_txt)
+	
+	df.loc[qlink, "OCR"] = ocr_txt
+	print(list(df.columns))
+	print(df.shape)
+	print(df.isna().sum())
+	print(df.info(verbose=True, memory_usage="deep"))
+	save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
+
+def all_queries(file_="", ts=None):
+	ocr_txt = np.nan
+
+	print(f">> Analyzing All Queries")
+	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)	
+	print(f"df: {df.shape}")
 	
 	"""
 	print(list(df.columns))
@@ -285,47 +315,67 @@ def get_ocr_texts(df):
 	check_urls = lambda x: analyze_(x)
 	
 	# cleaning
-	df["ocr_text"] = pd.DataFrame( df.referer.apply( check_urls ) )
-	
+	#df["ocr_text"] = pd.DataFrame( df.referer.apply( check_urls ) )
+	df["OCR"] = pd.DataFrame( df.referer.apply( check_urls ) )
+	#df.loc[qlink, "OCR"] = ocr_txt
+
 	print(list(df.columns))
 	print("#"*150)
 	print(df.head(50))
 	print("#"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("#"*150)
-	print(f"\n\n>> NaN referer: {df['ocr_text'].isna().sum()} / {df.shape[0]}\n\n")
+	print(f"\n\n>> NaN referer: {df['OCR'].isna().sum()} / {df.shape[0]}\n\n")
+	save_(df, infile=file_)
+
+def save_(df, infile=""):
+	dfs_dict = {
+		f"{infile}":	df,
+	}
+	
+	dump_file_name = os.path.join(dfs_path, f"{infile}.dump")
+	print(f">> Saving {dump_file_name} ...")
+	print(f"\tSaving...")
+	
+	
+
+	joblib.dump(	dfs_dict, 
+								dump_file_name,
+								#os.path.join( dfs_path, f"{fname}" ),
+								compress='lz4', # zlib more info: https://joblib.readthedocs.io/en/latest/auto_examples/compressors_comparison.html#sphx-glr-auto-examples-compressors-comparison-py
+								)
+	#fsize = os.stat( os.path.join( dfs_path, f"{fname}" ) ).st_size / 1e6
+	fsize = os.stat( dump_file_name ).st_size / 1e6
+
+	print(f"\t\t{fsize:.1f} MB")
 
 def run():
 	# working with single log file:
-	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
-	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
-	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
-	
-	#df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
-	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname), timespan=["23:50:00", "23:59:59"])
+	#fn = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
+	#fn = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
+	#fn = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
 
+	#single_query(file_=fn)
+	#single_query(file_=fn, browser_show=False, ts=["23:52:00", "23:59:59"])
 
-	#get_single_ocr_text(df, browser_show=True)
-	get_ocr_texts(df)
+	#all_queries(file_=fn)
+	#all_queries(file_=fn, ts=["23:52:00", "23:59:59"])
 	
-	"""
-	log_files = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
-	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files]
+	#"""
+	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
+	#print(log_files_dir)
+
+	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
 	#print(len(log_files_date), log_files_date)
-	
+	log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
+	#print(log_files)
+
 	for f in log_files:
-		df = get_df_no_ip_logs( infile=f, timespan=True )
-		print(df.shape)
-		#print("-"*130)
+		all_queries(file_=f)
+	#"""
 
-		#print( df.head(40) )
-		#print("-"*130)
-
-		#print( df.tail(40) )
-		print(f"\t\tCOMPLETED!")
+	print(f"\t\tCOMPLETED!")
 	
-	"""
-
 if __name__ == '__main__':
 	os.system('clear')
 	run()
