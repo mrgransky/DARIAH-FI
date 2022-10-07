@@ -62,12 +62,19 @@ def convert_date(INP_DATE):
 	return yyyy_mm_dd
 
 def update_url(INP_URL):
-	session = requests.Session()  # so connections are recycled
-	resp = session.head(INP_URL, allow_redirects=True)
-	#print(resp.url)
-	updated_url = resp.url
-	return updated_url
+	#session = requests.Session()  # so connections are recycled
+	#r = session.head(INP_URL, allow_redirects=True)
+	try:
+		r = requests.get(INP_URL, timeout=120) # wait 120s for (connection, read)
+	except requests.exceptions.Timeout:
+		print(f">> Timeout Exception! => return original url")
+		return INP_URL, None
 
+	updated_url = r.url
+	history_url = r.history
+
+	return updated_url, history_url
+	
 def broken_connection(url):
 	try:
 		requests.get(url)
@@ -76,7 +83,7 @@ def broken_connection(url):
 		#print ("Failed to open url")
 		return True
 
-def get_df_no_ip_logs(infile="", timespan=False):
+def get_df_no_ip_logs(infile="", timespan=None):
 	print(f">> Reading {infile} ...")
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "(.*?)" (.*)' # original working!
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^"]+)" "(.*?)" (.*)' # original working!
@@ -126,10 +133,13 @@ def get_df_no_ip_logs(infile="", timespan=False):
 	#df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', np.nan, regex=True)
 	
 	if timespan:
-		s = "23:00:00"
-		e = "23:59:59"
-		print(f"\t\t\tdf between timeframe: {s} - {e}")
-		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ]
+		#s = "23:00:00"
+		#e = "23:59:59"
+		
+		print(f"\t\t\twithin timeframe: {timespan[0]} - {timespan[1]}")
+		#df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ]
+		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(timespan[0], timespan[1]) ]
+		
 		df_ts = df_ts.reset_index(drop=True)
 		#return df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ].reset_index(drop=True, inplace=True)
 		return df_ts
@@ -155,7 +165,7 @@ def get_single_ocr_text(df, browser_show=True):
 	qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
 	#qlink = 52 # no "page="" in query
 	#qlink = 1402 # google.fi # no "page="" in query
-	qlink = 5882 # ERROR due to login credintial
+	#qlink = 5882 # ERROR due to login credintial
 	#qlink = 277939 # MARC is not available for this page.
 	#qlink = 231761 # 5151 # shows text content with ocr although txt_ocr returns False
 	#qlink = 104106 # 55901 # indirect search from google => no "page="" in query
@@ -165,7 +175,7 @@ def get_single_ocr_text(df, browser_show=True):
 	#qlink = 21888 # broken connection
 	#qlink = 30219 #30219 # 15033 #  # "" nothing in url
 	#qlink = 96624 # both referer and user_agent pd.NA
-
+	#qlink = 10340 # read timeout error in puhti when updating with session & head ?
 	print(df.iloc[qlink])
 	s_url = df["referer"][qlink] #if df["referer"][qlink].notnull() else None
 	print(f">> Q: {qlink} : {s_url}")
@@ -179,8 +189,8 @@ def get_single_ocr_text(df, browser_show=True):
 		return 0
 
 	print(f">> updating url ...")
-	s_url = update_url(s_url)
-	print(f"\t\t{s_url}")
+	s_url, h_url = update_url(s_url)
+	print(f"{h_url}\n{s_url}")
 
 	if browser_show:
 		print(f"\topening in browser... ")
@@ -242,8 +252,8 @@ def get_ocr_texts(df):
 			return 0
 
 		print(f">> updating url ...")
-		in_url = update_url(in_url)
-		print(f"\t>> {in_url}")
+		in_url, h_url = update_url(in_url)
+		print(f"{h_url}\n{in_url}")
 
 		print(f">> Parsing url ...")
 		parsed_url = urllib.parse.urlparse(in_url)
@@ -290,8 +300,10 @@ def run():
 	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
 	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
+	
+	#df = get_df_no_ip_logs(infile=os.path.join(dpath, fname))
+	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname), timespan=["23:50:00", "23:59:59"])
 
-	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname), timespan=False)
 
 	#get_single_ocr_text(df, browser_show=True)
 	get_ocr_texts(df)
