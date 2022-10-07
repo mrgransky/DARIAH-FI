@@ -126,8 +126,8 @@ def get_df_no_ip_logs(infile="", timespan=False):
 	#df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', np.nan, regex=True)
 	
 	if timespan:
-		s = "10:00:00"
-		e = "11:00:00"
+		s = "23:00:00"
+		e = "23:59:59"
 		print(f"\t\t\tdf between timeframe: {s} - {e}")
 		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(s, e) ]
 		df_ts = df_ts.reset_index(drop=True)
@@ -155,7 +155,7 @@ def get_single_ocr_text(df, browser_show=True):
 	qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
 	#qlink = 52 # no "page="" in query
 	#qlink = 1402 # google.fi # no "page="" in query
-	#qlink = 5882 # ERROR due to login credintial
+	qlink = 5882 # ERROR due to login credintial
 	#qlink = 277939 # MARC is not available for this page.
 	#qlink = 231761 # 5151 # shows text content with ocr although txt_ocr returns False
 	#qlink = 104106 # 55901 # indirect search from google => no "page="" in query
@@ -213,29 +213,8 @@ def get_single_ocr_text(df, browser_show=True):
 
 		if txt_resp.ok: # 200
 			print(f"\t\t\tYES >> loading...\n")
-			#print(txt_resp.text)
-				
-
-		#title_info_url = s_url+"&marc=true"
-		#title_info_resp = requests.get(title_info_url)
-		#print(f"\n>> Loading title information page...\n")
-		#print(f">> Page: {title_info_url} exists? {title_info_resp.status_code}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
-		#print(title_info_resp.text)
-
-	"""
-	if txt_resp.status_code==200:
-		print(f">> Loading ...")
-		print(txt_resp.text)
-
-		#page = urllib.request.urlopen( s_url )
-		#html_orig = page.read().decode("utf-8")
-		#html_prty = BeautifulSoup(html_orig, "html.parser")
-		#print(html_orig)
-		#print(html_prty.get_text())
-	else:
-		print(f">> Loading xlsx file...")
-	"""
-
+			print(txt_resp.text)
+			
 def get_ocr_texts(df):
 	print(f">> Extracting OCR text from df: {df.shape}")
 	
@@ -293,10 +272,11 @@ def get_ocr_texts(df):
 				print(f"\t\t\tYES >> loading...\n")
 				return txt_resp.text
 
-	check_urls = lambda x:analyze_(x)
+	check_urls = lambda x: analyze_(x)
 	
 	# cleaning
 	df["ocr_text"] = pd.DataFrame( df.referer.apply( check_urls ) )
+	
 	print(list(df.columns))
 	print("#"*150)
 	print(df.head(50))
@@ -307,16 +287,16 @@ def get_ocr_texts(df):
 
 def run():
 	# working with single log file:
-	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
+	fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
 	#fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
-
 	#fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
-	#df = get_df_no_ip_logs(infile=os.path.join(dpath, fname), timespan=True)
 
-	#get_single_ocr_text(df, browser_show=False)
-	#get_ocr_texts(df)
+	df = get_df_no_ip_logs(infile=os.path.join(dpath, fname), timespan=False)
+
+	#get_single_ocr_text(df, browser_show=True)
+	get_ocr_texts(df)
 	
-	#"""
+	"""
 	log_files = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
 	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files]
 	#print(len(log_files_date), log_files_date)
@@ -332,7 +312,7 @@ def run():
 		#print( df.tail(40) )
 		print(f"\t\tCOMPLETED!")
 	
-	#"""
+	"""
 
 if __name__ == '__main__':
 	os.system('clear')

@@ -5,15 +5,15 @@
 # # # # # # $ ln -s ~/WS_Farid/OxfordRobotCar/VPR_IR/puhti_video_sbatch.sh live.sh
 
 #SBATCH --account=project_2004072
-#SBATCH -J vis_heatmap_barplot
+#SBATCH -J 1feb2017_err_handling_url
 #SBATCH -o LOG_%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem=360G
-#SBATCH --time=0-07:59:58
+#SBATCH --mem=660G
+#SBATCH --time=2-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
+#SBATCH --cpus-per-task=10
 
-# # # S B A T C H --cpus-per-task=10
 # # # S B A T C H --array=1-3
 
 stars=$(printf '%*s' 90 '')

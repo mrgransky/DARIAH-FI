@@ -2,32 +2,55 @@ import requests
 import json
 import os
 from requests_html import HTML, HTMLSession
+from bs4 import BeautifulSoup
 
-os.system('clear')
+def broken_connection(url):
+	try:
+		requests.get(url)
+		return False
+	except requests.exceptions.ConnectionError:
+		#print ("Failed to open url")
+		return True
 
-url = 'https://digi.kansalliskirjasto.fi/search?query=%22Laihia%20Saari%22~8&formats=NEWSPAPER&orderBy=RELEVANCE'
+def run_req_html():
+	#session = HTMLSession()
+	#r = session.get(url)
 
-session = HTMLSession()
-r = session.get(url)
+	print(r.status_code, r.html)
+	print()
 
-print(r.status_code, r.html)
-print()
+	tst = r.html.find('app-digiweb ng-version="9.1.12"', first=True)
+	print(tst)
 
-tst = r.html.find('app-digiweb ng-version="9.1.12"', first=True)
-print(tst)
+def run_beautiful_soup(url):
+	if broken_connection(url):
+		return 0
+
+	source = requests.get(url).text
+	soup = BeautifulSoup(source, 'lxml')
+
+	#print(soup.head.title) # not important!
+	#print("#"*150)
+
+	#print(soup.prettify())
+	#print("#"*150)
+
+	print(soup.body)
+	print("#"*150)
+
+	#print(dir(soup))
+	#print("#"*150)
+
+	print(soup.find('app-digiweb'))
+	print("#"*150)
+
+	print(soup.find_all("div"))
+	print("#"*150)
 
 
 
-"""
-section = r.html.find('.section', first=True)
-print(section)
-
-navigation_result = r.html.find('app-result-navigation', first=True)
-print(navigation_result.html)
-
-
-search_result_text = r.html.find('app-search-result-text-thumb', first=True)
-print(search_result_text)
-#print(search_result_text.html)
-"""
-
+if __name__ == '__main__':
+	os.system('clear')
+	url = 'https://digi.kansalliskirjasto.fi/search?query=%22Laihia%20Saari%22~8&formats=NEWSPAPER&orderBy=RELEVANCE'
+	#run_req_html(url)
+	run_beautiful_soup(url)
