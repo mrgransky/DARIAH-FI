@@ -384,6 +384,7 @@ def get_query_log(QUERY=0):
 
 def run():
 
+	"""
 	single_query(file_=get_query_log(QUERY=args.query), 
 							browser_show=False, 
 							#ts=["23:52:00", "23:59:59"],
@@ -395,8 +396,7 @@ def run():
 							#ts=["23:52:00", "23:59:59"],
 							)
 
-	"""
-
+	
 	print(f"\t\tCOMPLETED!")
 	
 if __name__ == '__main__':
