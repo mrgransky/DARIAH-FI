@@ -116,14 +116,13 @@ def updating_(INP_URL):
 	print(f"\t\tValidation & Update ...")
 	try:
 		r = requests.get(INP_URL)
-		OUTPUT_URL = r.url
+		return r.url
 	except requests.exceptions.ConnectionError as ec:
 		print(f">> Connection Error: {ec} => None")
-		OUTPUT_URL = None
+		pass
 	except requests.exceptions.Timeout as et:
 		print(f">> Timeout Exception: {et} => return original url")
-		updated_url = INP_URL
-	return OUTPUT_URL
+		pass
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
@@ -309,14 +308,21 @@ def all_queries(file_="", ts=None):
 			#print(f">> no link is available! => exit")
 			return 0
 		
+
+		"""
 		if valid_(in_url) is None:
 			print(f"\t\tinvalid => exit")
 			return
 
 		in_url, h_url = update_url(in_url)
 		print(f"{h_url}\n{in_url}")
+		"""
 
-		print(f">> Parsing url ...")
+		in_url = updating_(in_url)
+		if in_url is None:
+			return
+
+		print(f"\nParsing {in_url}")
 		parsed_url = urllib.parse.urlparse(in_url)
 		print(parsed_url)
 
