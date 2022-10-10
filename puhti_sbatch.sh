@@ -8,7 +8,7 @@
 #SBATCH -J save_dfs_ocr
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=longrun
-#SBATCH --mem=64G
+#SBATCH --mem=16G
 #SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL

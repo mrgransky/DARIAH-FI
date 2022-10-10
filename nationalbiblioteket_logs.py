@@ -49,8 +49,6 @@ dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
-search_idx, volume_idx, page_idx = 0, 1, 2
-
 if not os.path.exists(rpath): 
 	print(f"\n>> Creating DIR:\n{rpath}")
 	os.makedirs( rpath )
