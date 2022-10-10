@@ -15,8 +15,6 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --array=0-69
 
-# # # S B A T C H --array=1-3
-
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
 ch="#"

@@ -32,7 +32,7 @@ import pandas as pd
 # - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
-parser.add_argument('--query', default=70, type=int)
+parser.add_argument('--query', default=6, type=int) # smallest
 
 args = parser.parse_args()
 
@@ -89,15 +89,21 @@ def update_url(INP_URL):
 	#session = requests.Session()  # so connections are recycled
 	#r = session.head(INP_URL, allow_redirects=True)
 	try:
-		r = requests.get(INP_URL, timeout=120) # wait 120s for (connection, read)
-	except requests.exceptions.Timeout:
+		#r = requests.get(INP_URL, timeout=120) # wait 120s for (connection, read)
+		r = requests.get(INP_URL, timeout=None) # wait forever for (connection, read)
+		updated_url = r.url
+		history_url = r.history
+
+		return updated_url, history_url
+
+	except r.exceptions.Timeout:
 		print(f">> Timeout Exception! => return original url")
 		return INP_URL, None
 
-	updated_url = r.url
-	history_url = r.history
+	#updated_url = r.url
+	#history_url = r.history
 
-	return updated_url, history_url
+	#return updated_url, history_url
 	
 def broken_connection(url):
 	try:
@@ -168,9 +174,8 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 def single_query(file_="", ts=None, browser_show=False):
 	ocr_txt = np.nan
 
-	print(f">> Single query analysis...")
-	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
-	
+	print(f">> Analyzing a single query of {file_}")
+	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)	
 	print(f"df: {df.shape}")
 	
 	"""
@@ -366,7 +371,7 @@ def get_log_files():
 	return log_files
 
 def get_query_log(QUERY=0):
-	print(f">> Reading Q: {QUERY}")
+	print(f">> Given log file index: {QUERY}")
 	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
 	#print(log_files_dir)
 
@@ -380,23 +385,18 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
-	# working with single log file:
-	#fn = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
-	#fn = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
-	#fn = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-07.log"	# smallest 
-
-	#single_query(file_=fn)
-	#single_query(file_=fn, browser_show=False, ts=["23:52:00", "23:59:59"])
-
-	#all_queries(file_=fn)
-	#all_queries(file_=fn, ts=["23:52:00", "23:59:59"])
-	
-	# run all log files, in python!
-	#log_files = get_log_files()
-	#for f in log_files: all_queries(file_=f) 
+	"""
+	single_query(file_=get_query_log(QUERY=args.query), 
+							browser_show=False, 
+							#ts=["23:52:00", "23:59:59"],
+							)
+	"""
 
 	# run all log files using array in batch
-	all_queries( get_query_log(QUERY=args.query) )
+	all_queries(file_=get_query_log(QUERY=args.query),
+							#ts=["23:52:00", "23:59:59"],
+							)
+
 	
 
 	print(f"\t\tCOMPLETED!")
