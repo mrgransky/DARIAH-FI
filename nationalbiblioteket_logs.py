@@ -90,7 +90,7 @@ def update_url(INP_URL):
 	h = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
 	try:
 		#r = requests.get(INP_URL, timeout=120) # wait 120s for (connection, read)
-		r = requests.get(INP_URL, headers=h, timeout=10) # wait forever for (connection, read)
+		r = requests.get(INP_URL, headers=h, timeout=Timeout(connect=5, read=60)) # wait forever for (connection, read)
 		updated_url = r.url
 		history_url = r.history
 
@@ -109,7 +109,7 @@ def broken_connection(url):
 	print(f"\t\tBroken??")
 	h = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
 	try:
-		r = requests.get(url, headers=h, timeout=10)
+		r = requests.get(url, headers=h, timeout=Timeout(connect=5, read=60))
 		return False
 	except requests.exceptions.ConnectionError as err:
 		print (f"Broken url => Connection Error!!!! {err}")
