@@ -100,16 +100,18 @@ def update_url(INP_URL):
 	
 	return updated_url, history_url
 	
-def valid_(url):
+def valid_(INP_URL):
 	#print(f"\t\tValid?")
 	try:
-		r = requests.get(url)
-	except requests.exceptions.ConnectionError as e:
-		print(f">> Connection Error: {e}")
-		pass # return None!
-	finally:
+		r = requests.get(INP_URL)
 		print(f"\t\t==>>VALID")
-		return url
+		OUTPUT_URL = INP_URL
+	except requests.exceptions.ConnectionError as e:
+		print(f">> Connection Error: {e} => None")
+		OUTPUT_URL = None
+		pass # return None!
+	
+	return OUTPUT_URL
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
