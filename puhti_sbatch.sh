@@ -5,14 +5,15 @@
 # # # # # # $ ln -s ~/WS_Farid/OxfordRobotCar/VPR_IR/puhti_video_sbatch.sh live.sh
 
 #SBATCH --account=project_2004072
-#SBATCH -J 1feb2017_err_handling_url
-#SBATCH -o LOG_%x_%N_%j.out
-#SBATCH --partition=hugemem
-#SBATCH --mem=660G
-#SBATCH --time=2-23:59:58
+#SBATCH -J save_dfs_ocr
+#SBATCH -o NLF_logs/q%a_%x_%N_%j.out
+#SBATCH --partition=longrun
+#SBATCH --mem=64G
+#SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=10
+#SBATCH --array=0-69
 
 # # # S B A T C H --array=1-3
 
@@ -39,7 +40,7 @@ elif [ $user == 'alijanif' ]; then
 fi
 
 #python nationalbiblioteket.py
-python nationalbiblioteket_logs.py
+python nationalbiblioteket_logs.py --query $SLURM_ARRAY_TASK_ID
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

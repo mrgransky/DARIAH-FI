@@ -9,6 +9,7 @@ import string
 import sys
 import joblib
 import time
+import argparse
 
 from bs4 import BeautifulSoup
 from natsort import natsorted
@@ -30,11 +31,15 @@ import pandas as pd
 # fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
 # - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
 
+parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
+parser.add_argument('--query', default=70, type=int)
+
+args = parser.parse_args()
+
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
 				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
 				}
-
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 
@@ -80,6 +85,7 @@ def convert_date(INP_DATE):
 	return yyyy_mm_dd
 
 def update_url(INP_URL):
+	print(f">> Updating ...")
 	#session = requests.Session()  # so connections are recycled
 	#r = session.head(INP_URL, allow_redirects=True)
 	try:
@@ -254,7 +260,7 @@ def single_query(file_="", ts=None, browser_show=False):
 def all_queries(file_="", ts=None):
 	ocr_txt = np.nan
 
-	print(f">> Analyzing All Queries")
+	print(f">> Analyzing queries of {file_} ...")
 	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)	
 	print(f"df: {df.shape}")
 	
@@ -281,7 +287,6 @@ def all_queries(file_="", ts=None):
 			#print(f"\t\tBROKEN => exit")
 			return 0
 
-		print(f">> updating url ...")
 		in_url, h_url = update_url(in_url)
 		print(f"{h_url}\n{in_url}")
 
@@ -349,6 +354,31 @@ def save_(df, infile=""):
 
 	print(f"\t\t{fsize:.1f} MB")
 
+def get_log_files():
+	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
+	#print(log_files_dir)
+
+	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
+	#print(len(log_files_date), log_files_date)
+	log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
+	#print(log_files)
+
+	return log_files
+
+def get_query_log(QUERY=0):
+	print(f">> Reading Q: {QUERY}")
+	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
+	#print(log_files_dir)
+
+	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
+	#print(len(log_files_date), log_files_date)
+	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
+	#print(log_files)
+	query_log_file = all_log_files[QUERY] 
+	print(f"\t\t {query_log_file}")
+
+	return query_log_file
+
 def run():
 	# working with single log file:
 	#fn = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-01.log"	
@@ -361,18 +391,13 @@ def run():
 	#all_queries(file_=fn)
 	#all_queries(file_=fn, ts=["23:52:00", "23:59:59"])
 	
-	#"""
-	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
-	#print(log_files_dir)
+	# run all log files, in python!
+	#log_files = get_log_files()
+	#for f in log_files: all_queries(file_=f) 
 
-	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
-	#print(len(log_files_date), log_files_date)
-	log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
-	#print(log_files)
-
-	for f in log_files:
-		all_queries(file_=f)
-	#"""
+	# run all log files using array in batch
+	all_queries( get_query_log(QUERY=args.query) )
+	
 
 	print(f"\t\tCOMPLETED!")
 	
