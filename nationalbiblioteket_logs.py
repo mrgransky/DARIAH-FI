@@ -125,7 +125,7 @@ def broken_connection(url):
 		print(f">> Timeout: {et}")
 	except requests.exceptions.ConnectionError as ec:
 		print (f"Broken url => Connection Error!!!! {ec}")
-		continue
+		#continue
 		return True
 	except requests.exceptions.TooManyRedirects as etmr:
 		# Tell the user their URL was bad and try a different one
@@ -135,8 +135,8 @@ def broken_connection(url):
 	except requests.exceptions.RequestException as e:
 		# catastrophic error. bail.
 		raise SystemExit(e)
-
-	return False
+	finally:
+		return False
 
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
