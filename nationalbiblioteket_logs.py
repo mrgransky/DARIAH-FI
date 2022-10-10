@@ -107,6 +107,9 @@ def update_url(INP_URL):
 	
 def broken_connection(url):
 	print(f"\t\tBroken??")
+
+
+	"""
 	h = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
 	try:
 		r = requests.get(url, headers=h, timeout=Timeout(connect=5, read=60))
@@ -114,6 +117,27 @@ def broken_connection(url):
 	except requests.exceptions.ConnectionError as err:
 		print (f"Broken url => Connection Error!!!! {err}")
 		return True
+	"""
+	try:
+		r = requests.get(url)
+	except requests.exceptions.Timeout as et:
+		# Maybe set up for a retry, or continue in a retry loop
+		print(f">> Timeout: {et}")
+	except requests.exceptions.ConnectionError as ec:
+		print (f"Broken url => Connection Error!!!! {ec}")
+		continue
+		return True
+	except requests.exceptions.TooManyRedirects as etmr:
+		# Tell the user their URL was bad and try a different one
+		print(f">> TooManyRedirects: {etmr}")
+	except requests.exceptions.HTTPError as ehttp:
+		print(f">> HTTP err: {ehttp}")
+	except requests.exceptions.RequestException as e:
+		# catastrophic error. bail.
+		raise SystemExit(e)
+
+	return False
+
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
