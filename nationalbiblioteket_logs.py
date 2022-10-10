@@ -33,7 +33,7 @@ import pandas as pd
 # - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
-parser.add_argument('--query', default=6, type=int) # smallest
+parser.add_argument('--query', default=9, type=int) # smallest
 
 args = parser.parse_args()
 
@@ -99,18 +99,30 @@ def update_url(INP_URL):
 		pass
 	
 	return updated_url, history_url
-	
+
 def valid_(INP_URL):
 	#print(f"\t\tValid?")
 	try:
 		r = requests.get(INP_URL)
-		print(f"\t\t==>>VALID")
-		OUTPUT_URL = INP_URL
+		print(f"\t\t==>> VALID")
+		#OUTPUT_URL = r.url
+		return INP_URL
 	except requests.exceptions.ConnectionError as e:
 		print(f">> Connection Error: {e} => None")
-		OUTPUT_URL = None
+		#OUTPUT_URL = None
 		pass # return None!
 	
+def updating_(INP_URL):
+	print(f"\t\tValidation & Update ...")
+	try:
+		r = requests.get(INP_URL)
+		OUTPUT_URL = r.url
+	except requests.exceptions.ConnectionError as ec:
+		print(f">> Connection Error: {ec} => None")
+		OUTPUT_URL = None
+	except requests.exceptions.Timeout as et:
+		print(f">> Timeout Exception: {et} => return original url")
+		updated_url = INP_URL
 	return OUTPUT_URL
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
@@ -213,6 +225,11 @@ def single_query(file_="", ts=None, browser_show=False):
 		print(f">> no link is available! => exit")
 		return 0
 
+	s_url = updating_(s_url)
+	if s_url is None:
+		return
+
+	"""
 	if valid_(s_url) is None:
 		print(f"\t\tinvalid")
 		return
@@ -220,12 +237,16 @@ def single_query(file_="", ts=None, browser_show=False):
 	print(f">> updating url ...")
 	s_url, h_url = update_url(s_url)
 	print(f"{h_url}\n{s_url}")
+	"""
+
+
+
 
 	if browser_show:
 		print(f"\topening in browser... ")
 		webbrowser.open(s_url, new=2)
 	
-	print(f">> Parsing url ...")
+	print(f"Parsing {s_url}")
 	parsed_url = urllib.parse.urlparse(s_url)
 	print(parsed_url)
 	
