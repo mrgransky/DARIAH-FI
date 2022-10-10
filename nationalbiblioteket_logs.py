@@ -84,60 +84,32 @@ def convert_date(INP_DATE):
 	return yyyy_mm_dd
 
 def update_url(INP_URL):
-	print(f">> Updating ...")
+	#print(f">> Updating URL...")
+
 	#session = requests.Session()  # so connections are recycled
 	#r = session.head(INP_URL, allow_redirects=True)
-	h = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
 	try:
-		#r = requests.get(INP_URL, timeout=120) # wait 120s for (connection, read)
-		r = requests.get(INP_URL, headers=h, timeout=Timeout(connect=5, read=60)) # wait forever for (connection, read)
+		r = requests.get(INP_URL)
 		updated_url = r.url
 		history_url = r.history
-
-		return updated_url, history_url
-
 	except requests.exceptions.Timeout as e:
 		print(f">> Timeout Exception: {e} => return original url")
-		return INP_URL, None
-
-	#updated_url = r.url
-	#history_url = r.history
-
-	#return updated_url, history_url
+		updated_url = INP_URL
+		history_url = None
+		pass
 	
-def broken_connection(url):
-	print(f"\t\tBroken??")
-
-
-	"""
-	h = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
-	try:
-		r = requests.get(url, headers=h, timeout=Timeout(connect=5, read=60))
-		return False
-	except requests.exceptions.ConnectionError as err:
-		print (f"Broken url => Connection Error!!!! {err}")
-		return True
-	"""
+	return updated_url, history_url
+	
+def valid_(url):
+	#print(f"\t\tValid?")
 	try:
 		r = requests.get(url)
-	except requests.exceptions.Timeout as et:
-		# Maybe set up for a retry, or continue in a retry loop
-		print(f">> Timeout: {et}")
-	except requests.exceptions.ConnectionError as ec:
-		print (f"Broken url => Connection Error!!!! {ec}")
-		#continue
-		return True
-	except requests.exceptions.TooManyRedirects as etmr:
-		# Tell the user their URL was bad and try a different one
-		print(f">> TooManyRedirects: {etmr}")
-	except requests.exceptions.HTTPError as ehttp:
-		print(f">> HTTP err: {ehttp}")
-	except requests.exceptions.RequestException as e:
-		# catastrophic error. bail.
-		raise SystemExit(e)
+	except requests.exceptions.ConnectionError as e:
+		print(f">> Connection Error: {e}")
+		pass # return None!
 	finally:
-		return False
-
+		print(f"\t\t==>>VALID")
+		return url
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
@@ -239,9 +211,9 @@ def single_query(file_="", ts=None, browser_show=False):
 		print(f">> no link is available! => exit")
 		return 0
 
-	if broken_connection(s_url):
-		print(f"\t\tBROKEN => exit")
-		return 0
+	if valid_(s_url) is None:
+		print(f"\t\tinvalid")
+		return
 
 	print(f">> updating url ...")
 	s_url, h_url = update_url(s_url)
@@ -314,9 +286,9 @@ def all_queries(file_="", ts=None):
 			#print(f">> no link is available! => exit")
 			return 0
 		
-		if broken_connection(in_url):
-			#print(f"\t\tBROKEN => exit")
-			return 0
+		if valid_(in_url) is None:
+			print(f"\t\tinvalid => exit")
+			return
 
 		in_url, h_url = update_url(in_url)
 		print(f"{h_url}\n{in_url}")
@@ -411,19 +383,19 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
-	"""
+
 	single_query(file_=get_query_log(QUERY=args.query), 
 							browser_show=False, 
 							#ts=["23:52:00", "23:59:59"],
 							)
+	
 	"""
-
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
 							#ts=["23:52:00", "23:59:59"],
 							)
 
-	
+	"""
 
 	print(f"\t\tCOMPLETED!")
 	
