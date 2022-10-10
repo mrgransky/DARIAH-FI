@@ -105,10 +105,10 @@ def update_url(INP_URL):
 	
 def broken_connection(url):
 	try:
-		requests.get(url)
+		r = requests.get(url, timeout=None)
 		return False
-	except requests.exceptions.ConnectionError:
-		#print ("Failed to open url")
+	except r.exceptions.ConnectionError:
+		print ("Failed to open url => connection Error!!!!")
 		return True
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
