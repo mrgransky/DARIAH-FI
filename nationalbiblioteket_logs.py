@@ -88,14 +88,14 @@ def update_url(INP_URL):
 	#r = session.head(INP_URL, allow_redirects=True)
 	try:
 		#r = requests.get(INP_URL, timeout=120) # wait 120s for (connection, read)
-		r = requests.get(INP_URL, timeout=None) # wait forever for (connection, read)
+		r = requests.get(INP_URL, timeout=5) # wait forever for (connection, read)
 		updated_url = r.url
 		history_url = r.history
 
 		return updated_url, history_url
 
-	except requests.exceptions.Timeout:
-		print(f">> Timeout Exception! => return original url")
+	except requests.exceptions.Timeout as e:
+		print(f">> Timeout Exception: {e} => return original url")
 		return INP_URL, None
 
 	#updated_url = r.url
@@ -105,10 +105,10 @@ def update_url(INP_URL):
 	
 def broken_connection(url):
 	try:
-		requests.get(url, timeout=None)
+		r = requests.get(url, timeout=5)
 		return False
-	except requests.exceptions.ConnectionError:
-		print ("Broken url => Connection Error!!!!")
+	except requests.exceptions.ConnectionError as err:
+		print (f"Broken url => Connection Error!!!! {err}")
 		return True
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
