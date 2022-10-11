@@ -50,13 +50,15 @@ dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
-if not os.path.exists(rpath): 
-	print(f"\n>> Creating DIR:\n{rpath}")
-	os.makedirs( rpath )
+def make_folders():
+	if not os.path.exists(rpath): 
+		print(f"\n>> Creating DIR:\n{rpath}")
+		os.makedirs( rpath )
 
-if not os.path.exists(dfs_path): 
-	print(f"\n>> Creating DIR:\n{dfs_path}")
-	os.makedirs( dfs_path )
+	if not os.path.exists(dfs_path): 
+		print(f"\n>> Creating DIR:\n{dfs_path}")
+		os.makedirs( dfs_path )
+
 
 def convert_date(INP_DATE):
 	months_dict = {
@@ -82,46 +84,22 @@ def convert_date(INP_DATE):
 
 	yyyy_mm_dd = datetime.datetime.strptime(MODIDFIED_DATE, "%d/%m/%Y").strftime("%Y-%m-%d")
 	return yyyy_mm_dd
-
-def update_url(INP_URL):
-	#print(f">> Updating URL...")
-
-	#session = requests.Session()  # so connections are recycled
-	#r = session.head(INP_URL, allow_redirects=True)
-	try:
-		r = requests.get(INP_URL)
-		updated_url = r.url
-		history_url = r.history
-	except requests.exceptions.Timeout as e:
-		print(f">> Timeout Exception: {e} => return original url")
-		updated_url = INP_URL
-		history_url = None
-		pass
 	
-	return updated_url, history_url
-
-def valid_(INP_URL):
-	#print(f"\t\tValid?")
-	try:
-		r = requests.get(INP_URL)
-		print(f"\t\t==>> VALID")
-		#OUTPUT_URL = r.url
-		return INP_URL
-	except requests.exceptions.ConnectionError as e:
-		print(f">> Connection Error: {e} => None")
-		#OUTPUT_URL = None
-		pass # return None!
-	
-def updating_(INP_URL):
+def checking_(INP_URL):
 	print(f"\t\tValidation & Update ...")
 	try:
-		r = requests.get(INP_URL)
-		return r.url
+		response = requests.get(INP_URL)
+		print(f"\t\t\t{response.status_code} => {response.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
+		#return r.url
+		return response
 	except requests.exceptions.ConnectionError as ec:
 		print(f">> Connection Error: {ec} => None")
 		pass
 	except requests.exceptions.Timeout as et:
 		print(f">> Timeout Exception: {et} => return original url")
+		pass
+	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
+		print(f">> HTTP Exception: {ehttp}")
 		pass
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
@@ -224,22 +202,9 @@ def single_query(file_="", ts=None, browser_show=False):
 		print(f">> no link is available! => exit")
 		return 0
 
-	s_url = updating_(s_url)
+	s_url = checking_(s_url).url
 	if s_url is None:
 		return
-
-	"""
-	if valid_(s_url) is None:
-		print(f"\t\tinvalid")
-		return
-
-	print(f">> updating url ...")
-	s_url, h_url = update_url(s_url)
-	print(f"{h_url}\n{s_url}")
-	"""
-
-
-
 
 	if browser_show:
 		print(f"\topening in browser... ")
@@ -266,13 +231,14 @@ def single_query(file_="", ts=None, browser_show=False):
 	if PG_PARAM and not SRCH_PARAM: # possible OCR existence
 		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 		print(f">> page-X.txt available?\t{txt_pg_url}\t")
-		txt_resp = requests.get(txt_pg_url)
-		
-		print(f"\t\t\t{txt_resp.status_code} => {txt_resp.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
 
-		if txt_resp.ok: # 200
+		text_response = checking_(txt_pg_url)
+				
+		print(f"\t\t\t{text_response.status_code} => {text_response.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
+
+		if text_response is not None:
 			print(f"\t\t\tYES >> loading...\n")
-			ocr_txt = txt_resp.text
+			ocr_txt = text_response.text
 			#print(ocr_txt)
 	
 	df.loc[qlink, "OCR"] = ocr_txt
@@ -308,17 +274,7 @@ def all_queries(file_="", ts=None):
 			#print(f">> no link is available! => exit")
 			return 0
 		
-
-		"""
-		if valid_(in_url) is None:
-			print(f"\t\tinvalid => exit")
-			return
-
-		in_url, h_url = update_url(in_url)
-		print(f"{h_url}\n{in_url}")
-		"""
-
-		in_url = updating_(in_url)
+		in_url = checking_(in_url).url
 		if in_url is None:
 			return
 
@@ -341,14 +297,14 @@ def all_queries(file_="", ts=None):
 		if PG_PARAM and not SRCH_PARAM:
 			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 			print(f">> page-X.txt available?\t{txt_pg_url}\t")
-			txt_resp = requests.get(txt_pg_url)
-
-			print(f"\t\t\t{txt_resp.status_code} => {txt_resp.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
-
-			if txt_resp.ok: # 200
+			
+			text_response = checking_(txt_pg_url)
+			print(f"\t\t\t{text_response.status_code} => {text_response.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
+			
+			if text_response is not None: # 200
 				print(f"\t\t\tYES >> loading...\n")
-				return txt_resp.text
-
+				return text_response.text
+			
 	check_urls = lambda x: analyze_(x)
 	
 	# cleaning
@@ -412,8 +368,7 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
-
-	"""
+	"""	
 	single_query(file_=get_query_log(QUERY=args.query), 
 							browser_show=False, 
 							#ts=["23:52:00", "23:59:59"],
@@ -424,10 +379,10 @@ def run():
 	all_queries(file_=get_query_log(QUERY=args.query),
 							#ts=["23:52:00", "23:59:59"],
 							)
-
 	
 	print(f"\t\tCOMPLETED!")
 	
 if __name__ == '__main__':
 	os.system('clear')
+	make_folders()
 	run()
