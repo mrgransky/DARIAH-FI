@@ -59,7 +59,6 @@ def make_folders():
 		print(f"\n>> Creating DIR:\n{dfs_path}")
 		os.makedirs( dfs_path )
 
-
 def convert_date(INP_DATE):
 	months_dict = {
 		"Jan": "01", 
@@ -195,23 +194,25 @@ def single_query(file_="", ts=None, browser_show=False):
 	#qlink = 96624 # both referer and user_agent pd.NA
 	#qlink = 10340 # read timeout error in puhti when updating with session & head ?
 	print(df.iloc[qlink])
-	s_url = df["referer"][qlink] #if df["referer"][qlink].notnull() else None
-	print(f">> Q: {qlink} : {s_url}")
+	single_url = df["referer"][qlink] #if df["referer"][qlink].notnull() else None
+	print(f">> Q: {qlink} : {single_url}")
 
-	if s_url is pd.NA:
+	if single_url is pd.NA:
 		print(f">> no link is available! => exit")
-		return 0
-
-	s_url = checking_(s_url).url
-	if s_url is None:
 		return
+
+	r = checking_(in_url)
+	if r is None:
+		return
+
+	single_url = r.url
 
 	if browser_show:
 		print(f"\topening in browser... ")
-		webbrowser.open(s_url, new=2)
+		webbrowser.open(single_url, new=2)
 	
-	print(f"Parsing {s_url}")
-	parsed_url = urllib.parse.urlparse(s_url)
+	print(f"Parsing {single_url}")
+	parsed_url = urllib.parse.urlparse(single_url)
 	print(parsed_url)
 	
 	print(f">> Explore url parameters ...")
@@ -274,9 +275,11 @@ def all_queries(file_="", ts=None):
 			#print(f">> no link is available! => exit")
 			return 0
 		
-		in_url = checking_(in_url).url
-		if in_url is None:
+		r = checking_(in_url)
+		if r is None:
 			return
+
+		in_url = r.url
 
 		print(f"\nParsing {in_url}")
 		parsed_url = urllib.parse.urlparse(in_url)
