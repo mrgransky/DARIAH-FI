@@ -83,22 +83,26 @@ def convert_date(INP_DATE):
 
 	yyyy_mm_dd = datetime.datetime.strptime(MODIDFIED_DATE, "%d/%m/%Y").strftime("%Y-%m-%d")
 	return yyyy_mm_dd
-	
-def checking_(INP_URL):
-	print(f"\t\tValidation & Update ...")
+
+def checking_(url):
+	print(f"\t\tValidation & Update")
 	try:
-		response = requests.get(INP_URL)
-		print(f"\t\t\t{response.status_code} => {response.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
-		#return r.url
-		return response
+		r = requests.get(url)
+		r.raise_for_status()
+		print(r.status_code, r.ok)
+		return r
 	except requests.exceptions.ConnectionError as ec:
-		print(f">> Connection Error: {ec} => None")
+		print(f">> Connection Exception: {ec}")
 		pass
 	except requests.exceptions.Timeout as et:
-		print(f">> Timeout Exception: {et} => return original url")
+		print(f">> Timeout Exception: {et}")
 		pass
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		print(f">> HTTP Exception: {ehttp}")
+		print(ehttp.response.status_code)
+		pass
+	except requests.exceptions.RequestException as e:  # This is the correct syntax
+		print(f">> ALL Exception: {e}")
 		pass
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
@@ -146,7 +150,7 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 
 	# with pandas:
 	df.timestamp = pd.to_datetime(df.timestamp)
-	df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
+	df = df.replace("null", "-", regex=True).replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
 	
 	# with numpy:
 	#df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', np.nan, regex=True)
@@ -201,7 +205,7 @@ def single_query(file_="", ts=None, browser_show=False):
 		print(f">> no link is available! => exit")
 		return
 
-	r = checking_(in_url)
+	r = checking_(single_url)
 	if r is None:
 		return
 
@@ -234,9 +238,6 @@ def single_query(file_="", ts=None, browser_show=False):
 		print(f">> page-X.txt available?\t{txt_pg_url}\t")
 
 		text_response = checking_(txt_pg_url)
-				
-		print(f"\t\t\t{text_response.status_code} => {text_response.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
-
 		if text_response is not None:
 			print(f"\t\t\tYES >> loading...\n")
 			ocr_txt = text_response.text
@@ -273,7 +274,7 @@ def all_queries(file_="", ts=None):
 
 		if in_url is pd.NA:
 			#print(f">> no link is available! => exit")
-			return 0
+			return
 		
 		r = checking_(in_url)
 		if r is None:
@@ -302,7 +303,6 @@ def all_queries(file_="", ts=None):
 			print(f">> page-X.txt available?\t{txt_pg_url}\t")
 			
 			text_response = checking_(txt_pg_url)
-			print(f"\t\t\t{text_response.status_code} => {text_response.ok}") # 200: ok, 400: bad_request, 403: forbidden, 404: not_found
 			
 			if text_response is not None: # 200
 				print(f"\t\t\tYES >> loading...\n")
@@ -371,18 +371,17 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
-	"""	
+	"""
 	single_query(file_=get_query_log(QUERY=args.query), 
-							browser_show=False, 
+							browser_show=True, 
 							#ts=["23:52:00", "23:59:59"],
 							)
-	
 	"""
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
 							#ts=["23:52:00", "23:59:59"],
 							)
-	
+		
 	print(f"\t\tCOMPLETED!")
 	
 if __name__ == '__main__':
