@@ -308,13 +308,13 @@ def all_queries(file_="", ts=None):
 
 		in_url = r.url
 
-		print(f"\nParsing {in_url}")
+		#print(f"\nParsing {in_url}")
 		parsed_url = urllib.parse.urlparse(in_url)
-		print(parsed_url)
+		#print(parsed_url)
 
-		print(f">> Explore url parameters ...")
+		#print(f">> Explore url parameters ...")
 		parameters = urllib.parse.parse_qs( parsed_url.query, keep_blank_values=True)
-		print(parameters)
+		#print(parameters)
 		
 		#print(f">> Search Page?")
 		SRCH_PARAM = True if "search" in parsed_url.path else False
@@ -433,7 +433,7 @@ def run():
 	"""
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
-							ts=["23:56:00", "23:59:39"],
+							#ts=["23:56:00", "23:59:39"],
 							)
 	
 	#print(f"\t\tCOMPLETED!")
