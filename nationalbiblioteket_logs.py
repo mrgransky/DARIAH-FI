@@ -133,17 +133,36 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 			#TZ = dt_tz[dt_tz.find(" ")+1:]
 
 			cleaned_lines.append({
-				#"timestamp": 						l[0], # original: 01/Feb/2017:12:34:51 +0200
-				"timestamp": 						l[0].replace(":", " ", 1),
-				"client_request_line": 	l[1],
-				"status": 							l[2],
-				"bytes_sent": 					l[3],
-				"referer": 							l[4],
-				"user_agent": 					l[5],
-				"session_id": 					l[6], #TODO: must be check if key is a right name!
-				"query_word":						np.nan,
-				"term":									np.nan,
-				"OCR":									np.nan,
+				#"timestamp": 									l[0], # original: 01/Feb/2017:12:34:51 +0200
+				"timestamp": 										l[0].replace(":", " ", 1),
+				"client_request_line": 					l[1],
+				"status": 											l[2],
+				"bytes_sent": 									l[3],
+				"referer": 											l[4],
+				"user_agent": 									l[5],
+				"session_id": 									l[6],
+				"query_word":										np.nan,
+				"term":													np.nan,
+				"OCR":													np.nan,
+				"fuzzy":												np.nan,
+				"has_metadata":									np.nan,
+				"has_illustration":							np.nan,
+				"show_unauthorized_results":		np.nan,
+				"pages":												np.nan,
+				"import_time":									np.nan,
+				"collection":										np.nan,
+				"author":												np.nan,
+				"keyword":											np.nan,
+				"publication_place":						np.nan,
+				"language":											np.nan,
+				"document_type":								np.nan,
+				"show_last_page":								np.nan,
+				"order_by":											np.nan,
+				"publisher":										np.nan,
+				"start_date":										np.nan,
+				"end_date":											np.nan,
+				"require_all_keywords":					np.nan,
+				"result_type":									np.nan,
 				#"date": 								YYYYMMDD,
 				#"date": 								pd.to_datetime(l[0].replace(":", " ", 1) ).to_period('D'),
 				#"date": 								pd.to_datetime(l[0].replace(":", " ", 1) ).strftime('%Y-%m-%d'),
@@ -289,13 +308,13 @@ def all_queries(file_="", ts=None):
 
 		in_url = r.url
 
-		#print(f"\nParsing {in_url}")
+		print(f"\nParsing {in_url}")
 		parsed_url = urllib.parse.urlparse(in_url)
-		#print(parsed_url)
+		print(parsed_url)
 
-		#print(f">> Explore url parameters ...")
+		print(f">> Explore url parameters ...")
 		parameters = urllib.parse.parse_qs( parsed_url.query, keep_blank_values=True)
-		#print(parameters)
+		print(parameters)
 		
 		#print(f">> Search Page?")
 		SRCH_PARAM = True if "search" in parsed_url.path else False
@@ -305,9 +324,29 @@ def all_queries(file_="", ts=None):
 		PG_PARAM = True if "page=" in parsed_url.query else False
 		#print(PG_PARAM)
 
-		# query_word & term:
+		# all features:
 		df["query_word"] = ",".join(parameters.get("query")) if parameters.get("query") else np.nan
 		df["term"] = ",".join(parameters.get("term")) if parameters.get("term") else np.nan
+		# ORC updating in the next for loop
+		df["fuzzy"] = ",".join(parameters.get("fuzzy")) if parameters.get("fuzzy") else np.nan
+		df["has_metadata"] = ",".join(parameters.get("lang")) if parameters.get("lang") else np.nan
+		df["has_illustration"] = ",".join(parameters.get("hasIllustrations")) if parameters.get("hasIllustrations") else np.nan
+		df["show_unauthorized_results"] = ",".join(parameters.get("showUnauthorizedResults")) if parameters.get("showUnauthorizedResults") else np.nan
+		df["pages"] = ",".join(parameters.get("pages")) if parameters.get("pages") else np.nan
+		df["import_time"] = ",".join(parameters.get("importTime")) if parameters.get("importTime") else np.nan
+		df["collection"] = ",".join(parameters.get("collection")) if parameters.get("collection") else np.nan
+		df["author"] = ",".join(parameters.get("author")) if parameters.get("author") else np.nan
+		df["keyword"] = ",".join(parameters.get("tag")) if parameters.get("tag") else np.nan
+		df["publication_place"] = ",".join(parameters.get("publicationPlace")) if parameters.get("publicationPlace") else np.nan
+		df["language"] = ",".join(parameters.get("lang")) if parameters.get("lang") else np.nan
+		df["document_type"] = ",".join(parameters.get("formats")) if parameters.get("formats") else np.nan
+		df["show_last_page"] = ",".join(parameters.get("showLastPage")) if parameters.get("showLastPage") else np.nan
+		df["order_by"] = ",".join(parameters.get("orderBy")) if parameters.get("orderBy") else np.nan
+		df["publisher"] = ",".join(parameters.get("publisher")) if parameters.get("publisher") else np.nan
+		df["start_date"] = ",".join(parameters.get("startDate")) if parameters.get("startDate") else np.nan
+		df["end_date"] = ",".join(parameters.get("endDate")) if parameters.get("endDate") else np.nan
+		df["require_all_keywords"] = ",".join(parameters.get("requireAllKeywords")) if parameters.get("requireAllKeywords") else np.nan
+		df["result_type"] = ",".join(parameters.get("resultType")) if parameters.get("resultType") else np.nan
 
 		# OCR extraction:
 		if PG_PARAM and not SRCH_PARAM:
@@ -394,7 +433,7 @@ def run():
 	"""
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["23:58:00", "23:59:39"],
+							ts=["23:56:00", "23:59:39"],
 							)
 	
 	#print(f"\t\tCOMPLETED!")
