@@ -433,7 +433,7 @@ def run():
 	"""
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["23:56:00", "23:59:39"],
+							ts=["23:40:00", "23:59:39"],
 							)
 	
 	#print(f"\t\tCOMPLETED!")

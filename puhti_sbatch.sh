@@ -3,11 +3,11 @@
 #SBATCH -J df_csv
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=longrun
-#SBATCH --mem=5G
+#SBATCH --mem=5G # memory pool for all cores
 #SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --cpus-per-task=5
+#SBATCH --cpus-per-task=10
 #SBATCH --array=0-69
 
 stars=$(printf '%*s' 90 '')
