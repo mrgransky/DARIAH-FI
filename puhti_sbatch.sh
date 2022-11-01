@@ -1,14 +1,15 @@
 #!/bin/bash
 #SBATCH --account=project_2004072
-#SBATCH -J df_csv
+#SBATCH -J df_csv_smallest_6
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=longrun
-#SBATCH --mem=5G # memory pool for all cores
+#SBATCH --mem=25G # memory pool for all cores
 #SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=10
-#SBATCH --array=0-69
+#SBATCH --array=6
+# # # # # # SBATCH --array=0-69
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"

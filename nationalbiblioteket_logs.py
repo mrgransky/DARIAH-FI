@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 from natsort import natsorted
 import numpy as np
 import pandas as pd
+from url_scraping import *
 
 # Apache access log format:
 # 
@@ -33,7 +34,7 @@ import pandas as pd
 # - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
-parser.add_argument('--query', default=9, type=int) # smallest
+parser.add_argument('--query', default=6, type=int) # smallest
 
 args = parser.parse_args()
 
@@ -92,20 +93,20 @@ def checking_(url):
 		#print(r.status_code, r.ok)
 		return r
 	except requests.exceptions.ConnectionError as ec:
-		print(url)
-		print(f"Connection Exception: {ec}")
+		#print(url)
+		print(f">> {url}\tConnection Exception: {ec}")
 		pass
 	except requests.exceptions.Timeout as et:
-		print(url)
-		print(f"Timeout Exception: {et}")
+		#print(url)
+		print(f">> {url}\tTimeout Exception: {et}")
 		pass
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		print(url)
-		print(f"HTTP Exception: {ehttp}\t{ehttp.response.status_code}")
+		print(f">> {url}\tHTTP Exception: {ehttp}\t{ehttp.response.status_code}")
 		pass
 	except requests.exceptions.RequestException as e:
-		print(url)
-		print(f"ALL Exception: {e}")
+		#print(url)
+		print(f">> {url}\tALL Exception: {e}")
 		pass
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
@@ -118,59 +119,45 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:-|.*(http://\D.*))" "(.*?)" (.*)'
 	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:|-|.*(://\D.*))" "(.*?)" (.*)'
 	cleaned_lines = []
+
 	with open(file_path, mode="r") as f:
 		for line in f:
 			##print(line)
 			matched_line = re.match(ACCESS_LOG_PATTERN, line)
 			#print (matched_line)
 			l = matched_line.groups()
-			##print(l)
-
-			#dt_tz = l[0].replace("[", "").replace("]", "")
-			#DDMMYYYY = dt_tz[:dt_tz.find(":")]
-			#YYYYMMDD = convert_date( DDMMYYYY )
-			#HMS = dt_tz[dt_tz.find(":")+1:dt_tz.find(" ")]
-			#TZ = dt_tz[dt_tz.find(" ")+1:]
-
+			#print(l)
 			cleaned_lines.append({
-				#"timestamp": 									l[0], # original: 01/Feb/2017:12:34:51 +0200
-				"timestamp": 										l[0].replace(":", " ", 1),
+				"timestamp": 										l[0].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
 				"client_request_line": 					l[1],
 				"status": 											l[2],
 				"bytes_sent": 									l[3],
 				"referer": 											l[4],
 				"user_agent": 									l[5],
 				"session_id": 									l[6],
-				"query_word":										np.nan,
-				"term":													np.nan,
-				"OCR":													np.nan,
-				"fuzzy":												np.nan,
-				"has_metadata":									np.nan,
-				"has_illustration":							np.nan,
-				"show_unauthorized_results":		np.nan,
-				"pages":												np.nan,
-				"import_time":									np.nan,
-				"collection":										np.nan,
-				"author":												np.nan,
-				"keyword":											np.nan,
-				"publication_place":						np.nan,
-				"language":											np.nan,
-				"document_type":								np.nan,
-				"show_last_page":								np.nan,
-				"order_by":											np.nan,
-				"publisher":										np.nan,
-				"start_date":										np.nan,
-				"end_date":											np.nan,
-				"require_all_keywords":					np.nan,
-				"result_type":									np.nan,
-				#"date": 								YYYYMMDD,
-				#"date": 								pd.to_datetime(l[0].replace(":", " ", 1) ).to_period('D'),
-				#"date": 								pd.to_datetime(l[0].replace(":", " ", 1) ).strftime('%Y-%m-%d'),
-				#"time": 								HMS,
-				#"time":									pd.to_datetime(l[0].replace(":", " ", 1) ).strftime('%H:%M:%S'),
-				#"timezone": 						TZ,
+				#"query_word":										np.nan,
+				#"term":													np.nan,
+				#"OCR":													np.nan,
+				#"fuzzy":												np.nan,
+				#"has_metadata":									np.nan,
+				#"has_illustration":							np.nan,
+				#"show_unauthorized_results":		np.nan,
+				#"pages":												np.nan,
+				#"import_time":									np.nan,
+				#"collection":										np.nan,
+				#"author":												np.nan,
+				#"keyword":											np.nan,
+				#"publication_place":						np.nan,
+				#"language":											np.nan,
+				#"document_type":								np.nan,
+				#"show_last_page":								np.nan,
+				#"order_by":											np.nan,
+				#"publisher":										np.nan,
+				#"start_date":										np.nan,
+				#"end_date":											np.nan,
+				#"require_all_keywords":					np.nan,
+				#"result_type":									np.nan,
 				})
-
 	df = pd.DataFrame.from_dict(cleaned_lines)
 
 	# with pandas:
@@ -181,7 +168,7 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	#df = df.replace("-", pd.NA, regex=True).replace(r'^\s*$', np.nan, regex=True)
 	
 	if TIMESTAMP:
-		#print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
+		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
 		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
 		df_ts = df_ts.reset_index(drop=True)
 		return df_ts
@@ -277,9 +264,13 @@ def single_query(file_="", ts=None, browser_show=False):
 
 def all_queries(file_="", ts=None):
 	#print(f">> Analyzing queries of {file_} ...")
-	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)	
-	#print(f"df: {df.shape}")
+	st_t = time.time()
+	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
+	elapsed_t = time.time() - st_t
+	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.2f}")
 	
+	#sys.exit(0)
+
 	"""
 	#print(list(df.columns))
 	#print("-"*180)
@@ -347,6 +338,13 @@ def all_queries(file_="", ts=None):
 		df["end_date"] = ",".join(parameters.get("endDate")) if parameters.get("endDate") else np.nan
 		df["require_all_keywords"] = ",".join(parameters.get("requireAllKeywords")) if parameters.get("requireAllKeywords") else np.nan
 		df["result_type"] = ",".join(parameters.get("resultType")) if parameters.get("resultType") else np.nan
+		
+		"""
+		# there's bugs
+		if SRCH_PARAM:
+			#print(f">> getting all results for search in {in_url}")
+			df["search_results"] = get_result_newspapers_info(in_url)
+		"""
 
 		# OCR extraction:
 		if PG_PARAM and not SRCH_PARAM:
@@ -362,11 +360,14 @@ def all_queries(file_="", ts=None):
 				
 		return df
 	
+	s = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
 	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
-
+	print(f">> Elapsed time: {time.time()-s:.2f} sec\tFINAL df: {df.shape}")
 	print("*"*205)
-	print(df.head(60))
+	print(df.head(30))
+	
+	#sys.exit(0)
 	print("#"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("#"*150)
@@ -377,7 +378,7 @@ def all_queries(file_="", ts=None):
 	print(len(cols), cols, df.shape)
 	print("#"*150)
 	save_(df, infile=file_)
-
+	
 def save_(df, infile=""):
 	dfs_dict = {
 		f"{infile}":	df,
@@ -433,7 +434,7 @@ def run():
 	"""
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
-							ts=["23:40:00", "23:59:39"],
+							#ts=["23:40:00", "23:59:39"],
 							)
 	
 	#print(f"\t\tCOMPLETED!")

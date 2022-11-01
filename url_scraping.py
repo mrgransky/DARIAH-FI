@@ -1,7 +1,9 @@
 import os
+import sys
 import requests
 import json
-
+import pandas as pd
+import numpy as np
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
@@ -12,64 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
-def run_req_html():
-	#session = HTMLSession()
-	#r = session.get(url)
-
-	print(r.status_code, r.html)
-	print()
-
-	tst = r.html.find('app-digiweb ng-version="9.1.12"', first=True)
-	print(tst)
-
-def checking_(url):
-		try:
-				r = requests.get(url)
-				r.raise_for_status()
-				print(r.status_code, r.ok)
-				return r
-		except requests.exceptions.ConnectionError as ec:
-				print(f">> Connection Exception: {ec}")
-				pass
-		except requests.exceptions.Timeout as et:
-				print(f">> Timeout Exception: {et}")
-				pass
-		except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
-				print(f">> HTTP Exception: {ehttp}")
-				print(ehttp.response.status_code)
-				pass
-		except requests.exceptions.RequestException as e:  # This is the correct syntax
-				#raise SystemExit(e)
-				print(f">> ALL Exception: {e}")
-				pass
-
-def get_contents(url="", name=""):
-	my_parser = "lxml"
-	#my_parser = "html.parser"
-	
-	source = requests.get(url).text
-	soup = BeautifulSoup(source, my_parser)
-	
-	print(f">> results:\n{soup.find_all(name)}")
-
-	doc = soup.select(name)
-	print(f">> Looking for\t>>{name}<<\tfound: {len(doc)} !")
-
-	for idx, val in enumerate(doc):
-		print(idx, val.text)
-
-	print("#"*150)
-
-def run_beautiful_soup(INP_URL):
-	if checking_(INP_URL) is None:
-		return
-
-	print("*"*20)
-	css_selector = "head"
-	get_contents(url=INP_URL, name=css_selector)
-
-def run_selenium(URL):
+def get_result_newspapers_info(URL):
 	SEARCH_RESULTS = {}
 	options = Options()
 	options.add_argument("--remote-debugging-port=9222"),
@@ -80,13 +25,11 @@ def run_selenium(URL):
 	driver.get(URL)
 	print(f">> Loading {driver.current_url} ...")
 	#print(driver.page_source)
-	#pt = "//section[@class='container mb-5 ng-star-inserted']"
-	"""
-	pt = "//app-digiweb/ng-component/section/div/div/app-binding-search-results/div/div"
-	medias = driver.find_elements(By.XPATH, pt)
-	"""
-
-	medias = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'media')))
+	try:
+		medias = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'media')))
+	except:
+		print(f">> selenium TIMEOUT exception: {URL}")
+		return
 	#print(f">> Found {len(medias)} search results!")
 	#print(medias)
 	#print("#"*180)
@@ -97,54 +40,84 @@ def run_selenium(URL):
 		
 		#print(media_elem.text)
 		#print()
-		result = analyze_html(outer_html)
-		SEARCH_RESULTS[f"search_result_{media_idx}"] = result
+		result = scrap_newspaper(outer_html)
+		SEARCH_RESULTS[f"result_{media_idx}"] = result
 		#print("-"*120)
 	#print(SEARCH_RESULTS)
-	print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
+	#print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
+	#df = pd.DataFrame.from_dict(SEARCH_RESULTS, orient='index').reset_index()
+	#print(df)
+	print("-"*120)
+	return SEARCH_RESULTS
 
-def analyze_html(HTML):
+def scrap_newspaper(HTML):
+	query_newspaper = dict.fromkeys([	"newspaper_page", 
+									"newspaper_issue", 
+									"newspaper_date", 
+									"newspaper_publisher", 
+									"newspaper_city", 
+									"newspaper_thumbnail",
+									"newspaper_import_date",
+									"newpaper_highlight",])
 
-	#print(HTML)
 	my_parser = "lxml"
 	#my_parser = "html.parser"
 	soup = BeautifulSoup(HTML, my_parser)
 	#print(soup.prettify())
 
-	"""
-	print("#"*80)
-	matches = soup.find_all("em")
-	print(matches)
-	print("#"*80)
-	"""
 
 	newspaper = soup.find_all("span", class_="ng-star-inserted")
+	#newspaper = soup.find_all("div", class_="media-body")
 	all_newspaper_info = [elem.text.replace(',', '').replace(':', '').split() for elem in newspaper]
+	#print(newspaper)
+	#all_newspaper_info = [elem.text for elem in newspaper]
+	print(len(all_newspaper_info), all_newspaper_info)
 
-	highlighted_text = soup.find("div", class_="search-highlight-fragment ng-star-inserted").text
-	imported_date = soup.find("div", class_="import-date ng-star-inserted").text
-	thumbnail = "https://digi.kansalliskirjasto.fi"+soup.find("img")["src"]
+	np_title = soup.find("div", class_="main-link-title link-colors")
+	np_issue_date = soup.find("span", class_="font-weight-bold")
+	print(np_issue_date.text)
 
+	#print(np_issue_date.text.split())
+	#sys.exit(1)
+	pg_highlight = soup.find("div", class_="search-highlight-fragment ng-star-inserted")
+	pg_imported_date = soup.find("div", class_="import-date ng-star-inserted")
+
+	#thumbnail = "https://digi.kansalliskirjasto.fi"+soup.find("img")["src"]
+	thumbnail = soup.find("img")["src"]
+
+	if thumbnail: query_newspaper["newspaper_thumbnail"] = "https://digi.kansalliskirjasto.fi" + thumbnail 
+	if np_title: query_newspaper["newpaper_title"] = np_title.text
+	if pg_highlight: query_newspaper["newpaper_highlight"] = pg_highlight.text
+	if pg_imported_date: query_newspaper["newspaper_import_date"] = pg_imported_date.text
+	if all_newspaper_info[0]: query_newspaper["newspaper_page"] = " ".join(all_newspaper_info[0])
+	if all_newspaper_info[1]: query_newspaper["newspaper_issue"] = " ".join(all_newspaper_info[1])
+	if all_newspaper_info[2]: query_newspaper["newspaper_date"] = " ".join(all_newspaper_info[2])
+	if all_newspaper_info[3]: query_newspaper["newspaper_publisher"] = " ".join(all_newspaper_info[3])
+	if all_newspaper_info[4]: query_newspaper["newspaper_city"] = " ".join(all_newspaper_info[4])
+	
+	"""
 	query_newspaper = {	"newspaper_page": " ".join(all_newspaper_info[0]),#all_newspaper_info[0],
 											"newspaper_issue":" ".join(all_newspaper_info[1]), 
 											"newspaper_date": " ".join(all_newspaper_info[2]), 
-											"newspaper_sth": " ".join(all_newspaper_info[3]),  #TODO: ask about the  
-											"newspaper_city":" ".join(all_newspaper_info[4]), 
+											"newspaper_publisher": " ".join(all_newspaper_info[3]),  #TODO: ask about the  
+											"newspaper_city":" ".join(all_newspaper_info[4]) if all_newspaper_info[4] else np.nan, 
 											"newspaper_thumbnail": thumbnail,
-											"newspaper_import_date": imported_date,
-											"newpaper_highlight": highlighted_text,
+											#"newspaper_import_date": imported_date,
+											#"newpaper_highlight": highlighted_text,
+											"newspaper_import_date": pg_imported_date.text if pg_imported_date else np.nan,
+											"newpaper_highlight": pg_highlight.text if pg_highlight else np.nan,
 											}
+	"""
 	#print(query_newspaper)
-	#print("#"*30)
+	#print("#"*80)
 	return query_newspaper
-
-
-
 
 if __name__ == '__main__':
 	os.system("clear")
-	#url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=NEWSPAPER&formats=JOURNAL&formats=PRINTING&formats=BOOK&formats=MANUSCRIPT&formats=MAP&formats=MUSIC_NOTATION&formats=PICTURE&formats=CARD_INDEX&orderBy=RELEVANCE'
-	url = 'https://digi.kansalliskirjasto.fi/search?query=economic%20crisis&orderBy=RELEVANCE'
-	#url = 'https://www.neuralnine.com/books/'
-	#run_beautiful_soup(url)
-	run_selenium(URL=url)
+	# ['nro', '4', 'Näköispainos','6.12.1939']:
+	url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=NEWSPAPER&formats=JOURNAL&formats=PRINTING&formats=BOOK&formats=MANUSCRIPT&formats=MAP&formats=MUSIC_NOTATION&formats=PICTURE&formats=CARD_INDEX&orderBy=RELEVANCE'
+	#url = 'https://digi.kansalliskirjasto.fi/search?query=economic%20crisis&orderBy=RELEVANCE'
+	#url = 'https://digi.kansalliskirjasto.fi/search?formats=JOURNAL' # without page content and city print(len(all_newspaper_info), all_newspaper_info) # < 6!!!
+	#url = 'https://digi.kansalliskirjasto.fi/search?formats=JOURNAL'
+	#url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=JOURNAL&orderBy=RELEVANCE' # <6 : 4
+	get_result_newspapers_info(URL=url)
