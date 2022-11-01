@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --account=project_2004072
-#SBATCH -J df_csv_smallest_6
+#SBATCH -J df_csv_small_6
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=longrun
-#SBATCH --mem-per-cpu=16G
+#SBATCH --mem-per-cpu=4G
 #SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
