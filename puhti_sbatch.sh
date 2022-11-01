@@ -3,7 +3,8 @@
 #SBATCH -J df_csv_smallest_6
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=longrun
-#SBATCH --mem=25G # memory pool for all cores
+#SBATCH --mem=8G # memory pool for all cores
+#SBATCH --mem-per-cpu=16G
 #SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -17,7 +18,7 @@ ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
 echo "HOST: $SLURM_SUBMIT_HOST, CLUSTER: $SLURM_CLUSTER_NAME, WRK_DIR: $SLURM_SUBMIT_DIR"
-echo "JOB: $SLURM_JOB_NAME, $SLURM_JOB_ID, $SLURM_ARRAY_JOB_ID"
+echo "JOB: name: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, Array_ID: $SLURM_ARRAY_JOB_ID"
 echo "NUM_NODES: $SLURM_JOB_NUM_NODES, NODELIST: $SLURM_JOB_NODELIST, NODE_ID: $SLURM_NODEID"
 echo "NTASKS: $SLURM_NTASKS, PROCID: $SLURM_PROCID"
 echo "CPUS_ON_NODE: $SLURM_CPUS_ON_NODE, CPUS/TASK: $SLURM_CPUS_PER_TASK, MEM/CPU: $SLURM_MEM_PER_CPU"
