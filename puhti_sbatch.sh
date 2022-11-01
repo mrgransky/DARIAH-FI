@@ -3,7 +3,6 @@
 #SBATCH -J df_csv_smallest_6
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=longrun
-#SBATCH --mem=8G # memory pool for all cores
 #SBATCH --mem-per-cpu=16G
 #SBATCH --time=13-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
@@ -11,6 +10,7 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --array=6
 # # # # # # SBATCH --array=0-69
+# # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
