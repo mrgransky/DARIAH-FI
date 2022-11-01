@@ -375,7 +375,7 @@ def all_queries(file_="", ts=None):
 	print(f"NaN query_word: {df['query_word'].isna().sum()} / {df.shape[0]}")
 	print(f"NaN term: {df['term'].isna().sum()} / {df.shape[0]}")
 	cols = list(df.columns)
-	print(len(cols), cols, df.shape)
+	print(len(cols), cols)
 	print("#"*150)
 	save_(df, infile=file_)
 	
