@@ -269,6 +269,7 @@ def all_queries(file_="", ts=None):
 	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	elapsed_t = time.time() - st_t
 	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.2f}")
+	print("-"*180)
 	return
 	#sys.exit(0)
 
@@ -422,7 +423,7 @@ def get_query_log(QUERY=0):
 	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
 	##print(log_files)
 	query_log_file = all_log_files[QUERY] 
-	print(f"Q: {QUERY}\t\t{query_log_file}")
+	print(f"\nQ: {QUERY}\t\t{query_log_file}")
 
 	return query_log_file
 
