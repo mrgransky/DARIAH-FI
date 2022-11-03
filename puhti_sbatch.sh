@@ -8,8 +8,8 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=10
-#SBATCH --array=6
-# # # # # # SBATCH --array=0-69
+# # # # # # SBATCH --array=6
+#SBATCH --array=0-69
 # # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 
 stars=$(printf '%*s' 90 '')

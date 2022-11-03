@@ -269,7 +269,7 @@ def all_queries(file_="", ts=None):
 	df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	elapsed_t = time.time() - st_t
 	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.2f}")
-	
+	return
 	#sys.exit(0)
 
 	"""
@@ -435,7 +435,7 @@ def run():
 	"""
 	# run all log files using array in batch
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["23:40:00", "23:59:39"],
+							#ts=["23:58:00", "23:59:59"],
 							)
 	
 	#print(f"\t\tCOMPLETED!")
