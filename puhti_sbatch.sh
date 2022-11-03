@@ -2,9 +2,9 @@
 #SBATCH --account=project_2004072
 #SBATCH -J df_csv_small_6
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
-#SBATCH --partition=longrun
+#SBATCH --partition=small
 #SBATCH --mem-per-cpu=2G
-#SBATCH --time=13-23:59:58
+#SBATCH --time=02-23:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
