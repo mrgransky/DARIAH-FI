@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --account=project_2004072
-#SBATCH -J df_csv_small_6
+#SBATCH -J chk_time_
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=small
 #SBATCH --mem-per-cpu=2G
-#SBATCH --time=02-23:59:58
+#SBATCH --time=00-03:59:58
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
 # # # # # # SBATCH --array=6
-#SBATCH --array=0-69
+# # # # # # SBATCH --array=0-69
 # # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 
 stars=$(printf '%*s' 90 '')
@@ -35,7 +35,8 @@ elif [ $user == 'alijanif' ]; then
 fi
 
 #python nationalbiblioteket.py
-python nationalbiblioteket_logs.py --query $SLURM_ARRAY_TASK_ID
+#python nationalbiblioteket_logs.py --query $SLURM_ARRAY_TASK_ID
+python nationalbiblioteket_logs.py
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

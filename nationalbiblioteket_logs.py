@@ -413,7 +413,7 @@ def get_log_files():
 	return log_files
 
 def get_query_log(QUERY=0):
-	print(f">> Given log file index: {QUERY}")
+	#print(f"\nGiven log file index: {QUERY}")
 	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
 	##print(log_files_dir)
 
@@ -422,7 +422,7 @@ def get_query_log(QUERY=0):
 	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
 	##print(log_files)
 	query_log_file = all_log_files[QUERY] 
-	print(f"\t\t {query_log_file}")
+	print(f"Q: {QUERY}\t\t{query_log_file}")
 
 	return query_log_file
 
@@ -439,8 +439,14 @@ def run():
 							)
 	
 	#print(f"\t\tCOMPLETED!")
-	
+
+def run_all():
+	for q in range(70):
+		all_queries(file_=get_query_log(QUERY=q),)
+		
+
 if __name__ == '__main__':
 	os.system('clear')
 	make_folders()
-	run()
+	#run()
+	run_all()
