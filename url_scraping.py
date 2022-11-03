@@ -51,14 +51,15 @@ def get_result_newspapers_info(URL):
 	return SEARCH_RESULTS
 
 def scrap_newspaper(HTML):
-	query_newspaper = dict.fromkeys([	"newspaper_page", 
-									"newspaper_issue", 
-									"newspaper_date", 
-									"newspaper_publisher", 
-									"newspaper_city", 
-									"newspaper_thumbnail",
-									"newspaper_import_date",
-									"newpaper_highlight",])
+	query_newspaper = dict.fromkeys([	
+		"newspaper_page", 
+		"newspaper_issue", 
+		"newspaper_date", 
+		"newspaper_publisher", 
+		"newspaper_city", 
+		"newspaper_thumbnail",
+		"newspaper_import_date",
+		"newpaper_highlight",])
 
 	my_parser = "lxml"
 	#my_parser = "html.parser"
@@ -87,13 +88,13 @@ def scrap_newspaper(HTML):
 
 	if thumbnail: query_newspaper["newspaper_thumbnail"] = "https://digi.kansalliskirjasto.fi" + thumbnail 
 	if np_title: query_newspaper["newpaper_title"] = np_title.text
-	if pg_highlight: query_newspaper["newpaper_highlight"] = pg_highlight.text
-	if pg_imported_date: query_newspaper["newspaper_import_date"] = pg_imported_date.text
 	if all_newspaper_info[0]: query_newspaper["newspaper_page"] = " ".join(all_newspaper_info[0])
 	if all_newspaper_info[1]: query_newspaper["newspaper_issue"] = " ".join(all_newspaper_info[1])
 	if all_newspaper_info[2]: query_newspaper["newspaper_date"] = " ".join(all_newspaper_info[2])
 	if all_newspaper_info[3]: query_newspaper["newspaper_publisher"] = " ".join(all_newspaper_info[3])
 	if all_newspaper_info[4]: query_newspaper["newspaper_city"] = " ".join(all_newspaper_info[4])
+	if pg_imported_date: query_newspaper["newspaper_import_date"] = pg_imported_date.text
+	if pg_highlight: query_newspaper["newpaper_highlight"] = pg_highlight.text
 	
 	"""
 	query_newspaper = {	"newspaper_page": " ".join(all_newspaper_info[0]),#all_newspaper_info[0],
@@ -108,8 +109,8 @@ def scrap_newspaper(HTML):
 											"newpaper_highlight": pg_highlight.text if pg_highlight else np.nan,
 											}
 	"""
-	#print(query_newspaper)
-	#print("#"*80)
+	print(query_newspaper)
+	print("#"*80)
 	return query_newspaper
 
 if __name__ == '__main__':
