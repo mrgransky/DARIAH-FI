@@ -158,6 +158,7 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 				#"require_all_keywords":					np.nan,
 				#"result_type":									np.nan,
 				})
+	
 	df = pd.DataFrame.from_dict(cleaned_lines)
 
 	# with pandas:
