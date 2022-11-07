@@ -114,7 +114,6 @@ def get_np_info(INP_SOUP):
 	desired_list = [ None if s[0] is None else ( s[0].get_text(' ', strip=True)[2:] if '-soup-contains' in s[1] else s[0].get_text(' ', strip=True)) for s in [ ( INP_SOUP.select_one(sel), sel) for sel in selectors] ]
 	return desired_list
 
-"""
 if __name__ == '__main__':
 	os.system("clear")
 	# ['nro', '4', 'Näköispainos','6.12.1939']:
@@ -125,4 +124,3 @@ if __name__ == '__main__':
 	url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=JOURNAL&orderBy=RELEVANCE' # <6 : 4
 	get_all_search_details(URL=url)
 	#get_np_info()
-"""
