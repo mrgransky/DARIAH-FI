@@ -2,13 +2,13 @@
 #SBATCH --account=project_2004072
 #SBATCH -J chk_time
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
-#SBATCH --partition=small
-#SBATCH --mem-per-cpu=2G
-#SBATCH --time=00-03:59:58
+#SBATCH --partition=longrun
+#SBATCH --mem-per-cpu=12G
+#SBATCH --time=13-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
-#SBATCH --array=999
+#SBATCH --array=66666
 # # # # # # SBATCH --array=0-69
 # # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 
