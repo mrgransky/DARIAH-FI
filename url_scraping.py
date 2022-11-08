@@ -47,7 +47,7 @@ def get_all_search_details(URL):
 		SEARCH_RESULTS[f"result_{media_idx}"] = result
 		#print("-"*120)
 	#print(SEARCH_RESULTS)
-	#print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
+	print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
 	#df = pd.DataFrame.from_dict(SEARCH_RESULTS, orient='index').reset_index()
 	#print(df)
 	#print("-"*120)
