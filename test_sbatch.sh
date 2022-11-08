@@ -37,6 +37,8 @@ fi
 
 python -V
 
+python import_packages_tst.py
+
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
 echo "${stars// /*}"
