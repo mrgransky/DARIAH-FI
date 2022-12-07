@@ -142,7 +142,10 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	#df = df.replace("null", "-", regex=True).replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
 	
 	# with numpy:
-	df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://\d+', np.nan, regex=True)
+	#df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://+', np.nan, regex=True)
+	#df = df.replace(r'-|^\s*$|http://+', np.nan, regex=True)
+	df = df.replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
+
 	df = df.dropna(axis=0)
 	df = df.drop_duplicates(subset=['user_ip', 'referer'], keep='last')
 	df = df.reset_index(drop=True)
@@ -223,7 +226,7 @@ def get_parsed_url_parameters(inp_url):
 def get_np_ocr(ocr_url):
 	parsed_url, parameters = get_parsed_url_parameters(ocr_url)
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	#print(f">> page-X.txt available?\t{txt_pg_url}\t")
+	print(f">> page-X.txt available?\t{txt_pg_url}\t")
 	text_response = checking_(txt_pg_url)
 	if text_response is not None: # 200
 		#print(f"\t\t\tYES >> loading...\n")

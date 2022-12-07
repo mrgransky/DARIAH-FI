@@ -137,6 +137,7 @@ def all_queries(file_="", ts=None):
 	elapsed_t = time.time() - st_t
 	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
 	print("-"*100)
+	#save_(df, infile=file_)
 	#return
 
 	def analyze_(df):
@@ -148,7 +149,7 @@ def all_queries(file_="", ts=None):
 			return df
 
 		in_url = r.url
-
+		#print(f">> Parsing cleanedup URL: {in_url}")
 		parsed_url, parameters = get_parsed_url_parameters(in_url)
 		
 		if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
@@ -239,7 +240,7 @@ def run():
 	# run all log files using array in batch
 	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["22:00:00", "22:02:59"],
+							#ts=["22:00:00", "22:20:59"],
 							)
 	#print(f"\t\tCOMPLETED!")
 
