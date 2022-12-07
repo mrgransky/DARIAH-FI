@@ -30,7 +30,6 @@ from utils import *
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('--query', default=0, type=int) # smallest
-
 args = parser.parse_args()
 
 def single_query(file_="", ts=None, browser_show=False):

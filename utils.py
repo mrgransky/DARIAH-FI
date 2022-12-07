@@ -13,8 +13,8 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 
-#dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
+#dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"broken" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
