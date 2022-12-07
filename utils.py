@@ -213,7 +213,7 @@ def save_(df, infile="", saving_path=""):
 def load_df(infile=""):
 	fpath = os.path.join(dfs_path, f"{infile}.dump")
 	fsize = os.stat( fpath ).st_size / 1e9
-	print(f">> Loading {fpath} | size: {fsize:.1f} GB ...")
+	print(f">> Loading {fpath} | size: {fsize:.2f} GB ...")
 	st_t = time.time()
 	d = joblib.load(fpath)
 	elapsed_t = time.time() - st_t

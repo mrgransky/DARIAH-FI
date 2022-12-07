@@ -17,13 +17,14 @@ import seaborn as sns
 
 from utils import *
 
-
 import matplotlib
 matplotlib.use("Agg")
 
-parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
+parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Data Analysis')
 parser.add_argument('--query', default=0, type=int) # smallest
 args = parser.parse_args()
+
+global result_directory
 
 def main():
 	print(f">> Data Analysis")
@@ -33,18 +34,19 @@ def main():
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
-	dataframe_files_dir = natsorted( glob.glob( os.path.join(dfs_path, "*.dump") ) )
-	#print(dataframe_files_dir)
+	all_dump_file_paths = natsorted( glob.glob( os.path.join(dfs_path, "*.dump") ) )
+	#print(all_dump_file_paths)
 
-	all_files = [dfile[dfile.rfind("/")+1:dfile.rfind(".dump")] for dfile in dataframe_files_dir]
+	all_files = [dfile[dfile.rfind("/")+1:dfile.rfind(".dump")] for dfile in all_dump_file_paths]
 	#print(all_files)
 
 	query_dataframe_file = all_files[QUERY] 
-	print(f"\nQ: {QUERY}\t{query_dataframe_file}")
+	result_directory = os.path.join(rpath, query_dataframe_file)
+	make_folder(folder_name=result_directory)
+	print(f"Input Query: {QUERY}")
 
 	return query_dataframe_file
 
 if __name__ == '__main__':
 	os.system('clear')
-	make_folder(folder_name=rpath)
 	main()
