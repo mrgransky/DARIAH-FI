@@ -160,7 +160,6 @@ def all_queries(file_="", ts=None):
 		if parameters.get("hasIllustrations"): df["has_illustration"] = ",".join(parameters.get("hasIllustrations"))
 		if parameters.get("showUnauthorizedResults"): df["show_unauthorized_results"] = ",".join(parameters.get("showUnauthorizedResults"))
 		if parameters.get("pages"): df["pages"] = ",".join(parameters.get("pages"))
-		if parameters.get("page"): df["ocr_page"] = ",".join(parameters.get("page"))
 		if parameters.get("importTime"): df["import_time"] = ",".join(parameters.get("importTime"))
 		if parameters.get("collection"): df["collection"] = ",".join(parameters.get("collection"))
 		if parameters.get("author"): df["author"] = ",".join(parameters.get("author"))
@@ -188,6 +187,7 @@ def all_queries(file_="", ts=None):
 		# OCR extraction:
 		if parameters.get("term") and parameters.get("page"):
 			df["ocr_term"] = ",".join(parameters.get("term"))
+			df["ocr_page"] = ",".join(parameters.get("page"))
 			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 			#print(f">> page-X.txt available?\t{txt_pg_url}\t")		
 			text_response = checking_(txt_pg_url)
@@ -243,7 +243,7 @@ def run():
 	# run all log files using array in batch
 	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["00:00:00", "00:59:59"],
+							ts=["00:00:00", "05:59:59"],
 							)
 	#print(f"\t\tCOMPLETED!")
 
