@@ -239,7 +239,7 @@ def run():
 	# run all log files using array in batch
 	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["23:45:00", "23:49:59"],
+							#ts=["22:00:00", "22:02:59"],
 							)
 	#print(f"\t\tCOMPLETED!")
 

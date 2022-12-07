@@ -144,8 +144,9 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# with numpy:
 	df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://\d+', np.nan, regex=True)
 	df = df.dropna(axis=0)
+	df = df.drop_duplicates(subset=['user_ip', 'referer'], keep='last')
 	df = df.reset_index(drop=True)
-	
+
 	if TIMESTAMP:
 		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
 		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
