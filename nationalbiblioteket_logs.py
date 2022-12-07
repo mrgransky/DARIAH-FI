@@ -150,7 +150,7 @@ def all_queries(file_="", ts=None):
 
 		in_url = r.url
 
-		parsed_url, parameters = get_parsed_url_parameters(in_url)	
+		parsed_url, parameters = get_parsed_url_parameters(in_url)
 		
 		if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
 		if parameters.get("qMeta"): df["has_metadata"] = ",".join(parameters.get("qMeta"))
@@ -185,21 +185,18 @@ def all_queries(file_="", ts=None):
 		if parameters.get("term"): 
 			df["term"] = ",".join(parameters.get("term"))
 			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-			#print(f">> page-X.txt available?\t{txt_pg_url}\t")
-			
+			#print(f">> page-X.txt available?\t{txt_pg_url}\t")		
 			text_response = checking_(txt_pg_url)
-			
 			if text_response is not None: # 200
 				#print(f"\t\t\tYES >> loading...\n")
 				#return text_response.text
 				df["ocr_text"] = text_response.text
-				
+		
 		return df
 	
 	s = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
-	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
-	
+	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )	
 	print(f">> Parsing Completed!\tElapsed time: {time.time()-s:.2f} sec\tFINAL df: {df.shape}")
 	print("*"*205)
 	print(df.head(30))
