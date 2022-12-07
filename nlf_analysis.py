@@ -27,16 +27,23 @@ args = parser.parse_args()
 global result_directory
 
 def main():
-	print(f">> Data Analysis")
+	print("#"*65)
+	print(f"\tDATA ANALYSIS")
+	print("#"*65)
 	df = load_df(infile=get_query_dataframe(QUERY=args.query))
 	print(df.shape)
 	cols = list(df.columns)
 	print(len(cols), cols)
 	print("#"*150)
 
-	print(df.head(30))
+	print(df.head(10))
 	print("-"*150)
-	print(df.tail(30))
+	print(df.tail(10))
+
+	print(df.isna().sum())
+	print("-"*150)
+	print(df.info(verbose=True, memory_usage="deep"))
+	
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")

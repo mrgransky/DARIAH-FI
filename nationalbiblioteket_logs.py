@@ -122,6 +122,7 @@ def single_query(file_="", ts=None, browser_show=False):
 	print("-"*150)
 
 	print(df.isna().sum())
+	print("-"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
 
 	#print(df.head(30))
@@ -204,7 +205,6 @@ def all_queries(file_="", ts=None):
 	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )	
 	print(f">> Parsing Completed!\tElapsed time: {time.time()-s:.2f} sec\tFINAL df: {df.shape}")
 	print("*"*205)
-	print(df.head(30))
 	
 	print("#"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
