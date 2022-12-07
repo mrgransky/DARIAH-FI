@@ -235,7 +235,7 @@ def save_dfs(qlang="ENGLISH"):
 	}
 
 	fname = "_".join(list(dfs_dict.keys()))+f"_dfs_{qlang}.dump"
-	print(f">> Dumping {fname} ...")
+	print(f">> Dumping {os.path.join( dfs_path, fname)} ...")
 	joblib.dump(	dfs_dict, 
 								os.path.join( dfs_path, f"{fname}" ),
 								compress='lz4', # zlib more info: https://joblib.readthedocs.io/en/latest/auto_examples/compressors_comparison.html#sphx-glr-auto-examples-compressors-comparison-py
@@ -464,9 +464,9 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	save_dfs(qlang=QUERY_LANGUAGE)
+	#save_dfs(qlang=QUERY_LANGUAGE)
 
-	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
+	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dfs_path, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
 	plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
 	plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
