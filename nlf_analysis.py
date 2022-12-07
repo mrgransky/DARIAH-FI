@@ -30,7 +30,13 @@ def main():
 	print(f">> Data Analysis")
 	df = load_df(infile=get_query_dataframe(QUERY=args.query))
 	print(df.shape)
+	cols = list(df.columns)
+	print(len(cols), cols)
+	print("#"*150)
+
 	print(df.head(30))
+	print("-"*150)
+	print(df.tail(30))
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")

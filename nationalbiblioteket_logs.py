@@ -254,7 +254,6 @@ def run_all():
 	for q in range(70):
 		all_queries(file_=get_query_log(QUERY=q),)
 
-
 if __name__ == '__main__':
 	os.system('clear')
 	run()
