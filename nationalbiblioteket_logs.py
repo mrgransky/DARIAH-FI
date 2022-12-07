@@ -32,6 +32,7 @@ parser = argparse.ArgumentParser(description='National Library of Finland (NLF)'
 parser.add_argument('--query', default=0, type=int) # smallest
 args = parser.parse_args()
 
+
 def single_query(file_="", ts=None, browser_show=False):
 	print(f">> Analyzing a single query of {file_}")
 	st_t = time.time()
@@ -217,15 +218,16 @@ def all_queries(file_="", ts=None):
 	print("-"*150)
 	print(df.tail(30))
 
-	save_(df, infile=file_)
+	save_(df, infile=file_, saving_path=dfs_path)
 
 def get_query_log(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
 	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
 	#print(log_files_dir)
 
-	log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
+	#log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
 	#print(len(log_files_date), log_files_date)
+	
 	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
 	#print(all_log_files)
 	query_log_file = all_log_files[QUERY] 
@@ -234,6 +236,7 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
+	make_folder(folder_name=dfs_path)
 	"""
 	single_query(file_=get_query_log(QUERY=args.query), 
 							#browser_show=True, 
@@ -251,8 +254,8 @@ def run_all():
 	for q in range(70):
 		all_queries(file_=get_query_log(QUERY=q),)
 
+
 if __name__ == '__main__':
 	os.system('clear')
-	make_folders()
 	run()
 	#run_all()

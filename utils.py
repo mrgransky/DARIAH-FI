@@ -1,4 +1,5 @@
 import os
+import time
 import urllib
 import requests
 import joblib
@@ -16,6 +17,7 @@ NLF_DATASET_PATH = usr_[os.environ['USER']]
 dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"broken" )
+
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
@@ -182,16 +184,12 @@ def checking_(url):
 		print(f">> {url}\tALL Exception: {e}")
 		pass
 
-def make_folders():
-	if not os.path.exists(rpath): 
-		#print(f"\n>> Creating DIR:\n{rpath}")
-		os.makedirs( rpath )
+def make_folder(folder_name="MUST_BE_RENAMED"):
+	if not os.path.exists(folder_name): 
+		#print(f"\n>> Creating DIR:\n{folder_name}")
+		os.makedirs( folder_name )
 
-	if not os.path.exists(dfs_path): 
-		#print(f"\n>> Creating DIR:\n{dfs_path}")
-		os.makedirs( dfs_path )
-
-def save_(df, infile=""):
+def save_(df, infile="", saving_path=""):
 	dfs_dict = {
 		f"{infile}":	df,
 	}
@@ -211,6 +209,20 @@ def save_(df, infile=""):
 								)
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"\t\t{fsize_dump:.1f} MB")
+
+def load_df(infile=""):
+	fpath = os.path.join(dfs_path, f"{infile}.dump")
+	fsize = os.stat( fpath ).st_size / 1e9
+	print(f">> Loading {fpath} | size: {fsize:.1f} GB ...")
+	st_t = time.time()
+	d = joblib.load(fpath)
+	elapsed_t = time.time() - st_t
+	print(f"\tElapsed time: {elapsed_t:.3f} sec")
+	df = d[infile]
+	return df
+
+
+
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")

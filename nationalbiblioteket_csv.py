@@ -8,9 +8,6 @@ import time
 import numpy as np
 import pandas as pd
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 import seaborn as sns
@@ -257,7 +254,7 @@ def load_dfs(fpath=""):
 	v_df = d["vol"]
 	p_df = d["pg"]
 	elapsed_t = time.time() - st_t
-	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} ms!")
+	print(f"\n>> LOADING COMPLETED in {elapsed_t:.2f} s!")
 
 	print(f"\n>> Search_DF: {s_df.shape} Tot. missing data: {s_df.isnull().values.sum()}")
 	#print( list(s_df.columns ) )
