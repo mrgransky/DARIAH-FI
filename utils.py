@@ -2,6 +2,9 @@ import os
 import urllib
 import requests
 import joblib
+import re
+import numpy as np
+import pandas as pd
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
@@ -10,18 +13,153 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 
-dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
+#dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
+dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"broken" )
-
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
+
+def get_df_no_ip_logs(infile="", TIMESTAMP=None):
+	file_path = os.path.join(dpath, infile)
+
+	#print(f">> Reading {file_path} ...")
+	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "(.*?)" (.*)' # original working!
+	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^"]+)" "(.*?)" (.*)' # original working!
+	ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
+	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:-|.*(http://\D.*))" "(.*?)" (.*)'
+	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:|-|.*(://\D.*))" "(.*?)" (.*)'
+	cleaned_lines = []
+
+	with open(file_path, mode="r") as f:
+		for line in f:
+			##print(line)
+			matched_line = re.match(ACCESS_LOG_PATTERN, line)
+			#print (matched_line)
+			l = matched_line.groups()
+			#print(l)
+			cleaned_lines.append({
+				"timestamp": 										l[0].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
+				"client_request_line": 					l[1],
+				"status": 											l[2],
+				"bytes_sent": 									l[3],
+				"referer": 											l[4],
+				"user_agent": 									l[5],
+				"session_id": 									l[6],
+				#"query_word":										np.nan,
+				#"term":													np.nan,
+				#"page_ocr":													np.nan,
+				#"fuzzy":												np.nan,
+				#"has_metadata":									np.nan,
+				#"has_illustration":							np.nan,
+				#"show_unauthorized_results":		np.nan,
+				#"pages":												np.nan,
+				#"import_time":									np.nan,
+				#"collection":										np.nan,
+				#"author":												np.nan,
+				#"keyword":											np.nan,
+				#"publication_place":						np.nan,
+				#"language":											np.nan,
+				#"document_type":								np.nan,
+				#"show_last_page":								np.nan,
+				#"order_by":											np.nan,
+				#"publisher":										np.nan,
+				#"start_date":										np.nan,
+				#"end_date":											np.nan,
+				#"require_all_keywords":					np.nan,
+				#"result_type":									np.nan,
+				})
+	
+	df = pd.DataFrame.from_dict(cleaned_lines)
+
+	# with pandas:
+	df.timestamp = pd.to_datetime(df.timestamp)
+	#df = df.replace("null", "-", regex=True).replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
+	
+	# with numpy:
+	df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True)
+	df = df.dropna(axis=0)
+	df = df.reset_index(drop=True)
+	
+	if TIMESTAMP:
+		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
+		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
+		df_ts = df_ts.reset_index(drop=True)
+		return df_ts
+
+	return df
+
+def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
+	file_path = os.path.join(dpath, infile)
+	ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
+	cleaned_lines = []
+
+	with open(file_path, mode="r") as f:
+		for line in f:
+			#print(line)
+			matched_line = re.match(ACCESS_LOG_PATTERN, line)
+			#print (matched_line)
+			l = matched_line.groups()
+			#print(l)
+			
+			cleaned_lines.append({
+				"user_ip": 							l[0],
+				"timestamp": 						l[1].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
+				"client_request_line": 	l[2],
+				"status": 							l[3],
+				"bytes_sent": 					l[4],
+				"referer": 							l[5],
+				"user_agent": 					l[6],
+				"session_id": 					l[7],
+				#"query_word":										np.nan,
+				#"term":													np.nan,
+				#"page_ocr":													np.nan,
+				#"fuzzy":												np.nan,
+				#"has_metadata":									np.nan,
+				#"has_illustration":							np.nan,
+				#"show_unauthorized_results":		np.nan,
+				#"pages":												np.nan,
+				#"import_time":									np.nan,
+				#"collection":										np.nan,
+				#"author":												np.nan,
+				#"keyword":											np.nan,
+				#"publication_place":						np.nan,
+				#"language":											np.nan,
+				#"document_type":								np.nan,
+				#"show_last_page":								np.nan,
+				#"order_by":											np.nan,
+				#"publisher":										np.nan,
+				#"start_date":										np.nan,
+				#"end_date":											np.nan,
+				#"require_all_keywords":					np.nan,
+				#"result_type":									np.nan,
+				})
+	
+	df = pd.DataFrame.from_dict(cleaned_lines)
+
+	# with pandas:
+	df.timestamp = pd.to_datetime(df.timestamp)
+	
+	#df = df.replace("null", "-", regex=True).replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
+	
+	# with numpy:
+	df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://\d+', np.nan, regex=True)
+	df = df.dropna(axis=0)
+	df = df.reset_index(drop=True)
+	
+	if TIMESTAMP:
+		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
+		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
+		df_ts = df_ts.reset_index(drop=True)
+		return df_ts
+
+	return df
 
 def checking_(url):
 	#print(f"\t\tValidation & Update")
 	try:
 		r = requests.get(url)
 		r.raise_for_status()
-		#print(r.status_code, r.ok)
+		#print(f">> HTTP family: {r.status_code} => Exists: {r.ok}")
 		return r
 	except requests.exceptions.ConnectionError as ec:
 		#print(url)
@@ -85,9 +223,7 @@ def get_np_ocr(ocr_url):
 	parsed_url, parameters = get_parsed_url_parameters(ocr_url)
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 	#print(f">> page-X.txt available?\t{txt_pg_url}\t")
-		
 	text_response = checking_(txt_pg_url)
-		
 	if text_response is not None: # 200
 		#print(f"\t\t\tYES >> loading...\n")
 		return text_response.text

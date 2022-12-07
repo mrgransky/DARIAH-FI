@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --account=project_2004072
-#SBATCH -J chk_time
+#SBATCH -J test
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=small
 #SBATCH --mem-per-cpu=2G

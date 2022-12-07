@@ -25,7 +25,7 @@ def get_all_search_details(URL):
 	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 	
 	driver.get(URL)
-	#print(f">> Loading {driver.current_url} ...")
+	print(f"Scraping {driver.current_url}")
 	#print(driver.page_source)
 	try:
 		#medias = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'media')))
@@ -47,7 +47,7 @@ def get_all_search_details(URL):
 		SEARCH_RESULTS[f"result_{media_idx}"] = result
 		#print("-"*120)
 	#print(SEARCH_RESULTS)
-	print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
+	#print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
 	#df = pd.DataFrame.from_dict(SEARCH_RESULTS, orient='index').reset_index()
 	#print(df)
 	#print("-"*120)
@@ -80,12 +80,12 @@ def scrap_newspaper(HTML):
 	np_issue_date = soup.find("span", class_="font-weight-bold")
 
 	pg_highlight = soup.find("div", class_="search-highlight-fragment ng-star-inserted")
-	pg_imported_date = soup.find("div", class_="import-date ng-star-inserted")
-	thumbnail = soup.find("img")["src"]
-	pg_link = soup.find("a")["href"]
+	pg_imported_date = soup.find("div", class_="import-date ng-star-inserted")	
+	thumbnail = soup.find("img")
+	pg_link = soup.find("a")
 	
-	if thumbnail: query_newspaper["newspaper_thumbnail"] = "https://digi.kansalliskirjasto.fi" + thumbnail 
-	if pg_link: query_newspaper["newspaper_link"] = "https://digi.kansalliskirjasto.fi" + pg_link 
+	if thumbnail: query_newspaper["newspaper_thumbnail"] = "https://digi.kansalliskirjasto.fi" + thumbnail.get("src")
+	if pg_link: query_newspaper["newspaper_link"] = "https://digi.kansalliskirjasto.fi" + pg_link.get("href")
 	if np_title: query_newspaper["newspaper_title"] = np_title.text
 	if pg_imported_date: query_newspaper["newspaper_import_date"] = pg_imported_date.text
 	if pg_highlight: query_newspaper["newspaper_highlight"] = pg_highlight.text
@@ -122,5 +122,6 @@ if __name__ == '__main__':
 	#url = 'https://digi.kansalliskirjasto.fi/search?formats=JOURNAL' # without page content and city print(len(all_newspaper_info), all_newspaper_info) # < 6!!!
 	#url = 'https://digi.kansalliskirjasto.fi/search?formats=JOURNAL'
 	url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=JOURNAL&orderBy=RELEVANCE' # <6 : 4
+	#url = 'https://digi.kansalliskirjasto.fi/search?query=%22TAAVI%20ELIAKSENPOIKA%22%20AND%20%22SIPPOLA%22&formats=NEWSPAPER&orderBy=RELEVANCE' # no result is returned! => timeout!
 	get_all_search_details(URL=url)
 	#get_np_info()

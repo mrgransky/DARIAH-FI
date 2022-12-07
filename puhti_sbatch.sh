@@ -31,7 +31,8 @@ echo "Cluster: $cluster Current User: $user"
 if [ $user == 'alijani' ]; then
 	source activate py3_gpu
 elif [ $user == 'alijanif' ]; then
-	source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
+	echo ">> Using Puhti Conda Environment..."
+	#source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
 fi
 
 #python nationalbiblioteket.py
