@@ -55,7 +55,6 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
 				}
 
-
 languages={"FINNISH": False, "ENGLISH": True}
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
@@ -465,15 +464,15 @@ def main():
 	#QUERY_LANGUAGE = "FINNISH"
 	QUERY_LANGUAGE = "ENGLISH"
 
-	#save_dfs(qlang=QUERY_LANGUAGE)
+	save_dfs(qlang=QUERY_LANGUAGE)
 
 	search_df, vol_df, pg_df = load_dfs( fpath=os.path.join(dpath, f"search_vol_pg_dfs_{QUERY_LANGUAGE}.dump") )
 
-	#plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
+	plt_bar( search_df, name=f"search_{QUERY_LANGUAGE}" )
 	plot_language_year( search_df, name=f"search_{QUERY_LANGUAGE}" )
-	#basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
-	#basic_visualization(vol_df, name=f"volume_{QUERY_LANGUAGE}")
-	#basic_visualization(pg_df, name=f"page_{QUERY_LANGUAGE}")
+	basic_visualization(search_df, name=f"search_{QUERY_LANGUAGE}")
+	basic_visualization(vol_df, name=f"volume_{QUERY_LANGUAGE}")
+	basic_visualization(pg_df, name=f"page_{QUERY_LANGUAGE}")
 
 if __name__ == '__main__':
 	os.system('clear')
