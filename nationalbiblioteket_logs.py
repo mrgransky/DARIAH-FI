@@ -106,8 +106,8 @@ def single_query(file_="", ts=None, browser_show=False):
 		print("#"*65)
 
 	# term(ONLY IF OCR page):
-	if parameters.get("term"): 
-		df.loc[qlink, "term"] = ",".join(parameters.get("term"))
+	if parameters.get("term") and parameters.get("page"):
+		df.loc[qlink, "ocr_term"] = ",".join(parameters.get("term"))
 		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 		print(f">> page-X.txt available?\t{txt_pg_url}\t")
 
@@ -142,21 +142,25 @@ def all_queries(file_="", ts=None):
 
 	def analyze_(df):
 		raw_url = df.referer
-		#print(f"URL: {raw_url}")
+		#print(f"\n>> RAW URL: {raw_url}")
 
 		r = checking_(raw_url)
 		if r is None:
 			return df
 
 		in_url = r.url
-		#print(f">> Parsing cleanedup URL: {in_url}")
+		#print(f"\tUpdated URL: {in_url}")
+
 		parsed_url, parameters = get_parsed_url_parameters(in_url)
-		
+		#print(f"Parsed: {parsed_url}")
+		#print(f"Parameters: {parameters}")
+
 		if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
 		if parameters.get("qMeta"): df["has_metadata"] = ",".join(parameters.get("qMeta"))
 		if parameters.get("hasIllustrations"): df["has_illustration"] = ",".join(parameters.get("hasIllustrations"))
 		if parameters.get("showUnauthorizedResults"): df["show_unauthorized_results"] = ",".join(parameters.get("showUnauthorizedResults"))
 		if parameters.get("pages"): df["pages"] = ",".join(parameters.get("pages"))
+		if parameters.get("page"): df["ocr_page"] = ",".join(parameters.get("page"))
 		if parameters.get("importTime"): df["import_time"] = ",".join(parameters.get("importTime"))
 		if parameters.get("collection"): df["collection"] = ",".join(parameters.get("collection"))
 		if parameters.get("author"): df["author"] = ",".join(parameters.get("author"))
@@ -182,8 +186,8 @@ def all_queries(file_="", ts=None):
 			#df["search_results"] = get_all_search_details(in_url)
 		
 		# OCR extraction:
-		if parameters.get("term"): 
-			df["term"] = ",".join(parameters.get("term"))
+		if parameters.get("term") and parameters.get("page"):
+			df["ocr_term"] = ",".join(parameters.get("term"))
 			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 			#print(f">> page-X.txt available?\t{txt_pg_url}\t")		
 			text_response = checking_(txt_pg_url)
@@ -230,7 +234,6 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
-		
 	"""
 	single_query(file_=get_query_log(QUERY=args.query), 
 							#browser_show=True, 
@@ -240,7 +243,7 @@ def run():
 	# run all log files using array in batch
 	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["22:00:00", "22:20:59"],
+							ts=["00:00:00", "00:59:59"],
 							)
 	#print(f"\t\tCOMPLETED!")
 
