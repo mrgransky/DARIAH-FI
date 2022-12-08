@@ -211,7 +211,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 
 	print(df_tmp["query_word"].str.cat(sep=","))
 
-	sys.exit(0)
+	#sys.exit(0)
 	#return
 
 	#users:
