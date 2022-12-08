@@ -27,9 +27,9 @@ args = parser.parse_args()
 global result_directory
 
 def main():
-	print("#"*65)
-	print(f"\tDATA ANALYSIS")
-	print("#"*65)
+	print("#"*70)
+	print(f"\t\t\tDATA ANALYSIS")
+	print("#"*70)
 	df = load_df(infile=get_query_dataframe(QUERY=args.query))
 	print(df.shape)
 	cols = list(df.columns)
