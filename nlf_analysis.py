@@ -141,14 +141,28 @@ def plot_language(df, fname, RES_DIR, N=10):
 	language_counts = lc[lc_sorted_idx][:N]
 	print(language_ung.shape[0], language_ung, language_counts)
 
-	clrs = ['#1f77b4', 
+	clrs = ["#1d7874",
+          "#f4c095",
+          "#ee2e31",
+          "#ffb563",
+        	"#918450",
+          "#f85e00",
+          "#9a031e",
+          "#d6d6d6",
+          "#ffee32",
+          "#333533",
+          "#a41623",
+          "#679289",
+          "#202020",
+          '#1f77b4', 
 					'#cc9911', 
 					'#e377c2', 
 					'#7f7f7f', 
 					'#99ff99',
 					'#ff7f0e', 
 					'#16b3ff',
-					'#9467bd', 
+					"#ffd100",
+          '#9467bd', 
 					'#d62728', 
 					'#0ecd19', 
 					'#ffcc99', 
@@ -159,7 +173,6 @@ def plot_language(df, fname, RES_DIR, N=10):
 					'#8c564b', 
 					'#ff9999',
 					]
-
 
 	patches, lbls, pct_texts = plt.pie(language_counts,
 																				labels=language_ung, 
@@ -175,13 +188,89 @@ def plot_language(df, fname, RES_DIR, N=10):
 	for lbl, pct_text in zip(lbls, pct_texts):
 		pct_text.set_rotation(lbl.get_rotation())
 
-	plt.title(f"Top {N} Searched Languages in NLF")
+	plt.title(f"Top {N} Searched Languages in NLF | Total Entry: {df_tmp['language'].shape[0]}")
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_language.png" ), )
 	plt.clf()
 
-def plot_word(df, fname, RES_DIR):
+def plot_word(df, fname, RES_DIR, Nq=10, Nu=5):
 	unq = df["query_word"].value_counts()
 	print(f">> query_word:\n{unq}")
+
+	# Query Words:
+	df_tmp = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+
+	qu, qc = np.unique(df_tmp["query_word"], return_counts=True)
+	print(qu.shape[0], qu, qc)
+
+	print(f"\n>> Sorting Top {Nq} Query Words / {df_tmp.shape[0]} | {fname}")
+	qc_sorted_idx = np.argsort(-qc)
+	query_ung = qu[qc_sorted_idx][:Nq]
+	query_counts = qc[qc_sorted_idx][:Nq]
+	print(query_ung.shape[0], query_ung, query_counts)
+	#return
+
+	""" #users:
+	df_tmp = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+
+	qu, qc = np.unique(df_tmp["query_word"], return_counts=True)
+	print(qu.shape[0], qu, qc)
+
+	print(f"\n>> Sorting Top {Nq} Query Words / {df_tmp.shape[0]} | {fname}")
+	qc_sorted_idx = np.argsort(-qc)
+	query_ung = qu[qc_sorted_idx][:Nq]
+	query_counts = qc[qc_sorted_idx][:Nq]
+	print(query_ung.shape[0], query_ung, query_counts)
+	"""
+
+	plt.subplots()
+	palette = ["#ee2e31",
+						"#ffb563",
+						"#918450",
+						"#f85e00",
+						"#a41623",
+						"#1d7874",
+						"#679289",
+						"#f4c095",
+						"#9a031e",
+						"#d6d6d6",
+						"#ffee32",
+						"#ffd100",
+						"#333533",
+						"#202020",
+						]
+	p = sns.barplot(x=query_ung,
+									y=query_counts,
+									palette=palette, 
+									saturation=1, 
+									edgecolor = "#1c1c1c",
+									linewidth = 2,
+									)
+
+	p.axes.set_title(f"\nTop {Nq} Query Word / {df_tmp.shape[0]} | {fname}\n", fontsize=18)
+	plt.ylabel("Counts", fontsize = 15)
+	plt.xlabel("\nQuery Phrase", fontsize = 15)
+	# plt.yscale("log")
+	plt.xticks(rotation=90)
+	for container in p.containers:
+			p.bar_label(container,
+									label_type = "center",
+									padding = 6,
+									size = 15,
+									color = "black",
+									rotation = 90,
+									bbox={"boxstyle": "round", 
+												"pad": 0.6, 
+												"facecolor": "orange", 
+												"edgecolor": "black", 
+												"alpha": 1,
+												}
+									)
+
+	sns.despine(left=True, bottom=True)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nq}_query_words.png" ), )
+	plt.clf()
+	#sys.exit()
+
 
 	wordcloud = WordCloud(width=800, 
 												height=400, 
@@ -198,6 +287,51 @@ def plot_word(df, fname, RES_DIR):
 	plt.tight_layout(pad = 0)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
 	plt.clf()
+
+
+	""" 
+	GENDERS = {}
+
+	for g in gender_unq:
+			lst = []
+			for p in profession_unq:
+					#print(g, p)
+					#c = df.query(f"Profession=='{str(p)}' and Gender=='{str(g)}'").Gender.count()
+					c = df[(df["Profession"] == p) & (df["Gender"] == g) ].Gender.count()
+					#print(c)
+					
+					lst.append(c)
+			GENDERS[g] = lst
+
+	print(GENDERS)
+
+	WIDTH = 0.35
+	BOTTOM = 0
+
+	for k, v in GENDERS.items():
+			#print(k, v)
+			axs[1].bar(x=profession_unq, 
+								height=v, 
+								width=WIDTH,
+								bottom=BOTTOM, 
+								color=clrs[list(GENDERS.keys()).index(k)],
+								label=k,
+								)
+			BOTTOM += np.array(v)
+
+	axs[1].set_ylabel('Counts')
+	axs[1].set_xlabel('Profession')
+	axs[1].set_title('Profession by Gender')
+
+	axs[1].legend(ncol=len(GENDERS), loc="best", frameon=False)
+	plt.suptitle(f"{distribution} Distribution")
+	plt.savefig(gender_distribution_fname)
+	plt.show() 
+	"""
+
+
+
+
 
 def plot_ocr_term(df, fname, RES_DIR):
 	unq = df["ocr_term"].value_counts()
@@ -218,7 +352,6 @@ def plot_ocr_term(df, fname, RES_DIR):
 	plt.tight_layout(pad = 0)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_OCR_terms_cloud.png" ), )
 	plt.clf()
-
 
 def plot_doc_type(df, fname, RES_DIR):
 	unq = df["document_type"].value_counts()
@@ -249,13 +382,12 @@ def plot_user(df, fname, RES_DIR, N=10):
 	lu, lc = np.unique(df_tmp["user_ip"], return_counts=True)
 	print(lu.shape[0], lu, lc)
 
-	print(f"\n>> sorting for Top {N} users:")
+	print(f"\n>> Sorting Top {N} users / {df_tmp.shape[0]} | {fname}")
 	lc_sorted_idx = np.argsort(-lc)
 	language_ung = lu[lc_sorted_idx][:N]
 	language_counts = lc[lc_sorted_idx][:N]
 	print(language_ung.shape[0], language_ung, language_counts)
 	#return
-
 
 	plt.subplots()
 	palette = ["#1d7874",
@@ -281,11 +413,11 @@ def plot_user(df, fname, RES_DIR, N=10):
 									linewidth = 2,
 									)
 
-	p.axes.set_title(f"\nTop {N} Users\n", fontsize=25)
-	plt.ylabel("Counts" , fontsize = 20)
-	plt.xlabel("\nUser Name" , fontsize = 20)
+	p.axes.set_title(f"\nTop {N} Users / {df_tmp.shape[0]} | {fname}\n", fontsize=18)
+	plt.ylabel("Counts", fontsize = 20)
+	plt.xlabel("\nUser Name", fontsize = 20)
 	# plt.yscale("log")
-	plt.xticks(rotation = 90)
+	plt.xticks(rotation=90)
 	for container in p.containers:
 			p.bar_label(container,
 									label_type = "center",
