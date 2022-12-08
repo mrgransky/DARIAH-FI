@@ -49,6 +49,40 @@ sns.set(font_scale=1.3,
 				font="serif", 
 				color_codes=True,
 				)
+	
+clrs = ["#1d7874",
+          "#f4c095",
+          "#ee2e31",
+          "#ffb563",
+        	"#918450",
+          "#f85e00",
+          "#9a031e",
+          "#d6d6d6",
+          "#ffee32",
+          "#333533",
+          "#a41623",
+          "#679289",
+          "#202020",
+          '#1f77b4', 
+					'#cc9911', 
+					'#e377c2', 
+					'#7f7f7f', 
+					'#99ff99',
+					'#ff7f0e', 
+					'#16b3ff',
+					"#ffd100",
+          '#9467bd', 
+					'#d62728', 
+					'#0ecd19', 
+					'#ffcc99', 
+					'#bcbd22', 
+					'#ffc9', 
+					'#17becf',
+					'#2ca02c', 
+					'#8c564b', 
+					'#ff9999',
+					]
+
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -141,39 +175,6 @@ def plot_language(df, fname, RES_DIR, N=10):
 	language_counts = lc[lc_sorted_idx][:N]
 	print(language_ung.shape[0], language_ung, language_counts)
 
-	clrs = ["#1d7874",
-          "#f4c095",
-          "#ee2e31",
-          "#ffb563",
-        	"#918450",
-          "#f85e00",
-          "#9a031e",
-          "#d6d6d6",
-          "#ffee32",
-          "#333533",
-          "#a41623",
-          "#679289",
-          "#202020",
-          '#1f77b4', 
-					'#cc9911', 
-					'#e377c2', 
-					'#7f7f7f', 
-					'#99ff99',
-					'#ff7f0e', 
-					'#16b3ff',
-					"#ffd100",
-          '#9467bd', 
-					'#d62728', 
-					'#0ecd19', 
-					'#ffcc99', 
-					'#bcbd22', 
-					'#ffc9', 
-					'#17becf',
-					'#2ca02c', 
-					'#8c564b', 
-					'#ff9999',
-					]
-
 	patches, lbls, pct_texts = plt.pie(language_counts,
 																				labels=language_ung, 
 																				autopct='%1.1f%%', 
@@ -192,7 +193,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_language.png" ), )
 	plt.clf()
 
-def plot_word(df, fname, RES_DIR, Nq=10, Nu=5):
+def plot_word(df, fname, RES_DIR, Nq=10, Nu=20):
 	unq = df["query_word"].value_counts()
 	print(f">> query_word:\n{unq}")
 
@@ -209,38 +210,39 @@ def plot_word(df, fname, RES_DIR, Nq=10, Nu=5):
 	print(query_ung.shape[0], query_ung, query_counts)
 	#return
 
-	""" #users:
-	df_tmp = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+	#users:
+	df_tmp_user = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
 
-	qu, qc = np.unique(df_tmp["query_word"], return_counts=True)
-	print(qu.shape[0], qu, qc)
+	uu, uc = np.unique(df_tmp_user["user_ip"], return_counts=True)
+	print(uu.shape[0], uu, uc)
 
-	print(f"\n>> Sorting Top {Nq} Query Words / {df_tmp.shape[0]} | {fname}")
-	qc_sorted_idx = np.argsort(-qc)
-	query_ung = qu[qc_sorted_idx][:Nq]
-	query_counts = qc[qc_sorted_idx][:Nq]
-	print(query_ung.shape[0], query_ung, query_counts)
-	"""
+	print(f"\n>> Sorting Top {Nu} Users / {df_tmp_user.shape[0]} | {fname}")
+	uc_sorted_idx = np.argsort(-uc)
+	user_ung = uu[uc_sorted_idx][:Nu]
+	user_counts = uc[uc_sorted_idx][:Nu]
+	print(user_ung.shape[0], user_ung, user_counts)
+
+	wordcloud = WordCloud(width=800, 
+												height=400, 
+												background_color="black",
+												colormap="RdYlGn",
+												max_font_size=50, 
+												stopwords=None,
+												repeat= True).generate(df["query_word"].str.cat(sep=","))
+
+	plt.figure(figsize = (20, 8),facecolor = "#ffd100") 
+	plt.imshow(wordcloud)
+	plt.axis("off")
+	plt.margins(x = 0, y = 0)
+	plt.tight_layout(pad = 0)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
+	plt.clf()
 
 	plt.subplots()
-	palette = ["#ee2e31",
-						"#ffb563",
-						"#918450",
-						"#f85e00",
-						"#a41623",
-						"#1d7874",
-						"#679289",
-						"#f4c095",
-						"#9a031e",
-						"#d6d6d6",
-						"#ffee32",
-						"#ffd100",
-						"#333533",
-						"#202020",
-						]
+	
 	p = sns.barplot(x=query_ung,
 									y=query_counts,
-									palette=palette, 
+									palette=clrs, 
 									saturation=1, 
 									edgecolor = "#1c1c1c",
 									linewidth = 2,
@@ -271,33 +273,14 @@ def plot_word(df, fname, RES_DIR, Nq=10, Nu=5):
 	plt.clf()
 	#sys.exit()
 
-
-	wordcloud = WordCloud(width=800, 
-												height=400, 
-												background_color="black",
-												colormap="RdYlGn",
-												max_font_size=50, 
-												stopwords=None,
-												repeat= True).generate(df["query_word"].str.cat(sep=","))
-
-	plt.figure(figsize = (20, 8),facecolor = "#ffd100") 
-	plt.imshow(wordcloud)
-	plt.axis("off")
-	plt.margins(x = 0, y = 0)
-	plt.tight_layout(pad = 0)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
-	plt.clf()
-
-
-	""" 
 	GENDERS = {}
 
-	for g in gender_unq:
+	for g in user_ung:
 			lst = []
-			for p in profession_unq:
+			for p in query_ung:
 					#print(g, p)
 					#c = df.query(f"Profession=='{str(p)}' and Gender=='{str(g)}'").Gender.count()
-					c = df[(df["Profession"] == p) & (df["Gender"] == g) ].Gender.count()
+					c = df[(df["query_word"] == p) & (df["user_ip"] == g) ].user_ip.count()
 					#print(c)
 					
 					lst.append(c)
@@ -310,7 +293,7 @@ def plot_word(df, fname, RES_DIR, Nq=10, Nu=5):
 
 	for k, v in GENDERS.items():
 			#print(k, v)
-			axs[1].bar(x=profession_unq, 
+			plt.bar(x=query_ung, 
 								height=v, 
 								width=WIDTH,
 								bottom=BOTTOM, 
@@ -319,18 +302,17 @@ def plot_word(df, fname, RES_DIR, Nq=10, Nu=5):
 								)
 			BOTTOM += np.array(v)
 
-	axs[1].set_ylabel('Counts')
-	axs[1].set_xlabel('Profession')
-	axs[1].set_title('Profession by Gender')
+	#axs[1].set_ylabel('Counts')
+	#axs[1].set_xlabel('Profession')
+	#axs[1].set_title('Profession by Gender')
 
-	axs[1].legend(ncol=len(GENDERS), loc="best", frameon=False)
-	plt.suptitle(f"{distribution} Distribution")
-	plt.savefig(gender_distribution_fname)
-	plt.show() 
-	"""
-
-
-
+	plt.legend(	loc="best", 
+							frameon=False,
+							#ncol=len(GENDERS), 
+							)
+	plt.suptitle(f"{fname} Distribution")
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
+	plt.clf()
 
 
 def plot_ocr_term(df, fname, RES_DIR):
@@ -390,24 +372,9 @@ def plot_user(df, fname, RES_DIR, N=10):
 	#return
 
 	plt.subplots()
-	palette = ["#1d7874",
-						"#679289",
-						"#f4c095",
-						"#ee2e31",
-						"#ffb563",
-						"#918450",
-						"#f85e00",
-						"#a41623",
-						"#9a031e",
-						"#d6d6d6",
-						"#ffee32",
-						"#ffd100",
-						"#333533",
-						"#202020",
-						]
 	p = sns.barplot(x=language_ung,
 									y=language_counts,
-									palette=palette, 
+									palette=clrs, 
 									saturation=1, 
 									edgecolor = "#1c1c1c",
 									linewidth = 2,
@@ -463,20 +430,20 @@ def main():
 	print(df.info(verbose=True, memory_usage="deep"))
 
 	# missing features:
-	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# publication
-	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
