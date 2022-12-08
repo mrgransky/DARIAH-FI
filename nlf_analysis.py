@@ -87,9 +87,9 @@ def plot_missing_features(df, fname, RES_DIR):
 			y="variable",
 			hue="Missing",
 			multiple="stack",
-			height=16,
+			height=15,
 			#kde=True,
-			aspect=1.2,
+			aspect=1.8,
 	)
 	g.set_axis_labels("Samples", "Features")
 	for axb in g.axes.ravel():
