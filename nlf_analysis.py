@@ -49,7 +49,7 @@ sns.set(font_scale=1.3,
 				font="serif", 
 				color_codes=True,
 				)
-	
+
 clrs = ["#1d7874",
           "#f4c095",
           "#ee2e31",
@@ -200,40 +200,50 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	df_tmp = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 
 	qu, qc = np.unique(df_tmp["query_word"], return_counts=True)
-	print(qu.shape[0], qu, qc)
+	#print(qu.shape[0], qu, qc)
 
 	print(f"\n>> Sorting Top {Nq} Query Words / {df_tmp.shape[0]} | {fname}")
 	qc_sorted_idx = np.argsort(-qc)
 	query_ung = qu[qc_sorted_idx][:Nq]
 	query_counts = qc[qc_sorted_idx][:Nq]
-	print(query_ung.shape[0], query_ung, query_counts)
+	#print(query_ung.shape[0], query_ung, query_counts)
+	print("#"*140)
+
+	print(df_tmp["query_word"].str.cat(sep=","))
+
+	sys.exit(0)
 	#return
 
 	#users:
 	df_tmp_user = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
 
 	uu, uc = np.unique(df_tmp_user["user_ip"], return_counts=True)
-	print(uu.shape[0], uu, uc)
+	#print(uu.shape[0], uu, uc)
 
 	print(f"\n>> Sorting Top {Nu} Users / {df_tmp_user.shape[0]} | {fname}")
 	uc_sorted_idx = np.argsort(-uc)
 	user_ung = uu[uc_sorted_idx][:Nu]
 	user_counts = uc[uc_sorted_idx][:Nu]
-	print(user_ung.shape[0], user_ung, user_counts)
+	#print(user_ung.shape[0], user_ung, user_counts)
 
-	wordcloud = WordCloud(width=800, 
-												height=400, 
+
+	wordcloud = WordCloud(width=1300, 
+												height=550, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=50, 
+												max_font_size=50,
 												stopwords=None,
-												repeat= True).generate(df["query_word"].str.cat(sep=","))
+												collocations=False,
+												).generate(df_tmp["query_word"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
 
-	plt.figure(figsize = (20, 8),facecolor = "#ffd100") 
+	plt.figure(figsize=(13, 7),
+						facecolor="grey",
+						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.margins(x = 0, y = 0)
-	plt.tight_layout(pad = 0)
+	plt.title(f"Query Word Distribution in Cloud (total: {df_tmp['query_word'].shape[0]}) | {fname}", color="white")
+	plt.margins(x=0, y=0)
+	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
 	plt.clf()
 
@@ -247,7 +257,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 									linewidth = 2,
 									)
 
-	p.axes.set_title(f"\nTop {Nq} Query Word / {df_tmp.shape[0]} | {fname}\n", fontsize=18)
+	p.axes.set_title(f"\nTop-{Nq} Query Word / {df_tmp.shape[0]} | {fname}\n", fontsize=18)
 	plt.ylabel("Counts", fontsize = 15)
 	plt.xlabel("\nQuery Phrase", fontsize = 15)
 	# plt.yscale("log")
@@ -307,6 +317,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 
 	plt.legend(	loc="best", 
 							frameon=False,
+							title=f"Top-{Nu} Users"
 							#ncol=len(GENDERS), 
 							)
 	plt.suptitle(f"Top-{Nq} Query words Searched by Top-{Nu} Users | {fname}")
@@ -314,23 +325,39 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
 	plt.clf()
 
-def plot_ocr_term(df, fname, RES_DIR):
+def plot_ocr_term(df, fname, RES_DIR, N=20):
 	unq = df["ocr_term"].value_counts()
 	print(f">> ocr_term:\n{unq}")
 
-	wordcloud = WordCloud(width=800, 
-												height=400, 
+	df_tmp = df.dropna(axis=0, how="any", subset=["ocr_term"]).reset_index(drop=True)
+
+	ocr_u, ocr_c = np.unique(df_tmp["ocr_term"], return_counts=True)
+	#print(ocr_u.shape[0], ocr_u, ocr_c)
+
+	print(f"\n>> Sorting Top {N} OCR terms / {df_tmp.shape[0]} | {fname}")
+	ocr_c_sorted_idx = np.argsort(-ocr_c)
+	ocr_ung = ocr_u[ocr_c_sorted_idx][:N]
+	ocr_counts = ocr_c[ocr_c_sorted_idx][:N]
+	#print(ocr_ung.shape[0], ocr_ung, ocr_counts)
+
+	wordcloud = WordCloud(width=1300, 
+												height=550, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=50, 
+												max_font_size=50,
 												stopwords=None,
-												repeat= True).generate(df["ocr_term"].str.cat(sep=", | , | ,"))
+												collocations=False,
+												).generate(df_tmp["ocr_term"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
 
-	plt.figure(figsize = (20, 8),facecolor = "#ffd100") 
+	plt.figure(figsize=(13, 7),
+						facecolor="grey",
+						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.margins(x = 0, y = 0)
-	plt.tight_layout(pad = 0)
+	plt.title(f"OCR Terms Distribution in Cloud (total: {df_tmp['ocr_term'].shape[0]}) | {fname}", color="white")
+	plt.margins(x=0, y=0)
+	plt.tight_layout(pad=0) 
+
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_OCR_terms_cloud.png" ), )
 	plt.clf()
 
@@ -338,19 +365,29 @@ def plot_doc_type(df, fname, RES_DIR):
 	unq = df["document_type"].value_counts()
 	print(f">> doc_type:\n{unq}")
 
+
+	df_tmp = df[["document_type"]]
+	df_tmp["document_type"] = df_tmp["document_type"].str.split(",")
+	print(df_tmp.head(20))
+
 	wordcloud = WordCloud(width=800, 
-												height=400, 
+												height=250, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=50, 
+												max_font_size=50,
 												stopwords=None,
-												repeat= True).generate(df["document_type"].str.cat(sep=","))
+												collocations=False,
+												).generate(df["document_type"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
 
-	plt.figure(figsize = (20, 8),facecolor = "#ffd100") 
+	plt.figure(figsize=(10, 4),
+						facecolor="grey",
+						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.margins(x = 0, y = 0)
-	plt.tight_layout(pad = 0)
+	plt.title(f"Document Types in Cloud | {fname}", color="white")
+	plt.margins(x=0, y=0)
+	plt.tight_layout(pad=0) 
+
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_doc_type_cloud.png" ), )
 	plt.clf()
 
@@ -442,7 +479,7 @@ def main():
 
 	# query words & terms:
 	plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
