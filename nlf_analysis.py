@@ -53,36 +53,35 @@ sns.set(font_scale=1.3,
 clrs = ["#1d7874",
           "#f4c095",
           "#ee2e31",
+          '#1f77b4',
           "#ffb563",
         	"#918450",
-          "#f85e00",
-          "#9a031e",
           "#d6d6d6",
           "#ffee32",
           "#333533",
           "#a41623",
-          "#679289",
+          "#679289", 
+					'#16b3ff', 
+					'#ff9999',
           "#202020",
-          '#1f77b4', 
-					'#cc9911', 
+          "#f85e00",
+					'#2ca02c', 
 					'#e377c2', 
 					'#7f7f7f', 
 					'#99ff99',
-					'#ff7f0e', 
-					'#16b3ff',
+					'#ff7f0e',
 					"#ffd100",
           '#9467bd', 
+					'#cc9911', 
 					'#d62728', 
 					'#0ecd19', 
 					'#ffcc99', 
 					'#bcbd22', 
 					'#ffc9', 
 					'#17becf',
-					'#2ca02c', 
-					'#8c564b', 
-					'#ff9999',
+          "#9a031e", 
+					'#8c564b',
 					]
-
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -193,7 +192,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_language.png" ), )
 	plt.clf()
 
-def plot_word(df, fname, RES_DIR, Nq=10, Nu=20):
+def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	unq = df["query_word"].value_counts()
 	print(f">> query_word:\n{unq}")
 
@@ -310,10 +309,10 @@ def plot_word(df, fname, RES_DIR, Nq=10, Nu=20):
 							frameon=False,
 							#ncol=len(GENDERS), 
 							)
-	plt.suptitle(f"{fname} Distribution")
+	plt.suptitle(f"Top-{Nq} Query words Searched by Top-{Nu} Users | {fname}")
+	plt.xticks(rotation=90)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
 	plt.clf()
-
 
 def plot_ocr_term(df, fname, RES_DIR):
 	unq = df["ocr_term"].value_counts()
