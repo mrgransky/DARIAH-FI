@@ -200,7 +200,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	df_tmp = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 
 	qu, qc = np.unique(df_tmp["query_word"], return_counts=True)
-	#print(qu.shape[0], qu, qc)
+	print(qu.shape[0], qu, qc)
 
 	print(f"\n>> Sorting Top {Nq} Query Words / {df_tmp.shape[0]} | {fname}")
 	qc_sorted_idx = np.argsort(-qc)
@@ -209,7 +209,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	#print(query_ung.shape[0], query_ung, query_counts)
 	print("#"*140)
 
-	print(df_tmp["query_word"].str.cat(sep=",").split(","))
+	#print(df_tmp["query_word"].str.cat(sep=",").split(","))
 
 	#sys.exit(0)
 	#return
@@ -226,22 +226,23 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	user_counts = uc[uc_sorted_idx][:Nu]
 	#print(user_ung.shape[0], user_ung, user_counts)
 
-
-	wordcloud = WordCloud(width=1300, 
+	wordcloud = WordCloud(width=1400, 
 												height=550, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=50,
+												max_font_size=80,
 												stopwords=None,
 												collocations=False,
-												).generate(df_tmp["query_word"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
+												).generate_from_frequencies(dict(zip(qu, qc)))
 
-	plt.figure(figsize=(13, 7),
+
+
+	plt.figure(figsize=(14, 8),
 						facecolor="grey",
 						) 
-	plt.imshow(wordcloud)
+	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(np.unique(np.array(df_tmp['query_word'].str.cat(sep=',').split(','))))} unique Query words Distribution in Cloud (total: {df_tmp['query_word'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(qu)} unique Query words Distribution in Cloud (total: {df_tmp['query_word'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -340,21 +341,21 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 	ocr_counts = ocr_c[ocr_c_sorted_idx][:N]
 	#print(ocr_ung.shape[0], ocr_ung, ocr_counts)
 
-	wordcloud = WordCloud(width=1300, 
+	wordcloud = WordCloud(width=1400, 
 												height=550, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=50,
+												max_font_size=80,
 												stopwords=None,
 												collocations=False,
-												).generate(df_tmp["ocr_term"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
+												).generate_from_frequencies(dict(zip(ocr_u, ocr_c)))
 
-	plt.figure(figsize=(13, 7),
+	plt.figure(figsize=(14, 8),
 						facecolor="grey",
 						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(np.unique(np.array(df_tmp['ocr_term'].str.cat(sep=',').split(','))))} unique OCR Terms Distribution in Cloud (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(ocr_u)} unique OCR Terms Distribution in Cloud (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
