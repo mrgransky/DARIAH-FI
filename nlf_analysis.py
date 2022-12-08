@@ -209,7 +209,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	#print(query_ung.shape[0], query_ung, query_counts)
 	print("#"*140)
 
-	print(df_tmp["query_word"].str.cat(sep=","))
+	print(df_tmp["query_word"].str.cat(sep=",").split(","))
 
 	#sys.exit(0)
 	#return
@@ -241,7 +241,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"Query Word Distribution in Cloud (total: {df_tmp['query_word'].shape[0]}) | {fname}", color="white")
+	plt.title(f"{len(np.unique(np.array(df_tmp['query_word'].str.cat(sep=',').split(','))))} unique Query words Distribution in Cloud (total: {df_tmp['query_word'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -354,7 +354,7 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"OCR Terms Distribution in Cloud (total: {df_tmp['ocr_term'].shape[0]}) | {fname}", color="white")
+	plt.title(f"{len(np.unique(np.array(df_tmp['ocr_term'].str.cat(sep=',').split(','))))} unique OCR Terms Distribution in Cloud (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
