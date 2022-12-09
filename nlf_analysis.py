@@ -50,22 +50,23 @@ sns.set(font_scale=1.3,
 				color_codes=True,
 				)
 
-clrs = ['#16b3ff', 
-				"#ffb563",
-				"#679289", 
+clrs = ['#1f77b4',
+				"#333533", 
 				'#d62728', 
 				'#8c564b',
+				"#679289",
 				"#918450",
+				"#ffb563",
 				'#ffc9', 
 				'#ff9999',
 				"#f85e00",
 				'#2ca02c', 
 				"#ee2e31",
+				'#16b3ff', 
 				'#ffcc99', 
 				'#7f7f7f', 
 				'#bcbd22',
-				"#9a031e", 
-				'#1f77b4',
+				"#9a031e",
 				'#e377c2', 
 				"#202020",
 				"#1d7874",
@@ -75,7 +76,6 @@ clrs = ['#16b3ff',
 				"#d6d6d6",
 				"#ffee32",
 				'#17becf',
-				"#333533",
 				"#a41623",
 				"#ffd100",
 				'#9467bd', 
@@ -458,20 +458,22 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 	gk = df.groupby('document_type', as_index=False )#['user_ip'].count().sort_values(by="user_ip", ascending=False)
 	#print(gk.get_group('JOURNAL')['user_ip'])
 
-	df_test = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()
+	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()
+	df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
+
 	fig, axs = plt.subplots()
 	
-	df_test.plot( rot=0, 
+	df_count.plot( rot=0, 
 								ax=axs,
 								kind='bar',
 								xlabel="Hour", 
 								ylabel="Activity",
 								title=f"24-Hour Activity\n{fname}",
 								color=clrs,
-								alpha=0.2,
+								alpha=0.6,
 								)
-
-	df_test.plot(	kind='line', 
+	"""
+	df_count.plot(	kind='line', 
 								rot=0, 
 								ax=axs, 
 								marker="*", 
@@ -482,14 +484,27 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 								xlabel="Hour", 
 								ylabel="Activity",
 								)
-	
+	"""
+	df_mean.plot(	kind='line', 
+								rot=0, 
+								ax=axs, 
+								marker="*", 
+								linestyle="-", 
+								linewidth=0.5,
+								color=clrs,
+								label=None,
+								xlabel="Hour", 
+								ylabel="Activity",
+								)
+
+
 	plt.legend(	["Users", "Query Words", "OCR Terms"],
 							loc="best", 
 							frameon=False,
-							ncol=df_test.shape[0],
+							ncol=df_count.shape[0],
 							)
 	
-	#print(df_test)
+	#print(df_count)
 	
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_hour_activity.png" ), )
 	plt.clf()
