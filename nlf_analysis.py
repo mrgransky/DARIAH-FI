@@ -147,14 +147,15 @@ def plot_missing_features(df, fname, RES_DIR):
 	ax = sns.heatmap(
 			df.isna(),
 			cmap=sns.color_palette("Greys"),
-			cbar_kws={'label': 'NaN (Missing Data):', 'ticks': [0.0, 1.0]},
+			cbar_kws={'label': 'NaN (Missing Data)', 
+								'ticks': [0.0, 1.0]},
 			)
 
 	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
 	ax.set_yticks([])
 	ax.xaxis.tick_top()
 	ax.tick_params(axis='x', labelrotation=90)
-	plt.suptitle(f"Missing {fname} Data (NaN)")
+	plt.suptitle(f"Missing Data (NaN)\n{fname}")
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_missing_heatmap.png" ), )
 	plt.clf()
 
@@ -461,13 +462,22 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 
 	df_test = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()
 	fig, axs = plt.subplots()
-	df_test.plot(kind='bar', rot=0, ax=axs)
+	
+	df_test.plot( rot=0, 
+								ax=axs,
+								kind='bar',
+								xlabel="Hour", 
+								ylabel="Activity",
+								title=f"24-Hour Activity\n{fname}",
+								)
+	df_test.plot(kind='line', rot=0, ax=axs, marker="*", linestyle="-")
+	
 	#print(df_test)
 
-	plt.xlabel("Hour")
-	plt.ylabel("Activity")
-	plt.title(f"24-Hour Activity\n{fname}")
-	plt.legend(loc="best", ncol=df_test.shape[0])
+	plt.legend(	loc="best", 
+							ncol=df_test.shape[0],
+							frameon=False,
+							)
 	
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_hour_activity.png" ), )
 	plt.clf()
@@ -483,9 +493,6 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 
 
 	sys.exit()
-
-
-
 
 def main():
 	print("#"*70)
@@ -512,11 +519,12 @@ def main():
 	print("-"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
 
+	# missing features:
+	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+
 	# users vs document_type:
 	plot_user_vs_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
-	# missing features:
-	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
 	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
