@@ -457,17 +457,20 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 	gk = df.groupby('document_type', as_index=False )#['user_ip'].count().sort_values(by="user_ip", ascending=False)
 	#print(gk.get_group('JOURNAL')['user_ip'])
 
-	fig, axs = plt.subplots(figsize=(12, 4))
-	df_d = df.groupby(df["timestamp"].dt.hour)["user_ip"].count().plot(kind='bar', rot=0, ax=axs)
+
+
+	df_test = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()
+	fig, axs = plt.subplots()
+	df_test.plot(kind='bar', rot=0, ax=axs)
+	#print(df_test)
+
 	plt.xlabel("Hour")
-	plt.ylabel("Number of Users")
-	plt.title(f"User Activity in 24 Hours | {fname}")
+	plt.ylabel("Activity")
+	plt.title(f"24-Hour Activity\n{fname}")
+	plt.legend(loc="best", ncol=df_test.shape[0])
 	
-	print(df_d)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_hour_activity.png" ), )
 	plt.clf()
-
-	
 
 	uu, uc = np.unique(df["user_ip"], return_counts=True)
 	#print(uu.shape[0], uu, uc)
