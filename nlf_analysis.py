@@ -479,16 +479,15 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 								linestyle="-", 
 								linewidth=0.8,
 								color=clrs,
-								#label=[None, None, None],
 								label=None,
 								)
 	
-	
-	plt.legend(	loc="best", 
+	plt.legend(	["Users", "Query Words", "OCR Terms"],
+							loc="best", 
 							frameon=False,
-							#["Users", "Query Words", "OCR Terms"],
 							ncol=df_test.shape[0],
 							)
+	
 	#print(df_test)
 	
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_hour_activity.png" ), )
