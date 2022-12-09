@@ -50,25 +50,25 @@ sns.set(font_scale=1.3,
 				color_codes=True,
 				)
 
-clrs = ['#d62728', 
-				"#1d7874",
+clrs = ['#16b3ff', 
 				"#ffb563",
+				"#679289", 
+				'#d62728', 
 				'#8c564b',
 				"#918450",
-				"#679289", 
 				'#ffc9', 
-				'#16b3ff', 
 				'#ff9999',
-				"#202020",
 				"#f85e00",
 				'#2ca02c', 
 				"#ee2e31",
 				'#ffcc99', 
+				'#7f7f7f', 
 				'#bcbd22',
 				"#9a031e", 
 				'#1f77b4',
 				'#e377c2', 
-				'#7f7f7f', 
+				"#202020",
+				"#1d7874",
 				"#f4c095",
 				'#99ff99',
 				'#ff7f0e',
@@ -458,8 +458,6 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 	gk = df.groupby('document_type', as_index=False )#['user_ip'].count().sort_values(by="user_ip", ascending=False)
 	#print(gk.get_group('JOURNAL')['user_ip'])
 
-
-
 	df_test = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()
 	fig, axs = plt.subplots()
 	
@@ -476,10 +474,12 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 								rot=0, 
 								ax=axs, 
 								marker="*", 
-								linestyle="-", 
-								linewidth=0.8,
+								linestyle="--", 
+								linewidth=0.3,
 								color=clrs,
 								label=None,
+								xlabel="Hour", 
+								ylabel="Activity",
 								)
 	
 	plt.legend(	["Users", "Query Words", "OCR Terms"],
