@@ -242,7 +242,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 						) 
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(qu)} unique Query words Distribution in Cloud (total: {df_tmp['query_word'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(qu)} unique Query Phrases Cloud Distribution (total: {df_tmp['query_word'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -258,10 +258,15 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 									linewidth = 2,
 									)
 
-	p.axes.set_title(f"\nTop-{Nq} Query Word / {df_tmp.shape[0]} | {fname}\n", fontsize=18)
-	plt.ylabel("Counts", fontsize = 15)
-	plt.xlabel("\nQuery Phrase", fontsize = 15)
-	# plt.yscale("log")
+	p.axes.set_title(	f"\nTop-{Nq} Query Phrases out of total of: {df_tmp.shape[0]}\n{fname}\n"
+										#,fontsize=18,
+										)
+	plt.ylabel("Counts", 
+							#fontsize=15,
+							)
+	plt.xlabel("\nQuery Phrase", 
+							#fontsize=15,
+							)
 	plt.xticks(rotation=90)
 	for container in p.containers:
 			p.bar_label(container,
@@ -321,7 +326,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 							title=f"Top-{Nu} Users"
 							#ncol=len(GENDERS), 
 							)
-	plt.suptitle(f"Top-{Nq} Query words Searched by Top-{Nu} Users | {fname}")
+	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users | {fname}")
 	plt.xticks(rotation=90)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
 	plt.clf()
@@ -355,7 +360,7 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(ocr_u)} unique OCR Terms Distribution in Cloud (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -441,6 +446,44 @@ def plot_user(df, fname, RES_DIR, N=10):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{N}_users.png" ), )
 	plt.clf()
 
+def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
+	# doc_type:
+	df_tmp_doc_type = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index(drop=True)
+	dt_u, dt_c = np.unique(df_tmp_doc_type["document_type"], return_counts=True)
+	print(dt_u.shape[0], dt_u, dt_c)
+
+
+	#users:
+	gk = df.groupby('document_type', as_index=False )#['user_ip'].count().sort_values(by="user_ip", ascending=False)
+	#print(gk.get_group('JOURNAL')['user_ip'])
+
+	fig, axs = plt.subplots(figsize=(12, 4))
+	df_d = df.groupby(df["timestamp"].dt.hour)["user_ip"].count().plot(kind='bar', rot=0, ax=axs)
+	plt.xlabel("Hour")
+	plt.ylabel("Number of Users")
+	plt.title(f"User Activity in 24 Hours | {fname}")
+	
+	print(df_d)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_hour_activity.png" ), )
+	plt.clf()
+
+	
+
+	uu, uc = np.unique(df["user_ip"], return_counts=True)
+	#print(uu.shape[0], uu, uc)
+
+	print(f"\n>> Sorting Top {Nu} Users / {df.shape[0]} | {fname}")
+	uc_sorted_idx = np.argsort(-uc)
+	user_ung = uu[uc_sorted_idx][:Nu]
+	user_counts = uc[uc_sorted_idx][:Nu]
+	#print(user_ung.shape[0], user_ung, user_counts)
+
+
+	sys.exit()
+
+
+
+
 def main():
 	print("#"*70)
 	print(f"\t\t\tDATA ANALYSIS")
@@ -466,6 +509,9 @@ def main():
 	print("-"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
 
+	# users vs document_type:
+	plot_user_vs_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+
 	# missing features:
 	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
@@ -476,7 +522,7 @@ def main():
 	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# publication
-	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
