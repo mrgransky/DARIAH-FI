@@ -468,14 +468,15 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 								ylabel="Activity",
 								title=f"24-Hour Activity\n{fname}",
 								color=clrs,
+								alpha=0.2,
 								)
 
 	df_test.plot(	kind='line', 
 								rot=0, 
 								ax=axs, 
 								marker="*", 
-								linestyle="--", 
-								linewidth=0.3,
+								linestyle="-", 
+								linewidth=0.5,
 								color=clrs,
 								label=None,
 								xlabel="Hour", 
