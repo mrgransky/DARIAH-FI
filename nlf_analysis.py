@@ -450,7 +450,7 @@ def plot_user(df, fname, RES_DIR, N=10):
 	plt.clf()
 
 def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
-	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()#.reset_index()
+	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
 	#df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
 	#print(df_mean)
 
@@ -463,60 +463,63 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	time_window = int(24 / 4)
 	
 	fig, axs = plt.subplots()
-	df_count["user_ip"].plot(	kind='line', 
-														rot=0, 
-														ax=axs, 
-														marker="*", 
-														linestyle="-", 
-														linewidth=0.3,
-														color=clrs,
-														label=None,
-														legend=False,
-														xlabel="Hour (o'clock)", 
-														ylabel="Activity",
-													)
-	
-	for i in range(4):
-		print(i)
-		print(i*time_window , (i+1)*time_window)
-		df_sliced = df_count.reset_index()[i*time_window:(i+1)*time_window]
-		print(df_sliced)
-		axs.plot(df_sliced["timestamp"], 
-						[df_sliced.mean()["user_ip"] for t in df_sliced["timestamp"]],
-						color="red",
-						linestyle="-", 
-						linewidth=0.7,
-						label=r'$\mu$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
-						)
+	print(df_count.columns)
+	for col in df_count.columns[1:]:
+			print(col)
+			df_count[col].plot(	kind='line', 
+																	rot=0, 
+																	ax=axs, 
+																	marker="*", 
+																	linestyle="-", 
+																	linewidth=0.3,
+																	color=clrs,
+																	label=None,
+																	legend=False,
+																	xlabel="Hour (o'clock)", 
+																	ylabel="Activity",
+																)
 
-		axs.fill_between(df_sliced["timestamp"], 
-						[ df_sliced.mean()["user_ip"] - 3 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
-						[ df_sliced.mean()["user_ip"] + 3 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
-						alpha=0.08,
-						color=my_cols[i],
-						label=r'+/- 3$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
-						)
+			for i in range(4):
+				print(i)
+				print(i*time_window , (i+1)*time_window)
+				df_sliced = df_count[i*time_window:(i+1)*time_window]
+				print(df_sliced)
 
-		axs.fill_between(df_sliced["timestamp"], 
-						[ df_sliced.mean()["user_ip"] - 1 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
-						[ df_sliced.mean()["user_ip"] + 1 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
-						alpha=0.10,
-						color=my_cols[i],
-						label=r'+/- 1$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
-						)
+				axs.plot(df_sliced["timestamp"], 
+								[df_sliced.mean()[col] for t in df_sliced["timestamp"]],
+								color="red",
+								linestyle="-", 
+								linewidth=0.7,
+								label=r'$\mu$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
+								)
+
+				axs.fill_between(df_sliced["timestamp"], 
+								[ df_sliced.mean()[col] - 3 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
+								[ df_sliced.mean()[col] + 3 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
+								alpha=0.08,
+								color=my_cols[i],
+								label=r'+/- 3$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
+								)
+
+				axs.fill_between(df_sliced["timestamp"], 
+								[ df_sliced.mean()[col] - 1 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
+								[ df_sliced.mean()[col] + 1 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
+								alpha=0.10,
+								color=my_cols[i],
+								label=r'+/- 1$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
+								)
 
 
-		#print(df_sliced_grouped)
-		
-		print("-"*60)
-	
-	plt.legend(	#["Users", "Query Words", "OCR Terms"],
-							loc="best", 
-							frameon=False,
-							#ncol=df_count.shape[0],
-							)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_mean.png" ), )
-	plt.clf()
+				#print(df_sliced_grouped)
+				
+				print("-"*60)
+			
+				axs.legend(	#["Users", "Query Words", "OCR Terms"],
+										loc="upper left", 
+										frameon=False,
+										#ncol=df_count.shape[0],
+										)
+				plt.savefig(os.path.join( RES_DIR, f"{fname}_{col}_mean_std.png" ), )
 
 
 	sys.exit()
