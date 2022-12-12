@@ -452,10 +452,10 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	#df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
 	#print(df_mean)
 
-	print(df_count.shape)
-	print(df_count)
+	#print(df_count.shape)
+	#print(df_count)
 
-	print(df_count["timestamp"].shape)
+	#print(df_count["timestamp"].shape)
 
 	#time_group = df_count["timestamp"].shape[0]/4
 	time_group = int(24 / 4)
@@ -464,7 +464,8 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	for i in range(4):
 		print(i)
 		print(i*time_group , (i+1)*time_group)
-		print(df_count["timestamp"][i*time_group:(i+1)*time_group])
+		df_sliced = df_count[i*time_group:(i+1)*time_group]
+		print(df_sliced)
 		print("-"*20)
 
 
