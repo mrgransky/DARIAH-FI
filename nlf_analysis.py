@@ -485,7 +485,9 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 		#df_sliced_mean["user_ip"].plot(kind='line', color="red", label='mean_value', ax=axs)
 		axs.plot(df_sliced["timestamp"], 
 						[df_sliced.mean()["user_ip"] for t in df_sliced["timestamp"]],
-						color="red", 
+						color="red",
+						linestyle="-", 
+						linewidth=0.7,
 						label='mean_value',
 						)
 		#print(df_sliced_grouped)
