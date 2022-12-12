@@ -483,7 +483,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 			for i in range(4):
 				print(i)
 				print(i*time_window , (i+1)*time_window)
-				df_sliced = df_count[i*time_window:(i+1)*time_window]
+				df_sliced = df_count[i*time_window: ((i+1)*time_window)+1]
 				print(df_sliced)
 
 				axs.plot(df_sliced["timestamp"], 
