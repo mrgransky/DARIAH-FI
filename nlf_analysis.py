@@ -452,12 +452,41 @@ def plot_user(df, fname, RES_DIR, N=10):
 def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
 	#df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
-	#print(df_mean)
 
-	#print(df_count.shape)
-	#print(df_count)
+	fig, axs = plt.subplots()
+	
+	df_count.set_index("timestamp").plot( rot=0, 
+								ax=axs,
+								kind='bar',
+								xlabel="Hour (o'clock)", 
+								ylabel="Activity",
+								title=f"24-Hour Activity\n{fname}",
+								color=clrs,
+								alpha=0.6,
+								)
+	
+	df_count.set_index("timestamp").plot(	kind='line', 
+								rot=0, 
+								ax=axs, 
+								marker="*", 
+								linestyle="-", 
+								linewidth=0.5,
+								color=clrs,
+								label=None,
+								legend=False,
+								xlabel="Hour (o'clock)", 
+								ylabel="Activity",
+								)
 
-	#print(df_count["timestamp"].shape)
+	plt.legend(	["Users", "Query Words", "OCR Terms"],
+							loc="best", 
+							frameon=False,
+							ncol=df_count.shape[0],
+							)
+	
+	
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_24h_activity.png" ), )
+	plt.clf()
 
 	#time_window = df_count["timestamp"].shape[0]/4
 	time_window = int(24 / 4)
@@ -523,43 +552,8 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 				plt.savefig(os.path.join( RES_DIR, f"{fname}_{col}_mean_std.png" ), )
 
 
-	sys.exit()
+	#sys.exit()
 	
-	fig, axs = plt.subplots()
-	
-	df_count.plot( rot=0, 
-								ax=axs,
-								kind='bar',
-								xlabel="Hour (o'clock)", 
-								ylabel="Activity",
-								title=f"24-Hour Activity\n{fname}",
-								color=clrs,
-								alpha=0.6,
-								)
-	
-	df_count.plot(	kind='line', 
-								rot=0, 
-								ax=axs, 
-								marker="*", 
-								linestyle="-", 
-								linewidth=0.5,
-								color=clrs,
-								label=None,
-								legend=False,
-								xlabel="Hour (o'clock)", 
-								ylabel="Activity",
-								)
-
-	plt.legend(	["Users", "Query Words", "OCR Terms"],
-							loc="best", 
-							frameon=False,
-							ncol=df_count.shape[0],
-							)
-	
-	
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_24h_activity.png" ), )
-	plt.clf()
-
 	uu, uc = np.unique(df["user_ip"], return_counts=True)
 	#print(uu.shape[0], uu, uc)
 
@@ -570,7 +564,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	#print(user_ung.shape[0], user_ung, user_counts)
 
 
-	sys.exit()
+	#sys.exit()
 
 def plot_usr_doc_type(df, fname, RES_DIR, Nu=10):
 	# TOP-N users:	
