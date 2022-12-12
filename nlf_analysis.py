@@ -457,18 +457,39 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 
 	#print(df_count["timestamp"].shape)
 
-	#time_group = df_count["timestamp"].shape[0]/4
-	time_group = int(24 / 4)
+	#time_window = df_count["timestamp"].shape[0]/4
+	time_window = int(24 / 4)
 	
+	fig, axs = plt.subplots()
+	df_count["user_ip"].plot(	kind='line', 
+														rot=0, 
+														ax=axs, 
+														marker="*", 
+														linestyle="-", 
+														linewidth=0.5,
+														color=clrs,
+														label=None,
+														legend=False,
+														xlabel="Hour (o'clock)", 
+														ylabel="Activity",
+													)
 	
 	for i in range(4):
 		print(i)
-		print(i*time_group , (i+1)*time_group)
-		df_sliced = df_count[i*time_group:(i+1)*time_group]
+		print(i*time_window , (i+1)*time_window)
+		df_sliced = df_count[i*time_window:(i+1)*time_window]
 		print(df_sliced)
-		print("-"*20)
+		df_sliced_mean = pd.DataFrame(df_sliced.mean()).T
+		print(df_sliced_mean)
+		df_sliced_std = df_sliced.std()
+		df_sliced_mean["user_ip"].plot(kind='line', color="red", label='mean_value', ax=axs)
+		#print(df_sliced_grouped)
+		
+		print("-"*60)
 
 
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_mean.png" ), )
+	plt.clf()
 
 
 	sys.exit()
