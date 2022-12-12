@@ -479,10 +479,15 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 		print(i*time_window , (i+1)*time_window)
 		df_sliced = df_count[i*time_window:(i+1)*time_window]
 		print(df_sliced)
-		df_sliced_mean = pd.DataFrame(df_sliced.mean()).T
-		print(df_sliced_mean)
-		df_sliced_std = df_sliced.std()
-		df_sliced_mean["user_ip"].plot(kind='line', color="red", label='mean_value', ax=axs)
+		#df_sliced_mean = pd.DataFrame(df_sliced.mean()).T
+		#print(df_sliced_mean)
+		#df_sliced_std = df_sliced.std()
+		#df_sliced_mean["user_ip"].plot(kind='line', color="red", label='mean_value', ax=axs)
+		axs.plot(df_sliced["timestamp"], 
+						[df_sliced.mean()["user_ip"] for t in df_sliced["timestamp"]],
+						color="red", 
+						label='mean_value',
+						)
 		#print(df_sliced_grouped)
 		
 		print("-"*60)
