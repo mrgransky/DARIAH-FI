@@ -447,32 +447,43 @@ def plot_user(df, fname, RES_DIR, N=10):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{N}_users.png" ), )
 	plt.clf()
 
-def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
-	# doc_type:
-	df_tmp_doc_type = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index(drop=True)
-	dt_u, dt_c = np.unique(df_tmp_doc_type["document_type"], return_counts=True)
-	print(dt_u.shape[0], dt_u, dt_c)
+def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
+	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	#df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
+	#print(df_mean)
+
+	print(df_count.shape)
+	print(df_count)
+
+	print(df_count["timestamp"].shape)
+
+	#time_group = df_count["timestamp"].shape[0]/4
+	time_group = int(24 / 4)
+	
+	
+	for i in range(4):
+		print(i)
+		print(i*time_group , (i+1)*time_group)
+		print(df_count["timestamp"][i*time_group:(i+1)*time_group])
+		print("-"*20)
 
 
-	#users:
-	gk = df.groupby('document_type', as_index=False )#['user_ip'].count().sort_values(by="user_ip", ascending=False)
-	#print(gk.get_group('JOURNAL')['user_ip'])
 
-	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()
-	df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
 
+	sys.exit()
+	
 	fig, axs = plt.subplots()
 	
 	df_count.plot( rot=0, 
 								ax=axs,
 								kind='bar',
-								xlabel="Hour", 
+								xlabel="Hour (o'clock)", 
 								ylabel="Activity",
 								title=f"24-Hour Activity\n{fname}",
 								color=clrs,
 								alpha=0.6,
 								)
-	"""
+	
 	df_count.plot(	kind='line', 
 								rot=0, 
 								ax=axs, 
@@ -481,22 +492,10 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 								linewidth=0.5,
 								color=clrs,
 								label=None,
-								xlabel="Hour", 
+								legend=False,
+								xlabel="Hour (o'clock)", 
 								ylabel="Activity",
 								)
-	"""
-	df_mean.plot(	kind='line', 
-								rot=0, 
-								ax=axs, 
-								marker="*", 
-								linestyle="-", 
-								linewidth=0.5,
-								color=clrs,
-								label=None,
-								xlabel="Hour", 
-								ylabel="Activity",
-								)
-
 
 	plt.legend(	["Users", "Query Words", "OCR Terms"],
 							loc="best", 
@@ -504,9 +503,8 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 							ncol=df_count.shape[0],
 							)
 	
-	#print(df_count)
 	
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_hour_activity.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_24h_activity.png" ), )
 	plt.clf()
 
 	uu, uc = np.unique(df["user_ip"], return_counts=True)
@@ -520,6 +518,80 @@ def plot_user_vs_doc_type(df, fname, RES_DIR, Nu=10):
 
 
 	sys.exit()
+
+def plot_usr_doc_type(df, fname, RES_DIR, Nu=10):
+	# TOP-N users:	
+	#df_topN_users = df["user_ip"].value_counts().head(Nu).rename_axis('user_ip').reset_index(name='occurrence')
+	#print(df_topN_users)
+
+	# doc_type:
+	df_dt = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index(drop=True)
+	print(df_dt["document_type"].value_counts())
+
+	my_lst = df["document_type"].str.cat(sep=",").split(",")
+	doc_type_unq, doc_type_counts = np.unique(my_lst, return_counts=True)
+	#print(doc_type_unq)
+	#print(doc_type_counts)
+
+	df_unq_doc_type = pd.DataFrame(list(zip(doc_type_unq, doc_type_counts)), columns =['type', 'occurrence'])#.set_index("type")
+	print(df_unq_doc_type)
+	print("#"*150)
+
+
+	def analyze_(my_df):
+		doc = my_df["type"]
+		print(doc)
+		#print(df_dt["document_type"].to_numpy())
+		print(f'{df_dt[doc in list(df_dt["document_type"])]["user_ip"]}')
+		
+		return my_df
+
+
+	check_type = lambda INPUT_DF: analyze_(INPUT_DF)
+	df_unq_doc_type = pd.DataFrame( df_unq_doc_type.apply( check_type, axis=1, ) )	
+	#sys.exit()
+		
+	sys.exit()
+	#if df_unq_doc_type[""]
+
+	#df_topN_users["document_type"] = 
+	print(df_topN_users)
+
+	fig, axs = plt.subplots()
+	df_unq_doc_type = df_unq_doc_type.set_index("type")
+	df_unq_doc_type.plot( rot=0,
+								ax=axs,
+								kind='bar',
+								xlabel="Unique Document Type", 
+								ylabel="Count",
+								title=f"User Intrests of {df_unq_doc_type.shape[0]} Unique Document Type\n{fname}",
+								color=clrs,
+								alpha=0.6,
+								)
+	axs.bar_label(axs.containers[0])
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
+	plt.clf()
+
+	fig, axs = plt.subplots()
+	#users:
+	dfgr_dt_usr = df.groupby('document_type')['user_ip']#.sort_values(by="user_ip", ascending=False)
+	print(len(dfgr_dt_usr.get_group("JOURNAL")))
+	print(">"*10)
+	print(dfgr_dt_usr.get_group("JOURNAL"))
+
+	df_doc_type_vs_users = dfgr_dt_usr.count() # change to pandas df
+	df_doc_type_vs_users.plot( rot=90,
+								ax=axs,
+								kind='bar',
+								xlabel="Document Type", 
+								ylabel="Count",
+								title=f"User Intrests of {df_doc_type_vs_users.shape[0]} Raw Document Type\n{fname}",
+								color=clrs,
+								alpha=0.6,
+								)
+	axs.bar_label(axs.containers[0])
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_vs_doc_type.png" ), )
+	plt.clf()
 
 def main():
 	print("#"*70)
@@ -550,8 +622,10 @@ def main():
 	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
-	plot_user_vs_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
+	# 24h activity:
+	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
 	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
@@ -560,11 +634,11 @@ def main():
 	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# publication
-	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
