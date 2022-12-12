@@ -83,7 +83,7 @@ clrs = ["#333533",
 				'#0ecd19', 
 				]
 
-my_cols = [ '#16b3ff', "#ffd100", '#ffcc99', '#0ecd19',]
+my_cols = [ "#ffd100", '#16b3ff', '#0ecd19', '#ff9999',]
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -462,21 +462,22 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	#time_window = df_count["timestamp"].shape[0]/4
 	time_window = int(24 / 4)
 	
-	fig, axs = plt.subplots()
 	print(df_count.columns)
 	for col in df_count.columns[1:]:
+			fig, axs = plt.subplots()
 			print(col)
 			df_count[col].plot(	kind='line', 
 																	rot=0, 
 																	ax=axs, 
 																	marker="*", 
 																	linestyle="-", 
-																	linewidth=0.3,
+																	linewidth=0.5,
 																	color=clrs,
 																	label=None,
 																	legend=False,
 																	xlabel="Hour (o'clock)", 
 																	ylabel="Activity",
+																	title=f"Mean($\mu$) & Standard Deviation ($\sigma$): {col}\n{fname}"
 																)
 
 			for i in range(4):
@@ -488,25 +489,25 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 				axs.plot(df_sliced["timestamp"], 
 								[df_sliced.mean()[col] for t in df_sliced["timestamp"]],
 								color="red",
-								linestyle="-", 
+								linestyle="-",
 								linewidth=0.7,
-								label=r'$\mu$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
+								label=f"($\mu$ = {df_sliced.mean()[col]:.1f})\t{i*time_window}:{(i+1)*time_window} o'clock",
 								)
 
 				axs.fill_between(df_sliced["timestamp"], 
 								[ df_sliced.mean()[col] - 3 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
 								[ df_sliced.mean()[col] + 3 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
-								alpha=0.08,
+								alpha=0.1,
 								color=my_cols[i],
-								label=r'+/- 3$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
+								label=f"+/- 3$\sigma$\t{i*time_window}:{(i+1)*time_window} o'clock",
 								)
 
 				axs.fill_between(df_sliced["timestamp"], 
 								[ df_sliced.mean()[col] - 1 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
 								[ df_sliced.mean()[col] + 1 * df_sliced.std()[col] for t in df_sliced["timestamp"]],
-								alpha=0.10,
+								alpha=0.14,
 								color=my_cols[i],
-								label=r'+/- 1$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
+								label=f"+/- 1$\sigma$\t{i*time_window}:{(i+1)*time_window} o'clock",
 								)
 
 
