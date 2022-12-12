@@ -50,9 +50,9 @@ sns.set(font_scale=1.3,
 				color_codes=True,
 				)
 
-clrs = ['#1f77b4',
-				"#333533", 
+clrs = ["#333533", 
 				'#d62728', 
+				'#1f77b4',
 				'#8c564b',
 				"#679289",
 				"#918450",
@@ -82,6 +82,8 @@ clrs = ['#1f77b4',
 				'#cc9911', 
 				'#0ecd19', 
 				]
+
+my_cols = [ '#16b3ff', "#ffd100", '#ffcc99', '#0ecd19',]
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -448,7 +450,7 @@ def plot_user(df, fname, RES_DIR, N=10):
 	plt.clf()
 
 def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
-	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count()#.reset_index()
 	#df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
 	#print(df_mean)
 
@@ -477,43 +479,42 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	for i in range(4):
 		print(i)
 		print(i*time_window , (i+1)*time_window)
-		df_sliced = df_count[i*time_window:(i+1)*time_window]
+		df_sliced = df_count.reset_index()[i*time_window:(i+1)*time_window]
 		print(df_sliced)
 		axs.plot(df_sliced["timestamp"], 
 						[df_sliced.mean()["user_ip"] for t in df_sliced["timestamp"]],
 						color="red",
 						linestyle="-", 
 						linewidth=0.7,
-						label='mean_value',
+						label=r'$\mu$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
 						)
 
 		axs.fill_between(df_sliced["timestamp"], 
 						[ df_sliced.mean()["user_ip"] - 3 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
 						[ df_sliced.mean()["user_ip"] + 3 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
 						alpha=0.08,
-						color="green",
-						label=r'+/- 3$\sigma$',
+						color=my_cols[i],
+						label=r'+/- 3$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
 						)
 
 		axs.fill_between(df_sliced["timestamp"], 
 						[ df_sliced.mean()["user_ip"] - 1 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
 						[ df_sliced.mean()["user_ip"] + 1 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
 						alpha=0.10,
-						color="green",
-						label=r'+/- 1$\sigma$',
+						color=my_cols[i],
+						label=r'+/- 1$\sigma$'+f" {i*time_window}:{(i+1)*time_window} o'clock",
 						)
 
 
 		#print(df_sliced_grouped)
 		
 		print("-"*60)
-	"""
+	
 	plt.legend(	#["Users", "Query Words", "OCR Terms"],
 							loc="best", 
 							frameon=False,
-							ncol=df_count.shape[0],
+							#ncol=df_count.shape[0],
 							)
-	"""
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_mean.png" ), )
 	plt.clf()
 
