@@ -466,7 +466,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 														ax=axs, 
 														marker="*", 
 														linestyle="-", 
-														linewidth=0.5,
+														linewidth=0.3,
 														color=clrs,
 														label=None,
 														legend=False,
@@ -479,10 +479,6 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 		print(i*time_window , (i+1)*time_window)
 		df_sliced = df_count[i*time_window:(i+1)*time_window]
 		print(df_sliced)
-		#df_sliced_mean = pd.DataFrame(df_sliced.mean()).T
-		#print(df_sliced_mean)
-		#df_sliced_std = df_sliced.std()
-		#df_sliced_mean["user_ip"].plot(kind='line', color="red", label='mean_value', ax=axs)
 		axs.plot(df_sliced["timestamp"], 
 						[df_sliced.mean()["user_ip"] for t in df_sliced["timestamp"]],
 						color="red",
@@ -490,11 +486,34 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 						linewidth=0.7,
 						label='mean_value',
 						)
+
+		axs.fill_between(df_sliced["timestamp"], 
+						[ df_sliced.mean()["user_ip"] - 3 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
+						[ df_sliced.mean()["user_ip"] + 3 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
+						alpha=0.08,
+						color="green",
+						label=r'+/- 3$\sigma$',
+						)
+
+		axs.fill_between(df_sliced["timestamp"], 
+						[ df_sliced.mean()["user_ip"] - 1 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
+						[ df_sliced.mean()["user_ip"] + 1 * df_sliced.std()["user_ip"] for t in df_sliced["timestamp"]],
+						alpha=0.10,
+						color="green",
+						label=r'+/- 1$\sigma$',
+						)
+
+
 		#print(df_sliced_grouped)
 		
 		print("-"*60)
-
-
+	"""
+	plt.legend(	#["Users", "Query Words", "OCR Terms"],
+							loc="best", 
+							frameon=False,
+							ncol=df_count.shape[0],
+							)
+	"""
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_mean.png" ), )
 	plt.clf()
 
