@@ -289,7 +289,7 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	sns.despine(left=True, bottom=True)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nq}_query_words.png" ), )
 	plt.clf()
-	#sys.exit()
+	#
 
 	GENDERS = {}
 
@@ -393,7 +393,7 @@ def plot_doc_type(df, fname, RES_DIR):
 						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"Document Types in Cloud | {fname}", color="white")
+	plt.title(f"Document Types in Cloud\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -552,7 +552,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 				plt.savefig(os.path.join( RES_DIR, f"{fname}_{col}_mean_std.png" ), )
 
 
-	#sys.exit()
+	#
 	
 	uu, uc = np.unique(df["user_ip"], return_counts=True)
 	#print(uu.shape[0], uu, uc)
@@ -564,27 +564,101 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	#print(user_ung.shape[0], user_ung, user_counts)
 
 
-	#sys.exit()
+	#
 
 def plot_usr_doc_type(df, fname, RES_DIR, Nu=10):
-	# TOP-N users:	
-	#df_topN_users = df["user_ip"].value_counts().head(Nu).rename_axis('user_ip').reset_index(name='occurrence')
-	#print(df_topN_users)
+	#print(df.head(50))
+	#print(df["document_type"].value_counts())
+	#print("#"*150)
 
-	# doc_type:
-	df_dt = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index(drop=True)
-	print(df_dt["document_type"].value_counts())
+	#print(df["document_type"].value_counts())
+	#print("#"*150)
 
-	my_lst = df["document_type"].str.cat(sep=",").split(",")
-	doc_type_unq, doc_type_counts = np.unique(my_lst, return_counts=True)
-	#print(doc_type_unq)
-	#print(doc_type_counts)
+	df_tmp = df.assign(document_type=df['document_type'].str.split(',')).explode('document_type')
+	
+	print(df_tmp["document_type"].value_counts())
+	print("#"*150)
 
-	df_unq_doc_type = pd.DataFrame(list(zip(doc_type_unq, doc_type_counts)), columns =['type', 'occurrence'])#.set_index("type")
-	print(df_unq_doc_type)
+	df_count = df.groupby(df["document_type"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	print(df_count)
+	print("#"*150)
+
+	df_count_dt = df_tmp.groupby(df_tmp["document_type"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	print(df_count_dt)
+
+	print("#"*150)
+	
+	fig, axs = plt.subplots()
+	df_count_dt.set_index("document_type").plot( rot=0,
+								ax=axs,
+								kind='bar',
+								xlabel="Unique Document Type", 
+								ylabel="Count",
+								title=f"{df_count_dt.shape[0]} Unique Document Type\n{fname}",
+								color=clrs,
+								alpha=0.6,
+								)
+	for container in axs.containers:
+		axs.bar_label(container)
+	plt.legend(	loc="upper left", 
+							frameon=False,
+							#title=f"Top-{Nu} Users",
+							ncol=df_count_dt.shape[0], 
+							)
+
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
+	plt.clf()
+	#
+
+
+	df_count_usr = df_tmp.groupby(df_tmp["user_ip"])[["document_type"]].count().reset_index().sort_values(by="document_type", ascending=False)
+	print(df_count_usr)
 	print("#"*150)
 
 
+	print(df_tmp[df_tmp["document_type"]=="NEWSPAPER"][["user_ip","document_type"]])
+	print("/"*150)
+	
+	# TOP-N users:	
+	df_topN_users = df_tmp["user_ip"].value_counts().head(Nu).rename_axis('user_ip').reset_index(name='occurrence')
+	print(df_topN_users)
+
+	fig, axs = plt.subplots()
+	for idx, usr_v in df_topN_users["user_ip"].iteritems():
+		print(idx, usr_v)
+		print(df_tmp[df_tmp["user_ip"]==usr_v][["document_type"]].value_counts())
+		df_topN = df_tmp[df_tmp["user_ip"]==usr_v][["user_ip", "document_type"]]
+		print(df_topN)
+		df_topN_sz=df_topN.groupby(['user_ip','document_type']).size()
+		df_topN_sz=df_topN_sz.unstack()
+		print(df_topN_sz)
+		print("*"*100)
+		
+		"""
+		df_topN_sz.set_index("user_ip").plot( rot=0,
+										ax=axs,
+										kind='bar',
+										xlabel="Unique Document Type", 
+										ylabel="Count",
+										title=f"User Intrests of {df_topN.shape[0]} Unique Document Type\n{fname}",
+										color=clrs,
+										alpha=0.6,
+										)	
+		"""
+		print()
+
+	print("#"*150)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
+	plt.clf()
+
+
+	#
+
+	# doc_type:
+	df_dt = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index(drop=True)
+	#print("#"*150)
+
+	"""
 	def analyze_(my_df):
 		doc = my_df["type"]
 		print(doc)
@@ -596,22 +670,21 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=10):
 
 	check_type = lambda INPUT_DF: analyze_(INPUT_DF)
 	df_unq_doc_type = pd.DataFrame( df_unq_doc_type.apply( check_type, axis=1, ) )	
-	#sys.exit()
+	#
 		
-	sys.exit()
+	
 	#if df_unq_doc_type[""]
 
 	#df_topN_users["document_type"] = 
 	print(df_topN_users)
-
+	"""
 	fig, axs = plt.subplots()
-	df_unq_doc_type = df_unq_doc_type.set_index("type")
-	df_unq_doc_type.plot( rot=0,
+	df_count_dt.set_index("document_type").plot( rot=0,
 								ax=axs,
 								kind='bar',
 								xlabel="Unique Document Type", 
 								ylabel="Count",
-								title=f"User Intrests of {df_unq_doc_type.shape[0]} Unique Document Type\n{fname}",
+								title=f"User Intrests of {df_count_dt.shape[0]} Unique Document Type\n{fname}",
 								color=clrs,
 								alpha=0.6,
 								)
@@ -619,6 +692,7 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=10):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
+	#
 	fig, axs = plt.subplots()
 	#users:
 	dfgr_dt_usr = df.groupby('document_type')['user_ip']#.sort_values(by="user_ip", ascending=False)
@@ -651,7 +725,7 @@ def main():
 
 	QUERY_FILE = get_query_dataframe(QUERY=args.query)
 	df = load_df(infile=QUERY_FILE)
-
+	"""
 	print(df.shape)
 	cols = list(df.columns)
 	print(len(cols), cols)
@@ -664,28 +738,30 @@ def main():
 	print(df.isna().sum())
 	print("-"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
-
+	"""
+	print(df[df.select_dtypes(include=[object]).columns].describe().T)
+	#
 	# missing features:
-	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
-
-	# users vs document_type:
-	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# 24h activity:
 	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
-	# publication
-	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	# doc_type_cloud
+	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+
+	# users vs document_type:
+	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	#plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
