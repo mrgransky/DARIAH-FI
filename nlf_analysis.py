@@ -162,36 +162,64 @@ def plot_missing_features(df, fname, RES_DIR):
 	plt.clf()
 
 def plot_language(df, fname, RES_DIR, N=10):
-	unq = df["language"].value_counts()
-	print(f">> langueage:\n{unq}")
+	df_cleaned = df.dropna(axis=0, how="any", subset=["language"]).reset_index()
 
-	df_tmp = df.dropna(axis=0, how="any", subset=["language"]).reset_index(drop=True)
+	df_unq = df_cleaned.assign(language=df_cleaned['language'].str.split(',')).explode('language')
+	
+	print("#"*150)
+	print(df_unq["language"].value_counts())
+	print("#"*150)
 
-	lu, lc = np.unique(df_tmp["language"], return_counts=True)
-	print(lu.shape[0], lu, lc)
 
-	print(f"\n>> sorting for Top {N} ...")
-	lc_sorted_idx = np.argsort(-lc)
+	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(18,10))
 
-	language_ung = lu[lc_sorted_idx][:N]
-	language_counts = lc[lc_sorted_idx][:N]
-	print(language_ung.shape[0], language_ung, language_counts)
-
-	patches, lbls, pct_texts = plt.pie(language_counts,
-																				labels=language_ung, 
+	patches, lbls, pct_texts = axs[0].pie(df_cleaned["language"].value_counts(),
 																				autopct='%1.1f%%', 
-																				#startangle=180,
-																				#radius=3, USELESS IF axs[0].axis('equal')
-																				#pctdistance=1.5,
+																				startangle=0,
+																				radius=0.9, #USELESS IF axs[0].axis('equal')
+																				pctdistance=0.8,
 																				#labeldistance=0.5,
-																				rotatelabels=True,
+																				#rotatelabels=True,
 																				#counterclock=False,
+																				textprops=dict(size=15, color="white"),
 																				colors=clrs,
-																				)
-	for lbl, pct_text in zip(lbls, pct_texts):
-		pct_text.set_rotation(lbl.get_rotation())
+																				#shadow = True,
+																				wedgeprops=dict(width=0.5, edgecolor="#1c1c",linewidth=2),
+																			)
+	axs[0].legend(patches, 
+						df_cleaned["language"].unique(),
+						title="Language",
+						loc="lower left",
+						frameon=False,
+						bbox_to_anchor=(1, 0, 0.5, 1),
+						)
+	axs[0].axis('equal')
+	axs[0].set_title(f"All NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
 
-	plt.title(f"Top {N} Searched Languages in NLF | Total Entry: {df_tmp['language'].shape[0]}")
+
+	patches, lbls, pct_texts = axs[1].pie(df_unq["language"].value_counts(),
+																				autopct='%1.1f%%', 
+																				startangle=0,
+																				radius=.9, #USELESS IF axs[0].axis('equal')
+																				pctdistance=0.7,
+																				#labeldistance=0.5,
+																				#rotatelabels=True,
+																				#counterclock=False,
+																				textprops=dict(size=15, color="white"),
+																				colors=clrs,
+																				#shadow = True,
+																				wedgeprops=dict(width=0.5, edgecolor="#1c1c",linewidth=2),
+																			)
+	axs[1].legend(patches, 
+						df_unq["language"].unique(),
+						title="Unique Language",
+						loc="center left",
+						frameon=False,
+						bbox_to_anchor=(1, 0, 0.5, 1),
+						)
+
+	axs[1].axis('equal')
+	axs[1].set_title(f"Unique NLF Languages\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_language.png" ), )
 	plt.clf()
 
@@ -371,13 +399,69 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 	plt.clf()
 
 def plot_doc_type(df, fname, RES_DIR):
-	unq = df["document_type"].value_counts()
-	print(f">> doc_type:\n{unq}")
+	df_cleaned = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index()
+
+	df_unq = df_cleaned.assign(document_type=df_cleaned['document_type'].str.split(',')).explode('document_type')
+	
+	print("#"*150)
+	print(df_unq["document_type"].value_counts())
+	print("#"*150)
 
 
-	df_tmp = df[["document_type"]]
-	df_tmp["document_type"] = df_tmp["document_type"].str.split(",")
-	print(df_tmp.head(20))
+	fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(18,10))
+
+	patches, lbls, pct_texts = axs[0].pie(df_cleaned["document_type"].value_counts(),
+																				autopct='%1.1f%%', 
+																				startangle=0,
+																				radius=1.0, #USELESS IF axs[0].axis('equal')
+																				pctdistance=0.8,
+																				#labeldistance=0.5,
+																				#rotatelabels=True,
+																				#counterclock=False,
+																				textprops=dict(size=13, color="white"),
+																				colors=clrs,
+																				#shadow = True,
+																				wedgeprops=dict(width=0.7, edgecolor="#1c1c",linewidth=2),
+																			)
+	axs[0].legend(patches, 
+						df_cleaned["document_type"].unique(),
+						title="document type",
+						loc="lower left",
+						frameon=False,
+						bbox_to_anchor=(1, 0, 0.5, 1),
+						)
+	axs[0].axis('equal')
+	axs[0].set_title(f"All NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+
+
+	patches, lbls, pct_texts = axs[1].pie(df_unq["document_type"].value_counts(),
+																				autopct='%1.1f%%', 
+																				startangle=0,
+																				radius=1.0, #USELESS IF axs[0].axis('equal')
+																				pctdistance=0.7,
+																				#labeldistance=0.5,
+																				#rotatelabels=True,
+																				#counterclock=False,
+																				textprops=dict(size=12, color="white"),
+																				colors=clrs,
+																				#shadow = True,
+																				wedgeprops=dict(width=0.7, edgecolor="#1c1c",linewidth=2),
+																			)
+	axs[1].legend(patches, 
+						df_unq["document_type"].unique(),
+						title="Unique document type",
+						loc="center left",
+						frameon=False,
+						bbox_to_anchor=(1, 0, 0.5, 1),
+						)
+
+	axs[1].axis('equal')
+	axs[1].set_title(f"Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_document_type.png" ), )
+	plt.clf()
+
+
+
 
 	wordcloud = WordCloud(width=800, 
 												height=250, 
@@ -393,7 +477,7 @@ def plot_doc_type(df, fname, RES_DIR):
 						) 
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"Document Types in Cloud\n{fname}", color="white")
+	plt.title(f"Document Type Cloud\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -425,18 +509,24 @@ def plot_user(df, fname, RES_DIR, N=10):
 									linewidth = 2,
 									)
 
-	p.axes.set_title(f"\nTop {N} Users / {df_tmp.shape[0]} | {fname}\n", fontsize=18)
-	plt.ylabel("Counts", fontsize = 20)
-	plt.xlabel("\nUser Name", fontsize = 20)
+	p.axes.set_title(f"Top {N} Users / {df_tmp.shape[0]}\n{fname}", 
+									#fontsize=18,
+									)
+	plt.ylabel("Counts", 
+						#fontsize = 20,
+						)
+	plt.xlabel("\nUser Name", 
+							#fontsize=20,
+							)
 	# plt.yscale("log")
 	plt.xticks(rotation=90)
 	for container in p.containers:
 			p.bar_label(container,
-									label_type = "center",
-									padding = 6,
-									size = 15,
-									color = "black",
-									rotation = 90,
+									label_type="center",
+									padding=6,
+									size=15,
+									color="black",
+									rotation=90,
 									bbox={"boxstyle": "round", 
 												"pad": 0.6, 
 												"facecolor": "orange", 
@@ -451,7 +541,6 @@ def plot_user(df, fname, RES_DIR, N=10):
 
 def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
-	#df_mean = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].mean()
 
 	fig, axs = plt.subplots()
 	
