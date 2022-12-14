@@ -453,7 +453,7 @@ def plot_doc_type(df, fname, RES_DIR):
 
 	ax2.legend(patches,
 						#[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
-						[f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts(normalize=True)) ]
+						[f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts(normalize=True)) ],
 						#df_cleaned["document_type"].unique(), 
 						loc="center",
 						frameon=False,
