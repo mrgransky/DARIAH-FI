@@ -179,7 +179,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 	patches, _ = axs.pie(df_cleaned["language"].value_counts(),
 											colors=clrs,
 											wedgeprops=dict(width=0.8, 
-																			edgecolor="#1c1c",
+																			edgecolor="#700f3000",
 																			linewidth=0.5,
 																			),
 											)
@@ -208,8 +208,8 @@ def plot_language(df, fname, RES_DIR, N=10):
 	axs = fig.add_subplot(121)
 	patches, _ = axs.pie(df_unq["language"].value_counts(),
 											colors=clrs,
-											wedgeprops=dict(width=0.8, 
-																			edgecolor="#1c1c",
+											wedgeprops=dict(width=0.8,
+																			edgecolor="#700f3000",
 																			linewidth=0.5,
 																			),
 											)
@@ -265,7 +265,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 									y=df_cleaned["query_word"].value_counts()[:Nq].values,
 									palette=clrs, 
 									saturation=1, 
-									edgecolor="#1c1c1c",
+									edgecolor="#450f30",
 									linewidth=1,
 									)
 
@@ -382,7 +382,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	patches, _ = axs.pie(df_cleaned["document_type"].value_counts(),
 											colors=clrs,
 											wedgeprops=dict(width=0.8, 
-																			edgecolor="#1c1c",
+																			edgecolor="#ee7f3000",
 																			linewidth=0.3,
 																			),
 											)
@@ -412,7 +412,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	patches, _ = axs.pie(df_unq["document_type"].value_counts(),
 											colors=clrs,
 											wedgeprops=dict(width=0.8, 
-																			edgecolor="#1c1c",
+																			edgecolor="#ee7f3000",
 																			linewidth=0.5,
 																			),
 											)
