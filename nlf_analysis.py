@@ -299,7 +299,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 					print(c)
 					
 					lst.append(c)
-			GENDERS[g] = lst
+			GENDERS[usr] = lst
 
 	print(GENDERS)
 
@@ -307,8 +307,8 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	BOTTOM = 0
 
 	for k, v in GENDERS.items():
-			#print(k, v)
-			plt.bar(x=df_cleaned["query_word"].value_counts().index, 
+			print(k, v)
+			plt.bar(x=df_cleaned["query_word"].value_counts().index[:Nq],
 								height=v, 
 								width=WIDTH,
 								bottom=BOTTOM, 
