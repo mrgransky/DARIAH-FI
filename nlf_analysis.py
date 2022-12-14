@@ -288,31 +288,29 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nq}_query_words.png" ), )
 	plt.clf()
 
-	GENDERS = {}
+	MY_DICT = {}
 
 	for usr in df_cleaned["user_ip"].value_counts().index[:Nu]:
-			lst = []
-			for qu in df_cleaned["query_word"].value_counts().index[:Nq]:
-					print(usr, qu)
-					#c = df.query(f"Profession=='{str(p)}' and Gender=='{str(g)}'").Gender.count()
-					c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
-					print(c)
-					
-					lst.append(c)
-			GENDERS[usr] = lst
+		lst = []
+		for qu in df_cleaned["query_word"].value_counts().index[:Nq]:
+			print(usr, qu)
+			c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
+			print(c)		
+			lst.append(c)
+		MY_DICT[usr] = lst
 
-	print(GENDERS)
+	print(MY_DICT)
 
 	WIDTH = 0.35
 	BOTTOM = 0
 
-	for k, v in GENDERS.items():
+	for k, v in MY_DICT.items():
 			print(k, v)
 			plt.bar(x=df_cleaned["query_word"].value_counts().index[:Nq],
 								height=v, 
 								width=WIDTH,
 								bottom=BOTTOM, 
-								color=clrs[list(GENDERS.keys()).index(k)],
+								color=clrs[list(MY_DICT.keys()).index(k)],
 								label=k,
 								)
 			BOTTOM += np.array(v)
@@ -324,7 +322,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.legend(	loc="best", 
 							frameon=False,
 							title=f"Top-{Nu} Users",
-							#ncol=len(GENDERS),
+							#ncol=len(MY_DICT),
 							fontsize=10,
 							)
 
