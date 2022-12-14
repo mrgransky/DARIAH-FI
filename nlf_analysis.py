@@ -759,6 +759,7 @@ def main():
 	print(df.info(verbose=True, memory_usage="deep"))
 	"""
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
+	print("%"*120)
 	
 	# missing features:
 	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
