@@ -55,7 +55,6 @@ clrs = ["#100874",
 				'#0ecd19',
 				"#ffee32",
 				'#e377c2',
-				'#900fcc99',
 				'#16b3ff',
 				'#f05f',
 				'#007749',
@@ -70,6 +69,7 @@ clrs = ["#100874",
 				'#7f7f7f', 
 				"#031e",
 				"#ffb563",
+				'#900fcc99',
 				'#17becf',
 				"#a416",
 				'#d62789', 
@@ -165,7 +165,7 @@ def plot_missing_features(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_missing_heatmap.png" ), )
 	plt.clf()
 
-def plot_language(df, fname, RES_DIR, N=10):
+def plot_language(df, fname, RES_DIR, N=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["language"]).reset_index()
 
 	df_unq = df_cleaned.assign(language=df_cleaned['language'].str.split(',')).explode('language')
@@ -253,7 +253,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="#58566666")
+	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="#1004")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -361,7 +361,7 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="#58566666")
+	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="#1004")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -444,12 +444,10 @@ def plot_doc_type(df, fname, RES_DIR):
 												collocations=False,
 												).generate(df["document_type"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
 
-	plt.figure(figsize=(10, 4),
-						facecolor="grey",
-						) 
+	plt.figure(figsize=(10, 4))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"Document Type Cloud\n{fname}", color="white")
+	plt.title(f"Document Type Cloud\n{fname}", color="#1004")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -472,7 +470,7 @@ def plot_doc_type(df, fname, RES_DIR):
 								alpha=0.6,
 								)
 	for container in axs.containers:
-		axs.bar_label(container)
+		axs.bar_label(container, rotation=45, )
 	plt.legend(	loc="upper left", 
 							frameon=False,
 							#title=f"Top-{Nu} Users",
@@ -482,7 +480,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=10):
+def plot_user(df, fname, RES_DIR, N=20):
 	unq = df["user_ip"].value_counts()
 	print(f">> user_ip:\n{unq}")
 
@@ -659,11 +657,7 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=20):
 	print(df_cleaned["document_type"].value_counts())
 	print("#"*40)
 
-
-
-
-
-	return
+	#return
 	df_count = df.groupby(df["document_type"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
 	print(df_count)
 	print("#"*150)
@@ -693,10 +687,12 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=20):
 								kind='bar',
 								xlabel="Document Type", 
 								ylabel="Count",
-								title=f"User Intrests of {df_doc_type_vs_users.shape[0]} Raw Document Type\n{fname}",
+								title=f"User Intrests of {df_doc_type_vs_users.shape[0]} Raw Document Type\n{fname}\n",
 								color=clrs,
 								alpha=0.6,
+								fontsize=11,
 								)
+	axs.spines[['top', 'right']].set_visible(False)
 	axs.bar_label(axs.containers[0])
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_vs_doc_type.png" ), )
 	plt.clf()
