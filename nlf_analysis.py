@@ -404,17 +404,30 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 def plot_doc_type(df, fname, RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index()
 	print( df_cleaned["document_type"].value_counts() )
-	print(sum(df_cleaned["document_type"].value_counts()))
 	print("-"*20)
+
+	print( df_cleaned["document_type"].value_counts(normalize=True) )
+	print("-"*20)
+
+	print(sum(df_cleaned["document_type"].value_counts()))
+
+	print("-"*20)
+
 	print(len(df_cleaned["document_type"].value_counts()))
 	print("*"*150)
 
 	df_unq = df_cleaned.assign(document_type=df_cleaned['document_type'].str.split(',')).explode('document_type')
 	df_unq["document_type"] = df_unq["document_type"].str.title()
 
-	print(df_unq["document_type"].value_counts())
+	print( df_unq["document_type"].value_counts() )
+	print("-"*20)
+
+	print( df_unq["document_type"].value_counts(normalize=True) )
+	print("-"*20)
+
 	print(sum(df_unq["document_type"].value_counts()))
 	print("-"*20)
+
 	print(len(df_unq["document_type"].value_counts()))
 	print("#"*150)
 
