@@ -52,40 +52,39 @@ sns.set(font_scale=1.3,
 
 clrs = ["#100874",
 				"#ee2e31",
-				'#0ecd19', 
-				'#67bd', 
-				'#e377c2',
-				"#a416",
+				'#0ecd19',
 				"#ffee32",
+				'#e377c2',
+				'#900fcc99',
+				'#16b3ff',
+				'#f05f',
 				'#007749',
 				'#77b4',
-				"#d6d6d6",
+				'#bcbd22', 
 				"#f85e00",
-				"#031e",
-				'#bcbd22',
+				"#fff0f333",
+				'#25e682', 
 				'#864b',
-				'#1f77b4',
 				"#931e00",
-				'#17becf',
+				'#1f77b4',
 				'#7f7f7f', 
+				"#031e",
 				"#ffb563",
-				'#2ca02c44', 
-				'#cc9911', 
-				'#16b3ff',
+				'#17becf',
+				"#a416",
 				'#d62789', 
-				"#3e8533", 
-				'#ff9999',
-				"#006789",
 				'#7f0e',
 				"#242265",
-				'#f09fcc99',
-				"#ffd100",
+				"#e4d10888",
+				'#2ca02c44', 
+				"#006cf789",
 				'#d72448', 
-				'#99f9',
 				"#1004",
-				"#918450",
-				"#f095",
 				"#7e88",
+				'#99f9',
+				"#d6d6cf",
+				"#f095",
+				"#918450",
 			]
 
 my_cols = [ "#ffd100", '#16b3ff', '#0ecd19', '#ff9999',]
@@ -251,10 +250,10 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 																												)
 																										)
 
-	plt.figure(figsize=(14, 8), facecolor="w",)
+	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="w")
+	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="#58566666")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -359,12 +358,10 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 												collocations=False,
 												).generate_from_frequencies(dict(zip(ocr_u, ocr_c)))
 
-	plt.figure(figsize=(14, 8),
-						facecolor="grey",
-						) 
+	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="#58566666")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
