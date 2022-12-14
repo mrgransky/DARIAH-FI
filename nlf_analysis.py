@@ -233,6 +233,13 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(df_cleaned["query_word"].value_counts())
 
+
+	print(df_cleaned["query_word"].value_counts()[:Nq])
+	print(df_cleaned["user_ip"].value_counts()[:Nu])
+
+
+	return
+
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
 												background_color="black",
