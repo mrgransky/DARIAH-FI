@@ -187,8 +187,10 @@ def plot_language(df, fname, RES_DIR, N=10):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_cleaned["language"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["language"].unique(), df_cleaned["language"].value_counts())],
-						#df_cleaned["language"].unique(), 
+						[ f"{l} : {v}" for l, v in zip(	df_cleaned["language"].value_counts(normalize=True).index, 
+																						df_cleaned["language"].value_counts(normalize=True).values,
+																					)
+						],
 						loc="center",
 						frameon=False,
 						fontsize=8,
@@ -215,8 +217,10 @@ def plot_language(df, fname, RES_DIR, N=10):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_unq["language"].value_counts()) )*100:.2f} %' for l, s in zip(df_unq["language"].unique(), df_unq["language"].value_counts())],
-						#df_unq["language"].unique(), 
+						[ f"{l} : {v}" for l, v in zip(	df_unq["language"].value_counts(normalize=True).index, 
+																						df_unq["language"].value_counts(normalize=True).values,
+																					)
+						],
 						loc="center",
 						frameon=False,
 						fontsize=9,
@@ -245,7 +249,6 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 
 	#print(df_tmp["query_word"].str.cat(sep=",").split(","))
 
-	#sys.exit(0)
 	#return
 
 	#users:
@@ -446,7 +449,6 @@ def plot_doc_type(df, fname, RES_DIR):
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
-	print(df_cleaned["document_type"].unique())
 
 	print([ f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].value_counts(normalize=True).index, 
 																			df_cleaned["document_type"].value_counts(normalize=True).values,
@@ -455,12 +457,12 @@ def plot_doc_type(df, fname, RES_DIR):
 			)
 	
 	print()
-	sys.exit()
 
 	ax2.legend(patches,
-						#[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
-						[f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts(normalize=True)) ],
-						#df_cleaned["document_type"].unique(), 
+						[ f"{l} : {v}" for l, v in zip(	df_cleaned["document_type"].value_counts(normalize=True).index, 
+																						df_cleaned["document_type"].value_counts(normalize=True).values,
+																					)
+						],
 						loc="center",
 						frameon=False,
 						fontsize=5,
@@ -487,8 +489,10 @@ def plot_doc_type(df, fname, RES_DIR):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_unq["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_unq["document_type"].unique(), df_unq["document_type"].value_counts())],
-						#df_unq["document_type"].unique(), 
+						[ f"{l} : {v}" for l, v in zip(	df_unq["document_type"].value_counts(normalize=True).index, 
+																						df_unq["document_type"].value_counts(normalize=True).values,
+																					)
+						],
 						loc="center",
 						frameon=False,
 						fontsize=9,
@@ -798,7 +802,7 @@ def main():
 	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# doc_type
 	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
