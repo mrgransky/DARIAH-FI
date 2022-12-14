@@ -406,7 +406,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	print( df_cleaned["document_type"].value_counts() )
 	print("-"*20)
 
-	print( df_cleaned["document_type"].value_counts(normalize=True) )
+	dt = df_cleaned["document_type"].value_counts(normalize=True)
 	print("-"*20)
 
 	print(sum(df_cleaned["document_type"].value_counts()))
@@ -447,7 +447,12 @@ def plot_doc_type(df, fname, RES_DIR):
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
 	print(df_cleaned["document_type"].unique())
-	print([f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts(normalize=True)) ])
+
+	print([ f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].value_counts(normalize=True).index, 
+																			df_cleaned["document_type"].value_counts(normalize=True).values,
+																			)
+				]
+			)
 	
 	print()
 	sys.exit()
