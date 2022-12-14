@@ -409,7 +409,6 @@ def plot_doc_type(df, fname, RES_DIR):
 	df_unq = df_cleaned.assign(document_type=df_cleaned['document_type'].str.split(',')).explode('document_type')
 	df_unq["document_type"] = df_unq["document_type"].str.title()
 
-	print("#"*150)
 	print(df_unq["document_type"].value_counts())
 	print("#"*150)
 
@@ -744,6 +743,7 @@ def main():
 
 	QUERY_FILE = get_query_dataframe(QUERY=args.query)
 	df = load_df(infile=QUERY_FILE)
+	print("%"*120)
 	"""
 	print(df.shape)
 	cols = list(df.columns)
