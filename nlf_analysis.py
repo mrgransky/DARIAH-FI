@@ -181,7 +181,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"Raw NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
+	axs.set_title(f"{len(df_cleaned["language"].value_counts())} Raw NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
@@ -211,7 +211,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"Unique NLF Language\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
+	axs.set_title(f"{df_unq["language"].value_counts()} Unique NLF Language\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
@@ -406,18 +406,6 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 
 def plot_doc_type(df, fname, RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index()
-	print( df_cleaned["document_type"].value_counts() )
-	print("-"*20)
-
-	dt = df_cleaned["document_type"].value_counts(normalize=True)
-	print("-"*20)
-
-	print(sum(df_cleaned["document_type"].value_counts()))
-
-	print("-"*20)
-
-	print(len(df_cleaned["document_type"].value_counts()))
-	print("*"*150)
 
 	df_unq = df_cleaned.assign(document_type=df_cleaned['document_type'].str.split(',')).explode('document_type')
 	df_unq["document_type"] = df_unq["document_type"].str.title()
@@ -445,7 +433,7 @@ def plot_doc_type(df, fname, RES_DIR):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"Raw NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+	axs.set_title(f"{len(df_cleaned["document_type"].value_counts())} Raw NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
@@ -483,7 +471,8 @@ def plot_doc_type(df, fname, RES_DIR):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+
+	axs.set_title(f"{len(df_unq["document_type"].value_counts())} Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
