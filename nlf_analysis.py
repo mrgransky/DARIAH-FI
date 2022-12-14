@@ -170,57 +170,60 @@ def plot_language(df, fname, RES_DIR, N=10):
 	print(df_unq["language"].value_counts())
 	print("#"*150)
 
+	fig = plt.figure(figsize=(10,4))
+	axs = fig.add_subplot(121)
+	patches, _ = axs.pie(df_cleaned["language"].value_counts(),
+											colors=clrs,
+											wedgeprops=dict(width=0.8, 
+																			edgecolor="#1c1c",
+																			linewidth=0.5,
+																			),
+											)
+	
+	axs.axis('equal')
+	axs.set_title(f"Raw NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
+	
+	ax2 = fig.add_subplot(122)
+	ax2.axis("off")
 
-	fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(18,10))
-
-	patches, lbls, pct_texts = axs[0].pie(df_cleaned["language"].value_counts(),
-																				autopct='%1.1f%%', 
-																				startangle=0,
-																				radius=0.9, #USELESS IF axs[0].axis('equal')
-																				pctdistance=0.8,
-																				#labeldistance=0.5,
-																				#rotatelabels=True,
-																				#counterclock=False,
-																				textprops=dict(size=15, color="white"),
-																				colors=clrs,
-																				#shadow = True,
-																				wedgeprops=dict(width=0.5, edgecolor="#1c1c",linewidth=2),
-																			)
-	axs[0].legend(patches, 
-						df_cleaned["language"].unique(),
-						title="Language",
-						loc="lower left",
+	ax2.legend(patches,
+						[f'{l}: { ( float(s) / sum(df_cleaned["language"].value_counts()) )*100:.1f} %' for l, s in zip(df_cleaned["language"].unique(), df_cleaned["language"].value_counts())],
+						#df_cleaned["language"].unique(), 
+						loc="center",
 						frameon=False,
-						bbox_to_anchor=(1, 0, 0.5, 1),
+						fontsize=7,
 						)
-	axs[0].axis('equal')
-	axs[0].set_title(f"All NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_language.png" ), 
+							bbox_inches="tight",
+							)
+	plt.clf()
 
+	fig = plt.figure(figsize=(10,4))
+	axs = fig.add_subplot(121)
+	patches, _ = axs.pie(df_unq["language"].value_counts(),
+											colors=clrs,
+											wedgeprops=dict(width=0.8, 
+																			edgecolor="#1c1c",
+																			linewidth=0.5,
+																			),
+											)
+	
+	axs.axis('equal')
+	axs.set_title(f"Unique NLF Language\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
+	
+	ax2 = fig.add_subplot(122)
+	ax2.axis("off")
 
-	patches, lbls, pct_texts = axs[1].pie(df_unq["language"].value_counts(),
-																				autopct='%1.1f%%', 
-																				startangle=0,
-																				radius=.9, #USELESS IF axs[0].axis('equal')
-																				pctdistance=0.7,
-																				#labeldistance=0.5,
-																				#rotatelabels=True,
-																				#counterclock=False,
-																				textprops=dict(size=15, color="white"),
-																				colors=clrs,
-																				#shadow = True,
-																				wedgeprops=dict(width=0.5, edgecolor="#1c1c",linewidth=2),
-																			)
-	axs[1].legend(patches, 
-						df_unq["language"].unique(),
-						title="Unique Language",
-						loc="center left",
+	ax2.legend(patches,
+						[f'{l}: { ( float(s) / sum(df_unq["language"].value_counts()) )*100:.1f} %' for l, s in zip(df_unq["language"].unique(), df_unq["language"].value_counts())],
+						#df_unq["language"].unique(), 
+						loc="center",
 						frameon=False,
-						bbox_to_anchor=(1, 0, 0.5, 1),
+						fontsize=7,
 						)
-
-	axs[1].axis('equal')
-	axs[1].set_title(f"Unique NLF Languages\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_language.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_language.png" ), 
+							bbox_inches="tight",
+							)
 	plt.clf()
 
 def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
@@ -402,66 +405,67 @@ def plot_doc_type(df, fname, RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index()
 
 	df_unq = df_cleaned.assign(document_type=df_cleaned['document_type'].str.split(',')).explode('document_type')
-	
+	df_unq["document_type"] = df_unq["document_type"].str.title()
+
 	print("#"*150)
 	print(df_unq["document_type"].value_counts())
 	print("#"*150)
 
+	fig = plt.figure(figsize=(10,4))
+	axs = fig.add_subplot(121)
+	patches, _ = axs.pie(df_cleaned["document_type"].value_counts(),
+											colors=clrs,
+											wedgeprops=dict(width=0.8, 
+																			edgecolor="#1c1c",
+																			linewidth=0.5,
+																			),
+											)
+	
+	axs.axis('equal')
+	axs.set_title(f"Raw NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+	
+	ax2 = fig.add_subplot(122)
+	ax2.axis("off")
 
-	fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(18,10))
-
-	patches, lbls, pct_texts = axs[0].pie(df_cleaned["document_type"].value_counts(),
-																				autopct='%1.1f%%', 
-																				startangle=0,
-																				radius=1.0, #USELESS IF axs[0].axis('equal')
-																				pctdistance=0.8,
-																				#labeldistance=0.5,
-																				#rotatelabels=True,
-																				#counterclock=False,
-																				textprops=dict(size=13, color="white"),
-																				colors=clrs,
-																				#shadow = True,
-																				wedgeprops=dict(width=0.7, edgecolor="#1c1c",linewidth=2),
-																			)
-	axs[0].legend(patches, 
-						df_cleaned["document_type"].unique(),
-						title="document type",
-						loc="lower left",
+	ax2.legend(patches,
+						[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.1f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
+						#df_cleaned["document_type"].unique(), 
+						loc="center",
 						frameon=False,
-						bbox_to_anchor=(1, 0, 0.5, 1),
+						fontsize=7,
 						)
-	axs[0].axis('equal')
-	axs[0].set_title(f"All NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
-
-
-	patches, lbls, pct_texts = axs[1].pie(df_unq["document_type"].value_counts(),
-																				autopct='%1.1f%%', 
-																				startangle=0,
-																				radius=1.0, #USELESS IF axs[0].axis('equal')
-																				pctdistance=0.7,
-																				#labeldistance=0.5,
-																				#rotatelabels=True,
-																				#counterclock=False,
-																				textprops=dict(size=12, color="white"),
-																				colors=clrs,
-																				#shadow = True,
-																				wedgeprops=dict(width=0.7, edgecolor="#1c1c",linewidth=2),
-																			)
-	axs[1].legend(patches, 
-						df_unq["document_type"].unique(),
-						title="Unique document type",
-						loc="center left",
-						frameon=False,
-						bbox_to_anchor=(1, 0, 0.5, 1),
-						)
-
-	axs[1].axis('equal')
-	axs[1].set_title(f"Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_document_type.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_document_type.png" ), 
+							bbox_inches="tight",
+							)
 	plt.clf()
 
+	fig = plt.figure(figsize=(10,4))
+	axs = fig.add_subplot(121)
+	patches, _ = axs.pie(df_unq["document_type"].value_counts(),
+											colors=clrs,
+											wedgeprops=dict(width=0.8, 
+																			edgecolor="#1c1c",
+																			linewidth=0.5,
+																			),
+											)
+	
+	axs.axis('equal')
+	axs.set_title(f"Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+	
+	ax2 = fig.add_subplot(122)
+	ax2.axis("off")
 
-
+	ax2.legend(patches,
+						[f'{l}: { ( float(s) / sum(df_unq["document_type"].value_counts()) )*100:.1f} %' for l, s in zip(df_unq["document_type"].unique(), df_unq["document_type"].value_counts())],
+						#df_unq["document_type"].unique(), 
+						loc="center",
+						frameon=False,
+						fontsize=7,
+						)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_document_type.png" ), 
+							bbox_inches="tight",
+							)
+	plt.clf()
 
 	wordcloud = WordCloud(width=800, 
 												height=250, 
@@ -842,7 +846,7 @@ def main():
 	# language
 	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
-	# doc_type_cloud
+	# doc_type
 	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:

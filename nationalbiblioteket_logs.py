@@ -139,8 +139,9 @@ def all_queries(file_="", ts=None):
 	elapsed_t = time.time() - st_t
 	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
 	print("-"*100)
+
 	#save_(df, infile=file_)
-	#return
+	return
 
 	def analyze_(df):
 		raw_url = df.referer

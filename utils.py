@@ -140,15 +140,30 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	# with pandas:
 	df.timestamp = pd.to_datetime(df.timestamp)
-	
-	#df = df.replace("null", "-", regex=True).replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
-	
+		
+	print(f">> Initial checcking for None/Null values: {df.shape}")
+	print(df.isna().sum())
+	print("-"*50)
+
+	print(f">> Replacing space + bad urls + empty fields with np.nan :")
 	# with numpy:
 	#df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://+', np.nan, regex=True)
 	#df = df.replace(r'-|^\s*$|http://+', np.nan, regex=True)
 	df = df.replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
 
+	# check nan:
+	print(f">> Secondary checcking for None/Null values: {df.shape}")
+	print(df.isna().sum())
+	print("-"*50)
+
+	print(f">> Checcking for duplicate values of 'user_ip' & 'referer': {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
+	print("-"*50)
+
+	print(f">> Dropping None...")
 	df = df.dropna(axis=0)
+
+	print(f">> Dropping {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]} duplicates | {df.shape}")
+
 	df = df.drop_duplicates(subset=['user_ip', 'referer'], keep='last')
 	df = df.reset_index(drop=True)
 
@@ -220,9 +235,6 @@ def load_df(infile=""):
 	print(f"\tElapsed time: {elapsed_t:.3f} sec")
 	df = d[infile]
 	return df
-
-
-
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
