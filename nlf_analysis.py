@@ -51,32 +51,29 @@ sns.set(font_scale=1.3,
 				)
 
 clrs = ["#100874",
-				"#ee2e31",
+				"#ee0031",
 				'#0ecd19',
 				"#ffee32",
 				'#e377c2',
 				'#16b3ff',
-				'#f05f',
 				'#007749',
 				'#77b4',
 				'#bcbd22', 
-				"#f85e00",
-				"#fff0f333",
+				"#ee5540",
 				'#25e682', 
 				'#864b',
-				"#931e00",
 				'#1f77b4',
 				'#7f7f7f', 
 				"#031e",
 				"#ffb563",
 				'#900fcc99',
+				"#931e00",
 				'#17becf',
 				"#a416",
 				'#d62789', 
 				'#7f0e',
 				"#242265",
 				"#e4d10888",
-				'#2ca02c44', 
 				"#006cf789",
 				'#d72448', 
 				"#1004",
@@ -84,6 +81,7 @@ clrs = ["#100874",
 				'#99f9',
 				"#d6d6cf",
 				"#f095",
+				'#2ca02c44', 
 				"#918450",
 			]
 
@@ -177,8 +175,8 @@ def plot_language(df, fname, RES_DIR, N=20):
 	axs = fig.add_subplot(121)
 	patches, _ = axs.pie(df_cleaned["language"].value_counts(),
 											colors=clrs,
-											wedgeprops=dict(width=0.8, 
-																			edgecolor="#700f3000",
+											wedgeprops=dict(width=0.8,
+																			edgecolor="#e503",
 																			linewidth=0.5,
 																			),
 											)
@@ -208,7 +206,7 @@ def plot_language(df, fname, RES_DIR, N=20):
 	patches, _ = axs.pie(df_unq["language"].value_counts(),
 											colors=clrs,
 											wedgeprops=dict(width=0.8,
-																			edgecolor="#700f3000",
+																			edgecolor="#e856",
 																			linewidth=0.5,
 																			),
 											)
@@ -253,7 +251,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="#1004")
+	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -263,7 +261,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	p = sns.barplot(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 									y=df_cleaned["query_word"].value_counts()[:Nq].values,
 									palette=clrs, 
-									saturation=1, 
+									saturation=1,
 									edgecolor="#450f30",
 									linewidth=1,
 									)
@@ -307,30 +305,35 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	WIDTH = 0.35
 	BOTTOM = 0
 
+	fig, axs = plt.subplots()
+
 	for k, v in MY_DICT.items():
 			#print(k, v)
-			plt.bar(x=df_cleaned["query_word"].value_counts()[:Nq].index,
+			axs.bar(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 								height=v, 
 								width=WIDTH,
 								bottom=BOTTOM, 
 								color=clrs[list(MY_DICT.keys()).index(k)],
 								label=k,
+								edgecolor="#450f30",
+								linewidth=2,
 								)
 			BOTTOM += np.array(v)
 
-	#axs[1].set_ylabel('Counts')
-	#axs[1].set_xlabel('Profession')
 	#axs[1].set_title('Profession by Gender')
 
-	plt.legend(	loc="best", 
+	axs.legend(	loc="best", 
 							frameon=False,
 							title=f"Top-{Nu} Users",
 							#ncol=len(MY_DICT),
-							fontsize=12,
+							fontsize=13,
 							)
 
-	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
-	plt.xticks(rotation=90)
+	plt.suptitle(f"Top-{Nq} Query Phrases by Top-{Nu} Users\n{fname}")
+	axs.set_ylabel('Counts')
+	axs.set_xlabel('\nQuery Phrases')
+	axs.tick_params(axis='x', rotation=90)
+	axs.spines[['top', 'right']].set_visible(False)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
 	plt.clf()
 
@@ -361,7 +364,7 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="#1004")
+	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -447,7 +450,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.figure(figsize=(10, 4))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"Document Type Cloud\n{fname}", color="#1004")
+	plt.title(f"{len(df_unq['document_type'].value_counts())} Unique Document Types Cloud\n{fname}", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
@@ -727,26 +730,26 @@ def main():
 	print("%"*100)
 	
 	# missing features:
-	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# 24h activity:
-	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# doc_type
 	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
-	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
