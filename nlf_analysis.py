@@ -730,26 +730,26 @@ def main():
 	print("%"*100)
 	
 	# missing features:
-	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# 24h activity:
-	#plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# doc_type
 	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
-	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
