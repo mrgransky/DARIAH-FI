@@ -235,13 +235,6 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(df_cleaned["query_word"].value_counts())
 
-
-	print(df_cleaned["query_word"].value_counts()[:Nq])
-	print(df_cleaned["user_ip"].value_counts()[:Nu])
-
-
-	#return
-
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
 												background_color="black",
@@ -265,14 +258,12 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.clf()
 
 	plt.subplots()
-	
-
 	p = sns.barplot(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 									y=df_cleaned["query_word"].value_counts()[:Nq].values,
 									palette=clrs, 
 									saturation=1, 
 									edgecolor="#1c1c1c",
-									linewidth=2,
+									linewidth=1,
 									)
 
 	p.axes.set_title(	f"Top-{Nq} Query Phrases (total: {df_cleaned.shape[0]})\n{fname}")
@@ -303,19 +294,19 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	for usr in df_cleaned["user_ip"].value_counts()[:Nu].index:
 		lst = []
 		for qu in df_cleaned["query_word"].value_counts()[:Nq].index:
-			print(usr, qu)
+			#print(usr, qu)
 			c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
-			print(c)		
+			#print(c)		
 			lst.append(c)
 		MY_DICT[usr] = lst
 
-	print(MY_DICT)
+	#print(MY_DICT)
 
 	WIDTH = 0.35
 	BOTTOM = 0
 
 	for k, v in MY_DICT.items():
-			print(k, v)
+			#print(k, v)
 			plt.bar(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 								height=v, 
 								width=WIDTH,
@@ -333,7 +324,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 							frameon=False,
 							title=f"Top-{Nu} Users",
 							#ncol=len(MY_DICT),
-							fontsize=10,
+							fontsize=12,
 							)
 
 	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
