@@ -249,7 +249,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.figure(figsize=(14, 8), facecolor="w",)
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(df_cleaned["query_word"].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="w")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
