@@ -187,7 +187,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[ f"{l} {v:.2f}" for l, v in zip(	df_cleaned["language"].value_counts(normalize=True).index, 
+						[ f"{l} {v*100:.2f} %" for l, v in zip(	df_cleaned["language"].value_counts(normalize=True).index, 
 																						df_cleaned["language"].value_counts(normalize=True).values,
 																					)
 						],
@@ -217,7 +217,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[ f"{l} {v:.2f}" for l, v in zip(	df_unq["language"].value_counts(normalize=True).index, 
+						[ f"{l} {v*100:.2f} %" for l, v in zip(	df_unq["language"].value_counts(normalize=True).index, 
 																						df_unq["language"].value_counts(normalize=True).values,
 																					)
 						],
@@ -450,7 +450,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
 
-	print([ f"{l} {v:.2f}" for l, v in zip(df_cleaned["document_type"].value_counts(normalize=True).index, 
+	print([ f"{l} {v*100:.2f} %" for l, v in zip(df_cleaned["document_type"].value_counts(normalize=True).index, 
 																			df_cleaned["document_type"].value_counts(normalize=True).values,
 																			)
 				]
@@ -459,7 +459,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	print()
 
 	ax2.legend(patches,
-						[ f"{l} {v:.2f}" for l, v in zip(	df_cleaned["document_type"].value_counts(normalize=True).index, 
+						[ f"{l} {v*100:.2f} %" for l, v in zip(	df_cleaned["document_type"].value_counts(normalize=True).index, 
 																						df_cleaned["document_type"].value_counts(normalize=True).values,
 																					)
 						],
@@ -489,7 +489,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[ f"{l} {v:.2f}" for l, v in zip(	df_unq["document_type"].value_counts(normalize=True).index, 
+						[ f"{l} {v*100:.2f} %" for l, v in zip(	df_unq["document_type"].value_counts(normalize=True).index, 
 																						df_unq["document_type"].value_counts(normalize=True).values,
 																					)
 						],
