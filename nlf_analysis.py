@@ -166,7 +166,6 @@ def plot_language(df, fname, RES_DIR, N=10):
 
 	df_unq = df_cleaned.assign(language=df_cleaned['language'].str.split(',')).explode('language')
 	
-	print("#"*150)
 	print(df_unq["language"].value_counts())
 	print("#"*150)
 
@@ -181,7 +180,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"{len(df_cleaned["language"].value_counts())} Raw NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
+	axs.set_title(f"{len(df_cleaned['language'].value_counts())} Raw NLF Languages\n{df_cleaned['language'].shape[0]}/{df['language'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
@@ -211,7 +210,7 @@ def plot_language(df, fname, RES_DIR, N=10):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"{df_unq["language"].value_counts()} Unique NLF Language\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
+	axs.set_title(f"{df_unq['language'].value_counts()} Unique NLF Language\n{df_unq['language'].shape[0]}/{df['language'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
@@ -433,7 +432,7 @@ def plot_doc_type(df, fname, RES_DIR):
 											)
 	
 	axs.axis('equal')
-	axs.set_title(f"{len(df_cleaned["document_type"].value_counts())} Raw NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+	axs.set_title(f"{len(df_cleaned['document_type'].value_counts())} Raw NLF document type\n{df_cleaned['document_type'].shape[0]}/{df['document_type'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
@@ -472,7 +471,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	
 	axs.axis('equal')
 
-	axs.set_title(f"{len(df_unq["document_type"].value_counts())} Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
+	axs.set_title(f"{len(df_unq['document_type'].value_counts())} Unique NLF document type\n{df_unq['document_type'].shape[0]}/{df['document_type'].shape[0]}")
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
