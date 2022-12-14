@@ -264,6 +264,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 
 	plt.subplots()
 	
+	
 	p = sns.barplot(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 									y=df_cleaned["query_word"].value_counts()[:Nq].values,
 									palette=clrs, 
