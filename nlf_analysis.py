@@ -446,12 +446,14 @@ def plot_doc_type(df, fname, RES_DIR):
 	
 	ax2 = fig.add_subplot(122)
 	ax2.axis("off")
-	print([f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())])
+	print([f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts(normalize=True)) ])
+	
 	print()
 	sys.exit()
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
+						#[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
+						[f"{l} : {v}" for l, v in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts(normalize=True)) ]
 						#df_cleaned["document_type"].unique(), 
 						loc="center",
 						frameon=False,
