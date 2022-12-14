@@ -50,37 +50,39 @@ sns.set(font_scale=1.3,
 				color_codes=True,
 				)
 
-clrs = ["#333533", 
+clrs = ["#100874",
 				'#d62728', 
 				'#1f77b4',
-				'#8c564b',
+				"#ffee32",
+				"#a416",
+				'#0ecd19', 
+				'#ff9999',
 				"#679289",
+				'#c449', 
 				"#918450",
 				"#ffb563",
-				'#ffc9', 
-				'#ff9999',
+				"#333533", 
+				'#17becf',
 				"#f85e00",
+				'#7f7f7f', 
+				'#8c564b',
 				'#2ca02c', 
+				'#cc9911', 
 				"#ee2e31",
+				"#1004",
 				'#16b3ff', 
 				'#ffcc99', 
-				'#7f7f7f', 
 				'#bcbd22',
 				"#9a031e",
 				'#e377c2', 
-				"#202020",
-				"#1d7874",
+				"#242265",
 				"#f4c095",
-				'#99ff99',
+				'#99f9',
 				'#ff7f0e',
 				"#d6d6d6",
-				"#ffee32",
-				'#17becf',
-				"#a41623",
+				"#931e",
 				"#ffd100",
-				'#9467bd', 
-				'#cc9911', 
-				'#0ecd19', 
+				'#67bd', 
 				]
 
 my_cols = [ "#ffd100", '#16b3ff', '#0ecd19', '#ff9999',]
@@ -264,7 +266,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 
 	plt.subplots()
 	
-	
+
 	p = sns.barplot(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 									y=df_cleaned["query_word"].value_counts()[:Nq].values,
 									palette=clrs, 
@@ -273,17 +275,17 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 									linewidth=2,
 									)
 
-	p.axes.set_title(	f"\nTop-{Nq} Query Phrases out of total of: {df_cleaned.shape[0]}\n{fname}\n")
+	p.axes.set_title(	f"Top-{Nq} Query Phrases (total: {df_cleaned.shape[0]})\n{fname}")
 	plt.ylabel("Counts", )
-	plt.xlabel("\nQuery Phrase",)
+	plt.xlabel("Query Phrase",)
 	plt.xticks(rotation=90)
 	for container in p.containers:
 			p.bar_label(container,
-									label_type = "center",
-									padding = 6,
-									size = 15,
-									color = "black",
-									rotation = 90,
+									label_type="center",
+									padding=6,
+									size=11,
+									color="black",
+									rotation=90,
 									bbox={"boxstyle": "round", 
 												"pad": 0.6, 
 												"facecolor": "orange", 
@@ -314,7 +316,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 
 	for k, v in MY_DICT.items():
 			print(k, v)
-			plt.bar(x=df_cleaned["query_word"].value_counts().index[:Nq],
+			plt.bar(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 								height=v, 
 								width=WIDTH,
 								bottom=BOTTOM, 
@@ -738,26 +740,26 @@ def main():
 	print("%"*100)
 	
 	# missing features:
-	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# 24h activity:
-	#plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# doc_type
-	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
-	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
