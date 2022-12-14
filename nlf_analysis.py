@@ -229,59 +229,27 @@ def plot_language(df, fname, RES_DIR, N=10):
 							)
 	plt.clf()
 
-def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
-	unq = df["query_word"].value_counts()
-	print(f">> query_word:\n{unq}")
-
-	# Query Words:
+def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
-
-	qu, qc = np.unique(df_cleaned["query_word"], return_counts=True)
-	print(qu.shape[0], qu, qc)
-
-	print(f"\n>> Sorting Top {Nq} Query Words / {df_cleaned.shape[0]} | {fname}")
-	qc_sorted_idx = np.argsort(-qc)
-	query_ung = qu[qc_sorted_idx][:Nq]
-	query_counts = qc[qc_sorted_idx][:Nq]
-	#print(query_ung.shape[0], query_ung, query_counts)
-	print("#"*140)
-
-	#print(df_cleaned["query_word"].str.cat(sep=",").split(","))
-
-	#users:
-	df_tmp_user = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
-
-	uu, uc = np.unique(df["user_ip"], return_counts=True)
-	print(uu.shape[0], uu, uc)
-
-
-
-	print(f"\n>> Sorting Top {Nu} Users / {df_tmp_user.shape[0]} | {fname}")
-	uc_sorted_idx = np.argsort(-uc)
-	user_ung = uu[uc_sorted_idx][:Nu]
-	user_counts = uc[uc_sorted_idx][:Nu]
-	#print(user_ung.shape[0], user_ung, user_counts)
+	print(df_cleaned["query_word"].value_counts())
 
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=80,
+												max_font_size=100,
 												stopwords=None,
 												collocations=False,
-												#).generate_from_frequencies(dict(zip(qu, qc)))
 												).generate_from_frequencies(dict(zip(	df_cleaned["query_word"].value_counts().index, 
 																															df_cleaned["query_word"].value_counts().values,
 																															)
 																												)
 																										)
 
-	plt.figure(figsize=(14, 8),
-						facecolor="grey",
-						) 
+	plt.figure(figsize=(14, 8), facecolor="w",)
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(qu)} unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="white")
+	plt.title(f"{len(df_cleaned["query_word"].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="white")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -289,12 +257,12 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 
 	plt.subplots()
 	
-	p = sns.barplot(x=query_ung,
-									y=query_counts,
+	p = sns.barplot(x=df_cleaned["query_word"].value_counts().index,
+									y=df_cleaned["query_word"].value_counts().values,
 									palette=clrs, 
 									saturation=1, 
-									edgecolor = "#1c1c1c",
-									linewidth = 2,
+									edgecolor="#1c1c1c",
+									linewidth=2,
 									)
 
 	p.axes.set_title(	f"\nTop-{Nq} Query Phrases out of total of: {df_cleaned.shape[0]}\n{fname}\n")
@@ -319,7 +287,6 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 	sns.despine(left=True, bottom=True)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nq}_query_words.png" ), )
 	plt.clf()
-	#
 
 	GENDERS = {}
 
@@ -356,9 +323,11 @@ def plot_word(df, fname, RES_DIR, Nq=25, Nu=20):
 
 	plt.legend(	loc="best", 
 							frameon=False,
-							title=f"Top-{Nu} Users"
-							#ncol=len(GENDERS), 
+							title=f"Top-{Nu} Users",
+							#ncol=len(GENDERS),
+							fontsize=10,
 							)
+
 	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
 	plt.xticks(rotation=90)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
@@ -569,7 +538,7 @@ def plot_user(df, fname, RES_DIR, N=10):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{N}_users.png" ), )
 	plt.clf()
 
-def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
+def plot_hourly_activity(df, fname, RES_DIR, Nu=20):
 	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
 
 	fig, axs = plt.subplots()
@@ -685,7 +654,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=10):
 
 	#
 
-def plot_usr_doc_type(df, fname, RES_DIR, Nu=10):
+def plot_usr_doc_type(df, fname, RES_DIR, Nu=20):
 	df_cleaned = df.assign(document_type=df['document_type'].str.split(',')).explode('document_type')
 	
 	print(df_cleaned["document_type"].value_counts())
@@ -744,7 +713,7 @@ def main():
 
 	QUERY_FILE = get_query_dataframe(QUERY=args.query)
 	df = load_df(infile=QUERY_FILE)
-	print("%"*90)
+	print("%"*100)
 	"""
 	print(df.shape)
 	cols = list(df.columns)
@@ -760,7 +729,7 @@ def main():
 	print(df.info(verbose=True, memory_usage="deep"))
 	"""
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
-	print("%"*90)
+	print("%"*100)
 	
 	# missing features:
 	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
@@ -781,7 +750,7 @@ def main():
 	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_word(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
 	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
