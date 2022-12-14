@@ -290,13 +290,13 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 
 	GENDERS = {}
 
-	for g in df_cleaned["user_ip"].value_counts().index:
+	for usr in df_cleaned["user_ip"].value_counts().index[:Nu]:
 			lst = []
-			for p in df_cleaned["query_word"].value_counts().index:
-					#print(g, p)
+			for qu in df_cleaned["query_word"].value_counts().index[:Nq]:
+					print(usr, qu)
 					#c = df.query(f"Profession=='{str(p)}' and Gender=='{str(g)}'").Gender.count()
-					c = df[(df["query_word"] == p) & (df["user_ip"] == g) ].user_ip.count()
-					#print(c)
+					c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
+					print(c)
 					
 					lst.append(c)
 			GENDERS[g] = lst
