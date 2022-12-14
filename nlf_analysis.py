@@ -187,11 +187,11 @@ def plot_language(df, fname, RES_DIR, N=10):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_cleaned["language"].value_counts()) )*100:.1f} %' for l, s in zip(df_cleaned["language"].unique(), df_cleaned["language"].value_counts())],
+						[f'{l}: { ( float(s) / sum(df_cleaned["language"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["language"].unique(), df_cleaned["language"].value_counts())],
 						#df_cleaned["language"].unique(), 
 						loc="center",
 						frameon=False,
-						fontsize=7,
+						fontsize=8,
 						)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_language.png" ), 
 							bbox_inches="tight",
@@ -215,11 +215,11 @@ def plot_language(df, fname, RES_DIR, N=10):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_unq["language"].value_counts()) )*100:.1f} %' for l, s in zip(df_unq["language"].unique(), df_unq["language"].value_counts())],
+						[f'{l}: { ( float(s) / sum(df_unq["language"].value_counts()) )*100:.2f} %' for l, s in zip(df_unq["language"].unique(), df_unq["language"].value_counts())],
 						#df_unq["language"].unique(), 
 						loc="center",
 						frameon=False,
-						fontsize=7,
+						fontsize=9,
 						)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_language.png" ), 
 							bbox_inches="tight",
@@ -428,11 +428,11 @@ def plot_doc_type(df, fname, RES_DIR):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.1f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
+						[f'{l}: { ( float(s) / sum(df_cleaned["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_cleaned["document_type"].unique(), df_cleaned["document_type"].value_counts())],
 						#df_cleaned["document_type"].unique(), 
 						loc="center",
 						frameon=False,
-						fontsize=7,
+						fontsize=5,
 						)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_document_type.png" ), 
 							bbox_inches="tight",
@@ -456,11 +456,11 @@ def plot_doc_type(df, fname, RES_DIR):
 	ax2.axis("off")
 
 	ax2.legend(patches,
-						[f'{l}: { ( float(s) / sum(df_unq["document_type"].value_counts()) )*100:.1f} %' for l, s in zip(df_unq["document_type"].unique(), df_unq["document_type"].value_counts())],
+						[f'{l}: { ( float(s) / sum(df_unq["document_type"].value_counts()) )*100:.2f} %' for l, s in zip(df_unq["document_type"].unique(), df_unq["document_type"].value_counts())],
 						#df_unq["document_type"].unique(), 
 						loc="center",
 						frameon=False,
-						fontsize=7,
+						fontsize=9,
 						)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_document_type.png" ), 
 							bbox_inches="tight",
