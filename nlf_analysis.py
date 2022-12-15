@@ -463,7 +463,7 @@ def plot_publication_places(df, fname, RES_DIR):
 	print("#"*150)
 	
 	fig, axs = plt.subplots()
-	df_count_dt.set_index("publication_place").plot( rot=0,
+	df_count_dt.set_index("publication_place").plot( rot=90,
 								ax=axs,
 								kind='bar',
 								xlabel="Unique Publication Places", 
@@ -473,8 +473,8 @@ def plot_publication_places(df, fname, RES_DIR):
 								alpha=0.6,
 								)
 	for container in axs.containers:
-		axs.bar_label(container, rotation=45, )
-	plt.legend(	loc="upper left", 
+		axs.bar_label(container, rotation=45, fontsize=9,)
+	plt.legend(	loc="upper right", 
 							frameon=False,
 							#title=f"Top-{Nu} Users",
 							ncol=df_count_dt.shape[0], 
