@@ -251,7 +251,7 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases Cloud Distribution (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="k")
+	plt.title(f"Cloud Distribution\n{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
@@ -371,6 +371,118 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_OCR_terms_cloud.png" ), )
 	plt.clf()
 
+def plot_publication_places(df, fname, RES_DIR):
+	df_cleaned = df.dropna(axis=0, how="any", subset=["publication_place"]).reset_index()
+
+	df_unq = df_cleaned.assign(publication_place=df_cleaned['publication_place'].str.split(',')).explode('publication_place')
+	df_unq["publication_place"] = df_unq["publication_place"].str.title()
+
+	fig = plt.figure(figsize=(10,4))
+	axs = fig.add_subplot(121)
+	patches, _ = axs.pie(df_cleaned["publication_place"].value_counts(),
+											colors=clrs,
+											wedgeprops=dict(width=0.8, 
+																			edgecolor="#ee7f3000",
+																			linewidth=0.3,
+																			),
+											)
+	
+	axs.axis('equal')
+	axs.set_title(f"{len(df_cleaned['publication_place'].value_counts())} Raw NLF Publication Places\n{df_cleaned['publication_place'].shape[0]}/{df['publication_place'].shape[0]}")
+	
+	ax2 = fig.add_subplot(122)
+	ax2.axis("off")
+
+	ax2.legend(patches,
+						[ f"{l} {v*100:.2f} %" for l, v in zip(	df_cleaned["publication_place"].value_counts(normalize=True).index, 
+																						df_cleaned["publication_place"].value_counts(normalize=True).values,
+																					)
+						],
+						loc="center",
+						frameon=False,
+						fontsize=5,
+						)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_pub_places.png" ), 
+							bbox_inches="tight",
+							)
+	plt.clf()
+
+	fig = plt.figure(figsize=(10,4))
+	axs = fig.add_subplot(121)
+	patches, _ = axs.pie(df_unq["publication_place"].value_counts(),
+											colors=clrs,
+											wedgeprops=dict(width=0.8, 
+																			edgecolor="#ee7f3000",
+																			linewidth=0.5,
+																			),
+											)
+	
+	axs.axis('equal')
+
+	axs.set_title(f"{len(df_unq['publication_place'].value_counts())} Unique NLF Publication Places\n{df_unq['publication_place'].shape[0]}/{df['publication_place'].shape[0]}")
+	
+	ax2 = fig.add_subplot(122)
+	ax2.axis("off")
+
+	ax2.legend(patches,
+						[ f"{l} {v*100:.2f} %" for l, v in zip(	df_unq["publication_place"].value_counts(normalize=True).index, 
+																						df_unq["publication_place"].value_counts(normalize=True).values,
+																					)
+						],
+						loc="center",
+						frameon=False,
+						fontsize=9,
+						)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_pub_places.png" ), 
+							bbox_inches="tight",
+							)
+	plt.clf()
+
+	wordcloud = WordCloud(width=800, 
+												height=250, 
+												background_color="black",
+												colormap="RdYlGn",
+												max_font_size=100,
+												stopwords=None,
+												collocations=False,
+												).generate(df["publication_place"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
+
+	plt.figure(figsize=(10, 4))
+	plt.imshow(wordcloud)
+	plt.axis("off")
+	plt.title(f"{len(df_unq['publication_place'].value_counts())} Unique Publication Places Cloud\n{fname}", color="k")
+	plt.margins(x=0, y=0)
+	plt.tight_layout(pad=0) 
+
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_pub_places_cloud.png" ), )
+	plt.clf()
+
+	df_count_dt = df_unq.groupby(df_unq["publication_place"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	print(df_count_dt)
+
+	print("#"*150)
+	
+	fig, axs = plt.subplots()
+	df_count_dt.set_index("publication_place").plot( rot=0,
+								ax=axs,
+								kind='bar',
+								xlabel="Unique Publication Places", 
+								ylabel="Count",
+								title=f"{df_count_dt.shape[0]} Unique Publication Places | USERS | QUERY WORDS | OCR TERMS\n{fname}",
+								color=clrs,
+								alpha=0.6,
+								)
+	for container in axs.containers:
+		axs.bar_label(container, rotation=45, )
+	plt.legend(	loc="upper left", 
+							frameon=False,
+							#title=f"Top-{Nu} Users",
+							ncol=df_count_dt.shape[0], 
+							)
+
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_pub_places_usr_qu_ocr.png" ), )
+	plt.clf()
+
 def plot_doc_type(df, fname, RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index()
 
@@ -442,7 +554,7 @@ def plot_doc_type(df, fname, RES_DIR):
 												height=250, 
 												background_color="black",
 												colormap="RdYlGn",
-												max_font_size=50,
+												max_font_size=100,
 												stopwords=None,
 												collocations=False,
 												).generate(df["document_type"].str.cat(sep=",")) #Concatenate strings in the Series/Index with given separator.
@@ -728,6 +840,7 @@ def main():
 	"""
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
 	print("%"*100)
+	#return
 	
 	# missing features:
 	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
@@ -743,6 +856,9 @@ def main():
 
 	# doc_type
 	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+
+	# publication places
+	plot_publication_places(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
 	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
