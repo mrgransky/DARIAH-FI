@@ -58,17 +58,16 @@ clrs = ["#100874",
 				'#16b3ff',
 				'#007749',
 				'#77b4',
-				'#bcbd22', 
-				"#ee5540",
-				'#25e682', 
+				'#bcbd22',
 				'#864b',
 				'#1f77b4',
 				'#7f7f7f', 
+				"#ee5540", 
 				"#031e",
 				"#ffb563",
+				'#25e682', 
 				'#900fcc99',
 				"#931e00",
-				'#17becf',
 				"#a416",
 				'#d62789', 
 				'#7f0e',
@@ -83,6 +82,7 @@ clrs = ["#100874",
 				"#f095",
 				'#2ca02c44', 
 				"#918450",
+				'#17becf',
 			]
 
 my_cols = [ "#ffd100", '#16b3ff', '#0ecd19', '#ff9999',]
@@ -231,7 +231,7 @@ def plot_language(df, fname, RES_DIR, N=20):
 							)
 	plt.clf()
 
-def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
+def plot_query_words(df, fname, RES_DIR, Nq=100, Nu=25):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(df_cleaned["query_word"].value_counts())
 	#print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
@@ -281,15 +281,15 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	for container in p.containers:
 			p.bar_label(container,
 									label_type="center",
-									padding=6,
-									size=11,
+									padding=4,
+									size=10,
 									color="black",
 									rotation=90,
 									bbox={"boxstyle": "round", 
-												"pad": 0.6, 
+												"pad": 0.4,
 												"facecolor": "orange", 
 												"edgecolor": "black", 
-												"alpha": 1,
+												"alpha": 0.8,
 												}
 									)
 
@@ -329,13 +329,11 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 								)
 			BOTTOM += np.array(v)
 
-	#axs[1].set_title('Profession by Gender')
-
-	axs.legend(	loc="best", 
+	axs.legend(	loc="upper right",
 							frameon=False,
 							title=f"Top-{Nu} Users",
 							#ncol=len(MY_DICT),
-							fontsize=13,
+							fontsize=10,
 							)
 
 	plt.suptitle(f"Top-{Nq} Query Phrases by Top-{Nu} Users\n{fname}")
@@ -663,7 +661,7 @@ def plot_user(df, fname, RES_DIR, N=20):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{N}_users.png" ), )
 	plt.clf()
 
-def plot_hourly_activity(df, fname, RES_DIR, Nu=20):
+def plot_hourly_activity(df, fname, RES_DIR, Nu=25):
 	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
 
 	fig, axs = plt.subplots()
@@ -779,7 +777,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=20):
 
 	#
 
-def plot_usr_doc_type(df, fname, RES_DIR, Nu=20):
+def plot_usr_doc_type(df, fname, RES_DIR, Nu=25):
 	df_cleaned = df.assign(document_type=df['document_type'].str.split(',')).explode('document_type')
 	
 	print(df_cleaned["document_type"].value_counts())
