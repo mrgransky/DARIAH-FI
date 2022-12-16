@@ -233,9 +233,34 @@ def plot_language(df, fname, RES_DIR, N=20):
 
 def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
-	df_cleaned["query_word"] = df['query_word'].str.replace('[^\w\s]', '', regex=True).str.title()
+	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
+	print("/"*150)
+	
+	
+	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace('[^\w\s]+', '', regex=True).str.title()
+	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
+	print("*"*150)
+	
+	"""
+	def clean_text(txt):
+				txt = txt.lower()
+				txt = re.sub('\[.*?\]','',txt)
+				txt = re.sub('[%s]'%re.escape(string.punctuation),'',txt)
+				txt = re.sub('\w*\d\w*','',txt)
+				txt = re.sub('[^a-zA-Z0-9]',' ',txt)
+				txt = re.sub('\s+',' ',txt)
+				txt = " ".join(w for w in nltk.wordpunct_tokenize(txt) if w.lower() in words or not w.isalpha())
+				
+				return txt
 
-	print(df_cleaned["query_word"].value_counts())
+	cleaned_reviews = lambda x:clean_text(x)
+		
+	# cleaning
+	df['review'] = pd.DataFrame( df.review.apply( cleaned_reviews ) )
+	"""
+
+
+
 
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
