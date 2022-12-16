@@ -233,7 +233,7 @@ def plot_language(df, fname, RES_DIR, N=20):
 
 def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
-	df_cleaned["query_word"] = df['query_word'].str.replace('[^\w\s]', '').str.title()
+	df_cleaned["query_word"] = df['query_word'].str.replace('[^\w\s]', '', regex=True).str.title()
 
 	print(df_cleaned["query_word"].value_counts())
 
@@ -372,6 +372,10 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_OCR_terms_cloud.png" ), )
 	plt.clf()
+
+
+
+
 
 def plot_publication_places(df, fname, RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["publication_place"]).reset_index()
