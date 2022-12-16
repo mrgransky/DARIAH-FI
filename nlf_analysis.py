@@ -233,6 +233,8 @@ def plot_language(df, fname, RES_DIR, N=20):
 
 def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+	df_cleaned["query_word"] = df['query_word'].str.replace('[^\w\s]', '').str.title()
+
 	print(df_cleaned["query_word"].value_counts())
 
 	wordcloud = WordCloud(width=1400, 
@@ -843,29 +845,29 @@ def main():
 	#return
 	
 	# missing features:
-	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# 24h activity:
-	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# doc_type
-	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# publication places
-	plot_publication_places(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_publication_places(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
-	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
