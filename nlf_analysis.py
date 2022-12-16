@@ -237,28 +237,10 @@ def plot_query_words(df, fname, RES_DIR, Nq=50, Nu=20):
 	print("/"*150)
 	
 	
-	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace('[^\w\s]+', '', regex=True).str.title()
+	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.strip().str.replace(r'(?<=\D)(?=\d)', ' ', regex=True).str.title()
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("*"*150)
 	
-	"""
-	def clean_text(txt):
-				txt = txt.lower()
-				txt = re.sub('\[.*?\]','',txt)
-				txt = re.sub('[%s]'%re.escape(string.punctuation),'',txt)
-				txt = re.sub('\w*\d\w*','',txt)
-				txt = re.sub('[^a-zA-Z0-9]',' ',txt)
-				txt = re.sub('\s+',' ',txt)
-				txt = " ".join(w for w in nltk.wordpunct_tokenize(txt) if w.lower() in words or not w.isalpha())
-				
-				return txt
-
-	cleaned_reviews = lambda x:clean_text(x)
-		
-	# cleaning
-	df['review'] = pd.DataFrame( df.review.apply( cleaned_reviews ) )
-	"""
-
 
 
 
