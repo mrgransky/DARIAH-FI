@@ -100,15 +100,25 @@ def single_query(file_="", ts=None, browser_show=False):
 
 	# check for queries -> REST API:
 	if parameters.get("query"):
+		print(parameters.get("query"))
 		my_query_word = ",".join( parameters.get("query") )
+		print(my_query_word)
 		df.loc[qlink, "query_word"] = my_query_word
-		print("#"*65)
-		print(f"\tEXECUTE BASH REST API for {my_query_word}")
-		print("#"*65)
+
+		run_bash_script(param=parameters)
+
+		#print("#"*65)
+		#print(f"\tEXECUTE BASH REST API for {my_query_word}")
+		#print("#"*65)
 
 	# term(ONLY IF OCR page):
 	if parameters.get("term") and parameters.get("page"):
-		df.loc[qlink, "ocr_term"] = ",".join(parameters.get("term"))
+		print(parameters.get("term"))
+		my_ocr_term = ",".join(parameters.get("term"))
+		print(my_ocr_term)
+		df.loc[qlink, "ocr_term"] = my_ocr_term
+		df.loc[qlink, "ocr_page"] = ",".join(parameters.get("page"))
+
 		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 		print(f">> page-X.txt available?\t{txt_pg_url}\t")
 
@@ -131,7 +141,7 @@ def single_query(file_="", ts=None, browser_show=False):
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
 def all_queries(file_="", ts=None):
-	#print(f">> Analyzing queries of {file_} ...")
+	print(f">> Analyzing queries of {file_} ...")
 	st_t = time.time()
 	#df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
@@ -139,9 +149,11 @@ def all_queries(file_="", ts=None):
 	elapsed_t = time.time() - st_t
 	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
 	print("-"*100)
+	print(df.isna().sum())
+	print("-"*50)
 
 	#save_(df, infile=file_)
-	return
+	#return
 
 	def analyze_(df):
 		raw_url = df.referer
@@ -156,7 +168,9 @@ def all_queries(file_="", ts=None):
 
 		parsed_url, parameters = get_parsed_url_parameters(in_url)
 		#print(f"Parsed: {parsed_url}")
-		#print(f"Parameters: {parameters}")
+		#print(f"Parameters: {type(parameters)}: {parameters}")
+
+		#return 
 
 		if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
 		if parameters.get("qMeta"): df["has_metadata"] = ",".join(parameters.get("qMeta"))
@@ -185,8 +199,17 @@ def all_queries(file_="", ts=None):
 			#print("#"*65)
 			#print(f"\tEXECUTE BASH REST API for {my_query_word}")
 			#print("#"*65)
+			#json_results = rest_api(parameters)
+			#print()
+			#df["search_results"] = rest_api(parameters)
+
+
+			# remove json_results
+
+			# get 20 search results using web scraping:
 			#df["search_results"] = get_all_search_details(in_url)
 		
+
 		# OCR extraction:
 		if parameters.get("term") and parameters.get("page"):
 			df["ocr_term"] = ",".join(parameters.get("term"))
@@ -238,18 +261,19 @@ def get_query_log(QUERY=0):
 
 def run():
 	make_folder(folder_name=dfs_path)
-	"""
+	"""	
+	# run single log file	
 	single_query(file_=get_query_log(QUERY=args.query), 
 							#browser_show=True, 
 							#ts=["23:52:00", "23:59:59"],
 							)
 	"""
-	# run all log files using array in batch
-	
+
+	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["00:00:00", "00:02:59"],
+							#ts=["00:00:00", "00:10:59"],
 							)
-	#print(f"\t\tCOMPLETED!")
+	print(f"\t\tCOMPLETED!")
 
 def run_all():
 	for q in range(70):
@@ -258,4 +282,5 @@ def run_all():
 if __name__ == '__main__':
 	os.system('clear')
 	run()
+	#rest_api()
 	#run_all()

@@ -1,9 +1,11 @@
 import os
 import time
+import subprocess
 import urllib
 import requests
 import joblib
 import re
+import json
 import numpy as np
 import pandas as pd
 
@@ -20,6 +22,46 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
+
+# def rest_api(params):
+def rest_api():
+	print("#"*65)
+	#print(f"BASH REST API: {params}")
+	print("#"*65)
+
+	#q = param.get("")
+	subprocess.call(['bash', 'query_retreival.sh',
+									'QUERY=sweden'
+									#f'QUERY={params.get("query")}',
+									#'DOC_TYPE=f'{params.get("formats")}',
+									#'QUERY=f'{params.get("query")}',
+									#'QUERY=f'{params.get("query")}',
+									#'QUERY=f'{params.get("query")}',
+									]
+								)
+	
+	return
+	json_file = f"newspaper_info_query_{params.get('query')}"
+	f = open(json_file)
+	data = json.load(f)
+	#print(len(data)) # 7
+	#print(type(data)) # <class 'dict'>
+	print(f'>> How many results: {data.get("totalResults")}')
+	print(list(data.keys()))
+	print(len(data.get("rows")))
+	
+	print(type(data.get("rows"))) # <class 'list'>
+	print()
+	SEARCH_RESULTS = data.get("rows")[35*20+0 : 35*20+20]
+	print(json.dumps(SEARCH_RESULTS, indent=1, ensure_ascii=False))
+	print("#"*100)
+	print(len(SEARCH_RESULTS))
+	
+	# remove json file:
+	print(f">> removing {json_file} ...")
+	os.remove(json_file)
+	
+	return SEARCH_RESULTS
 
 def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
@@ -141,7 +183,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# with pandas:
 	df.timestamp = pd.to_datetime(df.timestamp)
 		
-	print(f">> Initial checcking for None/Null values: {df.shape}")
+	print(f">> Raw DF: {df.shape}")
 	print(df.isna().sum())
 	print("-"*50)
 
@@ -149,22 +191,34 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# with numpy:
 	#df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://+', np.nan, regex=True)
 	#df = df.replace(r'-|^\s*$|http://+', np.nan, regex=True)
-	df = df.replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
+	#df = df.replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
+	df["referer"] = df["referer"].replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
 
 	# check nan:
 	print(f">> Secondary checcking for None/Null values: {df.shape}")
 	print(df.isna().sum())
 	print("-"*50)
 
-	print(f">> Checcking for duplicate values of 'user_ip' & 'referer': {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
-	print("-"*50)
+	print(f">> Dropping None for referer & user_ip:")
+	df = df.dropna(subset=['user_ip', 'referer'])
+	print(df.shape)
 
-	print(f">> Dropping None...")
-	df = df.dropna(axis=0)
+	print(f">> Before Duplicate removal:")
+	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
+	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
+	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
 
-	print(f">> Dropping {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]} duplicates | {df.shape}")
+	#df = df.drop_duplicates(subset=['user_ip', 'referer'], keep='last')
+	df = df.drop_duplicates(subset=['user_ip', 'referer' ,'timestamp'], keep='last')
 
-	df = df.drop_duplicates(subset=['user_ip', 'referer'], keep='last')
+	#print(f">> Applying the mask...")
+	#mask = (df.time - df.time.shift()) == np.timedelta64(0,'s')
+	#print(f" mask: ")
+	print(f">> After Duplicate removal:")
+	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
+	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
+	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
+	
 	df = df.reset_index(drop=True)
 
 	if TIMESTAMP:
@@ -234,7 +288,7 @@ def load_df(infile=""):
 	elapsed_t = time.time() - st_t
 	print(f"\tElapsed time: {elapsed_t:.3f} sec")
 	df = d[infile]
-	return df
+	return df	
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
@@ -250,7 +304,7 @@ def get_parsed_url_parameters(inp_url):
 def get_np_ocr(ocr_url):
 	parsed_url, parameters = get_parsed_url_parameters(ocr_url)
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	print(f">> page-X.txt available?\t{txt_pg_url}\t")
+	#print(f">> page-X.txt available?\t{txt_pg_url}\t")
 	text_response = checking_(txt_pg_url)
 	if text_response is not None: # 200
 		#print(f"\t\t\tYES >> loading...\n")

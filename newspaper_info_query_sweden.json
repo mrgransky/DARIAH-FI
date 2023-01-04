@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fi">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <title>Digitaaliset aineistot - Kansalliskirjasto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="robots" content="index, follow"/>
+    <meta name="copyright" content="Kansalliskirjasto. Kaikki oikeudet pidätetään."/>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <base href="/">
+
+    <meta name="google-site-verification" content="fLK4q3SMlbeGTQl-tN32ENsBoaAaTlRd8sRbmTxlSBU" />
+
+    <meta name="msvalidate.01" content="7EDEBF53A1C81ABECE44A7A666D94950" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-10360577-3', 'auto');
+    </script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KF8NK1STFH"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    // see google-analytics.service
+</script>
+
+<!-- Matomo -->
+
+<script>
+    var _paq = window._paq = window._paq || [];
+
+    
+
+    (function() {
+            var u = "https://tilasto.lib.helsinki.fi/";
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '17']);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.async = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+        }
+    )();
+
+</script>
+
+<noscript><p><img src="https://tilasto.lib.helsinki.fi/matomo.php?idsite=17&amp;rec=1" style="border:0;" alt=""/></p></noscript>
+
+<!-- End Matomo Code --><style type="text/css">[ng-cloak] { display: none !important; }</style>
+    <script>
+        window.errorHandlerUrl = "/rest/js-error-handler";
+        window.commonOptions = {"localLoginEnabled":true,"localRegistrationEnabled":false,"marcOverlayEnabled":true,"opendataEnabled":true,"overrideHeader":"","hakaEnabled":true,"includeExternalResources":true,"legalDepositWorkstation":false,"jiraCollectorEnabled":true,"buildNumber":"8201672f226078f2cefbe8a0025dc03f5d98c25f","searchMaxResults":10000,"showExperimentalSearchFeatures":true,"bindingSearchMaxResults":1000,"excelDownloadEnabled":true,"giosgEnabled":true};
+    </script>
+
+    <style type="text/css">.external-resource-alt { display: none !important; }</style>
+    </head>
+
+<body class="digiweb">
+
+    <noscript>
+    <h3>Sovellus vaatii JavaScriptin.</h3>
+    <p>Ole hyvä ja laita selaimesi JavaScript päälle, jos haluat käyttää palvelua.</p>
+    <h3>Aktivera Javascript.</h3>
+    <p>För att kunna använda våra webbaserade system behöver du ha Javascript aktiverat.</p>
+    <h3>This application requires JavaScript.</h3>
+    <p>Please turn on JavaScript in order to use the application.</p>
+</noscript><app-digiweb></app-digiweb>
+
+    <div id="kk-server-error" style="display: none;">
+        <h1 align="center">Järjestelmässä tapahtui virhe.</h1></div>
+
+    <div id="kk-server-page" style="display: none;">
+        </div>
+
+    <script type="text/javascript">
+        window.language = "fi";
+        window.renderId = 1672753056902;
+        window.facebookAppId = "465149013631512"
+        window.reCaptchaSiteKey = "6Lf7xuASAAAAANNu9xcDirXyzjebiH4pPpkKVCKq";
+    </script>
+
+    <script src="/assets/runtime-es2015.f1ac93cb35b9635f0f7e.js" type="module"></script>
+            <script src="/assets/runtime-es5.f1ac93cb35b9635f0f7e.js" nomodule></script>
+            <script src="/assets/polyfills-es2015.8db02cde19c51f542c72.js" type="module"></script>
+            <script src="/assets/polyfills-es5.2273af7ef2cf66cdc0de.js" nomodule></script>
+            <script src="/assets/styles-es2015.a539381f703344410705.js" type="module"></script>
+            <script src="/assets/styles-es5.a539381f703344410705.js" nomodule></script>
+            <script src="" type="module"></script>
+            <script src="" type="module"></script>
+            <script src="" nomodule></script>
+            <script src="/assets/main-es2015.b5796f606e925a9d947d.js" type="module"></script>
+            <script src="/assets/main-es5.b5796f606e925a9d947d.js" nomodule></script>
+            </body>
+</html>
