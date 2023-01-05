@@ -6,6 +6,7 @@ import requests
 import joblib
 import re
 import json
+import datetime
 import numpy as np
 import pandas as pd
 
@@ -184,10 +185,10 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	df.timestamp = pd.to_datetime(df.timestamp)
 		
 	print(f">> Raw DF: {df.shape}")
-	print(df.isna().sum())
-	print("-"*50)
+	#print(df.isna().sum())
+	#print("-"*50)
 
-	print(f">> Replacing space + bad urls + empty fields with np.nan :")
+	#print(f">> Replacing space + bad urls + empty fields with np.nan :")
 	# with numpy:
 	#df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True).replace(r'http://+', np.nan, regex=True)
 	#df = df.replace(r'-|^\s*$|http://+', np.nan, regex=True)
@@ -195,30 +196,25 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	df["referer"] = df["referer"].replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
 
 	# check nan:
-	print(f">> Secondary checcking for None/Null values: {df.shape}")
-	print(df.isna().sum())
-	print("-"*50)
+	#print(f">> Secondary checcking for None/Null values: {df.shape}")
+	#print(df.isna().sum())
+	#print("-"*50)
 
-	print(f">> Dropping None for referer & user_ip:")
+	#print(f">> Dropping None for referer & user_ip:")
 	df = df.dropna(subset=['user_ip', 'referer'])
-	print(df.shape)
-
+	#print(df.shape)
+	"""
 	print(f">> Before Duplicate removal:")
 	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
 	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
 	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
+	"""
 
-	#df = df.drop_duplicates(subset=['user_ip', 'referer'], keep='last')
-	df = df.drop_duplicates(subset=['user_ip', 'referer' ,'timestamp'], keep='last')
+	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
+	th = datetime.timedelta(days=0, seconds=0, minutes=5)
+	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
+	df = df.drop(['prev_time'], axis=1)
 
-	#print(f">> Applying the mask...")
-	#mask = (df.time - df.time.shift()) == np.timedelta64(0,'s')
-	#print(f" mask: ")
-	print(f">> After Duplicate removal:")
-	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
-	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
-	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
-	
 	df = df.reset_index(drop=True)
 
 	if TIMESTAMP:

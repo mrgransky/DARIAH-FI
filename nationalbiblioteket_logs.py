@@ -32,7 +32,6 @@ parser = argparse.ArgumentParser(description='National Library of Finland (NLF)'
 parser.add_argument('--query', default=0, type=int) # smallest
 args = parser.parse_args()
 
-
 def single_query(file_="", ts=None, browser_show=False):
 	print(f">> Analyzing a single query of {file_}")
 	st_t = time.time()
@@ -148,9 +147,10 @@ def all_queries(file_="", ts=None):
 
 	elapsed_t = time.time() - st_t
 	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
-	print("-"*100)
-	print(df.isna().sum())
-	print("-"*50)
+
+	#print("-"*100)
+	#print(df.isna().sum())
+	#print("-"*50)
 
 	#save_(df, infile=file_)
 	#return
@@ -271,7 +271,7 @@ def run():
 
 	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["00:00:00", "00:10:59"],
+							#ts=["23:20:00", "23:59:59"],
 							)
 	print(f"\t\tCOMPLETED!")
 
