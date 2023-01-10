@@ -615,7 +615,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	MY_DICT = {}
 
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
-		lst = []
+		lst_q, lst_ocr, lst_nan = []
 		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
 		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.count()
 		c_usr = df_tmp[ (df_tmp["user_ip"] == usr) ].user_ip.count()
@@ -624,7 +624,15 @@ def plot_user(df, fname, RES_DIR, N=25):
 		
 		#lst.append([cq, c_ocr, abs(cq-c_ocr)]) # |QUERY_PHRASE|, |OCR_TERM|, |NaN|
 		#MY_DICT[usr] = lst
-		MY_DICT[usr] = [cq, c_ocr, abs(c_usr - (cq+c_ocr))]
+		#MY_DICT[usr] = [cq, c_ocr, abs(c_usr - (cq+c_ocr))]
+		
+		lst_q.append(cq)
+		lst_ocr.append(c_ocr)
+		lst_nan.append(abs(c_usr - (cq+c_ocr)))
+		
+	MY_DICT["Query_Phrases"] = lst_q
+	MY_DICT["OCR_Terms"] = lst_ocr
+	MY_DICT["NaN"] = lst_nan
 
 	print(MY_DICT)
 	WIDTH = 0.35
