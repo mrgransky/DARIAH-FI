@@ -607,7 +607,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=10):
+def plot_user(df, fname, RES_DIR, N=25):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
