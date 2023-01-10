@@ -233,16 +233,19 @@ def plot_language(df, fname, RES_DIR, N=20):
 
 def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
-	#print(df_cleaned["query_word"].value_counts())
+	"""
+	print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("/"*150)
+	"""
 	
 	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
-	#print(df_cleaned["query_word"].value_counts())
+	"""
+	print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("*"*150)
-
 	#return
+	"""
 
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
@@ -621,6 +624,7 @@ def plot_user(df, fname, RES_DIR, N=20):
 	#return
 
 	plt.subplots()
+	"""
 	p = sns.barplot(x=language_ung,
 									y=language_counts,
 									palette=clrs, 
@@ -628,6 +632,17 @@ def plot_user(df, fname, RES_DIR, N=20):
 									edgecolor = "#1c1c1c",
 									linewidth = 2,
 									)
+	"""
+	p = sns.barplot(x=df_tmp["user_ip"].value_counts()[:N].index,
+									y=df_tmp["user_ip"].value_counts()[:N].values,
+									palette=clrs, 
+									saturation=1,
+									edgecolor="#1c1c1c",
+									linewidth=2,
+									)
+
+	p.set_xticklabels(df_tmp["user_ip"].value_counts()[:N].index, size=11)
+
 
 	p.axes.set_title(f"Top {N} Users / {df_tmp.shape[0]}\n{fname}", 
 									#fontsize=18,
@@ -860,7 +875,7 @@ def main():
 	#plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
-	#plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
 	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
@@ -875,7 +890,7 @@ def main():
 	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
 	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
