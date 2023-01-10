@@ -634,14 +634,17 @@ def plot_user(df, fname, RES_DIR, N=25):
 	MY_DICT["Query_Phrases"] = lst_q
 
 	print(MY_DICT)
-	WIDTH = 0.35
-	BOTTOM = 0
 
 	fig, axs = plt.subplots()
+	WIDTH = 0.35
+	BOTTOM = 0
+	magnifier = 1
+	bar_width = magnifier * 0.28
+	spare_width = 0.8 * (1 - ( 2 * bar_width ) )
 
 	for k, v in MY_DICT.items():
-			print(k, len(v), v)
-			axs.bar(x=df_tmp["user_ip"].value_counts()[:N].index,
+		print(k, len(v), v)
+		axs.bar(x=df_tmp["user_ip"].value_counts()[:N].index,
 								height=v,
 								width=WIDTH,
 								bottom=BOTTOM, 
@@ -650,7 +653,27 @@ def plot_user(df, fname, RES_DIR, N=25):
 								edgecolor="#450f30",
 								linewidth=1,
 								)
-			BOTTOM += np.array(v)
+		BOTTOM += np.array(v)
+
+	cell_text = [ [ MY_DICT[k] ] for k, v in MY_DICT.items() ]
+	print(cell_text)
+	# Add a table at the bottom of the axes
+	the_table = axs.table(cellText=cell_text,
+												rowLabels=list(MY_DICT.keys()),
+												colLabels=df_tmp["user_ip"].value_counts()[:N].index,
+												rowLoc='center',
+						 						colLoc='center',
+									 			cellLoc='center',
+												loc='bottom')
+	the_table.auto_set_font_size(False)
+	the_table.set_fontsize(sz*1.6)
+	the_table.scale(1, 3)
+	axs.set_xticklabels([])	
+
+	axs.set_xlim(-spare_width,len(x)-spare_width)
+
+
+
 
 	axs.legend(	loc="upper right",
 							frameon=False,
