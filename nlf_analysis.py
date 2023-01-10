@@ -634,7 +634,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 
 	for k, v in MY_DICT.items():
 			print(k, v)
-			axs.bar(x=df_cleaned["user_ip"].value_counts()[:N].index,
+			axs.bar(x=df_tmp["user_ip"].value_counts()[:N].index,
 								height=v,
 								width=WIDTH,
 								bottom=BOTTOM, 
