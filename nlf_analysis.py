@@ -607,7 +607,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=25):
+def plot_user(df, fname, RES_DIR, N=10):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
@@ -615,12 +615,12 @@ def plot_user(df, fname, RES_DIR, N=25):
 	MY_DICT = {}
 
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
-		print(usr)
 		lst = []
-		#c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
-		c = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
-		print(c)
-		lst.append(c)
+		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
+		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.count()
+		print(f">> Counter {usr}: QU: {cq} | OCR: {c_ocr}")
+		lst.append(cq)
+	
 	MY_DICT[usr] = lst
 
 	print(MY_DICT)
