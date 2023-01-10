@@ -608,15 +608,15 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.clf()
 
 def plot_user(df, fname, RES_DIR, N=25):
-	print(df["user_ip"].value_counts())
+	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
-
 
 	MY_DICT = {}
 
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
 		print(usr)
+		lst = []
 		#c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
 		c = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word#.count()
 		print(c)
