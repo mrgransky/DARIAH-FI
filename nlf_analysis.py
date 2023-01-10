@@ -234,13 +234,15 @@ def plot_language(df, fname, RES_DIR, N=20):
 def plot_query_words(df, fname, RES_DIR, Nq=100, Nu=25):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(df_cleaned["query_word"].value_counts())
-	#print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
-	#print("/"*150)
+	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
+	print("/"*150)
 	
-	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.strip().str.replace(r'(?<=\D)(?=\d)', ' ', regex=True).str.title()
+	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.strip().str.replace(r'(?<=\D)(?=\d)', ' ', regex=True).str.lower()
 	print(df_cleaned["query_word"].value_counts())
-	#print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
-	#print("*"*150)
+	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
+	print("*"*150)
+
+	return
 
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
@@ -820,9 +822,9 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=25):
 	plt.clf()
 
 def main():
-	print("#"*100)
+	print("#"*80)
 	print(f"\t\tDATA ANALYSIS & VISUALIZATION")
-	print("#"*100)
+	print("#"*80)
 
 	result_directory = get_result_directory(QUERY=args.query)
 	print(result_directory)
@@ -873,7 +875,7 @@ def main():
 	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	#plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
 	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
