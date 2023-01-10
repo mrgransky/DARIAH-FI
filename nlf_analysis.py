@@ -615,10 +615,10 @@ def plot_user(df, fname, RES_DIR, N=25):
 
 	MY_DICT = {}
 
-	for usr in df_cleaned["user_ip"].value_counts()[:N].index:
+	for usr in df_tmp["user_ip"].value_counts()[:N].index:
 		print(usr)
 		#c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
-		c = df_cleaned[ (df_cleaned["user_ip"] == usr) ].query_word#.count()
+		c = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word#.count()
 		print(c)
 		lst.append(c)
 	MY_DICT[usr] = lst
