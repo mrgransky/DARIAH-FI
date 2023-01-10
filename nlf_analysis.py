@@ -666,7 +666,7 @@ def plot_user(df, fname, RES_DIR, N=30):
 	for (row, col), cell in the_table.get_celld().items():
 		if row == 0:
 			cell.get_text().set_rotation(90)
-			cell.set_height(0.4)
+			#cell.set_height(0.4)
 	
 	#the_table.auto_set_font_size(False)
 	#the_table.set_fontsize(11.0)
