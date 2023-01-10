@@ -607,7 +607,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=30):
+def plot_user(df, fname, RES_DIR, N=50):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
@@ -626,7 +626,6 @@ def plot_user(df, fname, RES_DIR, N=30):
 		lst_q.append(cq)
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
-		lst_usr.append(c_usr)
 
 		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 	
@@ -670,7 +669,7 @@ def plot_user(df, fname, RES_DIR, N=30):
 			cell.set_height(0.05)
 	
 	the_table.auto_set_font_size(False)
-	the_table.set_fontsize(11.0)
+	the_table.set_fontsize(10.0)
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
