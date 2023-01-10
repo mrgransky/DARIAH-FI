@@ -103,12 +103,12 @@ def get_query_dataframe(QUERY=0):
 	return query_dataframe_file
 
 def get_result_directory(QUERY=0):
-	print(f"\nGiven log file index: {QUERY}")
+	#print(f"\nGiven log file index: {QUERY}")
 	all_dump_file_paths = natsorted( glob.glob( os.path.join(dfs_path, "*.dump") ) )
-	print(all_dump_file_paths)
+	#print(all_dump_file_paths)
 
 	all_files = [dfile[dfile.rfind("/")+1:dfile.rfind(".dump")] for dfile in all_dump_file_paths]
-	print(all_files)
+	#print(all_files)
 
 	query_dataframe_file = all_files[QUERY] 
 	res_dir = os.path.join(rpath, query_dataframe_file)
@@ -237,7 +237,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("/"*150)
 	
-	df_cleaned["query_word"] = df_cleaned['query_word'].str.lower().str.replace(r'[^\w\s]+', '', regex=True).str.strip().str.replace(r'\d+', '', regex=True)#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.replace(r'\d+', '', regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 	#print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("*"*150)
