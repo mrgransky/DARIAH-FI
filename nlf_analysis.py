@@ -234,12 +234,12 @@ def plot_language(df, fname, RES_DIR, N=20):
 def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(df_cleaned["query_word"].value_counts())
-	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values))[:20])
+	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values))[:30])
 	print("/"*150)
 	
-	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.strip().str.replace(r'(?<=\D)(?=\d)', ' ', regex=True).str.lower()
+	df_cleaned["query_word"] = df_cleaned['query_word'].str.lower().str.replace(r'[^\w\s]+', '', regex=True).str.strip()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 	print(df_cleaned["query_word"].value_counts())
-	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values))[:20])
+	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values))[:30])
 	print("*"*150)
 
 	return
