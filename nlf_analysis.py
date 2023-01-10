@@ -624,7 +624,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 		
 		#lst.append([cq, c_ocr, abs(cq-c_ocr)]) # |QUERY_PHRASE|, |OCR_TERM|, |NaN|
 		#MY_DICT[usr] = lst
-		MY_DICT[usr] = [cq, c_ocr, abs(cq-c_ocr)]
+		MY_DICT[usr] = [cq, c_ocr, abs(c_usr - (cq+c_ocr))]
 
 	print(MY_DICT)
 	WIDTH = 0.35
