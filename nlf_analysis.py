@@ -237,7 +237,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("/"*150)
 	
-	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.replace(r'\d+', '', regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+', '', regex=True).str.replace(r'\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 	#print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
 	print("*"*150)
