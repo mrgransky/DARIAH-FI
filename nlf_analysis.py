@@ -672,9 +672,6 @@ def plot_user(df, fname, RES_DIR, N=25):
 
 	axs.set_xlim(-spare_width,len(N)-spare_width)
 
-
-
-
 	axs.legend(	loc="upper right",
 							frameon=False,
 							ncol=len(MY_DICT),
@@ -683,8 +680,8 @@ def plot_user(df, fname, RES_DIR, N=25):
 
 	plt.suptitle(f"Top-{N} Users\n{fname}")
 	axs.set_ylabel('Presence')
-	axs.set_xlabel('\nUsers')
-	axs.tick_params(axis='x', rotation=90)
+	#axs.set_xlabel('\nUsers')
+	#axs.tick_params(axis='x', rotation=90)
 	axs.spines[['top', 'right']].set_visible(False)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top{N}_usrs_QU_OCR_NaN.png" ), )
 	plt.clf()
