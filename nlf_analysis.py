@@ -613,8 +613,9 @@ def plot_user(df, fname, RES_DIR, N=25):
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
 
 	MY_DICT = {}
+	
 	lst_q = lst_ocr = lst_nan = []#, [], []
-		
+	#for atrb in ["Query_Phrases", "OCR_Terms", "None"]:
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
 		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
 		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.count()
@@ -629,7 +630,9 @@ def plot_user(df, fname, RES_DIR, N=25):
 		lst_q.append(cq)
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
-		
+	print(len(lst_q), len(lst_ocr), len(lst_nan))
+	#MY_DICT[atrb] = lst_q
+	
 	MY_DICT["Query_Phrases"] = lst_q
 	MY_DICT["OCR_Terms"] = lst_ocr
 	MY_DICT["NaN"] = lst_nan
@@ -641,7 +644,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	fig, axs = plt.subplots()
 
 	for k, v in MY_DICT.items():
-			print(k, v)
+			print(k, len(v), v)
 			axs.bar(x=df_tmp["user_ip"].value_counts()[:N].index,
 								height=v,
 								width=WIDTH,
