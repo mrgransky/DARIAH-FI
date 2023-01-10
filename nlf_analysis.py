@@ -613,9 +613,9 @@ def plot_user(df, fname, RES_DIR, N=25):
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
 
 	MY_DICT = {}
-
+	lst_q = lst_ocr = lst_nan = []#, [], []
+		
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
-		lst_q, lst_ocr, lst_nan = [], [], []
 		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
 		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.count()
 		c_usr = df_tmp[ (df_tmp["user_ip"] == usr) ].user_ip.count()
