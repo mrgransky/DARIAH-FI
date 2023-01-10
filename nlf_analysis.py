@@ -622,14 +622,49 @@ def plot_user(df, fname, RES_DIR, N=25):
 		print(f"{usr}:\tQU: {cq} | OCR: {c_ocr}:\t({cq+c_ocr} / {c_usr})")
 		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 		
-		lst.append(cq)
-	
-	MY_DICT[usr] = lst
+		#lst.append([cq, c_ocr, abs(cq-c_ocr)]) # |QUERY_PHRASE|, |OCR_TERM|, |NaN|
+		#MY_DICT[usr] = lst
+		MY_DICT[usr] = [cq, c_ocr, abs(cq-c_ocr)]
 
 	print(MY_DICT)
+	WIDTH = 0.35
+	BOTTOM = 0
+
+	fig, axs = plt.subplots()
+
+	for k, v in MY_DICT.items():
+			print(k, v)
+			axs.bar(x=df_cleaned["user_ip"].value_counts()[:N].index,
+								height=v,
+								width=WIDTH,
+								bottom=BOTTOM, 
+								color=clrs[list(MY_DICT.keys()).index(k)],
+								label=k,
+								edgecolor="#450f30",
+								linewidth=2,
+								)
+			BOTTOM += np.array(v)
+
+	axs.legend(	loc="upper right",
+							frameon=False,
+							title=f"Top-{N} Users",
+							ncol=len(MY_DICT),
+							fontsize=10,
+							)
+
+	plt.suptitle(f"Top-{N} Users\n{fname}")
+	axs.set_ylabel('Presence')
+	axs.set_xlabel('Users')
+	axs.tick_params(axis='x', rotation=90)
+	axs.spines[['top', 'right']].set_visible(False)
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_top{N}_usrs_QU_OCR_NaN.png" ), )
+	plt.clf()
 
 
-	return
+
+
+
+	#return
 
 	plt.subplots()
 	p = sns.barplot(x=df_tmp["user_ip"].value_counts()[:N].index,
