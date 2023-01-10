@@ -614,7 +614,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 
 	MY_DICT = {}
 	
-	lst_q = lst_ocr = lst_nan = []#, [], []
+	lst_q, lst_ocr, lst_nan = [], [], []
 	#for atrb in ["Query_Phrases", "OCR_Terms", "None"]:
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
 		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
