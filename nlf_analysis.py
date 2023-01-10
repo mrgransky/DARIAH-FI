@@ -618,7 +618,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 		print(usr)
 		lst = []
 		#c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
-		c = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word#.count()
+		c = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
 		print(c)
 		lst.append(c)
 	MY_DICT[usr] = lst
