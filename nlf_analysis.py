@@ -231,7 +231,7 @@ def plot_language(df, fname, RES_DIR, N=20):
 							)
 	plt.clf()
 
-def plot_query_words(df, fname, RES_DIR, Nq=100, Nu=25):
+def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
@@ -833,6 +833,7 @@ def main():
 	QUERY_FILE = get_query_dataframe(QUERY=args.query)
 	df = load_df(infile=QUERY_FILE)
 
+	"""
 	print("%"*100)
 	print(df.shape)
 	cols = list(df.columns)
@@ -846,12 +847,11 @@ def main():
 	print(df.isna().sum())
 	print("-"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
-	"""
 
-	"""
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
 	print("%"*100)
 	#return
+	"""
 	
 	# missing features:
 	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
@@ -875,7 +875,7 @@ def main():
 	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
 	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
