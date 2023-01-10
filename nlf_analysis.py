@@ -113,7 +113,7 @@ def get_result_directory(QUERY=0):
 	query_dataframe_file = all_files[QUERY] 
 	res_dir = os.path.join(rpath, query_dataframe_file)
 
-	#return res_dir
+	return res_dir
 
 def plot_missing_features(df, fname, RES_DIR):
 	print(f">> Visualizing missing data of {fname} ...")
