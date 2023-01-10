@@ -620,7 +620,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
 		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.count()
 		c_usr = df_tmp[ (df_tmp["user_ip"] == usr) ].user_ip.count()
-		print(f"{usr}:\tQU: {cq} | OCR: {c_ocr}:\t({cq+c_ocr} / {c_usr})")
+		print(f"\n{usr}:\tQU: {cq} | OCR: {c_ocr}:\t({cq+c_ocr} / {c_usr})")
 		
 		
 		lst_q.append(cq)
