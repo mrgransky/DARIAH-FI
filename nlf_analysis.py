@@ -655,7 +655,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 								)
 		BOTTOM += np.array(v)
 
-	cell_text = [ [ MY_DICT[k] ] for k, v in MY_DICT.items() ]
+	cell_text = [ MY_DICT[k] for k, v in MY_DICT.items() ]
 	print(cell_text)
 	# Add a table at the bottom of the axes
 	the_table = axs.table(cellText=cell_text,
@@ -670,7 +670,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
-	axs.set_xlim(-spare_width,len(x)-spare_width)
+	#axs.set_xlim(-spare_width,len(x)-spare_width)
 
 
 
