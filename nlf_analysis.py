@@ -633,7 +633,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	MY_DICT["None"] = lst_nan
 	MY_DICT["Query_Phrases"] = lst_q
 
-	print(MY_DICT)
+	#print(MY_DICT)
 
 	fig, axs = plt.subplots()
 	WIDTH = 0.35
@@ -643,7 +643,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	spare_width = 0.8 * (1 - ( 2 * bar_width ) )
 
 	for k, v in MY_DICT.items():
-		print(k, len(v), v)
+		#print(k, len(v), v)
 		axs.bar(x=df_tmp["user_ip"].value_counts()[:N].index,
 								height=v,
 								width=WIDTH,
@@ -666,11 +666,11 @@ def plot_user(df, fname, RES_DIR, N=25):
 									 			cellLoc='center',
 												loc='bottom')
 	the_table.auto_set_font_size(False)
-	the_table.set_fontsize(sz*1.6)
+	the_table.set_fontsize(12.0)
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
-	#axs.set_xlim(-spare_width,len(x)-spare_width)
+	axs.set_xlim(-spare_width,len(N)-spare_width)
 
 
 
