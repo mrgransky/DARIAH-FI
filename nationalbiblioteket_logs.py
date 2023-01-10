@@ -13,20 +13,8 @@ import pandas as pd
 from url_scraping import *
 from utils import *
 
-# Apache access log format:
-# 
-# %h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\
-# Ex)
-# 172.16.0.3 - - [25/Sep/2002:14:04:19 +0200] "GET / HTTP/1.1" 401 - "" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.1) Gecko/20020827"
-# https://regex101.com/r/xDfSqj/4
-
-# two files with corrupted links: removed entirely the rows:
-
-# fname = "nike6.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
-# - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 5
-	
-# fname = "nike5.docworks.lib.helsinki.fi_access_log.2017-02-02.log"
-# - - [02/Feb/2017:06:42:13 +0200] "GET /images/KK_BLUE_mark_small.gif HTTP/1.1" 206 2349 "http://digi.kansalliskirjasto.fi/"Kansalliskirjasto" "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" 16
+# how to run in background:
+# nohup python -u nationalbiblioteket_logs.py --query 0 > log_q0.out &
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('--query', default=0, type=int) # smallest
@@ -194,12 +182,14 @@ def all_queries(file_="", ts=None):
 		
 		# web scraping for 20 search results: 
 		if parameters.get("query"):
+			#print(f"\nurl: {in_url}")
 			my_query_word = ",".join(parameters.get("query"))
 			df["query_word"] = my_query_word
 			#print("#"*65)
 			#print(f"\tEXECUTE BASH REST API for {my_query_word}")
 			#print("#"*65)
-			#json_results = rest_api(parameters)
+
+			json_results = rest_api(parameters)
 			#print()
 			#df["search_results"] = rest_api(parameters)
 
@@ -229,7 +219,7 @@ def all_queries(file_="", ts=None):
 	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )	
 	print(f">> Parsing Completed!\tElapsed time: {time.time()-s:.2f} sec\tFINAL df: {df.shape}")
 	print("*"*205)
-	
+	"""
 	print("#"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("#"*150)
@@ -241,8 +231,8 @@ def all_queries(file_="", ts=None):
 	print(df.head(30))
 	print("-"*150)
 	print(df.tail(30))
-
-	save_(df, infile=file_, saving_path=dfs_path)
+	"""
+	#save_(df, infile=file_, saving_path=dfs_path)
 
 def get_query_log(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -271,7 +261,7 @@ def run():
 
 	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["23:20:00", "23:59:59"],
+							ts=["23:30:00", "23:35:59"],
 							)
 	print(f"\t\tCOMPLETED!")
 
@@ -281,6 +271,8 @@ def run_all():
 
 if __name__ == '__main__':
 	os.system('clear')
+	print(f">> Started at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 	run()
 	#rest_api()
 	#run_all()
+	print(f">> Done at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

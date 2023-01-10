@@ -820,9 +820,9 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=25):
 	plt.clf()
 
 def main():
-	print("#"*70)
-	print(f"\t\t\tDATA ANALYSIS")
-	print("#"*70)
+	print("#"*100)
+	print(f"\t\tDATA ANALYSIS & VISUALIZATION")
+	print("#"*100)
 
 	result_directory = get_result_directory(QUERY=args.query)
 	print(result_directory)
@@ -830,8 +830,8 @@ def main():
 
 	QUERY_FILE = get_query_dataframe(QUERY=args.query)
 	df = load_df(infile=QUERY_FILE)
+
 	print("%"*100)
-	"""
 	print(df.shape)
 	cols = list(df.columns)
 	print(len(cols), cols)
@@ -844,6 +844,8 @@ def main():
 	print(df.isna().sum())
 	print("-"*150)
 	print(df.info(verbose=True, memory_usage="deep"))
+	"""
+
 	"""
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
 	print("%"*100)
@@ -871,7 +873,7 @@ def main():
 	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_query_words(df, fname=QUERY_FILE, RES_DIR=result_directory)
 	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':

@@ -24,23 +24,48 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
-# def rest_api(params):
-def rest_api():
-	print("#"*65)
-	#print(f"BASH REST API: {params}")
-	print("#"*65)
+def rest_api(params={}):
+	
+	#params = {'query': ["Rusanen"], 'publicationPlace': ["Iisalmi", "Kuopio"], 'lang': ["FIN"], 'orderBy': ["DATE_DESC"], 'formats': ["NEWSPAPER"], 'resultMode': ["TEXT_WITH_THUMB"], 'page': ['75']}
+	
+	#print("#"*65)
+	print(f"REST API: {params}")
+	#print("#"*65)
+	#return
 
 	#q = param.get("")
-	subprocess.call(['bash', 'query_retreival.sh',
-									'QUERY=sweden'
-									#f'QUERY={params.get("query")}',
-									#'DOC_TYPE=f'{params.get("formats")}',
-									#'QUERY=f'{params.get("query")}',
-									#'QUERY=f'{params.get("query")}',
-									#'QUERY=f'{params.get("query")}',
+	subprocess.call(['bash', 
+									'my_file.sh',
+									#'query_retreival.sh',
+									#'QUERY=kantasonni',
+									f'DOC_TYPE={params.get("formats", "")}',
+									f'QUERY={",".join(params.get("query"))}',
+									f'ORDER_BY={",".join(params.get("orderBy", ""))}',
+									f'LANGUAGES={params.get("lang", "")}',
+									f'REQUIRE_ALL_KEYWORDS={params.get("requireAllKeywords", "")}',
+									f'QUERY_TARGETS_METADATA={params.get("qMeta", "")}',
+									f'QUERY_TARGETS_OCRTEXT={params.get("qOcr", "")}',
+									f'AUTHOR={params.get("author", "")}', 
+									f'COLLECTION={params.get("collection", "")}',
+									#f'DISTRICT={}',
+									f'START_DATE={params.get("startDate", "")}',
+									f'END_DATE={params.get("endDate", "")}',
+									f'FUZZY_SEARCH={params.get("fuzzy", "")}',
+									f'HAS_ILLUSTRATION={params.get("hasIllustrations", "")}',
+									#f'IMPORT_START_DATE={}',
+									f'IMPORT_TIME={params.get("importTime", "")}',
+									f'INCLUDE_AUTHORIZED_RESULTS={params.get("showUnauthorizedResults", "")}',#TODO: negation required?!
+									f'PAGES={params.get("pages", "")}', 
+									f'PUB_PLACE={params.get("publicationPlace", "")}', 
+									#f'PUBLICATION={}',
+									f'PUBLISHER={params.get("publisher", "")}', 
+									#f'SEARCH_FOR_BINDINGS={}',
+									f'SHOW_LAST_PAGE={params.get("showLastPage", "")}', 
+									f'TAG={params.get("tag", "")}',
 									]
 								)
-	
+
+
 	return
 	json_file = f"newspaper_info_query_{params.get('query')}"
 	f = open(json_file)
@@ -202,14 +227,13 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	#print(f">> Dropping None for referer & user_ip:")
 	df = df.dropna(subset=['user_ip', 'referer'])
-	#print(df.shape)
-	"""
+	print(f">> After droping None of user_ip & referer: {df.shape}")
+
 	print(f">> Before Duplicate removal:")
 	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
 	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
 	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
-	"""
-
+	
 	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
@@ -299,9 +323,11 @@ def get_parsed_url_parameters(inp_url):
 
 def get_np_ocr(ocr_url):
 	parsed_url, parameters = get_parsed_url_parameters(ocr_url)
-	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	#print(f">> page-X.txt available?\t{txt_pg_url}\t")
-	text_response = checking_(txt_pg_url)
-	if text_response is not None: # 200
-		#print(f"\t\t\tYES >> loading...\n")
-		return text_response.text
+	#print(f">> Parsed url | OCR extraction: {parameters}")
+	if parameters.get("term") and parameters.get("page"):
+		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
+		#print(f">> page-X.txt available?\t{txt_pg_url}\t")
+		text_response = checking_(txt_pg_url)
+		if text_response is not None: # 200
+			#print(f"\t\t\tYES >> loading...\n")
+			return text_response.text
