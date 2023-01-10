@@ -626,6 +626,7 @@ def plot_user(df, fname, RES_DIR, N=30):
 		lst_q.append(cq)
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
+		lst_usr.append(c_usr)
 
 		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 	
@@ -645,14 +646,14 @@ def plot_user(df, fname, RES_DIR, N=30):
 	for k, v in MY_DICT.items():
 		#print(k, len(v), v)
 		axs.bar(x=df_tmp["user_ip"].value_counts()[:N].index,
-								height=v,
-								width=WIDTH,
-								bottom=BOTTOM, 
-								color=clrs[list(MY_DICT.keys()).index(k)],
-								label=k,
-								edgecolor="#450f30",
-								linewidth=1,
-								)
+						height=v,
+						width=WIDTH,
+						bottom=BOTTOM, 
+						color=clrs[list(MY_DICT.keys()).index(k)],
+						label=k,
+						edgecolor="#450f30",
+						linewidth=.5,
+						)
 		BOTTOM += np.array(v)
 
 	cell_text = [ MY_DICT[k] for k, v in MY_DICT.items() ]
@@ -666,10 +667,10 @@ def plot_user(df, fname, RES_DIR, N=30):
 	for (row, col), cell in the_table.get_celld().items():
 		if row == 0:
 			cell.get_text().set_rotation(90)
-			cell.set_height(0.1)
+			cell.set_height(0.05)
 	
 	the_table.auto_set_font_size(False)
-	the_table.set_fontsize(10.0)
+	the_table.set_fontsize(11.0)
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
@@ -953,7 +954,7 @@ def main():
 	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
-	#plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
 	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
