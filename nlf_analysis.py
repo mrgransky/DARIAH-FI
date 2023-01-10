@@ -607,7 +607,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=50):
+def plot_user(df, fname, RES_DIR, N=30):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
@@ -663,8 +663,13 @@ def plot_user(df, fname, RES_DIR, N=50):
 						 						colLoc='center',
 									 			cellLoc='center',
 												loc='bottom')
-	the_table.auto_set_font_size(False)
-	the_table.set_fontsize(12.0)
+	for (row, col), cell in the_table.get_celld().items():
+		if row == 0:
+			cell.get_text().set_rotation(90)
+			cell.set_height(0.4)
+	
+	#the_table.auto_set_font_size(False)
+	#the_table.set_fontsize(11.0)
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
@@ -677,7 +682,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							)
 
 	plt.suptitle(f"Top-{N} Users\n{fname}")
-	axs.set_ylabel('Presence')
+	axs.set_ylabel('User Activity')
 	#axs.set_xlabel('\nUsers')
 	#axs.tick_params(axis='x', rotation=90)
 	axs.spines[['top', 'right']].set_visible(False)
