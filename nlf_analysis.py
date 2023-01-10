@@ -607,32 +607,28 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=20):
-	unq = df["user_ip"].value_counts()
-	print(f">> user_ip:\n{unq}")
+def plot_user(df, fname, RES_DIR, N=25):
+	print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
 
-	lu, lc = np.unique(df_tmp["user_ip"], return_counts=True)
-	print(lu.shape[0], lu, lc)
 
-	print(f"\n>> Sorting Top {N} users / {df_tmp.shape[0]} | {fname}")
-	lc_sorted_idx = np.argsort(-lc)
-	language_ung = lu[lc_sorted_idx][:N]
-	language_counts = lc[lc_sorted_idx][:N]
-	print(language_ung.shape[0], language_ung, language_counts)
-	#return
+	MY_DICT = {}
+
+	for usr in df_cleaned["user_ip"].value_counts()[:N].index:
+		print(usr)
+		#c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
+		c = df_cleaned[ (df_cleaned["user_ip"] == usr) ].query_word#.count()
+		print(c)
+		lst.append(c)
+	MY_DICT[usr] = lst
+
+	print(MY_DICT)
+
+
+	return
 
 	plt.subplots()
-	"""
-	p = sns.barplot(x=language_ung,
-									y=language_counts,
-									palette=clrs, 
-									saturation=1, 
-									edgecolor = "#1c1c1c",
-									linewidth = 2,
-									)
-	"""
 	p = sns.barplot(x=df_tmp["user_ip"].value_counts()[:N].index,
 									y=df_tmp["user_ip"].value_counts()[:N].values,
 									palette=clrs, 
@@ -647,7 +643,7 @@ def plot_user(df, fname, RES_DIR, N=20):
 	p.axes.set_title(f"Top {N} Users / {df_tmp.shape[0]}\n{fname}", 
 									#fontsize=18,
 									)
-	plt.ylabel("Counts", 
+	plt.ylabel("Presence", 
 						#fontsize = 20,
 						)
 	plt.xlabel("\nUser Name", 
