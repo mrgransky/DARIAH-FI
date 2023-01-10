@@ -670,7 +670,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
-	axs.set_xlim(-spare_width,len(N)-spare_width)
+	axs.set_xlim(-spare_width, N - spare_width)
 
 	axs.legend(	loc="upper right",
 							frameon=False,
