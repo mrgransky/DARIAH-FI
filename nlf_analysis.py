@@ -607,7 +607,7 @@ def plot_doc_type(df, fname, RES_DIR):
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
 	plt.clf()
 
-def plot_user(df, fname, RES_DIR, N=25):
+def plot_user(df, fname, RES_DIR, N=30):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
@@ -639,7 +639,7 @@ def plot_user(df, fname, RES_DIR, N=25):
 	WIDTH = 0.35
 	BOTTOM = 0
 	magnifier = 1
-	bar_width = magnifier * 0.28
+	bar_width = magnifier * 0.35
 	spare_width = 0.8 * (1 - ( 2 * bar_width ) )
 
 	for k, v in MY_DICT.items():
@@ -656,8 +656,6 @@ def plot_user(df, fname, RES_DIR, N=25):
 		BOTTOM += np.array(v)
 
 	cell_text = [ MY_DICT[k] for k, v in MY_DICT.items() ]
-	print(cell_text)
-	# Add a table at the bottom of the axes
 	the_table = axs.table(cellText=cell_text,
 												rowLabels=list(MY_DICT.keys()),
 												colLabels=df_tmp["user_ip"].value_counts()[:N].index,
