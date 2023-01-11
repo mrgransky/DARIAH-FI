@@ -654,7 +654,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							frameon=False,
 							fontsize=10,
 							)
-		fig.canvas.draw()
+		#fig.canvas.draw()
 		plt.tight_layout()
 		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_query_phrases.png" ), 
 								bbox_inches="tight",
@@ -692,7 +692,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							ncol=10,
 							)
 		
-		fig.canvas.draw()
+		#fig.canvas.draw()
 		plt.tight_layout()
 		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_ocr_terms.png" ), 
 								bbox_inches="tight",
