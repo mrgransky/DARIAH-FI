@@ -232,7 +232,8 @@ def plot_language(df, fname, RES_DIR, N=20):
 	plt.clf()
 
 def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
-	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+	#df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+	df_cleaned = df.copy()
 	"""
 	print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
@@ -703,13 +704,6 @@ def plot_user(df, fname, RES_DIR, N=50):
 		plt.close(fig)
 		########################################### OCR TERMS ###########################################
 
-
-
-
-
-
-
-
 	MY_DICT["OCR_Terms"] = lst_ocr
 	MY_DICT["None"] = lst_nan
 	MY_DICT["Query_Phrases"] = lst_q
@@ -769,10 +763,6 @@ def plot_user(df, fname, RES_DIR, N=50):
 	axs.spines[['top', 'right']].set_visible(False)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top{N}_usrs_QU_OCR_NaN.png" ), )
 	plt.clf()
-
-
-
-
 
 	#return
 
