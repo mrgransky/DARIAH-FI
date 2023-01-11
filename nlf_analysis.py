@@ -317,7 +317,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 
 	#print(MY_DICT)
 
-	WIDTH = 0.3
+	WIDTH = 0.4
 	BOTTOM = 0
 
 	fig, axs = plt.subplots()
@@ -334,7 +334,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 								linewidth=0.5,
 								)
 			BOTTOM += np.array(v)
-			axs.margins(x=0.02)
+			axs.margins(x=0.01)
 	axs.legend(	loc="upper right",
 							frameon=False,
 							title=f"Top-{Nu} Users",
@@ -345,7 +345,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
 	axs.set_ylabel('Counts')
 	axs.set_xlabel('\nQuery Phrases')
-	axs.tick_params(axis='x', rotation=90, labelsize=8.0)
+	axs.tick_params(axis='x', rotation=90, labelsize=10.0)
 	axs.spines[['top', 'right']].set_visible(False)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nu}_USR_searching_top_{Nq}_query_phrases.png" ), )
 	plt.clf()
@@ -779,30 +779,22 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 	p.set_xticklabels(df_tmp["user_ip"].value_counts()[:N].index, size=11)
 
-
-	p.axes.set_title(f"Top {N} Users / {df_tmp.shape[0]}\n{fname}", 
-									#fontsize=18,
-									)
-	plt.ylabel("Presence", 
-						#fontsize = 20,
-						)
-	plt.xlabel("\nUser Name", 
-							#fontsize=20,
-							)
-	# plt.yscale("log")
+	p.axes.set_title(f"Top-{N} Users | Unique: {len(df_tmp["user_ip"].value_counts())}\n{fname}",)
+	plt.ylabel("Presence",)
+	plt.xlabel("\nUser",)
 	plt.xticks(rotation=90)
 	for container in p.containers:
 			p.bar_label(container,
 									label_type="center",
-									padding=6,
-									size=15,
+									padding=3,
+									size=8,
 									color="black",
 									rotation=90,
 									bbox={"boxstyle": "round", 
-												"pad": 0.6, 
+												"pad": 0.4, 
 												"facecolor": "orange", 
 												"edgecolor": "black", 
-												"alpha": 1,
+												"alpha": 0.7,
 												}
 									)
 
