@@ -653,7 +653,8 @@ def plot_user(df, fname, RES_DIR, N=50):
 							],
 							loc="center",
 							frameon=False,
-							fontsize=10,
+							fontsize=9,
+							ncol=2,
 							)
 		#fig.canvas.draw()
 		plt.tight_layout()
