@@ -189,7 +189,7 @@ def all_queries(file_="", ts=None):
 			#print(f"\tEXECUTE BASH REST API for {my_query_word}")
 			#print("#"*65)
 
-			json_results = rest_api(parameters)
+			#json_results = rest_api(parameters)
 			#print()
 			#df["search_results"] = rest_api(parameters)
 
@@ -197,9 +197,8 @@ def all_queries(file_="", ts=None):
 			# remove json_results
 
 			# get 20 search results using web scraping:
-			#df["search_results"] = get_all_search_details(in_url)
+			df["search_results"] = get_all_search_details(in_url)
 		
-
 		# OCR extraction:
 		if parameters.get("term") and parameters.get("page"):
 			df["ocr_term"] = ",".join(parameters.get("term"))
@@ -261,7 +260,7 @@ def run():
 
 	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							ts=["23:30:00", "23:35:59"],
+							#ts=["23:30:00", "23:35:59"],
 							)
 	print(f"\t\tCOMPLETED!")
 

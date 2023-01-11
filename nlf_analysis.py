@@ -394,8 +394,8 @@ def plot_publication_places(df, fname, RES_DIR):
 	patches, _ = axs.pie(df_cleaned["publication_place"].value_counts(),
 											colors=clrs,
 											wedgeprops=dict(width=0.8, 
-																			edgecolor="#ee7f3000",
-																			linewidth=0.3,
+																			edgecolor="#2ef3",
+																			linewidth=0.2,
 																			),
 											)
 	
@@ -622,13 +622,42 @@ def plot_user(df, fname, RES_DIR, N=50):
 		c_usr = df_tmp[ (df_tmp["user_ip"] == usr) ].user_ip.count()
 		print(f"\n{usr}:\tQU: {cq} | OCR: {c_ocr}:\t({cq+c_ocr} / {c_usr})")
 		
-		
 		lst_q.append(cq)
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
 
 		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
-	
+
+		fig = plt.figure(figsize=(12,5))
+		axs = fig.add_subplot(121)
+		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(),
+												colors=clrs,
+												wedgeprops=dict(width=0.8,
+																				edgecolor="#2ef3",
+																				linewidth=0.2,
+																				),
+												)
+		
+		axs.axis('equal')
+		axs.set_title(f"USER: {usr}\n{fname}")
+		
+		ax2 = fig.add_subplot(122)
+		ax2.axis("off")
+
+		ax2.legend(patches,
+							[ f"{l} {v*100:.2f} %" for l, v in zip(	df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(normalize=True).index, 
+																											df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(normalize=True).values,
+																						)
+							],
+							loc="center",
+							frameon=False,
+							fontsize=5,
+							)
+		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_usr_{usr}_query_phrases.png" ), 
+								bbox_inches="tight",
+								)
+		plt.clf()
+
 	MY_DICT["OCR_Terms"] = lst_ocr
 	MY_DICT["None"] = lst_nan
 	MY_DICT["Query_Phrases"] = lst_q
@@ -666,7 +695,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 	for (row, col), cell in the_table.get_celld().items():
 		if row == 0:
 			cell.get_text().set_rotation(90)
-			cell.set_height(0.05)
+			cell.set_height(0.03)
 	
 	the_table.auto_set_font_size(False)
 	the_table.set_fontsize(10.0)
@@ -682,7 +711,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							)
 
 	plt.suptitle(f"Top-{N} Users\n{fname}")
-	axs.set_ylabel('User Activity')
+	axs.set_ylabel('User Activity [Presence]')
 	#axs.set_xlabel('\nUsers')
 	#axs.tick_params(axis='x', rotation=90)
 	axs.spines[['top', 'right']].set_visible(False)
