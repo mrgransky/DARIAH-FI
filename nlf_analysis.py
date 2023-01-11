@@ -612,6 +612,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
 	df_tmp["query_word"] = df_tmp['query_word'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	df_tmp["ocr_term"] = df_tmp['ocr_term'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 
 	MY_DICT = {}
 	
@@ -629,7 +630,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 		#print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 
 		########################################### QUERY PHRASES ###########################################
-		fig = plt.figure(figsize=(18,13))
+		fig = plt.figure(figsize=(15,10))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(),
 												colors=clrs,
@@ -639,7 +640,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 																				),
 												)
 		
-		#axs.axis('equal')
+		axs.axis('equal')
 		axs.set_title(f"USER: {usr}\nQuery Phrases (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())} Total: {cq})")
 		
 		ax2 = fig.add_subplot(122)
@@ -693,7 +694,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							)
 		
 		#fig.canvas.draw()
-		plt.tight_layout()
+		#plt.tight_layout()
 		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_ocr_terms.png" ), 
 								bbox_inches="tight",
 								)
