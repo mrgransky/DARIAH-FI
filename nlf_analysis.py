@@ -334,7 +334,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 								linewidth=0.5,
 								)
 			BOTTOM += np.array(v)
-
+			axs.margins(x=0.02)
 	axs.legend(	loc="upper right",
 							frameon=False,
 							title=f"Top-{Nu} Users",
