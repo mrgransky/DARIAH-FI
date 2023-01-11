@@ -612,6 +612,8 @@ def plot_user(df, fname, RES_DIR, N=50):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
+	print(f">> df: {df.shape} | df_tmp: {df_tmp.shape}")
+
 	df_tmp["query_word"] = df_tmp['query_word'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 	#df_tmp["ocr_term"] = df_tmp['ocr_term'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 
