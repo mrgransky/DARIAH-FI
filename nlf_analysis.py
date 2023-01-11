@@ -655,7 +655,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							fontsize=10,
 							)
 		plt.tight_layout()
-		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_usr_{usr}_query_phrases.png" ), 
+		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_query_phrases.png" ), 
 								bbox_inches="tight",
 								)
 		#plt.clf()
