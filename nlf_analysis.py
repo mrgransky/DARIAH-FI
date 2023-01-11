@@ -287,12 +287,12 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	for container in p.containers:
 			p.bar_label(container,
 									label_type="center",
-									padding=2,
-									size=8,
+									padding=1.5,
+									size=5,
 									color="black",
 									rotation=90,
 									bbox={"boxstyle": "round", 
-												"pad": 0.4,
+												"pad": 0.3,
 												"facecolor": "orange", 
 												"edgecolor": "black", 
 												"alpha": 0.8,
@@ -317,7 +317,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 
 	#print(MY_DICT)
 
-	WIDTH = 0.35
+	WIDTH = 0.3
 	BOTTOM = 0
 
 	fig, axs = plt.subplots()
@@ -331,7 +331,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 								color=clrs[list(MY_DICT.keys()).index(k)],
 								label=k,
 								edgecolor="#450f30",
-								linewidth=2,
+								linewidth=0.5,
 								)
 			BOTTOM += np.array(v)
 
@@ -339,15 +339,15 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 							frameon=False,
 							title=f"Top-{Nu} Users",
 							#ncol=len(MY_DICT),
-							fontsize=10,
+							fontsize=8.0,
 							)
 
-	plt.suptitle(f"Top-{Nq} Query Phrases by Top-{Nu} Users\n{fname}")
+	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
 	axs.set_ylabel('Counts')
 	axs.set_xlabel('\nQuery Phrases')
-	axs.tick_params(axis='x', rotation=90)
+	axs.tick_params(axis='x', rotation=90, fontsize=8.0)
 	axs.spines[['top', 'right']].set_visible(False)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_USR_vs_query_words.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nu}_USR_searching_top_{Nq}_query_phrases.png" ), )
 	plt.clf()
 
 def plot_ocr_term(df, fname, RES_DIR, N=20):
@@ -630,7 +630,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
 
-		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
+		#print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 
 		########################################### QUERY PHRASES ###########################################
 		fig = plt.figure(figsize=(15,10))
