@@ -653,8 +653,8 @@ def plot_user(df, fname, RES_DIR, N=50):
 							],
 							loc="center",
 							frameon=False,
-							fontsize=9,
-							ncol=2,
+							fontsize=8,
+							ncol=3,
 							)
 		#fig.canvas.draw()
 		plt.tight_layout()
@@ -667,7 +667,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 
 		########################################### OCR TERMS ###########################################
-		fig = plt.figure(figsize=(18,8))
+		fig = plt.figure(figsize=(19,10))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(),
 												colors=clrs,
@@ -690,7 +690,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							],
 							loc="center",
 							frameon=False,
-							fontsize=7,
+							fontsize=6,
 							ncol=2,
 							)
 		
