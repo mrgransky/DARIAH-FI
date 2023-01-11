@@ -628,7 +628,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 
-		fig = plt.figure(figsize=(10,8))
+		fig = plt.figure(figsize=(15,9))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(),
 												colors=clrs,
@@ -638,8 +638,8 @@ def plot_user(df, fname, RES_DIR, N=50):
 																				),
 												)
 		
-		axs.axis('equal')
-		axs.set_title(f"USER: {usr}: Unique Query Phrases: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())}")
+		#axs.axis('equal')
+		axs.set_title(f"USER: {usr}\nUnique Query Phrases: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())}\tTotal: {cq}")
 		
 		ax2 = fig.add_subplot(122)
 		ax2.axis("off")
@@ -653,6 +653,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							frameon=False,
 							fontsize=9,
 							)
+		plt.tight_layout()
 		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_usr_{usr}_query_phrases.png" ), 
 								bbox_inches="tight",
 								)
