@@ -628,30 +628,32 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 
-		fig = plt.figure(figsize=(15,9))
+
+		########################################### QUERY PHRASES ###########################################
+		fig = plt.figure(figsize=(17,10))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(),
 												colors=clrs,
-												wedgeprops=dict(width=0.7,
+												wedgeprops=dict(width=0.8,
 																				edgecolor="#2ef3",
 																				linewidth=0.2,
 																				),
 												)
 		
 		#axs.axis('equal')
-		axs.set_title(f"USER: {usr}\nUnique Query Phrases: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())}\nTotal: {cq}")
+		axs.set_title(f"USER: {usr}\nQuery Phrases (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())} Total: {cq})")
 		
 		ax2 = fig.add_subplot(122)
 		ax2.axis("off")
 
 		ax2.legend(patches,
-							[ f"{l} {v*100:.2f} %" for l, v in zip(	df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(normalize=True).index, 
+							[ f"{l} {v*100:.1f} %" for l, v in zip(	df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(normalize=True).index, 
 																											df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(normalize=True).values,
 																						)
 							],
 							loc="center",
 							frameon=False,
-							fontsize=9,
+							fontsize=10,
 							)
 		plt.tight_layout()
 		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_usr_{usr}_query_phrases.png" ), 
@@ -659,6 +661,49 @@ def plot_user(df, fname, RES_DIR, N=50):
 								)
 		#plt.clf()
 		plt.close(fig)
+		########################################### QUERY PHRASES ###########################################
+
+
+		########################################### OCR TERMS ###########################################
+		fig = plt.figure(figsize=(18,13))
+		axs = fig.add_subplot(121)
+		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(),
+												colors=clrs,
+												wedgeprops=dict(width=0.8,
+																				edgecolor="#2ef3",
+																				linewidth=0.2,
+																				),
+												)
+		
+		#axs.axis('equal')
+		axs.set_title(f"USER: {usr}\nOCR Terms (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].ocr_term.value_counts())} Total: {c_ocr})")
+		
+		ax2 = fig.add_subplot(122)
+		ax2.axis("off")
+
+		ax2.legend(patches,
+							[ f"{l} {v*100:.1f} %" for l, v in zip(	df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(normalize=True).index, 
+																											df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(normalize=True).values,
+																						)
+							],
+							loc="center",
+							frameon=False,
+							fontsize=10,
+							)
+		plt.tight_layout()
+		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_ocr_terms.png" ), 
+								bbox_inches="tight",
+								)
+		#plt.clf()
+		plt.close(fig)
+		########################################### OCR TERMS ###########################################
+
+
+
+
+
+
+
 
 	MY_DICT["OCR_Terms"] = lst_ocr
 	MY_DICT["None"] = lst_nan
