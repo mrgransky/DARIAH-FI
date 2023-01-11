@@ -666,7 +666,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 
 		########################################### OCR TERMS ###########################################
-		fig = plt.figure(figsize=(15,8))
+		fig = plt.figure(figsize=(18,8))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(),
 												colors=clrs,
