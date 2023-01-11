@@ -626,8 +626,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
 
-		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
-
+		#print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 
 		########################################### QUERY PHRASES ###########################################
 		fig = plt.figure(figsize=(17,10))
