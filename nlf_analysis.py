@@ -345,7 +345,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
 	axs.set_ylabel('Counts')
 	axs.set_xlabel('\nQuery Phrases')
-	axs.tick_params(axis='x', rotation=90, fontsize=8.0)
+	axs.tick_params(axis='x', rotation=90, labelsize=8.0)
 	axs.spines[['top', 'right']].set_visible(False)
 	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nu}_USR_searching_top_{Nq}_query_phrases.png" ), )
 	plt.clf()
