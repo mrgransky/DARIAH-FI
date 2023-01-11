@@ -639,7 +639,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 												)
 		
 		#axs.axis('equal')
-		axs.set_title(f"USER: {usr}\nUnique Query Phrases: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())}\tTotal: {cq}")
+		axs.set_title(f"USER: {usr}\nUnique Query Phrases: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())}\nTotal: {cq}")
 		
 		ax2 = fig.add_subplot(122)
 		ax2.axis("off")
