@@ -627,7 +627,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 		lst_ocr.append(c_ocr)
 		lst_nan.append(abs(c_usr - (cq+c_ocr)))
 
-		#print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
+		print(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts())
 
 		########################################### QUERY PHRASES ###########################################
 		fig = plt.figure(figsize=(15,10))
@@ -667,7 +667,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 
 		########################################### OCR TERMS ###########################################
-		fig = plt.figure(figsize=(20,10))
+		fig = plt.figure(figsize=(20,8))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(),
 												colors=clrs,
