@@ -779,7 +779,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 	p.set_xticklabels(df_tmp["user_ip"].value_counts()[:N].index, size=11)
 
-	p.axes.set_title(f"Top-{N} Users | Unique: {len(df_tmp["user_ip"].value_counts())}\n{fname}",)
+	p.axes.set_title(f"Top-{N} Users | Unique: {len(df_tmp['user_ip'].value_counts())}\n{fname}",)
 	plt.ylabel("Presence",)
 	plt.xlabel("\nUser",)
 	plt.xticks(rotation=90)
