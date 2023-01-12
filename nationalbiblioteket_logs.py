@@ -36,9 +36,10 @@ def single_query(file_="", ts=None, browser_show=False):
 
 	print(f">> Generating a sample query...")
 	#qlink = int(np.random.randint(0, high=df.shape[0]+1, size=1))
-	qlink = np.random.choice(df.shape[0]+1)
+	#qlink = np.random.choice(df.shape[0]+1)
 
-	#qlink = 43786 # with quey word!
+	#qlink = 74399 # with quey word!
+	qlink = 2500 # with quey word!
 	########### file Q=6 ########### 
 	#qlink = 1368231 # does not query words but results are given!
 	#qlink = 91218 # does not query words
@@ -87,22 +88,23 @@ def single_query(file_="", ts=None, browser_show=False):
 
 	# check for queries -> REST API:
 	if parameters.get("query"):
-		print(parameters.get("query"))
+		print(f">> QU: {parameters.get('query')}")
 		my_query_word = ",".join( parameters.get("query") )
-		print(my_query_word)
+		#print(my_query_word)
 		df.loc[qlink, "query_word"] = my_query_word
 
-		run_bash_script(param=parameters)
+		#run_bash_script(param=parameters)
 
 		#print("#"*65)
 		#print(f"\tEXECUTE BASH REST API for {my_query_word}")
 		#print("#"*65)
+		df.loc[qlink, "search_results"] = get_all_search_details(single_url)
 
 	# term(ONLY IF OCR page):
 	if parameters.get("term") and parameters.get("page"):
 		print(parameters.get("term"))
 		my_ocr_term = ",".join(parameters.get("term"))
-		print(my_ocr_term)
+		print(f"Saving OCR terms: {my_ocr_term}")
 		df.loc[qlink, "ocr_term"] = my_ocr_term
 		df.loc[qlink, "ocr_page"] = ",".join(parameters.get("page"))
 
@@ -231,7 +233,9 @@ def all_queries(file_="", ts=None):
 	print("-"*150)
 	print(df.tail(30))
 	"""
+	################################################
 	#save_(df, infile=file_, saving_path=dfs_path)
+	################################################
 
 def get_query_log(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -257,11 +261,11 @@ def run():
 							#ts=["23:52:00", "23:59:59"],
 							)
 	"""
-
 	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["23:30:00", "23:35:59"],
+							ts=["23:30:00", "23:35:59"],
 							)
+	
 	print(f"\t\tCOMPLETED!")
 
 def run_all():

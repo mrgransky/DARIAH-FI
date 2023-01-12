@@ -2,6 +2,7 @@ import os
 import sys
 import requests
 import json
+import logging
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
@@ -19,7 +20,11 @@ from utils import *
 def get_all_search_details(URL):
 	SEARCH_RESULTS = {}
 	options = Options()
-	options.add_argument("--remote-debugging-port=9222"),
+	options.add_argument("--remote-debugging-port=9222")
+	options.add_argument("--disable-extensions")
+	options.addArguments("--no-sandbox")
+	options.add_experimental_option("excludeSwitches", ["enable-automation"])
+	options.add_experimental_option('useAutomationExtension', False)
 	options.headless = True
 	
 	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -29,10 +34,15 @@ def get_all_search_details(URL):
 	#print(driver.page_source)
 	try:
 		#medias = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'media')))
-		medias = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'result-row')))
-	except:
-		print(f">> selenium TIMEOUT exception: {URL}")
+		medias = WebDriverWait(driver, 30).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'result-row')))
+	except Exception as e:
+		print(f">> {type(e).__name__} line {e.__traceback__.tb_lineno} of {__file__}: {e.args}")
+		#logging.error(e, exc_info=True)
 		return
+	except:
+		print(f">> General Exception: {URL}")
+		return
+
 	#print(f">> Found {len(medias)} search results!")
 	#print(medias)
 	#print("#"*180)

@@ -209,7 +209,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# with pandas:
 	df.timestamp = pd.to_datetime(df.timestamp)
 		
-	print(f">> Raw DF: {df.shape}")
+	#print(f">> Raw DF: {df.shape}")
 	#print(df.isna().sum())
 	#print("-"*50)
 
@@ -227,13 +227,13 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	#print(f">> Dropping None for referer & user_ip:")
 	df = df.dropna(subset=['user_ip', 'referer'])
-	print(f">> After droping None of user_ip & referer: {df.shape}")
-
+	#print(f">> After droping None of user_ip & referer: {df.shape}")
+	"""
 	print(f">> Before Duplicate removal:")
 	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
 	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
 	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
-	
+	"""
 	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]

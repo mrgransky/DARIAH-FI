@@ -279,23 +279,23 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 									linewidth=1,
 									)
 
-	p.set_xticklabels(df_cleaned["query_word"].value_counts()[:Nq].index, size=11)
-	p.axes.set_title(	f"Top-{Nq} Query Phrases (total: {df_cleaned.shape[0]})\n{fname}")
+	p.set_xticklabels(df_cleaned["query_word"].value_counts()[:Nq].index, size=10)
+	p.axes.set_title(	f"Top-{Nq} Query Phrases (unique: {len(df_cleaned['query_word'].value_counts())})\n{fname}")
 	plt.ylabel("Counts", )
 	plt.xlabel("Query Phrase",)
 	plt.xticks(rotation=90)
 	for container in p.containers:
 			p.bar_label(container,
 									label_type="center",
-									padding=1.5,
-									size=5,
+									padding=3.0,
+									size=10,
 									color="black",
 									rotation=90,
 									bbox={"boxstyle": "round", 
-												"pad": 0.3,
+												"pad": 0.4,
 												"facecolor": "orange", 
 												"edgecolor": "black", 
-												"alpha": 0.8,
+												"alpha": 1.0,
 												}
 									)
 
@@ -637,7 +637,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts(),
 												colors=clrs,
-												wedgeprops=dict(width=0.8,
+												wedgeprops=dict(width=0.6,
 																				edgecolor="#2ef3",
 																				linewidth=0.2,
 																				),
@@ -787,14 +787,14 @@ def plot_user(df, fname, RES_DIR, N=50):
 			p.bar_label(container,
 									label_type="center",
 									padding=3,
-									size=8,
+									size=10,
 									color="black",
 									rotation=90,
 									bbox={"boxstyle": "round", 
 												"pad": 0.4, 
 												"facecolor": "orange", 
 												"edgecolor": "black", 
-												"alpha": 0.7,
+												"alpha": 0.9,
 												}
 									)
 
@@ -997,29 +997,29 @@ def main():
 	"""
 	
 	# missing features:
-	#plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# 24h activity:
-	#plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users:
 	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# language
-	#plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# doc_type
-	#plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# publication places
-	#plot_publication_places(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_publication_places(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# users vs document_type:
-	#plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 	# query words & terms:
 	plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	#plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')
