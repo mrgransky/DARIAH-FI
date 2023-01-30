@@ -64,7 +64,7 @@ def plot_heatmap(mtrx, name_="user-based"):
 	ax.xaxis.tick_top()
 	ax.tick_params(axis='x', labelrotation=90, labelsize=10.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=10.0)
-	plt.suptitle(hm_title)
+	plt.suptitle(f"{hm_title}\n{mtrx.shape[0]} Unique Elements")
 	#print(os.path.join( RES_DIR, f'{name_}_similarity_heatmap.png' ))
 	plt.savefig(os.path.join( RES_DIR, f"{name_}_similarity_heatmap.png" ), bbox_inches='tight')
 	plt.clf()
@@ -196,7 +196,7 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 	print(f">> Getting {method} similarity...")
 
 	similarity = cosine_similarity(sprs_mtx)
-	plot_heatmap(mtrx=similarity, name_=method)
+	plot_heatmap(mtrx=similarity.astype(np.float32), name_=method)
 
 	sim_df = pd.DataFrame(similarity,
 												index=df[method_dict.get(method)].unique(),
