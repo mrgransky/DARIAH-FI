@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import Colormap as cm
+
 import seaborn as sns
 
 import matplotlib
@@ -16,47 +19,44 @@ args = parser.parse_args()
 # how to run:
 # python RecSys.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-def plot_heatmap(mtrx, name_="user-based"):
-	sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
-	params = {
-		'figure.figsize':	(sz*1.7, sz*1.0),  # W, H
+sz=15
+params = {
+		'figure.figsize':	(sz*1.0, sz*0.7),  # W, H
 		'figure.dpi':		200,
 		'figure.autolayout': True,
 		#'figure.constrained_layout.use': True,
 		'legend.fontsize':	sz*0.8,
-		'axes.labelsize':	sz*0.2,
-		'axes.titlesize':	sz*0.2,
-		'xtick.labelsize':	sz*0.5,
-		'ytick.labelsize':	sz*0.5,
+		'axes.labelsize':	sz*1.0,
+		'axes.titlesize':	sz*1.0,
+		'xtick.labelsize':	sz*0.8,
+		'ytick.labelsize':	sz*0.8,
 		'lines.linewidth' :	sz*0.1,
 		'lines.markersize':	sz*0.8,
 		'font.size':		sz*1.0,
 		'font.family':		"serif",
 	}
-	pylab.rcParams.update(params)
+pylab.rcParams.update(params)
 
-	sns.set(font_scale=1.1,
-					style="white", 
-					palette='deep', 
-					font="serif", 
-					color_codes=True,
-					)
-
+def plot_heatmap(mtrx, name_="user-based"):
+	st_t = time.time()
 	hm_title = f"{name_} similarity heatmap".capitalize()
-	print(f"{hm_title.center(60,'*')}")
-	print(type(mtrx), mtrx.shape)
+	print(f"{hm_title.center(60,'-')}")
+	print(type(mtrx), mtrx.shape, mtrx.nbytes)
 	RES_DIR = make_result_dir(infile=args.inputDF)
 
 	f, ax = plt.subplots()
-	ax = sns.heatmap(mtrx,
-									cmap=sns.color_palette("Greys"),
-									cbar_kws={'label': 'Similarity', 
-														'ticks': [0.0, 0.5, 1.0],
-														'pad': 0.02,
-														'shrink': 0.5,
-														"orientation": "horizontal",
-													},
-									)
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes('right', size='5%', pad=0.05)
+	im = ax.imshow(mtrx, 
+								cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
+								)
+	cbar = ax.figure.colorbar(im,
+														ax=ax,
+														label="Similarity",
+														orientation="vertical",
+														cax=cax,
+														ticks=[0.0, 0.5, 1.0],
+														)
 
 	ax.set_ylabel(f"Title-Issue-Page\n")
 	#ax.set_yticks([])
@@ -69,6 +69,7 @@ def plot_heatmap(mtrx, name_="user-based"):
 	plt.savefig(os.path.join( RES_DIR, f"{name_}_similarity_heatmap.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
+	print(f"{f'Elapsed_t: {time.time()-st_t:.3f} sec'.center(60, '-')}")
 
 def analyze_search_results(df):
 	print(f">> Analysing Search Results DF: {df.shape}")

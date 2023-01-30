@@ -156,6 +156,9 @@ def plot_missing_features(df, RES_DIR):
 			cmap=sns.color_palette("Greys"),
 			cbar_kws={'label': 'NaN (Missing Data)', 
 								'ticks': [0.0, 0.5, 1.0]},
+								'pad': 0.02,
+								'shrink': 0.5,
+								'orientation': 'horizontal',
 			)
 
 	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
