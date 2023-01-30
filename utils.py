@@ -11,7 +11,6 @@ import glob
 import webbrowser
 import string
 import time
-import faiss
 
 import numpy as np
 import pandas as pd
@@ -30,42 +29,6 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
-
-def dist_faiss(Ref, Query, use_gpu=False):
-	tot_mem = torch.cuda.get_device_properties(0).total_memory
-	print('TOTAL GPU MEM: {} | Rf nbytes: {} | Qu nbytes: {}'.format(tot_mem, Ref.nbytes, Query.nbytes))
-
-	if tot_mem > (Ref.nbytes + Query.nbytes):
-		print ('\n{:>50}\n'.format('Using Faiss GPU'))
-		use_gpu = True
-
-	k, d = Ref.shape
-	if use_gpu:
-		print ('\n{:>50}\n'.format('GPU Index'))
-		res = faiss.StandardGpuResources()
-		flat_config = faiss.GpuIndexFlatConfig()
-		flat_config.device = 0
-		index = faiss.GpuIndexFlatL2(res, d, flat_config)
-	else:
-		print ('\n{:>50}\n'.format('CPU Index'))
-		index = faiss.IndexFlatL2(d)
-
-	print('>> Index trained? {}'.format(index.is_trained))
-	if index.is_trained == False:
-		print ('\n{:>30}\n'.format('Training'))
-		s = time.time()
-		index.reset()
-		index.train(Ref)
-		e = time.time()
-		print("training time: {} sec".format(e-s))
-
-	print ('\n{:>50}\n'.format('Adding'))
-	index.add(Ref)
-	print(index.ntotal)
-	
-	print ('\n{:>50}\n'.format('Searching'))
-	D, I = index.search(Query, 10) # top 10, gives err for k >= 1024
-	return I
 
 def rest_api_sof(params={}):	
 	params = {'query': 						["Rusanen"], 
