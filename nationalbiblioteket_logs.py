@@ -1,23 +1,13 @@
-import os
-import re
-import glob
-import webbrowser
-import string
-import time
-import argparse
-
-from natsort import natsorted
-import numpy as np
-import pandas as pd
-
 from url_scraping import *
 from utils import *
 
 # how to run in background:
-# nohup python -u nationalbiblioteket_logs.py --query 0 > log_q0.out &
+# nohup python -u nationalbiblioteket_logs.py --query 0 --saveDF True > logNEW_q0.out &
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('--query', default=0, type=int) # smallest
+parser.add_argument('--saveDF', default=False, type=bool, help='Save DataFrame in directory | Def: False')
+
 args = parser.parse_args()
 
 def single_query(file_="", ts=None, browser_show=False):
@@ -27,7 +17,7 @@ def single_query(file_="", ts=None, browser_show=False):
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
 
 	elapsed_t = time.time() - st_t
-	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
+	print(f">> Elapsed_t: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
 	print("-"*100)
 	
 	#print(df.head(30))
@@ -98,7 +88,7 @@ def single_query(file_="", ts=None, browser_show=False):
 		#print("#"*65)
 		#print(f"\tEXECUTE BASH REST API for {my_query_word}")
 		#print("#"*65)
-		df.loc[qlink, "search_results"] = get_all_search_details(single_url)
+		#df.loc[qlink, "search_results"] = get_all_search_details(single_url)
 
 	# term(ONLY IF OCR page):
 	if parameters.get("term") and parameters.get("page"):
@@ -116,7 +106,7 @@ def single_query(file_="", ts=None, browser_show=False):
 			print(f"\t\t\tYES >> loading...\n")
 			df.loc[qlink, "ocr_text"] = text_response.text
 	
-	print(f"\n\n>> Parsing Completed!\tElapsed time: {time.time()-s:.2f} sec\tFINAL df: {df.shape}")
+	print(f"\n\n>> Parsing Completed!\tElapsed time: {time.time()-s:.2f} s\tFINAL df: {df.shape}")
 	print(list(df.columns))
 	print("-"*150)
 
@@ -136,9 +126,9 @@ def all_queries(file_="", ts=None):
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
 
 	elapsed_t = time.time() - st_t
-	print(f">> Elapsed time: {elapsed_t:.2f} sec\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
+	print(f">> Elapsed_t: {elapsed_t:.2f} s\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
+	print("-"*110)
 
-	#print("-"*100)
 	#print(df.isna().sum())
 	#print("-"*50)
 
@@ -147,43 +137,51 @@ def all_queries(file_="", ts=None):
 
 	def analyze_(df):
 		raw_url = df.referer
-		#print(f"\n>> RAW URL: {raw_url}")
-
+		#print(f"RAW URL: {raw_url}")
+		"""
+		print(f"RAW URL: {raw_url}")
+		if 'search?query=' in raw_url:
+			print(f"\tQuery found in raw url...")
+		"""
 		r = checking_(raw_url)
 		if r is None:
 			return df
 
 		in_url = r.url
-		#print(f"\tUpdated URL: {in_url}")
-
+		#print(f"\tUpdated: {in_url}")
+		"""
+		print(f"\tUpdated URL: {in_url}")
+		if 'search?query=' in in_url:
+			print(f"\tQuery found in updated url...")
+		"""
 		parsed_url, parameters = get_parsed_url_parameters(in_url)
 		#print(f"Parsed: {parsed_url}")
-		#print(f"Parameters: {type(parameters)}: {parameters}")
+		#print(f"Parameters: {parameters}")
 
 		#return 
 
-		if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
-		if parameters.get("qMeta"): df["has_metadata"] = ",".join(parameters.get("qMeta"))
-		if parameters.get("hasIllustrations"): df["has_illustration"] = ",".join(parameters.get("hasIllustrations"))
-		if parameters.get("showUnauthorizedResults"): df["show_unauthorized_results"] = ",".join(parameters.get("showUnauthorizedResults"))
-		if parameters.get("pages"): df["pages"] = ",".join(parameters.get("pages"))
-		if parameters.get("importTime"): df["import_time"] = ",".join(parameters.get("importTime"))
-		if parameters.get("collection"): df["collection"] = ",".join(parameters.get("collection"))
-		if parameters.get("author"): df["author"] = ",".join(parameters.get("author"))
-		if parameters.get("tag"): df["keyword"] = ",".join(parameters.get("tag"))
-		if parameters.get("publicationPlace"): df["publication_place"] = ",".join(parameters.get("publicationPlace"))
-		if parameters.get("lang"): df["language"] = ",".join(parameters.get("lang"))
-		if parameters.get("formats"): df["document_type"] = ",".join(parameters.get("formats"))
-		if parameters.get("showLastPage"): df["show_last_page"] = ",".join(parameters.get("showLastPage"))
-		if parameters.get("orderBy"): df["order_by"] = ",".join(parameters.get("orderBy"))
-		if parameters.get("publisher"): df["publisher"] = ",".join(parameters.get("publisher"))
-		if parameters.get("startDate"): df["start_date"] = ",".join(parameters.get("startDate"))
-		if parameters.get("endDate"): df["end_date"] = ",".join(parameters.get("endDate"))
-		if parameters.get("requireAllKeywords"): df["require_all_keywords"] = ",".join(parameters.get("requireAllKeywords"))
-		if parameters.get("resultType"): df["result_type"] = ",".join(parameters.get("resultType"))
-		
-		# web scraping for 20 search results: 
+		# Query Extraction for up to 20 search results: 
 		if parameters.get("query"):
+			if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
+			if parameters.get("qMeta"): df["has_metadata"] = ",".join(parameters.get("qMeta"))
+			if parameters.get("hasIllustrations"): df["has_illustration"] = ",".join(parameters.get("hasIllustrations"))
+			if parameters.get("showUnauthorizedResults"): df["show_unauthorized_results"] = ",".join(parameters.get("showUnauthorizedResults"))
+			if parameters.get("pages"): df["pages"] = ",".join(parameters.get("pages"))
+			if parameters.get("importTime"): df["import_time"] = ",".join(parameters.get("importTime"))
+			if parameters.get("collection"): df["collection"] = ",".join(parameters.get("collection"))
+			if parameters.get("author"): df["author"] = ",".join(parameters.get("author"))
+			if parameters.get("tag"): df["keyword"] = ",".join(parameters.get("tag"))
+			if parameters.get("publicationPlace"): df["publication_place"] = ",".join(parameters.get("publicationPlace"))
+			if parameters.get("lang"): df["language"] = ",".join(parameters.get("lang"))
+			if parameters.get("formats"): df["document_type"] = ",".join(parameters.get("formats"))
+			if parameters.get("showLastPage"): df["show_last_page"] = ",".join(parameters.get("showLastPage"))
+			if parameters.get("orderBy"): df["order_by"] = ",".join(parameters.get("orderBy"))
+			if parameters.get("publisher"): df["publisher"] = ",".join(parameters.get("publisher"))
+			if parameters.get("startDate"): df["start_date"] = ",".join(parameters.get("startDate"))
+			if parameters.get("endDate"): df["end_date"] = ",".join(parameters.get("endDate"))
+			if parameters.get("requireAllKeywords"): df["require_all_keywords"] = ",".join(parameters.get("requireAllKeywords"))
+			if parameters.get("resultType"): df["result_type"] = ",".join(parameters.get("resultType"))
+		
 			#print(f"\nurl: {in_url}")
 			my_query_word = ",".join(parameters.get("query"))
 			df["query_word"] = my_query_word
@@ -195,16 +193,17 @@ def all_queries(file_="", ts=None):
 			#print()
 			#df["search_results"] = rest_api(parameters)
 
-
 			# remove json_results
 
 			# get 20 search results using web scraping:
 			df["search_results"] = get_all_search_details(in_url)
 		
+
 		# OCR extraction:
+		"""
 		if parameters.get("term") and parameters.get("page"):
 			df["ocr_term"] = ",".join(parameters.get("term"))
-			df["ocr_page"] = ",".join(parameters.get("page"))
+			df["ocr_page"] = parameters.get("page")
 			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 			#print(f">> page-X.txt available?\t{txt_pg_url}\t")		
 			text_response = checking_(txt_pg_url)
@@ -212,30 +211,44 @@ def all_queries(file_="", ts=None):
 				#print(f"\t\t\tYES >> loading...\n")
 				#return text_response.text
 				df["ocr_text"] = text_response.text
-		
+		"""
+		if parameters.get("term"):
+			ttl, dtyp, issue, publisher, pub_date, pub_place, lang, trm, hw, pg, txt = scrap_ocr_page_content(in_url)
+			df["nwp_content_title"] = ttl
+			df["document_type"] = dtyp
+			df["nwp_content_issue"] = issue
+			df["publisher"] = publisher
+			df["nwp_content_publication_date"] = pub_date
+			df["publication_place"] = pub_place
+			df["language"] = lang
+			df["nwp_content_parsed_term"] = trm
+			df["nwp_content_highlighted_term"] = hw
+			df["nwp_content_page"] = pg
+			df["nwp_content_text"] = txt
+
+		#print("#"*200)
 		return df
 	
 	s = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
 	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )	
-	print(f">> Parsing Completed!\tElapsed time: {time.time()-s:.2f} sec\tFINAL df: {df.shape}")
+	print(f"<<>> Parsing Completed!\tElapsed_t: {time.time()-s:.2f} s\tFINAL df: {df.shape}")
 	print("*"*205)
-	"""
-	print("#"*150)
+	
 	print(df.info(verbose=True, memory_usage="deep"))
-	print("#"*150)
+	print("<>"*80)
 	
 	cols = list(df.columns)
 	print(len(cols), cols)
+	"""
 	print("#"*150)
-
 	print(df.head(30))
 	print("-"*150)
 	print(df.tail(30))
 	"""
-	################################################
-	#save_(df, infile=file_, saving_path=dfs_path)
-	################################################
+	
+	if args.saveDF:
+		save_(df, infile=file_, saving_path=dfs_path)
 
 def get_query_log(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -263,7 +276,7 @@ def run():
 	"""
 	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							ts=["23:30:00", "23:35:59"],
+							#ts=["02:50:00", "02:59:59"],
 							)
 	
 	print(f"\t\tCOMPLETED!")
@@ -274,8 +287,9 @@ def run_all():
 
 if __name__ == '__main__':
 	os.system('clear')
-	print(f">> Started at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+	print(f">> Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 	run()
 	#rest_api()
+	#rest_api_sof()
 	#run_all()
-	print(f">> Done at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+	print(f">> Done: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -1,12 +1,31 @@
-
 #!/bin/bash
 
+: '
+################## 1) Running via Bash Script & hardcoding input arguments ##################
 myQUERY="Rusanen"
 myORDERBY="DATE_DESC"
 myFORMATS='["NEWSPAPER"]'
 myFUZZY="false"
 myPubPlace='["Iisalmi", "Kuopio"]'
 myLANG='["FIN"]'
+################## 1) Running via Bash Script & hardcoding input arguments ##################
+# Result: OK! a json file with retreived expected information
+'
+
+#: '
+################## 2) Running from python script with input arguments ##################
+for ARGUMENT in "$@"
+do
+	#echo "$ARGUMENT"
+	 KEY=$(echo $ARGUMENT | cut -f1 -d=)
+	 KEY_LENGTH=${#KEY}
+	 VALUE="${ARGUMENT:$KEY_LENGTH+1}"
+	 export "$KEY"="$VALUE"
+done
+echo $# "ARGS:" $*
+################## 2) Running from python script with input arguments ##################
+# Result: Error!!
+#'
 
 out_file_name="newspaper_info_query_${myQUERY// /_}.json"
 
@@ -21,29 +40,11 @@ curl 'https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offse
 --compressed \
 --output $out_file_name \
 -d @- <<EOF
-{	"authors":[],
-	"collections":[],
-	"districts":[],
-	"endDate":null,
-	"query":"$myQUERY",
+{	"query":"$myQUERY",
 	"languages":$myLANG,
 	"formats":$myFORMATS,
 	"orderBy":"$myORDERBY",
 	"fuzzy":$myFUZZY,
-	"publicationPlaces": $myPubPlace,
-	"hasIllustrations":false,
-	"importStartDate":null,
-	"importTime":"ANY",
-	"includeUnauthorizedResults":false,
-	"pages":"",
-	"publications": [],
-	"publishers":[],
-	"queryTargetsMetadata":false,
-	"queryTargetsOcrText":true,
-	"requireAllKeywords":true,
-	"searchForBindings":false,
-	"showLastPage":false,
-	"startDate":null,
-	"tags":[]
+	"publicationPlaces": $myPubPlace
 }
 EOF

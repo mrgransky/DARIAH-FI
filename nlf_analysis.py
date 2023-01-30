@@ -22,8 +22,11 @@ import matplotlib
 matplotlib.use("Agg")
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Data Analysis')
-parser.add_argument('--query', default=0, type=int) # smallest
+parser.add_argument('--inputDF', default="/home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str)
 args = parser.parse_args()
+
+# how to run:
+# python nlf_analysis.py --inputDF /home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
 sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
 params = {
@@ -112,11 +115,19 @@ def get_result_directory(QUERY=0):
 
 	query_dataframe_file = all_files[QUERY] 
 	res_dir = os.path.join(rpath, query_dataframe_file)
-
 	return res_dir
 
-def plot_missing_features(df, fname, RES_DIR):
-	print(f">> Visualizing missing data of {fname} ...")
+def make_result_dir(infile=""):
+	f = infile.split("/")[-1]
+	#print(f)
+	f = f[:f.rfind(".log")]
+	#print(f)
+	res_dir = os.path.join(rpath, f)
+	make_folder(folder_name=res_dir)
+	return res_dir
+
+def plot_missing_features(df,RES_DIR):
+	print(f">> Visualizing missing data of  ...")
 
 	print(f">>>>> Barplot >>>>>")
 	g = sns.displot(
@@ -143,7 +154,7 @@ def plot_missing_features(df, fname, RES_DIR):
 										)
 			break; # only annotate the first!
 		axb.margins(y=0.3)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_missing_barplot.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"missing_barplot.png" ), )
 	plt.clf()
 	plt.close()
 
@@ -160,12 +171,13 @@ def plot_missing_features(df, fname, RES_DIR):
 	ax.set_yticks([])
 	ax.xaxis.tick_top()
 	ax.tick_params(axis='x', labelrotation=90)
-	plt.suptitle(f"Missing Data (NaN)\n{fname}")
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_missing_heatmap.png" ), )
+	plt.suptitle(f"Missing Data (NaN)")
+	print(os.path.join( RES_DIR, f'missing_heatmap.png' ))
+	plt.savefig(os.path.join( RES_DIR, f"missing_heatmap.png" ), )
 	plt.clf()
 	plt.close(f)
 
-def plot_language(df, fname, RES_DIR, N=20):
+def plot_language(df,RES_DIR, N=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["language"]).reset_index()
 
 	df_unq = df_cleaned.assign(language=df_cleaned['language'].str.split(',')).explode('language')
@@ -198,7 +210,7 @@ def plot_language(df, fname, RES_DIR, N=20):
 						frameon=False,
 						fontsize=8,
 						)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_language.png" ), 
+	plt.savefig(os.path.join( RES_DIR, f"pie_chart_RAW_language.png" ), 
 							bbox_inches="tight",
 							)
 	plt.clf()
@@ -229,13 +241,15 @@ def plot_language(df, fname, RES_DIR, N=20):
 						frameon=False,
 						fontsize=9,
 						)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_language.png" ), 
+	plt.savefig(os.path.join( RES_DIR, f"pie_chart_unique_language.png" ), 
 							bbox_inches="tight",
 							)
 	plt.clf()
 	plt.close(fig)
 
-def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
+def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
+	print(f">> Ploting query phrases | df: {df.shape}")
+
 	#df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	df_cleaned = df.copy()
 	"""
@@ -268,10 +282,10 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"Cloud Distribution\n{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases (total: {df_cleaned['query_word'].shape[0]})\n{fname}", color="k")
+	plt.title(f"Cloud Distribution\n{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases (total: {df_cleaned['query_word'].notnull().sum()})", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_query_words_cloud.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"query_phrases_cloud.png" ), )
 	plt.clf()
 	plt.close()
 
@@ -285,7 +299,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 									)
 
 	p.set_xticklabels(df_cleaned["query_word"].value_counts()[:Nq].index, size=10)
-	p.axes.set_title(	f"Top-{Nq} Query Phrases (unique: {len(df_cleaned['query_word'].value_counts())})\n{fname}")
+	p.axes.set_title(	f"Top-{Nq} Query Phrases (unique: {len(df_cleaned['query_word'].value_counts())})")
 	plt.ylabel("Counts", )
 	plt.xlabel("Query Phrase",)
 	plt.xticks(rotation=90)
@@ -305,7 +319,7 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 									)
 
 	sns.despine(left=True, bottom=True)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nq}_query_words.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top_{Nq}_query_phrases.png" ), )
 	plt.clf()
 	plt.close()
 
@@ -347,30 +361,18 @@ def plot_query_phrases(df, fname, RES_DIR, Nq=100, Nu=25):
 							fontsize=8.0,
 							)
 
-	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users\n{fname}")
+	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users")
 	axs.set_ylabel('Counts')
 	axs.set_xlabel('\nQuery Phrases')
 	axs.tick_params(axis='x', rotation=90, labelsize=10.0)
 	axs.spines[['top', 'right']].set_visible(False)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{Nu}_USR_searching_top_{Nq}_query_phrases.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top_{Nu}_USR_searching_top_{Nq}_query_phrases.png" ), )
 	plt.clf()
 	plt.close(fig)
 
-def plot_ocr_term(df, fname, RES_DIR, N=20):
-	unq = df["ocr_term"].value_counts()
-	print(f">> ocr_term:\n{unq}")
-
-	df_tmp = df.dropna(axis=0, how="any", subset=["ocr_term"]).reset_index(drop=True)
-
-	ocr_u, ocr_c = np.unique(df_tmp["ocr_term"], return_counts=True)
-	#print(ocr_u.shape[0], ocr_u, ocr_c)
-
-	print(f"\n>> Sorting Top {N} OCR terms / {df_tmp.shape[0]} | {fname}")
-	ocr_c_sorted_idx = np.argsort(-ocr_c)
-	ocr_ung = ocr_u[ocr_c_sorted_idx][:N]
-	ocr_counts = ocr_c[ocr_c_sorted_idx][:N]
-	#print(ocr_ung.shape[0], ocr_ung, ocr_counts)
-
+def plot_ocr_term(df,RES_DIR, N=20):
+	print(f">> Ploting OCR terms | df: {df.shape}")
+	df_cleaned = df.copy()
 	wordcloud = WordCloud(width=1400, 
 												height=550, 
 												background_color="black",
@@ -378,20 +380,24 @@ def plot_ocr_term(df, fname, RES_DIR, N=20):
 												max_font_size=80,
 												stopwords=None,
 												collocations=False,
-												).generate_from_frequencies(dict(zip(ocr_u, ocr_c)))
+												).generate_from_frequencies(dict(zip(	df_cleaned["ocr_term"].value_counts().index, 
+																															df_cleaned["ocr_term"].value_counts().values,
+																															)
+																												)
+																										)
 
 	fig = plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(ocr_u)} unique OCR Terms Cloud Distribution (total: {df_tmp['ocr_term'].shape[0]})\n{fname}", color="k")
+	plt.title(f"Cloud Distribution\n{len(df_cleaned['ocr_term'].value_counts())} unique OCR Terms (total: {df_cleaned['ocr_term'].notnull().sum()})", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_OCR_terms_cloud.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"OCR_terms_cloud.png" ), )
 	plt.clf()
 	plt.close(fig)
 
-def plot_publication_places(df, fname, RES_DIR):
+def plot_publication_places(df,RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["publication_place"]).reset_index()
 
 	df_unq = df_cleaned.assign(publication_place=df_cleaned['publication_place'].str.split(',')).explode('publication_place')
@@ -422,7 +428,7 @@ def plot_publication_places(df, fname, RES_DIR):
 						frameon=False,
 						fontsize=5,
 						)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_pub_places.png" ), 
+	plt.savefig(os.path.join( RES_DIR, f"pie_chart_RAW_pub_places.png" ), 
 							bbox_inches="tight",
 							)
 	plt.clf()
@@ -454,7 +460,7 @@ def plot_publication_places(df, fname, RES_DIR):
 						frameon=False,
 						fontsize=9,
 						)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_pub_places.png" ), 
+	plt.savefig(os.path.join( RES_DIR, f"pie_chart_unique_pub_places.png" ), 
 							bbox_inches="tight",
 							)
 	plt.clf()
@@ -472,11 +478,11 @@ def plot_publication_places(df, fname, RES_DIR):
 	fig = plt.figure(figsize=(10, 4))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(df_unq['publication_place'].value_counts())} Unique Publication Places Cloud\n{fname}", color="k")
+	plt.title(f"{len(df_unq['publication_place'].value_counts())} Unique Publication Places Cloud", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pub_places_cloud.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"pub_places_cloud.png" ), )
 	plt.clf()
 	plt.close(fig)
 
@@ -491,7 +497,7 @@ def plot_publication_places(df, fname, RES_DIR):
 								kind='bar',
 								xlabel="Unique Publication Places", 
 								ylabel="Count",
-								title=f"{df_count_dt.shape[0]} Unique Publication Places | USERS | QUERY WORDS | OCR TERMS\n{fname}",
+								title=f"{df_count_dt.shape[0]} Unique Publication Places | USERS | QUERY WORDS | OCR TERMS",
 								color=clrs,
 								alpha=0.6,
 								)
@@ -503,11 +509,11 @@ def plot_publication_places(df, fname, RES_DIR):
 							ncol=df_count_dt.shape[0], 
 							)
 
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_pub_places_usr_qu_ocr.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"unq_pub_places_usr_qu_ocr.png" ), )
 	plt.clf()
 	plt.close(fig)
 
-def plot_doc_type(df, fname, RES_DIR):
+def plot_doc_type(df,RES_DIR):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["document_type"]).reset_index()
 
 	df_unq = df_cleaned.assign(document_type=df_cleaned['document_type'].str.split(',')).explode('document_type')
@@ -538,7 +544,7 @@ def plot_doc_type(df, fname, RES_DIR):
 						frameon=False,
 						fontsize=5,
 						)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_RAW_document_type.png" ), 
+	plt.savefig(os.path.join( RES_DIR, f"pie_chart_RAW_document_type.png" ), 
 							bbox_inches="tight",
 							)
 	plt.clf()
@@ -570,7 +576,7 @@ def plot_doc_type(df, fname, RES_DIR):
 						frameon=False,
 						fontsize=9,
 						)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_chart_unique_document_type.png" ), 
+	plt.savefig(os.path.join( RES_DIR, f"pie_chart_unique_document_type.png" ), 
 							bbox_inches="tight",
 							)
 	plt.clf()
@@ -587,11 +593,11 @@ def plot_doc_type(df, fname, RES_DIR):
 	fig = plt.figure(figsize=(10, 4))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"{len(df_unq['document_type'].value_counts())} Unique Document Types Cloud\n{fname}", color="k")
+	plt.title(f"{len(df_unq['document_type'].value_counts())} Unique Document Types Cloud", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_doc_type_cloud.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"doc_type_cloud.png" ), )
 	plt.clf()
 	plt.close(fig)
 
@@ -606,7 +612,7 @@ def plot_doc_type(df, fname, RES_DIR):
 								kind='bar',
 								xlabel="Unique Document Type", 
 								ylabel="Count",
-								title=f"{df_count_dt.shape[0]} Unique Document Type | USERS | QUERY WORDS | OCR TERMS\n{fname}",
+								title=f"{df_count_dt.shape[0]} Unique Document Type | USERS | QUERY WORDS | OCR TERMS",
 								color=clrs,
 								alpha=0.6,
 								)
@@ -618,11 +624,11 @@ def plot_doc_type(df, fname, RES_DIR):
 							ncol=df_count_dt.shape[0], 
 							)
 
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_unq_doc_type.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"unq_doc_type.png" ), )
 	plt.clf()
 	plt.close(fig)
 
-def plot_user(df, fname, RES_DIR, N=50):
+def plot_user(df,RES_DIR, N=50):
 	#print(df["user_ip"].value_counts())
 
 	df_tmp = df.dropna(axis=0, how="any", subset=["user_ip"]).reset_index(drop=True)
@@ -675,7 +681,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 							)
 		#fig.canvas.draw()
 		plt.tight_layout()
-		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_query_phrases.png" ), 
+		plt.savefig(os.path.join( RES_DIR, f"pie_usr_{usr}_query_phrases.png" ), 
 								bbox_inches="tight",
 								)
 		#plt.clf()
@@ -713,7 +719,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 		
 		#fig.canvas.draw()
 		#plt.tight_layout()
-		plt.savefig(os.path.join( RES_DIR, f"{fname}_pie_usr_{usr}_ocr_terms.png" ), 
+		plt.savefig(os.path.join( RES_DIR, f"pie_usr_{usr}_ocr_terms.png" ), 
 								bbox_inches="tight",
 								)
 		#plt.clf()
@@ -772,12 +778,12 @@ def plot_user(df, fname, RES_DIR, N=50):
 							fontsize=15,
 							)
 
-	plt.suptitle(f"Top-{N} Users\n{fname}")
+	plt.suptitle(f"Top-{N} Users")
 	axs.set_ylabel('User Activity [Presence]')
 	#axs.set_xlabel('\nUsers')
 	#axs.tick_params(axis='x', rotation=90)
 	axs.spines[['top', 'right']].set_visible(False)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_top{N}_usrs_QU_OCR_NaN.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top{N}_usrs_QU_OCR_NaN.png" ), )
 	plt.clf()
 	plt.close(fig)
 
@@ -794,7 +800,7 @@ def plot_user(df, fname, RES_DIR, N=50):
 
 	p.set_xticklabels(df_tmp["user_ip"].value_counts()[:N].index, size=11)
 
-	p.axes.set_title(f"Top-{N} Users | Unique: {len(df_tmp['user_ip'].value_counts())}\n{fname}",)
+	p.axes.set_title(f"Top-{N} Users | Unique: {len(df_tmp['user_ip'].value_counts())}",)
 	plt.ylabel("Presence",)
 	plt.xlabel("\nUser",)
 	plt.xticks(rotation=90)
@@ -814,11 +820,11 @@ def plot_user(df, fname, RES_DIR, N=50):
 									)
 
 	sns.despine(left=True, bottom=True)
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_top_{N}_users.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top_{N}_users.png" ), )
 	plt.clf()
 	plt.close()
 
-def plot_hourly_activity(df, fname, RES_DIR, Nu=25):
+def plot_hourly_activity(df,RES_DIR, Nu=25):
 	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
 
 	fig, axs = plt.subplots()
@@ -828,7 +834,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=25):
 								kind='bar',
 								xlabel="Hour (o'clock)", 
 								ylabel="Activity",
-								title=f"24-Hour Activity\n{fname}",
+								title=f"24-Hour Activity",
 								color=clrs,
 								alpha=0.6,
 								)
@@ -853,7 +859,7 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=25):
 							)
 	
 	
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_24h_activity.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"24h_activity.png" ), )
 	plt.clf()
 	plt.close(fig)
 
@@ -865,18 +871,18 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=25):
 			fig, axs = plt.subplots()
 			print(col)
 			df_count[col].plot(	kind='line', 
-																	rot=0, 
-																	ax=axs, 
-																	marker="*", 
-																	linestyle="-", 
-																	linewidth=0.5,
-																	color=clrs,
-																	label=None,
-																	legend=False,
-																	xlabel="Hour (o'clock)", 
-																	ylabel="Activity",
-																	title=f"Mean($\mu$) & Standard Deviation ($\sigma$): {col}\n{fname}"
-																)
+													rot=0, 
+													ax=axs, 
+													marker="*", 
+													linestyle="-", 
+													linewidth=0.5,
+													color=clrs,
+													label=None,
+													legend=False,
+													xlabel="Hour (o'clock)", 
+													ylabel="Activity",
+													title=f"Mean($\mu$) & Standard Deviation ($\sigma$): {col}"
+												)
 
 			for i in range(4):
 				print(i)
@@ -918,24 +924,10 @@ def plot_hourly_activity(df, fname, RES_DIR, Nu=25):
 										frameon=False,
 										#ncol=df_count.shape[0],
 										)
-				plt.savefig(os.path.join( RES_DIR, f"{fname}_{col}_mean_std.png" ), )
+				plt.savefig(os.path.join( RES_DIR, f"{col}_mean_std.png" ), )
+			plt.close() # TODO: double check the place!!!
 
-
-	#
-	
-	uu, uc = np.unique(df["user_ip"], return_counts=True)
-	#print(uu.shape[0], uu, uc)
-
-	print(f"\n>> Sorting Top {Nu} Users / {df.shape[0]} | {fname}")
-	uc_sorted_idx = np.argsort(-uc)
-	user_ung = uu[uc_sorted_idx][:Nu]
-	user_counts = uc[uc_sorted_idx][:Nu]
-	#print(user_ung.shape[0], user_ung, user_counts)
-
-
-	#
-
-def plot_usr_doc_type(df, fname, RES_DIR, Nu=25):
+def plot_usr_doc_type(df,RES_DIR, Nu=25):
 	df_cleaned = df.assign(document_type=df['document_type'].str.split(',')).explode('document_type')
 	
 	print(df_cleaned["document_type"].value_counts())
@@ -971,14 +963,14 @@ def plot_usr_doc_type(df, fname, RES_DIR, Nu=25):
 								kind='bar',
 								xlabel="Document Type", 
 								ylabel="Count",
-								title=f"User Intrests of {df_doc_type_vs_users.shape[0]} Raw Document Type\n{fname}\n",
+								title=f"User Intrests of {df_doc_type_vs_users.shape[0]} Raw Document Type",
 								color=clrs,
 								alpha=0.6,
 								fontsize=11,
 								)
 	axs.spines[['top', 'right']].set_visible(False)
 	axs.bar_label(axs.containers[0])
-	plt.savefig(os.path.join( RES_DIR, f"{fname}_usr_vs_doc_type.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"usr_vs_doc_type.png" ), )
 	plt.clf()
 	plt.close(fig)
 
@@ -987,57 +979,51 @@ def main():
 	print(f"\t\tDATA ANALYSIS & VISUALIZATION")
 	print("#"*60)
 
-	result_directory = get_result_directory(QUERY=args.query)
-	print(result_directory)
-	make_folder(folder_name=result_directory)
-
-	QUERY_FILE = get_query_dataframe(QUERY=args.query)
-	df = load_df(infile=QUERY_FILE)
+	result_directory = make_result_dir(infile=args.inputDF)
+	df = load_df(infile=args.inputDF)
+	print(f"DF: {df.shape}")
+	print("%"*140)
+	print(df.info(verbose=True, memory_usage="deep"))
+	print("%"*90)
 
 	"""
-	print("%"*100)
-	print(df.shape)
 	cols = list(df.columns)
 	print(len(cols), cols)
 	print("#"*150)
-
 	print(df.head(10))
 	print("-"*150)
 	print(df.tail(10))
-
 	print(df.isna().sum())
 	print("-"*150)
-	print(df.info(verbose=True, memory_usage="deep"))
-
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
-	print("%"*100)
 	#return
 	"""
 	
 	# missing features:
-	plot_missing_features(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_missing_features(df, RES_DIR=result_directory)
+	#return
 
 	# 24h activity:
-	plot_hourly_activity(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_hourly_activity(df, RES_DIR=result_directory)
 
 	# users:
-	plot_user(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_user(df, RES_DIR=result_directory)
 
 	# language
-	plot_language(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_language(df, RES_DIR=result_directory)
 
 	# doc_type
-	plot_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_doc_type(df, RES_DIR=result_directory)
 
 	# publication places
-	plot_publication_places(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_publication_places(df, RES_DIR=result_directory)
 
 	# users vs document_type:
-	plot_usr_doc_type(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	#plot_usr_doc_type(df, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_query_phrases(df, fname=QUERY_FILE, RES_DIR=result_directory)
-	plot_ocr_term(df, fname=QUERY_FILE, RES_DIR=result_directory)
+	plot_query_phrases(df, RES_DIR=result_directory)
+	plot_ocr_term(df, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')

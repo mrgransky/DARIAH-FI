@@ -1,14 +1,21 @@
 import os
-import time
 import subprocess
 import urllib
 import requests
 import joblib
 import re
 import json
+import argparse
 import datetime
+import glob
+import webbrowser
+import string
+import time
+import faiss
+
 import numpy as np
 import pandas as pd
+from natsort import natsorted
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
@@ -24,16 +31,78 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
+def dist_faiss(Ref, Query, use_gpu=False):
+	tot_mem = torch.cuda.get_device_properties(0).total_memory
+	print('TOTAL GPU MEM: {} | Rf nbytes: {} | Qu nbytes: {}'.format(tot_mem, Ref.nbytes, Query.nbytes))
+
+	if tot_mem > (Ref.nbytes + Query.nbytes):
+		print ('\n{:>50}\n'.format('Using Faiss GPU'))
+		use_gpu = True
+
+	k, d = Ref.shape
+	if use_gpu:
+		print ('\n{:>50}\n'.format('GPU Index'))
+		res = faiss.StandardGpuResources()
+		flat_config = faiss.GpuIndexFlatConfig()
+		flat_config.device = 0
+		index = faiss.GpuIndexFlatL2(res, d, flat_config)
+	else:
+		print ('\n{:>50}\n'.format('CPU Index'))
+		index = faiss.IndexFlatL2(d)
+
+	print('>> Index trained? {}'.format(index.is_trained))
+	if index.is_trained == False:
+		print ('\n{:>30}\n'.format('Training'))
+		s = time.time()
+		index.reset()
+		index.train(Ref)
+		e = time.time()
+		print("training time: {} sec".format(e-s))
+
+	print ('\n{:>50}\n'.format('Adding'))
+	index.add(Ref)
+	print(index.ntotal)
+	
+	print ('\n{:>50}\n'.format('Searching'))
+	D, I = index.search(Query, 10) # top 10, gives err for k >= 1024
+	return I
+
+def rest_api_sof(params={}):	
+	params = {'query': 						["Rusanen"], 
+						'publicationPlace': ["Iisalmi", "Kuopio"], 
+						'lang': 						["FIN"], 
+						'orderBy': 					["DATE_DESC"], 
+						'formats': 					["NEWSPAPER"], 
+						}
+
+	print(f"REST API: {params}")
+
+	subprocess.call(['bash',
+									'sof.sh',
+									f'myFORMATS={params.get("formats", "")}',
+									f'myQUERY={",".join(params.get("query"))}',
+									f'myORDERBY={",".join(params.get("orderBy", ""))}',
+									f'myLANG={params.get("lang", "")}',
+									f'myPubPlace={params.get("publicationPlace", "")}',
+									]
+								)
+
 def rest_api(params={}):
 	
-	#params = {'query': ["Rusanen"], 'publicationPlace': ["Iisalmi", "Kuopio"], 'lang': ["FIN"], 'orderBy': ["DATE_DESC"], 'formats': ["NEWSPAPER"], 'resultMode': ["TEXT_WITH_THUMB"], 'page': ['75']}
-	
+	# TODO: url must be provided!
+	params = {'query': ["Rusanen"], 
+						'publicationPlace': ["Iisalmi", "Kuopio"], 
+						'lang': ["FIN"], 
+						'orderBy': ["DATE_DESC"], 
+						'formats': ["NEWSPAPER"], 
+						'resultMode': ["TEXT_WITH_THUMB"], 
+						'page': ['75']}
+
 	#print("#"*65)
 	print(f"REST API: {params}")
 	#print("#"*65)
 	#return
 
-	#q = param.get("")
 	subprocess.call(['bash', 
 									'my_file.sh',
 									#'query_retreival.sh',
@@ -42,6 +111,7 @@ def rest_api(params={}):
 									f'QUERY={",".join(params.get("query"))}',
 									f'ORDER_BY={",".join(params.get("orderBy", ""))}',
 									f'LANGUAGES={params.get("lang", "")}',
+									f'PUB_PLACE={params.get("publicationPlace", "")}', 
 									f'REQUIRE_ALL_KEYWORDS={params.get("requireAllKeywords", "")}',
 									f'QUERY_TARGETS_METADATA={params.get("qMeta", "")}',
 									f'QUERY_TARGETS_OCRTEXT={params.get("qOcr", "")}',
@@ -56,7 +126,6 @@ def rest_api(params={}):
 									f'IMPORT_TIME={params.get("importTime", "")}',
 									f'INCLUDE_AUTHORIZED_RESULTS={params.get("showUnauthorizedResults", "")}',#TODO: negation required?!
 									f'PAGES={params.get("pages", "")}', 
-									f'PUB_PLACE={params.get("publicationPlace", "")}', 
 									#f'PUBLICATION={}',
 									f'PUBLISHER={params.get("publisher", "")}', 
 									#f'SEARCH_FOR_BINDINGS={}',
@@ -64,7 +133,6 @@ def rest_api(params={}):
 									f'TAG={params.get("tag", "")}',
 									]
 								)
-
 
 	return
 	json_file = f"newspaper_info_query_{params.get('query')}"
@@ -256,42 +324,36 @@ def checking_(url):
 		r.raise_for_status()
 		#print(f">> HTTP family: {r.status_code} => Exists: {r.ok}")
 		return r
-	except requests.exceptions.ConnectionError as ec:
-		#print(url)
-		print(f">> {url}\tConnection Exception: {ec}")
-		pass
-	except requests.exceptions.Timeout as et:
-		#print(url)
-		print(f">> {url}\tTimeout Exception: {et}")
-		pass
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		#print(url)
-		print(f"HTTP Exception: {ehttp}\t{ehttp.response.status_code}")
-		pass
-	except requests.exceptions.RequestException as e:
-		#print(url)
-		print(f">> {url}\tALL Exception: {e}")
-		pass
+		print(f"\t{ehttp}\t{ehttp.response.status_code}")
+		return
+		#pass
+	except (requests.exceptions.Timeout,
+					requests.exceptions.ConnectionError, 
+					requests.exceptions.RequestException, 
+					requests.exceptions.TooManyRedirects,
+					Exception, 
+					ValueError, 
+					TypeError, 
+					EOFError, 
+					RuntimeError,
+					) as e:
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
+		return
 
 def make_folder(folder_name="MUST_BE_RENAMED"):
 	if not os.path.exists(folder_name): 
 		#print(f"\n>> Creating DIR:\n{folder_name}")
 		os.makedirs( folder_name )
 
-def save_(df, infile="", saving_path=""):
+def save_(df, infile="", saving_path="", save_csv=False, save_parquet=True):
 	dfs_dict = {
 		f"{infile}":	df,
 	}
-	
-	dump_file_name = os.path.join(dfs_path, f"{infile}.dump")
-	csv_file_name = os.path.join(dfs_path, f"{infile}.csv")
-	
-	print(f">> Saving {csv_file_name} ...")
-	df.to_csv(csv_file_name, index=False)
-	fsize_csv = os.stat( csv_file_name ).st_size / 1e6
-	print(f"\t\t{fsize_csv:.1f} MB")
 
-	print(f">> Saving {dump_file_name} ...")
+	dump_file_name = os.path.join(dfs_path, f"{infile}.dump")
+	print(f"\n>> Saving {dump_file_name} ...")
 	joblib.dump(	dfs_dict, 
 								dump_file_name,
 								compress='lz4', # zlib more info: https://joblib.readthedocs.io/en/latest/auto_examples/compressors_comparison.html#sphx-glr-auto-examples-compressors-comparison-py
@@ -299,15 +361,32 @@ def save_(df, infile="", saving_path=""):
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"\t\t{fsize_dump:.1f} MB")
 
+	if save_csv:
+		csv_file_name = os.path.join(dfs_path, f"{infile}.csv")
+		print(f"\n>> Saving {csv_file_name} ...")
+		df.to_csv(csv_file_name, index=False)
+		fsize_csv = os.stat( csv_file_name ).st_size / 1e6
+		print(f"\t\t{fsize_csv:.1f} MB")
+
+	if save_parquet:
+		parquet_file_name = os.path.join(dfs_path, f"{infile}.parquet")
+		print(f"\n>> Saving {parquet_file_name} ...")
+		df.to_parquet(parquet_file_name)
+		fsize_parquet = os.stat( parquet_file_name ).st_size / 1e6
+		print(f"\t\t{fsize_parquet:.1f} MB")
+		print(f">>>> To Read\tDF = pd.read_parquet({parquet_file_name})")
+
 def load_df(infile=""):
-	fpath = os.path.join(dfs_path, f"{infile}.dump")
+	#fpath = os.path.join(dfs_path, f"{infile}.dump")
+	fpath = infile
 	fsize = os.stat( fpath ).st_size / 1e9
-	print(f">> Loading {fpath} | size: {fsize:.2f} GB ...")
+	print(f"Loading {fpath} | {fsize:.3f} GB")
 	st_t = time.time()
-	d = joblib.load(fpath)
+	df_dict = joblib.load(fpath)
+	#print(list(df_dict.keys()))# dict:{key(nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log) : value (df)}
 	elapsed_t = time.time() - st_t
-	print(f"\tElapsed time: {elapsed_t:.3f} sec")
-	df = d[infile]
+	print(f"\t\tElapsed_t: {elapsed_t:.2f} s")
+	df = df_dict[list(df_dict.keys())[0]]
 	return df	
 
 def get_parsed_url_parameters(inp_url):
@@ -321,13 +400,23 @@ def get_parsed_url_parameters(inp_url):
 
 	return p_url, params
 
-def get_np_ocr(ocr_url):
-	parsed_url, parameters = get_parsed_url_parameters(ocr_url)
-	#print(f">> Parsed url | OCR extraction: {parameters}")
-	if parameters.get("term") and parameters.get("page"):
-		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-		#print(f">> page-X.txt available?\t{txt_pg_url}\t")
-		text_response = checking_(txt_pg_url)
-		if text_response is not None: # 200
-			#print(f"\t\t\tYES >> loading...\n")
-			return text_response.text
+def just_test_for_expected_results(df):
+	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
+	print("#"*100)
+	idx = np.random.choice(df_cleaned.shape[0]+1)
+	print(f"\n>> search results of sample: {idx}")
+	
+	with pd.option_context('display.max_colwidth', 500):
+		print(df_cleaned.loc[idx, ["user_ip", "query_word", "referer"]])
+
+	one_result = df_cleaned.loc[idx, "search_results"]
+	
+	#print(json.dumps(one_result, indent=1, ensure_ascii=False))
+	for k, v in one_result.items():
+		print(k)
+		print(one_result.get(k).get("newspaper_snippet"))
+		print(len(one_result.get(k).get("newspaper_snippet_highlighted_words")), one_result.get(k).get("newspaper_snippet_highlighted_words"))
+		print()
+		print(one_result.get(k).get("newspaper_content_ocr"))
+		print(len(one_result.get(k).get("newspaper_content_ocr_highlighted_words")), one_result.get(k).get("newspaper_content_ocr_highlighted_words"))
+		print("-"*100)
