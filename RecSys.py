@@ -1,13 +1,74 @@
+import matplotlib.pyplot as plt
+import matplotlib.pylab as pylab
+import seaborn as sns
+
+import matplotlib
+matplotlib.use("Agg")
+
 from utils import *
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
-parser.add_argument('--inputDF', default="/home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
+parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
 args = parser.parse_args()
 
 # how to run:
-# python RecSys.py --inputDF /home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+# python RecSys.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+
+def plot_heatmap(mtrx, name_="user-based"):
+	sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
+	params = {
+		'figure.figsize':	(sz*1.7, sz*1.0),  # W, H
+		'figure.dpi':		200,
+		'figure.autolayout': True,
+		#'figure.constrained_layout.use': True,
+		'legend.fontsize':	sz*0.8,
+		'axes.labelsize':	sz*0.2,
+		'axes.titlesize':	sz*0.2,
+		'xtick.labelsize':	sz*0.5,
+		'ytick.labelsize':	sz*0.5,
+		'lines.linewidth' :	sz*0.1,
+		'lines.markersize':	sz*0.8,
+		'font.size':		sz*1.0,
+		'font.family':		"serif",
+	}
+	pylab.rcParams.update(params)
+
+	sns.set(font_scale=1.1,
+					style="white", 
+					palette='deep', 
+					font="serif", 
+					color_codes=True,
+					)
+
+	hm_title = f"{name_} similarity heatmap".capitalize()
+	print(f"{hm_title.center(60,'*')}")
+	print(type(mtrx), mtrx.shape)
+	RES_DIR = make_result_dir(infile=args.inputDF)
+
+	f, ax = plt.subplots()
+	ax = sns.heatmap(mtrx,
+									cmap=sns.color_palette("Greys"),
+									cbar_kws={'label': 'Similarity', 
+														'ticks': [0.0, 0.5, 1.0],
+														'pad': 0.02,
+														'shrink': 0.5,
+														"orientation": "horizontal",
+													},
+									)
+
+	ax.set_ylabel(f"Title-Issue-Page\n")
+	#ax.set_yticks([])
+	#ax.set_xticks([])
+	ax.xaxis.tick_top()
+	ax.tick_params(axis='x', labelrotation=90, labelsize=10.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=10.0)
+	plt.suptitle(hm_title)
+	#print(os.path.join( RES_DIR, f'{name_}_similarity_heatmap.png' ))
+	plt.savefig(os.path.join( RES_DIR, f"{name_}_similarity_heatmap.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
 
 def analyze_search_results(df):
 	print(f">> Analysing Search Results DF: {df.shape}")
@@ -133,11 +194,8 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 								}
 	print(f">> Getting {method} similarity...")
 
-	# 
-
 	similarity = cosine_similarity(sprs_mtx)
-
-	print(type(similarity), similarity.shape)
+	plot_heatmap(mtrx=similarity, name_=method)
 
 	sim_df = pd.DataFrame(similarity,
 												index=df[method_dict.get(method)].unique(),

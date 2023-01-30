@@ -22,7 +22,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Data Analysis')
-parser.add_argument('--inputDF', default="/home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str)
+parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
 args = parser.parse_args()
 
 # how to run:
@@ -117,16 +117,7 @@ def get_result_directory(QUERY=0):
 	res_dir = os.path.join(rpath, query_dataframe_file)
 	return res_dir
 
-def make_result_dir(infile=""):
-	f = infile.split("/")[-1]
-	#print(f)
-	f = f[:f.rfind(".log")]
-	#print(f)
-	res_dir = os.path.join(rpath, f)
-	make_folder(folder_name=res_dir)
-	return res_dir
-
-def plot_missing_features(df,RES_DIR):
+def plot_missing_features(df, RES_DIR):
 	print(f">> Visualizing missing data of  ...")
 
 	print(f">>>>> Barplot >>>>>")
@@ -164,7 +155,7 @@ def plot_missing_features(df,RES_DIR):
 			df.isna(),
 			cmap=sns.color_palette("Greys"),
 			cbar_kws={'label': 'NaN (Missing Data)', 
-								'ticks': [0.0, 1.0]},
+								'ticks': [0.0, 0.5, 1.0]},
 			)
 
 	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
@@ -380,8 +371,8 @@ def plot_ocr_term(df,RES_DIR, N=20):
 												max_font_size=80,
 												stopwords=None,
 												collocations=False,
-												).generate_from_frequencies(dict(zip(	df_cleaned["ocr_term"].value_counts().index, 
-																															df_cleaned["ocr_term"].value_counts().values,
+												).generate_from_frequencies(dict(zip(	df_cleaned["nwp_content_parsed_term"].value_counts().index, 
+																															df_cleaned["nwp_content_parsed_term"].value_counts().values,
 																															)
 																												)
 																										)
@@ -486,7 +477,7 @@ def plot_publication_places(df,RES_DIR):
 	plt.clf()
 	plt.close(fig)
 
-	df_count_dt = df_unq.groupby(df_unq["publication_place"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	df_count_dt = df_unq.groupby(df_unq["publication_place"])[["user_ip", "query_word", "nwp_content_parsed_term",]].count().reset_index()
 	print(df_count_dt)
 
 	print("#"*150)
@@ -601,7 +592,7 @@ def plot_doc_type(df,RES_DIR):
 	plt.clf()
 	plt.close(fig)
 
-	df_count_dt = df_unq.groupby(df_unq["document_type"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	df_count_dt = df_unq.groupby(df_unq["document_type"])[["user_ip", "query_word", "nwp_content_parsed_term",]].count().reset_index()
 	print(df_count_dt)
 
 	print("#"*150)
@@ -635,7 +626,7 @@ def plot_user(df,RES_DIR, N=50):
 	print(f">> df: {df.shape} | df_tmp: {df_tmp.shape}")
 
 	df_tmp["query_word"] = df_tmp['query_word'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
-	#df_tmp["ocr_term"] = df_tmp['ocr_term'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	#df_tmp["nwp_content_parsed_term"] = df_tmp['ocr_term'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 
 	MY_DICT = {}
 	
@@ -825,7 +816,7 @@ def plot_user(df,RES_DIR, N=50):
 	plt.close()
 
 def plot_hourly_activity(df,RES_DIR, Nu=25):
-	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	df_count = df.groupby(df["timestamp"].dt.hour)[["user_ip", "query_word", "nwp_content_parsed_term",]].count().reset_index()
 
 	fig, axs = plt.subplots()
 	
@@ -934,7 +925,7 @@ def plot_usr_doc_type(df,RES_DIR, Nu=25):
 	print("#"*40)
 
 	#return
-	df_count = df.groupby(df["document_type"])[["user_ip", "query_word", "ocr_term",]].count().reset_index()
+	df_count = df.groupby(df["document_type"])[["user_ip", "query_word", "nwp_content_parsed_term",]].count().reset_index()
 	print(df_count)
 	print("#"*150)
 

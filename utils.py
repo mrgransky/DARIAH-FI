@@ -30,6 +30,15 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
+def make_result_dir(infile=""):
+	f = infile.split("/")[-1]
+	#print(f)
+	f = f[:f.rfind(".log")]
+	#print(f)
+	res_dir = os.path.join(rpath, f)
+	make_folder(folder_name=res_dir)
+	return res_dir
+
 def rest_api_sof(params={}):	
 	params = {'query': 						["Rusanen"], 
 						'publicationPlace': ["Iisalmi", "Kuopio"], 
