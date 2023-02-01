@@ -242,8 +242,9 @@ def topN_users(usr, sim_df, dframe, N=5):
 				print(f"User `{usr}` not Found!\t")
 				return
 		print(f"Top-{N} similar users to `{usr}`:")
-		print(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
+		print(sim_df.sort_values(by=usr, ascending=False))
 		print("#"*100)
+		print(sim_df.sort_values(by=usr, ascending=False).index[: 15])
 		similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
 		similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
 		#print("#"*100)
