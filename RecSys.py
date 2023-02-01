@@ -14,6 +14,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
+parser.add_argument('--qusr', default="ip69", type=str)
+parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
+
 args = parser.parse_args()
 
 # how to run:
@@ -184,12 +187,12 @@ def analyze_search_results(df):
 	imp_fb_sparse_matrix = get_sparse_mtx(df_rec)
 	
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
-	topN_users("ip1427", usr_similarity_df, dframe=df_cleaned)
+	topN_users(usr=args.qusr, sim_df=usr_similarity_df, dframe=df_cleaned)
 	print("-"*70)
 
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
 	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
-	topN_nwp_title_issue_page("Uudenmaan Sanomat_72_4", itm_similarity_df)
+	topN_nwp_title_issue_page(args.qtip, sim_df=itm_similarity_df)
 	
 	print("-"*70)
 
@@ -239,8 +242,11 @@ def topN_users(usr, sim_df, dframe, N=5):
 				print(f"User `{usr}` not Found!\t")
 				return
 		print(f"Top-{N} similar users to `{usr}`:")
+		print(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
+		print("#"*100)
 		similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
 		similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
+		#print("#"*100)
 
 		similar_users_search_history = get_similar_users_details(similar_users, dframe=dframe)
 		qu_usr_search_history = get_similar_users_details([usr], dframe=dframe)
