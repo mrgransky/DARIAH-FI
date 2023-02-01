@@ -184,7 +184,7 @@ def analyze_search_results(df):
 	imp_fb_sparse_matrix = get_sparse_mtx(df_rec)
 	
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
-	topN_users("ip3604", usr_similarity_df, dframe=df_cleaned)
+	topN_users("ip17", usr_similarity_df, dframe=df_cleaned)
 	print("-"*70)
 
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
