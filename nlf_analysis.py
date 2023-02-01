@@ -7,13 +7,16 @@ import time
 import argparse
 import glob
 
-from natsort import natsorted
 import numpy as np
 import pandas as pd
+
+from collections import Counter
+from natsort import natsorted
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 import seaborn as sns
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from utils import *
 from wordcloud import WordCloud
@@ -28,10 +31,10 @@ args = parser.parse_args()
 # how to run:
 # python nlf_analysis.py --inputDF /home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
+sz=11 # >>>>>>>>> 12 original <<<<<<<<<<<
 params = {
-	'figure.figsize':	(sz*1.7, sz*1.0),  # W, H
-	'figure.dpi':		200,
+	'figure.figsize':	(sz*1.5, sz*0.85),  # W, H
+	'figure.dpi':		300,
 	'figure.autolayout': True,
 	#'figure.constrained_layout.use': True,
 	'legend.fontsize':	sz*0.8,
@@ -149,25 +152,25 @@ def plot_missing_features(df, RES_DIR):
 	plt.clf()
 	plt.close()
 
-	print(f">>>>> Heatmap >>>>>")
+	print(f"{'Heatmap'.center(80, '-')}")
 	f, ax = plt.subplots()
 	ax = sns.heatmap(
 			df.isna(),
 			cmap=sns.color_palette("Greys"),
-			cbar_kws={'label': 'NaN (Missing Data)', 
-								'ticks': [0.0, 0.5, 1.0]},
+			cbar_kws={'label': 'Missing Data (NaN)', 
+								'ticks': [0.0, 1.0],
 								'pad': 0.02,
 								'shrink': 0.5,
 								'orientation': 'horizontal',
-			)
-
+								}
+							)
 	ax.set_ylabel(f"Samples\n\n{df.shape[0]}$\longleftarrow${0}")
 	ax.set_yticks([])
 	ax.xaxis.tick_top()
 	ax.tick_params(axis='x', labelrotation=90)
-	plt.suptitle(f"Missing Data (NaN)")
+	plt.suptitle(f"Data Availability: {df.shape}")
 	print(os.path.join( RES_DIR, f'missing_heatmap.png' ))
-	plt.savefig(os.path.join( RES_DIR, f"missing_heatmap.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"missing_cols_heatmap.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -364,30 +367,42 @@ def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
 	plt.clf()
 	plt.close(fig)
 
-def plot_ocr_term(df,RES_DIR, N=20):
-	print(f">> Ploting OCR terms | df: {df.shape}")
-	df_cleaned = df.copy()
-	wordcloud = WordCloud(width=1400, 
-												height=550, 
+def plot_nwp_content_parsed_term(df,RES_DIR, N=20):
+	print(f">> Ploting newspaper content parsed terms | df: {df.shape}")
+	#df_cleaned = df.copy()
+	df_cleaned = df.dropna(axis=0, how="any", subset=["nwp_content_parsed_term"]).reset_index()
+	"""
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 500):
+		print(df_cleaned[["nwp_content_parsed_term", "referer"]].head(88))
+	"""
+	nwp_parsed_terms_lst = list()
+
+	def extract_terms(trms_list):
+		nwp_parsed_terms_lst.extend([w.lower() for w in trms_list]) # # len: 3539 unq: 669
+		#nwp_parsed_terms_lst.extend(trms_list) # len: 3539 unq: 761
+
+	df_cleaned["nwp_content_parsed_term"].apply(extract_terms)
+
+	print(len(nwp_parsed_terms_lst), len(set(nwp_parsed_terms_lst)),nwp_parsed_terms_lst[:20])
+	#print(Counter(nwp_parsed_terms_lst)) # dict: {k: words: v: counts}
+	wordcloud = WordCloud(width=1800, 
+												height=550,
 												background_color="black",
 												colormap="RdYlGn",
 												max_font_size=80,
 												stopwords=None,
 												collocations=False,
-												).generate_from_frequencies(dict(zip(	df_cleaned["nwp_content_parsed_term"].value_counts().index, 
-																															df_cleaned["nwp_content_parsed_term"].value_counts().values,
-																															)
-																												)
-																										)
+												).generate_from_frequencies(Counter(nwp_parsed_terms_lst))
 
-	fig = plt.figure(figsize=(14, 8))
+	fig = plt.figure(figsize=(16, 8))
 	plt.imshow(wordcloud)
 	plt.axis("off")
-	plt.title(f"Cloud Distribution\n{len(df_cleaned['ocr_term'].value_counts())} unique OCR Terms (total: {df_cleaned['ocr_term'].notnull().sum()})", color="k")
+	plt.title(f"Word Cloud Distribution\n{len(set(nwp_parsed_terms_lst))} Unique "
+						f"Newspaper Content Page Parsed Terms (total: {len(nwp_parsed_terms_lst)})", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 
-	plt.savefig(os.path.join( RES_DIR, f"OCR_terms_cloud.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"nwp_content_parsed_{len(nwp_parsed_terms_lst)}_terms_cloud.png" ), )
 	plt.clf()
 	plt.close(fig)
 
@@ -629,14 +644,14 @@ def plot_user(df,RES_DIR, N=50):
 	print(f">> df: {df.shape} | df_tmp: {df_tmp.shape}")
 
 	df_tmp["query_word"] = df_tmp['query_word'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
-	#df_tmp["nwp_content_parsed_term"] = df_tmp['ocr_term'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	#df_tmp["nwp_content_parsed_term"] = df_tmp['nwp_content_parsed_term'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
 
 	MY_DICT = {}
 	
 	lst_q, lst_ocr, lst_nan = [], [], []
 	for usr in df_tmp["user_ip"].value_counts()[:N].index:
 		cq = df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.count()
-		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.count()
+		c_ocr = df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.count()
 		c_usr = df_tmp[ (df_tmp["user_ip"] == usr) ].user_ip.count()
 		print(f"\n{usr}:\tQU: {cq} | OCR: {c_ocr}:\t({cq+c_ocr} / {c_usr})")
 		
@@ -657,8 +672,8 @@ def plot_user(df,RES_DIR, N=50):
 																				),
 												)
 		
-		axs.axis('equal')
-		axs.set_title(f"USER: {usr}\nQuery Phrases (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())} Total: {cq})")
+		#axs.axis('equal')
+		#axs.set_title(f"USER: {usr}\nQuery Phrases (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())} Total: {cq})")
 		
 		ax2 = fig.add_subplot(122)
 		ax2.axis("off")
@@ -670,10 +685,11 @@ def plot_user(df,RES_DIR, N=50):
 							],
 							loc="center",
 							frameon=False,
-							fontsize=8,
-							ncol=3,
+							fontsize=16 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts()) < 15 else 12,
+							ncol=3 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].query_word.value_counts()) > 25 else 1,
 							)
 		#fig.canvas.draw()
+		plt.suptitle(f"USER: {usr}\nQuery Phrases (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].query_word.value_counts())} Total: {cq})")
 		plt.tight_layout()
 		plt.savefig(os.path.join( RES_DIR, f"pie_usr_{usr}_query_phrases.png" ), 
 								bbox_inches="tight",
@@ -682,11 +698,10 @@ def plot_user(df,RES_DIR, N=50):
 		plt.close(fig)
 		########################################### QUERY PHRASES ###########################################
 
-
 		########################################### OCR TERMS ###########################################
-		fig = plt.figure(figsize=(22,10))
+		fig = plt.figure(figsize=(19,15))
 		axs = fig.add_subplot(121)
-		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(),
+		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts(),
 												colors=clrs,
 												wedgeprops=dict(width=0.8,
 																				edgecolor="#2ef3",
@@ -694,33 +709,32 @@ def plot_user(df,RES_DIR, N=50):
 																				),
 												)
 		
-		#axs.axis('equal')
-		axs.set_title(f"USER: {usr}\nOCR Terms (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].ocr_term.value_counts())} Total: {c_ocr})")
-		
+		#axs.axis('equal')		
 		ax2 = fig.add_subplot(122)
 		ax2.axis("off")
 
 		ax2.legend(patches,
-							[ f"{l} {v*100:.1f} %" for l, v in zip(	df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(normalize=True).index, 
-																											df_tmp[ (df_tmp["user_ip"] == usr) ].ocr_term.value_counts(normalize=True).values,
+							[ f"{l} {v*100:.1f} %" for l, v in zip(	df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts(normalize=True).index, 
+																											df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts(normalize=True).values,
 																						)
 							],
-							loc="center",
+							loc="upper left" if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) > 25 else "center",
 							frameon=False,
-							fontsize=7,
-							ncol=2,
+							fontsize=16 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) < 25 else 13,
+							ncol=2 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) > 55 else 1,
 							)
 		
 		#fig.canvas.draw()
 		#plt.tight_layout()
-		plt.savefig(os.path.join( RES_DIR, f"pie_usr_{usr}_ocr_terms.png" ), 
-								bbox_inches="tight",
+		plt.suptitle(f"USER: {usr}\nNewspaer Content Parsed Terms (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].nwp_content_parsed_term.value_counts())} Total: {c_ocr})")
+		plt.savefig(os.path.join( RES_DIR, f"pie_usr_{usr}_nwp_content_parsed_term.png" ), 
+								#bbox_inches="tight",
 								)
 		#plt.clf()
 		plt.close(fig)
 		########################################### OCR TERMS ###########################################
 
-	MY_DICT["OCR_Terms"] = lst_ocr
+	MY_DICT["Newspaper_Content_Parsed_Terms"] = lst_ocr
 	MY_DICT["None"] = lst_nan
 	MY_DICT["Query_Phrases"] = lst_q
 
@@ -814,7 +828,7 @@ def plot_user(df,RES_DIR, N=50):
 									)
 
 	sns.despine(left=True, bottom=True)
-	plt.savefig(os.path.join( RES_DIR, f"top_{N}_users.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top_{N}_users_activity_tracking.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close()
 
@@ -1001,7 +1015,7 @@ def main():
 	#plot_hourly_activity(df, RES_DIR=result_directory)
 
 	# users:
-	#plot_user(df, RES_DIR=result_directory)
+	plot_user(df, RES_DIR=result_directory)
 
 	# language
 	#plot_language(df, RES_DIR=result_directory)
@@ -1016,8 +1030,8 @@ def main():
 	#plot_usr_doc_type(df, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_query_phrases(df, RES_DIR=result_directory)
-	plot_ocr_term(df, RES_DIR=result_directory)
+	#plot_query_phrases(df, RES_DIR=result_directory)
+	#plot_nwp_content_parsed_term(df, RES_DIR=result_directory)
 
 if __name__ == '__main__':
 	os.system('clear')

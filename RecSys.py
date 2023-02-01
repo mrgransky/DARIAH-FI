@@ -45,6 +45,7 @@ def plot_heatmap(mtrx, name_="user-based"):
 	RES_DIR = make_result_dir(infile=args.inputDF)
 
 	f, ax = plt.subplots()
+
 	divider = make_axes_locatable(ax)
 	cax = divider.append_axes('right', size='5%', pad=0.05)
 	im = ax.imshow(mtrx, 
@@ -58,7 +59,7 @@ def plot_heatmap(mtrx, name_="user-based"):
 														ticks=[0.0, 0.5, 1.0],
 														)
 
-	ax.set_ylabel(f"Title-Issue-Page\n")
+	ax.set_ylabel(f"{name_.split('-')[0].capitalize()}")
 	#ax.set_yticks([])
 	#ax.set_xticks([])
 	ax.xaxis.tick_top()
@@ -73,10 +74,11 @@ def plot_heatmap(mtrx, name_="user-based"):
 
 def analyze_search_results(df):
 	print(f">> Analysing Search Results DF: {df.shape}")
-	"""
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("#"*200)
 	#print(df[["user_ip", "query_word", "search_results", "nwp_content_parsed_term"]].head(50))
+	#return
+	"""
 	#print("<>"*50)
 	#print(df["user_ip"].value_counts())
 
@@ -182,7 +184,7 @@ def analyze_search_results(df):
 	imp_fb_sparse_matrix = get_sparse_mtx(df_rec)
 	
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
-	topN_users("ip67", usr_similarity_df)	
+	topN_users("ip3604", usr_similarity_df, dframe=df_cleaned)
 	print("-"*70)
 
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
@@ -203,7 +205,7 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 												columns=df[method_dict.get(method)].unique(),
 												)
 	print(sim_df.shape)
-	print(sim_df.head(10))
+	print(sim_df.head(25))
 	print("><"*60)
 
 	return sim_df
@@ -230,15 +232,45 @@ def topN_nwp_title_issue_page(nwp_tip, sim_df, N=10):
 		for sim_nwp, sim_val in zip(similar_newspapers, similarity_values):
 			print(f"\t{sim_nwp} : {sim_val:.3f}")
 
-def topN_users(usr, sim_df, N=10):
+def topN_users(usr, sim_df, dframe, N=5):
 		if usr not in sim_df.index:
-				print(f"Error: user `{usr}` not Found!")
+				print(f"User `{usr}` not Found!\t")
 				return
-		print(f"Top-{N} users similar to `{usr}`:")
+		print(f"Top-{N} similar users to `{usr}`:")
 		similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
 		similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
-		for sim_usr, sim_val in zip(similar_users, similarity_values):
-			print(f"\t{sim_usr} : {sim_val:.3f}")
+
+		similar_users_search_history = get_similar_users_details(similar_users, dframe=dframe)
+		qu_usr_search_history = get_similar_users_details([usr], dframe=dframe)
+
+		print(f"{'Query USER Search Phrase History'.center(100,'-')}")
+		print(len(qu_usr_search_history), qu_usr_search_history)
+
+		print(f"{'Similar USER Search Phrase History'.center(100,'-')}")
+		print(len(similar_users_search_history), similar_users_search_history)
+
+		for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
+			print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")
+		print(f"Since You {usr} Searched for Query Phrase {qu_usr_search_history}, "
+					f"you might also be interested in {similar_users_search_history} Phrases...")
+		
+def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
+	word_search_history = list()
+	for usr_i, usr_v in enumerate(sim_users_list):
+		#print(usr_i, usr_v)
+		#print(f"{'QUERY Phrases'.center(50,'-')}")
+		qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["query_word"]].values.tolist()]
+		#print(qu_phs)
+		#print(max(set(qu_phs), key=qu_phs.count))
+		#print(f"{'Search Results'.center(50,'-')}")
+		#print(dframe[(dframe["user_ip"] == usr_v)][["search_results"]])
+		#print()
+		if qu_usr:
+			word_search_history.append(set(qu_phs))
+		else:
+			word_search_history.append(max(set(qu_phs), key=qu_phs.count))
+
+	return word_search_history
 
 def main():
 	print(f">> Running {__file__}")
