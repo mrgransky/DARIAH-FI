@@ -188,7 +188,9 @@ def analyze_search_results(df):
 	print("-"*70)
 
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
-	topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
+	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
+	topN_nwp_title_issue_page("Uudenmaan Sanomat_72_4", itm_similarity_df)
+	
 	print("-"*70)
 
 def get_similarity_df(df, sprs_mtx, method="user-based"):
