@@ -203,13 +203,16 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 	print(f">> Getting {method} similarity...")
 
 	similarity = cosine_similarity(sprs_mtx)
-	plot_heatmap(mtrx=similarity.astype(np.float32), name_=method)
+	plot_heatmap(mtrx=similarity.astype(np.float32), 
+							name_=method,
+							)
 
-	sim_df = pd.DataFrame(similarity,
+	sim_df = pd.DataFrame(similarity.astype(np.float32), 
 												index=df[method_dict.get(method)].unique(),
 												columns=df[method_dict.get(method)].unique(),
 												)
 	print(sim_df.shape)
+	print(sim_df.info(verbose=True, memory_usage="deep"))
 	print(sim_df.head(25))
 	print("><"*60)
 
@@ -244,7 +247,7 @@ def topN_users(usr, sim_df, dframe, N=5):
 		print(f"Top-{N} similar users to `{usr}`:")
 		print(sim_df.sort_values(by=usr, ascending=False))
 		print("#"*100)
-		print(sim_df.sort_values(by=usr, ascending=False).index[: 15])
+		print(sim_df.sort_values(by=usr, ascending=False).index[:15])
 		similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
 		similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
 		#print("#"*100)
