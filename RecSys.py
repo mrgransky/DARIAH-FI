@@ -235,6 +235,7 @@ def topN_nwp_title_issue_page(nwp_tip, sim_df, N=10):
 				print(f"Error: Newspaper `{nwp_tip}` not Found!")
 				return
 		print(f"Top-{N} Newspaper similar to `{nwp_tip}`:")
+		sim_df = sim_df.drop(nwp_tip)
 		similar_newspapers = list(sim_df.sort_values(by=nwp_tip, ascending=False).index[1: N+1])
 		similarity_values = list(sim_df.sort_values(by=nwp_tip, ascending=False).loc[:, nwp_tip])[1:N+1]
 		for sim_nwp, sim_val in zip(similar_newspapers, similarity_values):
@@ -246,13 +247,14 @@ def topN_users(usr, sim_df, dframe, N=5):
 				return
 		print(f"Top-{N} similar users to `{usr}`:")
 
-		print(sim_df.sort_values(by=usr, ascending=False))
-		print(f">> dropin row: {usr} ...")
+		#print(sim_df.sort_values(by=usr, ascending=False))
+		#print(f">> dropin row: {usr} ...")
 		sim_df = sim_df.drop(usr)
 
-		print(sim_df.sort_values(by=usr, ascending=False))
-		print("#"*100)
-		print(sim_df.sort_values(by=usr, ascending=False).index[:15])
+		#print(sim_df.sort_values(by=usr, ascending=False))
+		#print("#"*100)
+		#print(sim_df.sort_values(by=usr, ascending=False).index[:15])
+		
 		similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
 		similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
 		#print("#"*100)
@@ -260,11 +262,11 @@ def topN_users(usr, sim_df, dframe, N=5):
 		similar_users_search_history = get_similar_users_details(similar_users, dframe=dframe)
 		qu_usr_search_history = get_similar_users_details([usr], dframe=dframe)
 
-		print(f"{'Query USER Search Phrase History'.center(100,'-')}")
-		print(len(qu_usr_search_history), qu_usr_search_history)
+		#print(f"{'Query USER Search Phrase History'.center(100,'-')}")
+		#print(len(qu_usr_search_history), qu_usr_search_history)
 
-		print(f"{'Similar USER Search Phrase History'.center(100,'-')}")
-		print(len(similar_users_search_history), similar_users_search_history)
+		#print(f"{'Similar USER Search Phrase History'.center(100,'-')}")
+		#print(len(similar_users_search_history), similar_users_search_history)
 
 		for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
 			print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")

@@ -31,9 +31,9 @@ args = parser.parse_args()
 # how to run:
 # python nlf_analysis.py --inputDF /home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-sz=11 # >>>>>>>>> 12 original <<<<<<<<<<<
+sz=14 # >>>>>>>>> 12 original <<<<<<<<<<<
 params = {
-	'figure.figsize':	(sz*1.5, sz*0.85),  # W, H
+	'figure.figsize':	(sz*1.7, sz*0.9),  # W, H
 	'figure.dpi':		300,
 	'figure.autolayout': True,
 	#'figure.constrained_layout.use': True,
