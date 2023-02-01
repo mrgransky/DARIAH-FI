@@ -10,7 +10,7 @@ matplotlib.use("Agg")
 
 from utils import *
 from scipy.sparse import csr_matrix, coo_matrix
-from sklearn.metrics.pairwise import cosine_similarity, 
+from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
@@ -188,13 +188,13 @@ def analyze_search_results(df):
 	
 	st_t = time.time()
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
-	print(f"<<>> User-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-s:.2f} s")
+	print(f"<<>> User-based Similarity: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
 	topN_users(usr=args.qusr, sim_df=usr_similarity_df, dframe=df_cleaned)
 	print("<>"*50)
 
 	st_t = time.time()
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
-	print(f"<<>> Item-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-s:.2f} s")
+	print(f"<<>> Item-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
 
 	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
 	topN_nwp_title_issue_page(args.qtip, sim_df=itm_similarity_df)
@@ -206,14 +206,14 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 								}
 	print(f">> Getting {method} similarity...")
 
-	#similarity = cosine_similarity(sprs_mtx)
-	similarity = linear_kernel(sprs_mtx)
+	similarity = cosine_similarity( sprs_mtx )
+	#similarity = linear_kernel(sprs_mtx)
 	
 	plot_heatmap(mtrx=similarity.astype(np.float32), 
 							name_=method,
 							)
 
-	sim_df = pd.DataFrame(similarity#.astype(np.float32), 
+	sim_df = pd.DataFrame(similarity,#.astype(np.float32), 
 												index=df[method_dict.get(method)].unique(),
 												columns=df[method_dict.get(method)].unique(),
 												)
