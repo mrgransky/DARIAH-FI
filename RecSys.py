@@ -186,14 +186,18 @@ def analyze_search_results(df):
 
 	imp_fb_sparse_matrix = get_sparse_mtx(df_rec)
 	
+	st_t = time.time()
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
+	print(f"<<>> User-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-s:.2f} s")
 	topN_users(usr=args.qusr, sim_df=usr_similarity_df, dframe=df_cleaned)
-	print("-"*70)
+	print("<>"*50)
 
+	st_t = time.time()
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
+	print(f"<<>> Item-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-s:.2f} s")
+
 	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
 	topN_nwp_title_issue_page(args.qtip, sim_df=itm_similarity_df)
-	
 	print("-"*70)
 
 def get_similarity_df(df, sprs_mtx, method="user-based"):
@@ -213,10 +217,10 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 												index=df[method_dict.get(method)].unique(),
 												columns=df[method_dict.get(method)].unique(),
 												)
-	print(sim_df.shape)
+	#print(sim_df.shape)
 	#print(sim_df.info(verbose=True, memory_usage="deep"))
-	print(sim_df.head(25))
-	print("><"*60)
+	#print(sim_df.head(25))
+	#print("><"*60)
 
 	return sim_df
 

@@ -231,7 +231,7 @@ def all_queries(file_="", ts=None):
 	
 	s = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
-	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )	
+	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
 	print(f"<<>> Parsing Completed!\tElapsed_t: {time.time()-s:.2f} s\tFINAL df: {df.shape}")
 	print("*"*205)
 	
