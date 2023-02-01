@@ -184,7 +184,7 @@ def analyze_search_results(df):
 	imp_fb_sparse_matrix = get_sparse_mtx(df_rec)
 	
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
-	topN_users("ip17", usr_similarity_df, dframe=df_cleaned)
+	topN_users("ip1427", usr_similarity_df, dframe=df_cleaned)
 	print("-"*70)
 
 	itm_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix.T, method="item-based")
@@ -251,7 +251,7 @@ def topN_users(usr, sim_df, dframe, N=5):
 
 		for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
 			print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")
-		print(f"Since You {usr} Searched for Query Phrase {qu_usr_search_history}, "
+		print(f"Since you {usr} Searched for Query Phrase {qu_usr_search_history}, "
 					f"you might also be interested in {similar_users_search_history} Phrases...")
 		
 def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
