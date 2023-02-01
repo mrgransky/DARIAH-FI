@@ -10,7 +10,7 @@ matplotlib.use("Agg")
 
 from utils import *
 from scipy.sparse import csr_matrix, coo_matrix
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity, 
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
@@ -202,12 +202,14 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 								}
 	print(f">> Getting {method} similarity...")
 
-	similarity = cosine_similarity(sprs_mtx)
+	#similarity = cosine_similarity(sprs_mtx)
+	similarity = linear_kernel(sprs_mtx)
+	
 	plot_heatmap(mtrx=similarity.astype(np.float32), 
 							name_=method,
 							)
 
-	sim_df = pd.DataFrame(similarity.astype(np.float32), 
+	sim_df = pd.DataFrame(similarity#.astype(np.float32), 
 												index=df[method_dict.get(method)].unique(),
 												columns=df[method_dict.get(method)].unique(),
 												)
@@ -270,7 +272,7 @@ def topN_users(usr, sim_df, dframe, N=5):
 
 		for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
 			print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")
-		print(f"Since you {usr} Searched for Query Phrase {qu_usr_search_history}, "
+		print(f"Since you {usr} searched for Query Phrase {qu_usr_search_history}, "
 					f"you might also be interested in {similar_users_search_history} Phrases...")
 		
 def get_similar_users_details(sim_users_list, dframe, qu_usr=False):

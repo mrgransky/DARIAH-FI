@@ -31,7 +31,7 @@ args = parser.parse_args()
 # how to run:
 # python nlf_analysis.py --inputDF /home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-sz=14 # >>>>>>>>> 12 original <<<<<<<<<<<
+sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
 params = {
 	'figure.figsize':	(sz*1.7, sz*0.9),  # W, H
 	'figure.dpi':		300,
@@ -734,7 +734,7 @@ def plot_user(df,RES_DIR, N=50):
 		plt.close(fig)
 		########################################### OCR TERMS ###########################################
 
-	MY_DICT["Newspaper_Content_Parsed_Terms"] = lst_ocr
+	MY_DICT["Nwp_Parsed_Terms"] = lst_ocr
 	MY_DICT["None"] = lst_nan
 	MY_DICT["Query_Phrases"] = lst_q
 
