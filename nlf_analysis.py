@@ -6,7 +6,6 @@ import joblib
 import time
 import argparse
 import glob
-
 import numpy as np
 import pandas as pd
 
@@ -31,20 +30,20 @@ args = parser.parse_args()
 # how to run:
 # python nlf_analysis.py --inputDF /home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-sz=13 # >>>>>>>>> 12 original <<<<<<<<<<<
+sz=12
 params = {
-	'figure.figsize':	(sz*1.7, sz*0.9),  # W, H
-	'figure.dpi':		300,
+	'figure.figsize':	(sz*2.0, sz*1.1),  # W, H
+	'figure.dpi':		350,
 	'figure.autolayout': True,
 	#'figure.constrained_layout.use': True,
 	'legend.fontsize':	sz*0.8,
-	'axes.labelsize':	sz*0.2,
-	'axes.titlesize':	sz*0.2,
-	'xtick.labelsize':	sz*1.0,
-	'ytick.labelsize':	sz*1.0,
+	'axes.labelsize':	sz*1.0,
+	'axes.titlesize':	sz*1.0,
+	'xtick.labelsize':	sz*1.7,
+	'ytick.labelsize':	sz*1.7,
 	'lines.linewidth' :	sz*0.1,
 	'lines.markersize':	sz*0.8,
-	'font.size':		sz*1.0,
+	'font.size':		sz*1.5,
 	'font.family':		"serif",
 }
 pylab.rcParams.update(params)
@@ -244,7 +243,7 @@ def plot_language(df,RES_DIR, N=20):
 	plt.clf()
 	plt.close(fig)
 
-def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
+def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 	print(f">> Ploting query phrases | df: {df.shape}")
 
 	#df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
@@ -286,7 +285,8 @@ def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
 	plt.clf()
 	plt.close()
 
-	plt.subplots()
+	#plt.subplots()
+	plt.figure()
 	p = sns.barplot(x=df_cleaned["query_word"].value_counts()[:Nq].index,
 									y=df_cleaned["query_word"].value_counts()[:Nq].values,
 									palette=clrs, 
@@ -299,12 +299,12 @@ def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
 	p.axes.set_title(	f"Top-{Nq} Query Phrases (unique: {len(df_cleaned['query_word'].value_counts())})")
 	plt.ylabel("Counts", )
 	plt.xlabel("Query Phrase",)
-	plt.xticks(rotation=90)
+	plt.xticks(rotation=90, fontsize=17)
 	for container in p.containers:
 			p.bar_label(container,
 									label_type="center",
 									padding=3.0,
-									size=10,
+									size=14,
 									color="black",
 									rotation=90,
 									bbox={"boxstyle": "round", 
@@ -316,7 +316,7 @@ def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
 									)
 
 	sns.despine(left=True, bottom=True)
-	plt.savefig(os.path.join( RES_DIR, f"top_{Nq}_query_phrases.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top_{Nq}_query_phrases.png" ), bbox_inches="tight",)
 	plt.clf()
 	plt.close()
 
@@ -334,6 +334,9 @@ def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
 
 	#print(MY_DICT)
 
+
+
+	
 	WIDTH = 0.4
 	BOTTOM = 0
 
@@ -357,7 +360,6 @@ def plot_query_phrases(df,RES_DIR, Nq=100, Nu=25):
 							#ncol=len(MY_DICT),
 							fontsize=8.0,
 							)
-
 	plt.suptitle(f"Top-{Nq} Query Phrases Searched by Top-{Nu} Users")
 	axs.set_ylabel('Counts')
 	axs.set_xlabel('\nQuery Phrases')
@@ -699,7 +701,7 @@ def plot_user(df,RES_DIR, N=50):
 		########################################### QUERY PHRASES ###########################################
 
 		########################################### OCR TERMS ###########################################
-		fig = plt.figure(figsize=(19,15))
+		fig = plt.figure(figsize=(28,15))
 		axs = fig.add_subplot(121)
 		patches, _ = axs.pie(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts(),
 												colors=clrs,
@@ -720,7 +722,7 @@ def plot_user(df,RES_DIR, N=50):
 							],
 							loc="upper left" if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) > 25 else "center",
 							frameon=False,
-							fontsize=16 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) < 25 else 13,
+							fontsize=20 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) < 55 else 18,
 							ncol=2 if len(df_tmp[ (df_tmp["user_ip"] == usr) ].nwp_content_parsed_term.value_counts()) > 55 else 1,
 							)
 		
@@ -728,7 +730,7 @@ def plot_user(df,RES_DIR, N=50):
 		#plt.tight_layout()
 		plt.suptitle(f"USER: {usr}\nNewspaer Content Parsed Terms (Unique: {len(df_tmp[ (df_tmp['user_ip'] == usr) ].nwp_content_parsed_term.value_counts())} Total: {c_ocr})")
 		plt.savefig(os.path.join( RES_DIR, f"pie_usr_{usr}_nwp_content_parsed_term.png" ), 
-								#bbox_inches="tight",
+								bbox_inches="tight",
 								)
 		#plt.clf()
 		plt.close(fig)
@@ -740,7 +742,7 @@ def plot_user(df,RES_DIR, N=50):
 
 	#print(MY_DICT)
 
-	fig, axs = plt.subplots()
+	fig, axs = plt.subplots(figsize=(25, 13))
 	WIDTH = 0.35
 	BOTTOM = 0
 	magnifier = 1
@@ -774,7 +776,7 @@ def plot_user(df,RES_DIR, N=50):
 			cell.set_height(0.03)
 	
 	the_table.auto_set_font_size(False)
-	the_table.set_fontsize(10.0)
+	the_table.set_fontsize(12.2)
 	the_table.scale(1, 3)
 	axs.set_xticklabels([])	
 
@@ -786,12 +788,12 @@ def plot_user(df,RES_DIR, N=50):
 							fontsize=15,
 							)
 
-	plt.suptitle(f"Top-{N} Users")
+	plt.suptitle(f"Top-{N} Users | Unique: {len(df_tmp['user_ip'].value_counts())} (total: {df_tmp['user_ip'].shape[0]})")
 	axs.set_ylabel('User Activity [Presence]')
 	#axs.set_xlabel('\nUsers')
 	#axs.tick_params(axis='x', rotation=90)
 	axs.spines[['top', 'right']].set_visible(False)
-	plt.savefig(os.path.join( RES_DIR, f"top{N}_usrs_QU_OCR_NaN.png" ), )
+	plt.savefig(os.path.join( RES_DIR, f"top{N}_usrs_QU_OCR_NaN.png" ), bbox_inches="tight")
 	plt.clf()
 	plt.close(fig)
 
@@ -1015,7 +1017,7 @@ def main():
 	#plot_hourly_activity(df, RES_DIR=result_directory)
 
 	# users:
-	plot_user(df, RES_DIR=result_directory)
+	#plot_user(df, RES_DIR=result_directory)
 
 	# language
 	#plot_language(df, RES_DIR=result_directory)
@@ -1030,7 +1032,7 @@ def main():
 	#plot_usr_doc_type(df, RES_DIR=result_directory)
 
 	# query words & terms:
-	#plot_query_phrases(df, RES_DIR=result_directory)
+	plot_query_phrases(df, RES_DIR=result_directory)
 	#plot_nwp_content_parsed_term(df, RES_DIR=result_directory)
 
 if __name__ == '__main__':

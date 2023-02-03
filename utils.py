@@ -269,7 +269,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	df = df.dropna(subset=['user_ip', 'referer'])
 	#print(f">> After droping None of user_ip & referer: {df.shape}")
 	"""
-	print(f">> Before Duplicate removal:")
+	print(f">> Before Duplicate removal:") # youtube tutorial on drop dups: https://www.youtube.com/watch?v=xi0vhXFPegw (time: 15:50)
 	print(f"\tuser & referer dups: {df[df.duplicated(subset=['user_ip', 'referer'])].shape[0]}")
 	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
 	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
@@ -282,7 +282,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	df = df.reset_index(drop=True)
 
 	if TIMESTAMP:
-		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
+		print(f"\t\t\tobtain slice of DF: {df.shape} within timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
 		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
 		df_ts = df_ts.reset_index(drop=True)
 		return df_ts
@@ -356,8 +356,7 @@ def load_df(infile=""):
 	st_t = time.time()
 	df_dict = joblib.load(fpath)
 	#print(list(df_dict.keys()))# dict:{key(nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log) : value (df)}
-	elapsed_t = time.time() - st_t
-	print(f"\t\tElapsed_t: {elapsed_t:.2f} s")
+	print(f"\t\tElapsed_t: {time.time() - st_t:.2f} s")
 	df = df_dict[list(df_dict.keys())[0]]
 	return df	
 

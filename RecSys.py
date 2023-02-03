@@ -9,20 +9,34 @@ import matplotlib
 matplotlib.use("Agg")
 
 from utils import *
+
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+import nltk
+nltk.download(['punkt', 
+							 'averaged_perceptron_tagger', 
+							 'stopwords',
+							 'wordnet',
+							 'omw-1.4',
+							 ],
+							quiet=True, 
+							raise_on_error=True,
+							)
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
+parser.add_argument('--qphrase', default="ystävä", type=str) # smallest
 
 args = parser.parse_args()
 
 # how to run:
 # python RecSys.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-sz=15
+sz=13
 params = {
 		'figure.figsize':	(sz*1.0, sz*0.7),  # W, H
 		'figure.dpi':		200,
@@ -40,45 +54,142 @@ params = {
 	}
 pylab.rcParams.update(params)
 
-def plot_heatmap(mtrx, name_="user-based"):
+
+#print(nltk.corpus.stopwords.fileids())
+#STOPWORDS = set(nltk.corpus.stopwords.words('english'))
+STOPWORDS = set(nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids()))
+print(len(STOPWORDS), STOPWORDS)
+
+MIN_WORDS = 4
+MAX_WORDS = 200
+
+PATTERN_S = re.compile("\'s")  # matches `'s` from text  
+PATTERN_RN = re.compile("\\r\\n") #matches `\r` and `\n`
+PATTERN_PUNC = re.compile(r"[^\w\s]") # matches all non 0-9 A-z whitespace 
+
+def clean_text(text):
+	"""
+	Series of cleaning. String to lower case, remove non words characters and numbers.
+	text (str): input text
+	return (str): modified initial text
+	"""
+	text = text.lower()  # lowercase text
+	text = re.sub(PATTERN_S, ' ', text)
+	text = re.sub(PATTERN_RN, ' ', text)
+	text = re.sub(PATTERN_PUNC, ' ', text)
+	return text
+
+def tokenizer(sentence, min_words=MIN_WORDS, max_words=MAX_WORDS, stopwords=STOPWORDS, lemmatize=True):
+	"""
+	Lemmatize, tokenize, crop and remove stop words.
+	"""
+	if lemmatize:
+		stemmer = nltk.stem.WordNetLemmatizer()
+		tokens = [stemmer.lemmatize(w) for w in nltk.tokenize.word_tokenize(sentence)]
+	else:
+		tokens = [w for w in nltk.tokenize.word_tokenize(sentence)]
+	token = [w for w in tokens if (len(w) > min_words and len(w) < max_words and w not in stopwords)]
+	return tokens    
+
+def clean_sentences(df):
+	print(f'<> cleaning sentences of {df.shape}')
+	df['clean_sentence'] = df['sentence'].apply(clean_text)
+	df['tok_lem_sentence'] = df['clean_sentence'].apply(lambda x: tokenizer(x, 
+																																					min_words=MIN_WORDS, 
+																																					max_words=MAX_WORDS, 
+																																					stopwords=STOPWORDS, 
+																																					lemmatize=True,
+																																				)
+																										)
+	print(f'<> after cleaned sentences: {df.shape}')
+	return df
+
+def extract_best_indices(m, topk, mask=None):
+	"""
+	Use sum of the cosine distance over all tokens.
+	m (np.array): cos matrix of shape (nb_in_tokens, nb_dict_tokens)
+	topk (int): number of indices to return (from high to lowest in order)
+	"""
+	# return the sum on all tokens of cosinus for each sentence
+	if len(m.shape) > 1:
+		cos_sim = np.mean(m, axis=0) 
+	else: 
+		cos_sim = m
+	index = np.argsort(cos_sim)[::-1] # from highest idx to smallest score 
+	if mask is not None:
+		assert mask.shape == m.shape
+		mask = mask[index]
+	else:
+		mask = np.ones(len(cos_sim))
+	mask = np.logical_or(cos_sim[index] != 0, mask) #eliminate 0 cosine distance
+	best_index = index[mask][:topk]  
+	return best_index
+
+def get_TFIDF_RecSys(dframe, qu_phrase="kirjasto", user_name=args.qusr, nwp_title_issue_page_name=args.qtip, topN=5):
+	print(f"{'RecSys (TFIDF)'.center(80, '-')}")
+	
+	print(f">> Cleaning df: {dframe.shape} with NaN rows..")
+	dframe = dframe[~dframe["nwp_content_text"].isna()]
+	print(f">> Cleaned df: {dframe.shape}")
+
+	# Adapt stop words
+	token_stop = tokenizer(' '.join(STOPWORDS), lemmatize=True) # orig: False
+	print(f"tokenizer stop words: ({len(token_stop)})")
 	st_t = time.time()
-	hm_title = f"{name_} similarity heatmap".capitalize()
-	print(f"{hm_title.center(60,'-')}")
-	print(type(mtrx), mtrx.shape, mtrx.nbytes)
-	RES_DIR = make_result_dir(infile=args.inputDF)
+	# Fit TFIDF # not time consuming...
+	tfidf_vec = TfidfVectorizer(#min_df=5,
+																#ngram_range=(1, 2),
+																#tokenizer=Tokenizer(),
+																tokenizer=tokenizer,
+																stop_words=token_stop,
+																)
+	#TODO: saving as a dump file is highly recommended!
+	print(f">> Getting TFIDF RF matrix...")
+	#print(dframe['nwp_content_text'].values)
+	tfidf_matrix_rf = tfidf_vec.fit_transform(dframe['nwp_content_text'].astype(str).values)
+	#tfidf_matrix_rf = tfidf_vec.fit_transform(dframe['clean_nwp_content_text'].values)#~XX sec!
+	print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 
-	f, ax = plt.subplots()
+	feat_names = tfidf_vec.get_feature_names_out()
 
-	divider = make_axes_locatable(ax)
-	cax = divider.append_axes('right', size='5%', pad=0.05)
-	im = ax.imshow(mtrx, 
-								cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
-								)
-	cbar = ax.figure.colorbar(im,
-														ax=ax,
-														label="Similarity",
-														orientation="vertical",
-														cax=cax,
-														ticks=[0.0, 0.5, 1.0],
-														)
+	vocabs = tfidf_vec.vocabulary_
+	print(len(feat_names), len(vocabs))
+	#print(feat_names[:50])
+	#print(json.dumps(vocabs, indent=2, ensure_ascii=False))
 
-	ax.set_ylabel(f"{name_.split('-')[0].capitalize()}")
-	#ax.set_yticks([])
-	#ax.set_xticks([])
-	ax.xaxis.tick_top()
-	ax.tick_params(axis='x', labelrotation=90, labelsize=10.0)
-	ax.tick_params(axis='y', labelrotation=0, labelsize=10.0)
-	plt.suptitle(f"{hm_title}\n{mtrx.shape[0]} Unique Elements")
-	#print(os.path.join( RES_DIR, f'{name_}_similarity_heatmap.png' ))
-	plt.savefig(os.path.join( RES_DIR, f"{name_}_similarity_heatmap.png" ), bbox_inches='tight')
-	plt.clf()
-	plt.close(f)
-	print(f"{f'Elapsed_t: {time.time()-st_t:.3f} sec'.center(60, '-')}")
+	# Embed qu_phrase
+	tokens = [str(tok) for tok in tokenizer(qu_phrase)]
+	print(f">> tokenize >> {qu_phrase} <<\t{len(tokens)} {tokens}")
 
-def analyze_search_results(df):
-	print(f">> Analysing Search Results DF: {df.shape}")
-	print(df.info(verbose=True, memory_usage="deep"))
-	print("#"*200)
+	tfidf_matrix_qu = tfidf_vec.transform(tokens)
+	print(f"RF: {tfidf_matrix_rf.shape}\tQU: {tfidf_matrix_qu.shape}")# (n_sample, n_vocab))
+	#print(tfidf_matrix_qu.toarray())
+
+	# Create list with similarity between query and dataset
+	kernel_matrix = cosine_similarity(tfidf_matrix_qu, tfidf_matrix_rf)
+	print(kernel_matrix.shape)
+
+	# Best cosine distance for each token independantly
+	best_index = extract_best_indices(kernel_matrix, topk=topN)
+	print(best_index)
+	print(f"> You searched for {qu_phrase}\tTop-{topN} Recommendations:")
+	#return dframe[["query_word", ""]]
+	
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(dframe[["query_word", 
+									"nwp_content_title", 
+									"nwp_content_issue", 
+									"nwp_content_page", 
+									"nwp_content_highlighted_term",
+									"nwp_content_parsed_term",
+									"referer",
+									]
+								].iloc[best_index]
+					)
+	
+	return best_index
+
+def get_basic_RecSys(df, user_name=args.qusr, nwp_title_issue_page_name=args.qtip):
 	#print(df[["user_ip", "query_word", "search_results", "nwp_content_parsed_term"]].head(50))
 	#return
 	"""
@@ -189,7 +300,7 @@ def analyze_search_results(df):
 	st_t = time.time()
 	usr_similarity_df = get_similarity_df(df_rec, imp_fb_sparse_matrix, method="user-based")
 	print(f"<<>> User-based Similarity: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
-	topN_users(usr=args.qusr, sim_df=usr_similarity_df, dframe=df_cleaned)
+	topN_users(usr=user_name, sim_df=usr_similarity_df, dframe=df_cleaned)
 	print("<>"*50)
 
 	st_t = time.time()
@@ -197,8 +308,42 @@ def analyze_search_results(df):
 	print(f"<<>> Item-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
 
 	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
-	topN_nwp_title_issue_page(args.qtip, sim_df=itm_similarity_df)
+	topN_nwp_title_issue_page(nwp_tip=nwp_title_issue_page_name, sim_df=itm_similarity_df)
 	print("-"*70)
+
+def plot_heatmap(mtrx, name_="user-based"):
+	st_t = time.time()
+	hm_title = f"{name_} similarity heatmap".capitalize()
+	print(f"{hm_title.center(60,'-')}")
+	print(type(mtrx), mtrx.shape, mtrx.nbytes)
+	RES_DIR = make_result_dir(infile=args.inputDF)
+
+	f, ax = plt.subplots()
+
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes('right', size='5%', pad=0.05)
+	im = ax.imshow(mtrx, 
+								cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
+								)
+	cbar = ax.figure.colorbar(im,
+														ax=ax,
+														label="Similarity",
+														orientation="vertical",
+														cax=cax,
+														ticks=[0.0, 0.5, 1.0],
+														)
+
+	ax.set_ylabel(f"{name_.split('-')[0].capitalize()}")
+	#ax.set_yticks([])
+	#ax.set_xticks([])
+	ax.xaxis.tick_top()
+	ax.tick_params(axis='x', labelrotation=90, labelsize=10.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=10.0)
+	plt.suptitle(f"{hm_title}\n{mtrx.shape[0]} Unique Elements")
+	#print(os.path.join( RES_DIR, f'{name_}_similarity_heatmap.png' ))
+	plt.savefig(os.path.join( RES_DIR, f"{name_}_similarity_heatmap.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
 
 def get_similarity_df(df, sprs_mtx, method="user-based"):
 	method_dict = {"user-based": "user_ip", 
@@ -297,6 +442,13 @@ def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
 
 	return word_search_history
 
+def run_RecSys(df):
+	print(f">> Running RecSys for DF: {df.shape}")
+	print(df.info(verbose=True, memory_usage="deep"))
+	print("#"*200)
+	#get_basic_RecSys(df, )
+	get_TFIDF_RecSys(qu_phrase=args.qphrase, dframe=df)
+
 def main():
 	print(f">> Running {__file__}")
 	df = load_df(infile=args.inputDF)
@@ -316,7 +468,7 @@ def main():
 	print(df[df.select_dtypes(include=[object]).columns].describe().T)
 	"""
 
-	analyze_search_results(df)
+	run_RecSys(df)
 	#return
 
 if __name__ == '__main__':
