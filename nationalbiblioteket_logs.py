@@ -135,31 +135,38 @@ def all_queries(file_="", ts=None):
 	#save_(df, infile=file_)
 	#return
 
+	print(f"{f'{get_query_log(args.query)} page analysis'.center(100, '*')}\n"
+				f"search pages: {df.referer.str.count('/search').sum()}, "
+				f"collection pages: {df.referer.str.count('/collections').sum()}, "
+				f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "
+				f"paper-for-day pages: {df.referer.str.count('/papers-for-day').sum()}, "
+				f"clippings pages: {df.referer.str.count('/clippings').sum()}, "
+				f"newspaper content pages: {df.referer.str.count('term=').sum()}, "
+				#f"unknown pages: {df.referer.str.count('/collections').sum()}."
+				)
+	print("*"*150)
+
 	def analyze_(df):
 		raw_url = df.referer
-		#print(f"RAW URL: {raw_url}")
-		"""
 		print(f"RAW URL: {raw_url}")
-		if 'search?query=' in raw_url:
-			print(f"\tQuery found in raw url...")
-		"""
 		r = checking_(raw_url)
 		if r is None:
 			return df
 
 		in_url = r.url
-		#print(f"\tUpdated: {in_url}")
-		"""
-		print(f"\tUpdated URL: {in_url}")
-		if 'search?query=' in in_url:
-			print(f"\tQuery found in updated url...")
-		"""
+		print(f"\tUpdated: {in_url}")
 		parsed_url, parameters = get_parsed_url_parameters(in_url)
-		#print(f"Parsed: {parsed_url}")
-		#print(f"Parameters: {parameters}")
+		print(f"Parsed: {parsed_url}")
+		print(f"Parameters:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
+	
+		# clippings:
+		if '/clippings' in in_url:
+			df["clipping_query_phrase"] = parameters.get("query") 
+			df["clipping_results"] = scrap_clipping_page(URL=in_url)
 
-		#return 
-
+		print("#"*100)
+		return df
+		"""
 		# Query Extraction for up to 20 search results: 
 		if parameters.get("query"):
 			if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
@@ -183,35 +190,20 @@ def all_queries(file_="", ts=None):
 			if parameters.get("resultType"): df["result_type"] = ",".join(parameters.get("resultType"))
 		
 			#print(f"\nurl: {in_url}")
-			my_query_word = ",".join(parameters.get("query"))
+			#my_query_word = ",".join(parameters.get("query")) # 'global warming'
+			my_query_word = parameters.get("query") # ['global warming']
 			df["query_word"] = my_query_word
+
 			#print("#"*65)
 			#print(f"\tEXECUTE BASH REST API for {my_query_word}")
 			#print("#"*65)
 
-			#json_results = rest_api(parameters)
-			#print()
-			#df["search_results"] = rest_api(parameters)
-
-			# remove json_results
+			df["search_results"] = scrap_search_page(in_url)
 
 			# get 20 search results using web scraping:
-			df["search_results"] = get_all_search_details(in_url)
-		
+			#df["search_results"] = get_all_search_details(in_url)
 
 		# OCR extraction:
-		"""
-		if parameters.get("term") and parameters.get("page"):
-			df["ocr_term"] = ",".join(parameters.get("term"))
-			df["ocr_page"] = parameters.get("page")
-			txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-			#print(f">> page-X.txt available?\t{txt_pg_url}\t")		
-			text_response = checking_(txt_pg_url)
-			if text_response is not None: # 200
-				#print(f"\t\t\tYES >> loading...\n")
-				#return text_response.text
-				df["ocr_text"] = text_response.text
-		"""
 		if parameters.get("term"):
 			ttl, dtyp, issue, publisher, pub_date, pub_place, lang, trm, hw, pg, txt = scrap_ocr_page_content(in_url)
 			df["nwp_content_title"] = ttl
@@ -228,16 +220,45 @@ def all_queries(file_="", ts=None):
 
 		#print("#"*200)
 		return df
+		"""
 	
-	s = time.time()
+	parsing_t = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
-	df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
-	print(f"<<>> Parsing Completed!\tElapsed_t: {time.time()-s:.2f} s\tFINAL df: {df.shape}")
-	print("*"*205)
+	#df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
+
+	print(f">> Scraping Newspaper Content Pages...")
+	st_nwp_content_t = time.time()
+	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
+	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
+	print(f"{f'Elapsed_t: {time.time()-st_nwp_content_t:.2f} sec'.center(60, '#')}")
+
+	print(f">> Scraping Collection Pages...")
+	st_collection_t = time.time()
+	df["collection_referer"] = df[df.referer.str.contains('/collections')]["referer"]
+	df["collection_query_phrase"] = df["collection_referer"].map(get_query_phrase, na_action='ignore')
+	df["collection_results"] = df["collection_referer"].map(scrap_collection_page, na_action='ignore')
+	print(f"{f'Elapsed_t: {time.time()-st_collection_t:.2f} sec'.center(60, '#')}")
+
+	print(f">> Scraping Clipping Pages...")
+	st_clipping_t = time.time()
+	df["clipping_referer"] = df[df.referer.str.contains('/clippings')]["referer"]
+	df["clipping_query_phrase"] = df["clipping_referer"].map(get_query_phrase, na_action='ignore')
+	df["clipping_results"] = df["clipping_referer"].map(scrap_clipping_page, na_action='ignore')
+	print(f"{f'Elapsed_t: {time.time()-st_clipping_t:.2f} sec'.center(60, '#')}")
+
+	print(f">> Scraping Search Pages...")
+	st_search_t = time.time()
+	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
+	df["search_query_phrase"] = df["search_referer"].map(get_query_phrase, na_action='ignore')
+	df["search_results"] = df["search_referer"].map(scrap_search_page, na_action='ignore')
+	print(f"{f'Elapsed_t: {time.time()-st_search_t:.2f} sec'.center(60, '#')}")
+	
+	print(f"Parsing Completed!\tElapsed_t: {time.time()-parsing_t:.2f} s\tFINAL df: {df.shape}")
+	print("*"*150)
 	
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("<>"*80)
-	
+
 	cols = list(df.columns)
 	print(len(cols), cols)
 	"""
@@ -276,7 +297,7 @@ def run():
 	"""
 	# run all log files using array in batch	
 	all_queries(file_=get_query_log(QUERY=args.query),
-							#ts=["02:50:00", "02:59:59"],
+							#ts=["14:30:00", "14:56:59"],
 							)
 	
 	print(f"\t\tCOMPLETED!")

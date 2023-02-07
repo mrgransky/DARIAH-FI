@@ -442,15 +442,30 @@ def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
 
 	return word_search_history
 
+def analyze_scraped_data_with_rest_api(df):
+	#print(json.dumps(df["search_results"][0], indent=2, ensure_ascii=False))
+
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		#print(df[["search_query_phrase", "search_results"]].head(10))
+		print(df[["search_query_phrase", "search_results", "search_referer"]].iloc[1])
+
+	print("<>"*60)
+	print(json.dumps(df["search_results"][1], indent=2, ensure_ascii=False))
+	print(type(df["search_results"][1]), len(df["search_results"][1]))
+
+
 def run_RecSys(df):
-	print(f">> Running RecSys for DF: {df.shape}")
+	#print(f"Running RecSys for DF: {df.shape}")
+	print(f"{f'Running {__file__} for DF: {df.shape}'.center(80, '-')}")
+
 	print(df.info(verbose=True, memory_usage="deep"))
-	print("#"*200)
+	print("#"*100)
+	analyze_scraped_data_with_rest_api
+
 	#get_basic_RecSys(df, )
-	get_TFIDF_RecSys(qu_phrase=args.qphrase, dframe=df)
+	#get_TFIDF_RecSys(qu_phrase=args.qphrase, dframe=df)
 
 def main():
-	print(f">> Running {__file__}")
 	df = load_df(infile=args.inputDF)
 	"""
 	print(f"DF: {df.shape}")

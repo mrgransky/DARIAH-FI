@@ -295,6 +295,8 @@ def checking_(url):
 		r = requests.get(url)
 		r.raise_for_status()
 		#print(f">> HTTP family: {r.status_code} => Exists: {r.ok}")
+		#print(r.headers)
+		#print()
 		return r
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		#print(url)
@@ -305,6 +307,7 @@ def checking_(url):
 					requests.exceptions.ConnectionError, 
 					requests.exceptions.RequestException, 
 					requests.exceptions.TooManyRedirects,
+					requests.exceptions.InvalidSchema,
 					Exception, 
 					ValueError, 
 					TypeError, 
@@ -362,14 +365,26 @@ def load_df(infile=""):
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
+	
 	p_url = urllib.parse.urlparse(inp_url)
 	#print(parsed_url)
 
 	#print(f">> Explore url parameters ...")
 	params = urllib.parse.parse_qs( p_url.query, keep_blank_values=True)
 	#print(parameters)
-
 	return p_url, params
+
+def get_query_phrase(inp_url):
+	#print(f"\nParsing {inp_url}")
+	
+	p_url = urllib.parse.urlparse(inp_url)
+	#print(parsed_url)
+
+	#print(f">> Explore url parameters ...")
+	params = urllib.parse.parse_qs( p_url.query, keep_blank_values=True)
+	#print(parameters)
+	return params.get("query")
+
 
 def just_test_for_expected_results(df):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
