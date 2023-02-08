@@ -191,67 +191,8 @@ def get_TFIDF_RecSys(dframe, qu_phrase="kirjasto", user_name=args.qusr, nwp_titl
 	return best_index
 
 def get_basic_RecSys(df, user_name=args.qusr, nwp_title_issue_page_name=args.qtip):
-	#print(df[["user_ip", "query_word", "search_results", "nwp_content_parsed_term"]].head(50))
-	#return
-	"""
-	#print("<>"*50)
-	#print(df["user_ip"].value_counts())
-
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
-		print(df[(df["user_ip"] == "ip3542")][["user_ip",
-																					"timestamp",
-																					"query_word", 
-																					"nwp_content_parsed_term", 
-																					"nwp_content_title", 
-																					"nwp_content_issue", 
-																					"nwp_content_page",
-																					#"referer",
-																					#"nwp_content_highlighted_term",
-																					]])
-	print("#"*200)
-	for i in [382, 1251, 2410, 3502, ]: # query phrase: onnettomuus itäkylä
-		tst_res = df.loc[i, "search_results"]
-		for k, v in tst_res.items(): 
-			print(i, 
-						k, 
-						tst_res.get(k).get("newspaper_title"), 
-						tst_res.get(k).get("newspaper_issue"), 
-						tst_res.get(k).get("newspaper_page"),
-						#tst_res.get(k).get("newspaper_snippet_highlighted_words"),
-						tst_res.get(k).get("newspaper_content_ocr_highlighted_words"),						
-						)
-		#print(json.dumps(tst_res.get("result_0"), indent=1, ensure_ascii=False) )
-		print("<>"*50)
-	"""
-	#return	
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
 	print(f">> Removed rows with None Query Phrases: {df_cleaned.shape}")
-	#print(df_cleaned.info(verbose=True, memory_usage="deep"))
-	#print("%"*90)	
-	"""	
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1100):
-		print(df[(df["user_ip"] == "ip3542") & ((df["query_word"] == "onnettomuus itäkylä"))][["search_results"]])
-	
-	print(df_cleaned[["user_ip", "query_word", "search_results"]].head(50))
-	print("<>"*50)
-
-	print("#"*45)
-	print(f"< unique > users: {len(df_cleaned['user_ip'].unique())} | query phrases: {len(df_cleaned['query_word'].unique())}")
-	print("#"*45)
-	idx = np.random.choice(df_cleaned.shape[0]+1)
-	print(f"Ex) search results of sample: {idx}")
-	
-	with pd.option_context('display.max_colwidth', 500):
-		print(df_cleaned.loc[idx, ["user_ip", "query_word", "referer"]])
-
-	one_result = df_cleaned.loc[idx, "search_results"]
-	
-	#print(json.dumps(one_result, indent=1, ensure_ascii=False))
-	print(f"{len(one_result)} results: {list(one_result.keys())}")
-	print(list(one_result["result_0"].keys()))
-	#print("-"*100)
-	#return
-	"""
 
 	title_issue_pg = []
 	usrs = []
@@ -350,7 +291,7 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 	method_dict = {"user-based": "user_ip", 
 								"item-based": "title_issue_page",
 								}
-	print(f">> Getting {method} similarity...")
+	print(f">> Getting {method} similarity of sparse matrix: {sprs_mtx.shape} | {type(sprs_mtx)}...")
 
 	similarity = cosine_similarity( sprs_mtx )
 	#similarity = linear_kernel(sprs_mtx)
@@ -373,12 +314,19 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 def get_sparse_mtx(df):
 	print(f"Getting Sparse Matrix: {df.shape}".center(80, '-'))
 	print(list(df.columns))
-	sparse_mtx = csr_matrix( (df["implicit_feedback"], (df["user_index"], df["nwp_tip_index"],)) ) # num, row, col
+	print(df.dtypes)
+	print(f">> Checking positive indices?")
+	assert np.all(df["user_index"] >= 0)
+	assert np.all(df["nwp_tip_index"] >= 0)
+	print(f">> Done!")
+
+	sparse_mtx = csr_matrix( ( df["implicit_feedback"], (df["user_index"], df["nwp_tip_index"]) ), dtype=np.int8 ) # num, row, col
+	#csr_matrix( ( data, (row, col) ), shape=(3, 3))
 	##########################Sparse Matrix info##########################
 	print("#"*110)
 	print(f"Sparse: {sparse_mtx.shape} : |elem|: {sparse_mtx.shape[0]*sparse_mtx.shape[1]}")
 	print(f"<> Non-zeros vals: {sparse_mtx.data}")# Viewing stored data (not the zero items)
-	print(sparse_mtx.toarray()[:25, :18])
+	#print(sparse_mtx.toarray()[:25, :18])
 	print(f"<> |Non-zero vals|: {sparse_mtx.count_nonzero()}") # Counting nonzeros
 	print("#"*110)
 	##########################Sparse Matrix info##########################
@@ -460,7 +408,7 @@ def get_search_title_issue_page(results_list):
 def get_content_title_issue_page(results_dict):
 	return f'{results_dict.get("title")}_{results_dict.get("issue")}_{results_dict.get("page")[0]}'
 
-def analyze_scraped_data_with_rest_api(df):
+def get_basic_RecSys_rest_api(df, user_name=args.qusr, nwp_title_issue_page_name=args.qtip):
 	#print(df.head(30))
 	print(f"Search".center(80, "-"))
 	df_search = pd.DataFrame()
@@ -507,6 +455,7 @@ def analyze_scraped_data_with_rest_api(df):
 												)
 
 	df_merged["implicit_feedback"] = (0.5 * df_merged["snippet_highlighted_words"]) + df_merged["content_highlighted_words"]
+
 	print(df_merged.shape)
 	print(df_merged["title_issue_page"].isna().sum())
 	print(df_merged.head(20))
@@ -518,7 +467,6 @@ def analyze_scraped_data_with_rest_api(df):
 	print(f"< unique > user_ip_l: {len(df_merged['user_ip_l'].unique())}")
 	print(f"< unique > user_ip_r: {len(df_merged['user_ip_r'].unique())}")
 
-
 	print(f"Concatinating".center(80, "-"))
 	df_concat = pd.concat([df_search, df_content],)
 
@@ -528,8 +476,9 @@ def analyze_scraped_data_with_rest_api(df):
 												)
 
 	df_concat["implicit_feedback"] = (0.5 * df_concat["snippet_highlighted_words"]) + df_concat["content_highlighted_words"]
+	df_concat["implicit_feedback"] = df_concat["implicit_feedback"].astype(np.float32)
 
-	df_concat["nwp_tip_index"] = df_concat["title_issue_page"].astype("category").cat.codes
+	df_concat["nwp_tip_index"] = df_concat["title_issue_page"].fillna('UNAVAILABLE').astype("category").cat.codes
 	df_concat["user_index"] = df_concat["user_ip"].astype("category").cat.codes
 
 	print(df_concat.shape)
@@ -537,6 +486,7 @@ def analyze_scraped_data_with_rest_api(df):
 	print(df_concat.head(20))
 	print(df_concat.info(verbose=True, memory_usage="deep"))
 	print("<>"*100)
+
 	#print(df_merged[df_merged['implicit_feedback'].notnull()].tail(60))
 	#print(f"< unique > tip: {len(df_concat['title_issue_page'].unique())}")
 	#print(f"< unique > user_ip: {len(df_concat['user_ip'].unique())}")
@@ -552,7 +502,7 @@ def analyze_scraped_data_with_rest_api(df):
 	st_t = time.time()
 	usr_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix, method="user-based")
 	print(f"<<>> User-based Similarity: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
-	topN_users(usr=user_name, sim_df=usr_similarity_df, dframe=df_cleaned)
+	topN_users(usr=user_name, sim_df=usr_similarity_df, dframe=df_concat)
 	print("<>"*50)
 
 	st_t = time.time()
@@ -563,15 +513,13 @@ def analyze_scraped_data_with_rest_api(df):
 	topN_nwp_title_issue_page(nwp_tip=nwp_title_issue_page_name, sim_df=itm_similarity_df)
 	print("-"*70)
 
-
-
 def run_RecSys(df):
 	#print(f"Running RecSys for DF: {df.shape}")
 	print(f"{f'Running {__file__} for DF: {df.shape}'.center(80, '-')}")
 
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("#"*100)
-	analyze_scraped_data_with_rest_api(df)
+	get_basic_RecSys_rest_api(df)
 
 	#get_basic_RecSys(df, )
 	#get_TFIDF_RecSys(qu_phrase=args.qphrase, dframe=df)

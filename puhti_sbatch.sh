@@ -1,15 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J df_update_usr_referer_ts
+#SBATCH -J df_rest_api_updated
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=hugemem_longrun
-#SBATCH --mem-per-cpu=354G
+#SBATCH --mem-per-cpu=358G
 #SBATCH --time=13-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
 #SBATCH --array=0-1
+
 # # # # # # SBATCH --array=0-69
 # # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 
