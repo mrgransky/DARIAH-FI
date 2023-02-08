@@ -38,7 +38,7 @@ elif [ $user == 'alijanif' ]; then
 fi
 
 #python nationalbiblioteket.py
-python nationalbiblioteket_logs.py --query $SLURM_ARRAY_TASK_ID
+python nationalbiblioteket_logs.py --saveDF True --query $SLURM_ARRAY_TASK_ID
 #python nationalbiblioteket_logs.py
 
 done_txt="SLURM JOB ENDED AT: `date`"
