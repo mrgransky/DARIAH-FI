@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
+import ast
 
 import seaborn as sns
 
@@ -370,6 +371,8 @@ def get_similarity_df(df, sprs_mtx, method="user-based"):
 	return sim_df
 
 def get_sparse_mtx(df):
+	print(f"Getting Sparse Matrix: {df.shape}".center(80, '-'))
+	print(list(df.columns))
 	sparse_mtx = csr_matrix( (df["implicit_feedback"], (df["user_index"], df["nwp_tip_index"],)) ) # num, row, col
 	##########################Sparse Matrix info##########################
 	print("#"*110)
@@ -442,16 +445,124 @@ def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
 
 	return word_search_history
 
+def get_snippet_hw_counts(results_list):
+	return [ len(el.get("terms")) if el.get("terms") else 0 for ei, el in enumerate(results_list) ]
+
+def get_content_hw_counts(results_dict):
+	hw_count = 0
+	if results_dict.get("highlighted_term"):
+		hw_count = len(results_dict.get("highlighted_term"))
+	return hw_count
+
+def get_search_title_issue_page(results_list):
+	return [f'{el.get("bindingTitle")}_{el.get("issue")}_{el.get("pageNumber")}' for ei, el in enumerate(results_list)]
+
+def get_content_title_issue_page(results_dict):
+	return f'{results_dict.get("title")}_{results_dict.get("issue")}_{results_dict.get("page")[0]}'
+
 def analyze_scraped_data_with_rest_api(df):
-	#print(json.dumps(df["search_results"][0], indent=2, ensure_ascii=False))
+	#print(df.head(30))
+	print(f"Search".center(80, "-"))
+	df_search = pd.DataFrame()
+	df_search["user_ip"] = df.loc[ df['search_results'].notnull(), ['user_ip'] ]
+	df_search["title_issue_page"] = df["search_results"].map(get_search_title_issue_page, na_action='ignore')
+	df_search["snippet_highlighted_words"] = df["search_results"].map(get_snippet_hw_counts, na_action='ignore')
+	#df_search["referer"] = df.loc[ df['search_results'].notnull(), ['referer'] ]
+	df_search = df_search.explode(["title_issue_page", "snippet_highlighted_words"],
+																ignore_index=True,
+																)
+	df_search['snippet_highlighted_words'] = df_search['snippet_highlighted_words'].apply(pd.to_numeric)
+	print(df_search.head(15))
+	print(df_search["title_issue_page"].isna().sum())
+	print(df_search.info(verbose=True, memory_usage="deep"))
+	print("<>"*50)
 
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
-		#print(df[["search_query_phrase", "search_results"]].head(10))
-		print(df[["search_query_phrase", "search_results", "search_referer"]].iloc[1])
+	print(f"Newspaper Content".center(80, "-"))
+	df_content = pd.DataFrame()
+	df_content["user_ip"] = df.loc[ df['nwp_content_results'].notnull(), ['user_ip'] ]
+	df_content["title_issue_page"] = df["nwp_content_results"].map(get_content_title_issue_page, na_action='ignore')
+	df_content["content_highlighted_words"] = df["nwp_content_results"].map(get_content_hw_counts, na_action='ignore')
+	df_content['content_highlighted_words'] = df_content['content_highlighted_words'].apply(pd.to_numeric)
+	#df_content["referer"] = df.loc[ df['nwp_content_results'].notnull(), ['referer'] ]
+	df_content = df_content.reset_index(drop=True)
 
-	print("<>"*60)
-	print(json.dumps(df["search_results"][1], indent=2, ensure_ascii=False))
-	print(type(df["search_results"][1]), len(df["search_results"][1]))
+	print(df_content.head(15))
+
+	print(df_content.info(verbose=True, memory_usage="deep"))
+	print("<>"*100)
+
+	print(f"Merging".center(80, "-"))
+	df_merged = pd.merge(df_search, # left
+										df_content, # right
+										how='outer', 
+										#on=['user_ip','title_issue_page'],
+										#on=['user_ip',],
+										on=['title_issue_page',],
+										suffixes=['_l', '_r'],
+										)
+
+	df_merged = df_merged.fillna({'snippet_highlighted_words': 0, 
+													'content_highlighted_words': 0,
+													}
+												)
+
+	df_merged["implicit_feedback"] = (0.5 * df_merged["snippet_highlighted_words"]) + df_merged["content_highlighted_words"]
+	print(df_merged.shape)
+	print(df_merged["title_issue_page"].isna().sum())
+	print(df_merged.head(20))
+	print(df_merged.info(verbose=True, memory_usage="deep"))
+	print("<>"*100)
+	
+	#print(df_merged[df_merged['implicit_feedback'].notnull()].tail(60))
+	print(f"< unique > tip: {len(df_merged['title_issue_page'].unique())}")
+	print(f"< unique > user_ip_l: {len(df_merged['user_ip_l'].unique())}")
+	print(f"< unique > user_ip_r: {len(df_merged['user_ip_r'].unique())}")
+
+
+	print(f"Concatinating".center(80, "-"))
+	df_concat = pd.concat([df_search, df_content],)
+
+	df_concat = df_concat.fillna({'snippet_highlighted_words': 0, 
+													'content_highlighted_words': 0,
+													}
+												)
+
+	df_concat["implicit_feedback"] = (0.5 * df_concat["snippet_highlighted_words"]) + df_concat["content_highlighted_words"]
+
+	df_concat["nwp_tip_index"] = df_concat["title_issue_page"].astype("category").cat.codes
+	df_concat["user_index"] = df_concat["user_ip"].astype("category").cat.codes
+
+	print(df_concat.shape)
+	print(df_concat["title_issue_page"].isna().sum())
+	print(df_concat.head(20))
+	print(df_concat.info(verbose=True, memory_usage="deep"))
+	print("<>"*100)
+	#print(df_merged[df_merged['implicit_feedback'].notnull()].tail(60))
+	#print(f"< unique > tip: {len(df_concat['title_issue_page'].unique())}")
+	#print(f"< unique > user_ip: {len(df_concat['user_ip'].unique())}")
+	#print(df_concat[df_merged['implicit_feedback'].notnull()].tail(60))
+
+	print(f"< unique > users: {len(df_concat['user_ip'].unique())} | " 
+				f"title_issue_page: {len(df_concat['nwp_tip_index'].unique())} "
+				f"=> sparse matrix: {len(df_concat['user_index'].unique()) * len(df_concat['nwp_tip_index'].unique())}"
+				)
+
+	imp_fb_sparse_matrix = get_sparse_mtx(df_concat)
+	
+	st_t = time.time()
+	usr_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix, method="user-based")
+	print(f"<<>> User-based Similarity: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
+	topN_users(usr=user_name, sim_df=usr_similarity_df, dframe=df_cleaned)
+	print("<>"*50)
+
+	st_t = time.time()
+	itm_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix.T, method="item-based")
+	print(f"<<>> Item-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
+
+	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
+	topN_nwp_title_issue_page(nwp_tip=nwp_title_issue_page_name, sim_df=itm_similarity_df)
+	print("-"*70)
+
 
 
 def run_RecSys(df):
@@ -460,7 +571,7 @@ def run_RecSys(df):
 
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("#"*100)
-	analyze_scraped_data_with_rest_api
+	analyze_scraped_data_with_rest_api(df)
 
 	#get_basic_RecSys(df, )
 	#get_TFIDF_RecSys(qu_phrase=args.qphrase, dframe=df)

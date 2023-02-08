@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #SBATCH --account=project_2004072
 #SBATCH -J df_update_usr_referer_ts
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
