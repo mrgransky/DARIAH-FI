@@ -381,7 +381,12 @@ def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
 	for usr_i, usr_v in enumerate(sim_users_list):
 		#print(usr_i, usr_v)
 		#print(f"{'QUERY Phrases'.center(50,'-')}")
-		qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["query_word"]].values.tolist()]
+		############### prev dataframe ###############
+		#qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["query_word"]].values.tolist()]
+		############### prev dataframe ###############
+
+		qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["search_query_phrase"]].values.tolist()]
+		
 		#print(qu_phs)
 		#print(max(set(qu_phs), key=qu_phs.count))
 		#print(f"{'Search Results'.center(50,'-')}")

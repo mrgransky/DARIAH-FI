@@ -7,10 +7,14 @@
 
 
 # Image_Retrieval_TUNI
-srun -J v100_32gb --account=project_2004072 --partition=gpu --gres=gpu:v100:1 --time=0-10:59:00 --mem-per-cpu=4G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
+
+srun -J v100_32gb --account=project_2004072 --partition=gpu --gres=gpu:v100:1 --time=0-10:59:00 --mem-per-cpu=4G --ntasks=1 --cpus-per-task=1 nvidia-smi
+
+#--pty 
+#/bin/bash -i
 
 # APP_CSC
 #srun -J v100_intrc --account=Project_2004160 --partition=gpu --gres=gpu:v100:1 --time=1-23:59:00 --mem=128G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
 
-module load git
-module load pytorch
+#module load git
+#module load pytorch
