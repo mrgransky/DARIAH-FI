@@ -344,35 +344,36 @@ def topN_nwp_title_issue_page(nwp_tip, sim_df, N=10):
 			print(f"\t{sim_nwp} : {sim_val:.3f}")
 
 def topN_users(usr, sim_df, dframe, N=5):
-		if usr not in sim_df.index:
-				print(f"User `{usr}` not Found!\t")
-				return
-		print(f"Top-{N} similar users to `{usr}`:")
 
-		#print(sim_df.sort_values(by=usr, ascending=False))
-		#print(f">> dropin row: {usr} ...")
-		sim_df = sim_df.drop(usr)
+	if usr not in sim_df.index:
+		print(f"User `{usr}` not Found!\tTry another user_ip next time...")
+		return
+	print(f"Top-{N} similar users to `{usr}`:")
 
-		#print(sim_df.sort_values(by=usr, ascending=False))
-		#print("#"*100)
-		#print(sim_df.sort_values(by=usr, ascending=False).index[:15])
+	#print(sim_df.sort_values(by=usr, ascending=False))
+	#print(f">> dropin row: {usr} ...")
+	sim_df = sim_df.drop(usr)
+
+	#print(sim_df.sort_values(by=usr, ascending=False))
+	#print("#"*100)
+	#print(sim_df.sort_values(by=usr, ascending=False).index[:15])
 		
-		similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
-		similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
-		#print("#"*100)
+	similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
+	similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
+	#print("#"*100)
 
-		similar_users_search_history = get_similar_users_details(similar_users, dframe=dframe)
-		qu_usr_search_history = get_similar_users_details([usr], dframe=dframe)
+	similar_users_search_history = get_similar_users_details(similar_users, dframe=dframe)
+	qu_usr_search_history = get_similar_users_details([usr], dframe=dframe)
 
-		#print(f"{'Query USER Search Phrase History'.center(100,'-')}")
-		#print(len(qu_usr_search_history), qu_usr_search_history)
+	print(f"{'Query USER Search Phrase History'.center(100,'-')}")
+	print(len(qu_usr_search_history), qu_usr_search_history)
 
-		#print(f"{'Similar USER Search Phrase History'.center(100,'-')}")
-		#print(len(similar_users_search_history), similar_users_search_history)
+	print(f"{'Similar USER Search Phrase History'.center(100,'-')}")
+	print(len(similar_users_search_history), similar_users_search_history)
 
-		for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
+	for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
 			print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")
-		print(f"Since you {usr} searched for Query Phrase {qu_usr_search_history}, "
+	print(f"Since you {usr} searched for Query Phrase {qu_usr_search_history}, "
 					f"you might also be interested in {similar_users_search_history} Phrases...")
 		
 def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
@@ -487,11 +488,6 @@ def get_basic_RecSys_rest_api(df, user_name=args.qusr, nwp_title_issue_page_name
 	print(df_concat.info(verbose=True, memory_usage="deep"))
 	print("<>"*100)
 
-	#print(df_merged[df_merged['implicit_feedback'].notnull()].tail(60))
-	#print(f"< unique > tip: {len(df_concat['title_issue_page'].unique())}")
-	#print(f"< unique > user_ip: {len(df_concat['user_ip'].unique())}")
-	#print(df_concat[df_merged['implicit_feedback'].notnull()].tail(60))
-
 	print(f"< unique > users: {len(df_concat['user_ip'].unique())} | " 
 				f"title_issue_page: {len(df_concat['nwp_tip_index'].unique())} "
 				f"=> sparse matrix: {len(df_concat['user_index'].unique()) * len(df_concat['nwp_tip_index'].unique())}"
@@ -501,13 +497,14 @@ def get_basic_RecSys_rest_api(df, user_name=args.qusr, nwp_title_issue_page_name
 	
 	st_t = time.time()
 	usr_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix, method="user-based")
-	print(f"<<>> User-based Similarity: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
+	print(f"<<>> User-based Similarity DF: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
+
 	topN_users(usr=user_name, sim_df=usr_similarity_df, dframe=df_concat)
 	print("<>"*50)
 
 	st_t = time.time()
 	itm_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix.T, method="item-based")
-	print(f"<<>> Item-based Similarity: {itm_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
+	print(f"<<>> Item-based Similarity DF: {itm_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
 
 	#topN_nwp_title_issue_page("Karjalatar_135_2", itm_similarity_df)
 	topN_nwp_title_issue_page(nwp_tip=nwp_title_issue_page_name, sim_df=itm_similarity_df)
