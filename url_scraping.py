@@ -279,7 +279,7 @@ def scrap_search_page(URL):
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
 	
 	search_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=20"
-	print(search_pg_api)
+	#print(search_pg_api)
 	
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
@@ -315,20 +315,34 @@ def scrap_search_page(URL):
 							'Pragma': 'no-cache',
 							}
 
-	r = requests.post(url=search_pg_api, 
-										json=payload, 
-										headers=headers,
-										)
+	try:
+		r = requests.post(url=search_pg_api, 
+											json=payload, 
+											headers=headers,
+											)
 
-	#print(r.headers)
-	print(r.status_code)
+		#print(r.headers)
+		#print(r.status_code)
 
-	res = r.json()
-	#print(res.keys())
-	SEARCH_RESULTS = res.get("rows")
+		res = r.json()
+		#print(res.keys())
+		SEARCH_RESULTS = res.get("rows")
+	except (requests.exceptions.Timeout,
+					requests.exceptions.ConnectionError, 
+					requests.exceptions.RequestException, 
+					requests.exceptions.TooManyRedirects,
+					requests.exceptions.InvalidSchema,
+					Exception, 
+					ValueError, 
+					TypeError, 
+					EOFError, 
+					RuntimeError,
+					json.JSONDecodeError,
+					) as e:
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
+		return
 
 	#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
-
 	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	return SEARCH_RESULTS
 
