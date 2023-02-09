@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J df_rest_api_updated
+#SBATCH -J df_rest_api_updated_saveDF
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
-#SBATCH --partition=hugemem_longrun
-#SBATCH --mem-per-cpu=358G
-#SBATCH --time=13-23:59:59
+#SBATCH --partition=large
+#SBATCH --mem-per-cpu=8G
+#SBATCH --time=2-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
