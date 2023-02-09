@@ -356,11 +356,13 @@ def topN_users(usr, sim_df, dframe, N=5):
 
 	#print(sim_df.sort_values(by=usr, ascending=False))
 	#print("#"*100)
-	#print(sim_df.sort_values(by=usr, ascending=False).index[:15])
+	print(sim_df.sort_values(by=usr, ascending=False).index[:15])
+	print("#"*100)
 		
 	similar_users = list(sim_df.sort_values(by=usr, ascending=False).index[1: N+1])
 	similarity_values = list(sim_df.sort_values(by=usr, ascending=False).loc[:, usr])[1: N+1]
-	#print("#"*100)
+	print(similar_users)
+	print("#"*100)
 
 	similar_users_search_history = get_similar_users_details(similar_users, dframe=dframe)
 	qu_usr_search_history = get_similar_users_details([usr], dframe=dframe)
@@ -372,22 +374,31 @@ def topN_users(usr, sim_df, dframe, N=5):
 	print(len(similar_users_search_history), similar_users_search_history)
 
 	for sim_usr, sim_val, usr_hist in zip(similar_users, similarity_values, similar_users_search_history):
-			print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")
+		print(f"\t{sim_usr} : {sim_val:.4f}\t(Top Searched Query Phrase: {usr_hist})")
 	print(f"Since you {usr} searched for Query Phrase {qu_usr_search_history}, "
-					f"you might also be interested in {similar_users_search_history} Phrases...")
+				f"you might also be interested in {similar_users_search_history} Phrases...")
 		
+"""
+# original implementation for prev dataframe:
 def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
 	word_search_history = list()
+	print(list(dframe.columns))
+
+	dframe = dframe.dropna(axis=0, how="any", subset=["search_query_phrase"]).reset_index(drop=True)
 	for usr_i, usr_v in enumerate(sim_users_list):
 		#print(usr_i, usr_v)
 		#print(f"{'QUERY Phrases'.center(50,'-')}")
-		############### prev dataframe ###############
-		#qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["query_word"]].values.tolist()]
-		############### prev dataframe ###############
+		with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+			#print(dframe[["user_ip", "query_word", "referer", ]].head(50))
+			#print(dframe.head(50))
+			#print(dframe[(dframe["user_ip"] == usr_v)])
+			#print()
+			#print(dframe[(dframe["user_ip"] == usr_v)][["search_query_phrase"]])
+			#print(f"<>"*10)
 
-		qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["search_query_phrase"]].values.tolist()]
-		
-		#print(qu_phs)
+		qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["query_word"]].values.tolist()]
+
+		#print(f"qu phrases: {qu_phs}")
 		#print(max(set(qu_phs), key=qu_phs.count))
 		#print(f"{'Search Results'.center(50,'-')}")
 		#print(dframe[(dframe["user_ip"] == usr_v)][["search_results"]])
@@ -396,7 +407,47 @@ def get_similar_users_details(sim_users_list, dframe, qu_usr=False):
 			word_search_history.append(set(qu_phs))
 		else:
 			word_search_history.append(max(set(qu_phs), key=qu_phs.count))
+		print(f">> search hist: {word_search_history}")
+	return word_search_history
+"""
 
+def get_similar_users_details(sim_users_list, dframe, qu_usr=False):	
+	userN = "QUERY" if qu_usr else "REFERENCE"
+	print(f"Search History of {userN} | {qu_usr}")
+	word_search_history = list()
+	
+	#print(f">> before droping Nones:")
+	print(dframe.shape, list(dframe.columns))
+
+	#dframe = dframe.dropna(axis=0, how="any", subset=["search_query_phrase"]).reset_index(drop=True)
+	#print(f">> after droping Nones:")
+	#print(dframe.shape, list(dframe.columns))
+	
+	for usr_i, usr_v in enumerate(sim_users_list):
+		#print(usr_i, usr_v)
+		#print(f"{'QUERY Phrases'.center(50,'-')}")
+		with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+			#print(dframe[["user_ip", "query_word", "referer", ]].head(50))
+			#print(dframe.head(50))
+			#print(dframe[(dframe["user_ip"] == usr_v)])
+			#print(dframe["user_ip"] == usr_v)
+			#print()
+			print(dframe[(dframe["user_ip"] == usr_v)][["search_query_phrase"]].values.tolist())
+			print(f"<>"*10)
+		
+		#qu_phs = dframe[(dframe["user_ip"] == usr_v)][["search_query_phrase"]].values.tolist()
+		qu_phs = ["".join(elem) for elem in dframe[(dframe["user_ip"] == usr_v)][["search_query_phrase"]].values.tolist()]
+		print(f"qu phrases: {len(qu_phs)} : {type(qu_phs)}\n{qu_phs}")
+		#print(max(set(qu_phs), key=qu_phs.count))
+		#print(f"{'Search Results'.center(50,'-')}")
+		#print(dframe[(dframe["user_ip"] == usr_v)][["search_results"]])
+		#print()
+		if qu_usr:
+			word_search_history.append(set(qu_phs))
+		else:
+			word_search_history.append(max(set(qu_phs), key=qu_phs.count, default="Not_Available!"))
+	#print(f">> search hist: {word_search_history}")
+		
 	return word_search_history
 
 def get_snippet_hw_counts(results_list):
@@ -419,17 +470,29 @@ def get_basic_RecSys_rest_api(df, user_name=args.qusr, nwp_title_issue_page_name
 	print(f"Search".center(80, "-"))
 	df_search = pd.DataFrame()
 	df_search["user_ip"] = df.loc[ df['search_results'].notnull(), ['user_ip'] ]
+
+	df_search["search_query_phrase"] = df.loc[ df['search_results'].notnull(), ['search_query_phrase'] ].fillna("")
+	df_search['search_query_phrase'] = [','.join(map(str, elem)) if elem else '' for elem in df_search['search_query_phrase']]
+	
 	df_search["title_issue_page"] = df["search_results"].map(get_search_title_issue_page, na_action='ignore')
 	df_search["snippet_highlighted_words"] = df["search_results"].map(get_snippet_hw_counts, na_action='ignore')
-	#df_search["referer"] = df.loc[ df['search_results'].notnull(), ['referer'] ]
+	df_search["referer"] = df.loc[ df['search_results'].notnull(), ['referer'] ]
+
 	df_search = df_search.explode(["title_issue_page", "snippet_highlighted_words"],
 																ignore_index=True,
 																)
 	df_search['snippet_highlighted_words'] = df_search['snippet_highlighted_words'].apply(pd.to_numeric)
-	print(df_search.head(15))
-	print(df_search["title_issue_page"].isna().sum())
+
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(df_search.head(50))
+
+	print("<>"*50)
+	print(f"<Nones> tip: {df_search['title_issue_page'].isna().sum()} | "
+				f"qu_phrases: {df_search['search_query_phrase'].isna().sum()} "
+				f"total DF: {df_search.shape}")
 	print(df_search.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
+	#return
 
 	print(f"Newspaper Content".center(80, "-"))
 	df_content = pd.DataFrame()
@@ -500,6 +563,8 @@ def get_basic_RecSys_rest_api(df, user_name=args.qusr, nwp_title_issue_page_name
 
 	imp_fb_sparse_matrix = get_sparse_mtx(df_concat)
 	
+
+
 	st_t = time.time()
 	usr_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix, method="user-based")
 	print(f"<<>> User-based Similarity DF: {usr_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")
@@ -507,6 +572,7 @@ def get_basic_RecSys_rest_api(df, user_name=args.qusr, nwp_title_issue_page_name
 	topN_users(usr=user_name, sim_df=usr_similarity_df, dframe=df_concat)
 	print("<>"*50)
 
+	return
 	st_t = time.time()
 	itm_similarity_df = get_similarity_df(df_concat, imp_fb_sparse_matrix.T, method="item-based")
 	print(f"<<>> Item-based Similarity DF: {itm_similarity_df.shape}\tElapsed_t: {time.time()-st_t:.2f} s")

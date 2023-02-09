@@ -268,10 +268,10 @@ def scrap_collection_page(URL):
 	return COLLECTION_RESULTS
 
 def scrap_search_page(URL):
-	#print(f"Scraping browing page: {URL}")
+	print(f"Scraping browing page: {URL}")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
-	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
+	print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	#print()
 
 	#print(f"parsed_url : {parsed_url}")
@@ -279,7 +279,7 @@ def scrap_search_page(URL):
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
 	
 	search_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=20"
-	#print(search_pg_api)
+	print(search_pg_api)
 	
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
@@ -321,7 +321,7 @@ def scrap_search_page(URL):
 										)
 
 	#print(r.headers)
-	#print(r.status_code)
+	print(r.status_code)
 
 	res = r.json()
 	#print(res.keys())
@@ -378,7 +378,6 @@ def scrap_ocr_page_content(URL):
 		txt = None
 
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
-
 
 def scrap_newspaper_content_page(URL):
 	#print(f"Scraping newspaper content page: {URL}")
@@ -466,9 +465,6 @@ def scrap_newspaper_content_page(URL):
 
 
 	return NWP_CONTENT_RESULTS
-
-
-
 
 if __name__ == '__main__':
 	os.system("clear")
