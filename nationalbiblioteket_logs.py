@@ -225,7 +225,7 @@ def all_queries(file_="", ts=None):
 	parsing_t = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
 	#df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
-
+	"""
 	print(f">> Scraping Newspaper Content Pages...")
 	st_nwp_content_t = time.time()
 	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
@@ -245,7 +245,7 @@ def all_queries(file_="", ts=None):
 	df["clipping_query_phrase"] = df["clipping_referer"].map(get_query_phrase, na_action='ignore')
 	df["clipping_results"] = df["clipping_referer"].map(scrap_clipping_page, na_action='ignore')
 	print(f"{f'Elapsed_t: {time.time()-st_clipping_t:.2f} sec'.center(60, '#')}")
-
+	"""
 	print(f">> Scraping Search Pages...")
 	st_search_t = time.time()
 	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
@@ -261,12 +261,6 @@ def all_queries(file_="", ts=None):
 
 	cols = list(df.columns)
 	print(len(cols), cols)
-	"""
-	print("#"*150)
-	print(df.head(30))
-	print("-"*150)
-	print(df.tail(30))
-	"""
 	
 	if args.saveDF:
 		save_(df, infile=file_, saving_path=dfs_path)
