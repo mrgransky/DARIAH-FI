@@ -146,7 +146,7 @@ def extract_best_indices(m, topk, mask=None):
 
 def get_TFIDF_RecSys_rest_api(dframe, qu_phrase="kirjasto", user_name=args.qusr, nwp_title_issue_page_name=args.qtip, topN=5):
 	print(f"{'RecSys (TFIDF)'.center(80, '-')}")
-	print(list(dframe["nwp_content_results"][4].keys()))
+	#print(list(dframe["nwp_content_results"][4].keys()))
 	#print(json.dumps(dframe["nwp_content_results"][4], indent=2, ensure_ascii=False))
 
 	print(f">> Cleaning df: {dframe.shape} with NaN rows..")
