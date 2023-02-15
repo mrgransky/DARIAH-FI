@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
-import ast
+import spacy
 from colorama import Fore, Style
 import seaborn as sns
 
@@ -17,15 +17,38 @@ from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import nltk
-nltk.download(['punkt', 
-							 'averaged_perceptron_tagger', 
-							 'stopwords',
-							 'wordnet',
-							 'omw-1.4',
-							 ],
-							quiet=True, 
-							raise_on_error=True,
-							)
+nltk_modules = ['punkt', 
+               'averaged_perceptron_tagger', 
+               'stopwords',
+               'wordnet',
+				'omw-1.4',
+                ]
+nltk.download('all',
+              quiet=True, 
+              raise_on_error=True,
+              )
+
+# Adapt stop words
+#STOPWORDS = nltk.corpus.stopwords.words('english')
+STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
+my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
+												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
+												'aldiz', 'baizik', 'bukatzeko', 
+												'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
+												'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
+												'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
+												'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
+												'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
+												'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
+												'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
+												'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
+												'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
+												]
+STOPWORDS.extend(my_custom_stopwords)
+#print(len(STOPWORDS), STOPWORDS)
+UNIQUE_STOPWORDS = set(STOPWORDS)
+#print(len(UNIQUE_STOPWORDS), UNIQUE_STOPWORDS)
+
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
@@ -57,41 +80,35 @@ params = {
 pylab.rcParams.update(params)
 
 
-#print(nltk.corpus.stopwords.fileids())
-#STOPWORDS = set(nltk.corpus.stopwords.words('english'))
-STOPWORDS = set(nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids()))
-print(len(STOPWORDS), STOPWORDS)
-
-MIN_WORDS = 4
-MAX_WORDS = 200
-
-PATTERN_S = re.compile("\'s")  # matches `'s` from text  
+PATTERN_S = re.compile("\'s")  # matches `'s` from text 
 PATTERN_RN = re.compile("\\r\\n") #matches `\r` and `\n`
 PATTERN_PUNC = re.compile(r"[^\w\s]") # matches all non 0-9 A-z whitespace 
 
 def clean_text(text):
-	"""
-	Series of cleaning. String to lower case, remove non words characters and numbers.
-	text (str): input text
-	return (str): modified initial text
-	"""
-	text = text.lower()  # lowercase text
-	text = re.sub(PATTERN_S, ' ', text)
-	text = re.sub(PATTERN_RN, ' ', text)
-	text = re.sub(PATTERN_PUNC, ' ', text)
+	text = text.lower().strip()
+	
+	text = re.sub(r"\r\n", "", text)
+
+	#text = re.sub(r"(\n)\1{2,}", " ", text).strip()
+
+	#text = "".join(i for i in text if ord(i)<128)
+	#text = re.sub("[^A-Za-z0-9 ]+", "", text) # does not work with äöå...
+	#text = re.sub("[^A-ZÜÖÄa-z0-9 ]+", "", text) # äöüÄÖÜß
+	text = re.sub(r"\W+|_"," ", text) # replace special characters with space
+	text = re.sub("\s+", " ", text)
+
 	return text
 
-def tokenizer(sentence, min_words=MIN_WORDS, max_words=MAX_WORDS, stopwords=STOPWORDS, lemmatize=True):
-	"""
-	Lemmatize, tokenize, crop and remove stop words.
-	"""
-	if lemmatize:
-		stemmer = nltk.stem.WordNetLemmatizer()
-		tokens = [stemmer.lemmatize(w) for w in nltk.tokenize.word_tokenize(sentence)]
-	else:
-		tokens = [w for w in nltk.tokenize.word_tokenize(sentence)]
-	token = [w for w in tokens if (len(w) > min_words and len(w) < max_words and w not in stopwords)]
-	return tokens    
+def tokenizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words=200, ):
+	sentences = sentence.lower()
+
+	wnl = nltk.stem.WordNetLemmatizer()
+
+	tokens = [w for w in nltk.tokenize.word_tokenize(sentences)]
+	filtered_tokens = [w for w in tokens if ( w not in stopwords and w not in string.punctuation )]
+	lematized_tokens = [wnl.lemmatize(i,j[0].lower()) if j[0].lower() in ['a','n','v'] else wnl.lemmatize(i) for i,j in nltk.pos_tag(filtered_tokens)]
+
+	return lematized_tokens    
 
 def clean_sentences(df):
 	print(f'<> cleaning sentences of {df.shape}')
@@ -126,6 +143,96 @@ def extract_best_indices(m, topk, mask=None):
 	mask = np.logical_or(cos_sim[index] != 0, mask) #eliminate 0 cosine distance
 	best_index = index[mask][:topk]  
 	return best_index
+
+def get_TFIDF_RecSys_rest_api(dframe, qu_phrase="kirjasto", user_name=args.qusr, nwp_title_issue_page_name=args.qtip, topN=5):
+	print(f"{'RecSys (TFIDF)'.center(80, '-')}")
+	print(list(dframe["nwp_content_results"][4].keys()))
+	#print(json.dumps(dframe["nwp_content_results"][4], indent=2, ensure_ascii=False))
+
+	print(f">> Cleaning df: {dframe.shape} with NaN rows..")
+	dframe = dframe.dropna(subset=["nwp_content_results"], how='all',).reset_index(drop=True)
+	print(f">> Cleaned df: {dframe.shape}")
+	fst_lst = [d.get("text") for d in  dframe.loc[:, "nwp_content_results"].values.flatten().tolist() if d.get("text")]
+	"""
+	fst_lst_cleaned = [clean_text(d.get("text")) for d in  dframe.loc[:, "nwp_content_results"].values.flatten().tolist() if d.get("text")]
+	print(f"original".center(60,'-'))
+	print(fst_lst[0])
+	print("#"*100)
+	print(f"clean".center(60,'-'))
+	print(fst_lst_cleaned[0])
+	print("<>"*100)
+	print()
+
+	print(f"original".center(60,'-'))
+	print(fst_lst[1286])
+	print("#"*100)
+	print(f"clean".center(60,'-'))
+	print(fst_lst_cleaned[1286])
+	print("<>"*100)
+	print()
+
+	print(f"original".center(60,'-'))
+	print(fst_lst[5429])
+	print("#"*100)
+	print(f"clean".center(60,'-'))
+	print(fst_lst_cleaned[5429])
+	print("<>"*100)
+	print()
+	"""
+	fprefix = "_".join(args.inputDF.split("/")[-1].split(".")[:-2]) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF.lz4")
+
+	if not os.path.exists(tfidf_rf_matrix_fpath):
+		print(f"TFIDF for {len(fst_lst)} documents, might take a while...".center(110, " "))
+		st_t = time.time()
+
+		# Fit TFIDF # not time consuming...
+		tfidf_vec = TfidfVectorizer(#min_df=5,
+															#ngram_range=(1, 2),
+															#tokenizer=Tokenizer(),
+															tokenizer=tokenizer,
+															stop_words=UNIQUE_STOPWORDS,
+															)
+
+		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=fst_lst)
+		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
+
+		save_tfidf_vec(tfidf_vec, fname=tfidf_vec_fpath)
+		save_tfidf_matrix(tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
+
+		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
+	else:
+		tfidf_vec = load_tfidf_vec(fpath=tfidf_vec_fpath)
+		tfidf_matrix_rf = load_tfidf_matrix(fpath=tfidf_rf_matrix_fpath)
+	#return
+
+	feat_names = tfidf_vec.get_feature_names_out()
+	print(len(feat_names), feat_names[:50])
+	
+	vocabs = tfidf_vec.vocabulary_
+	print(len(feat_names), len(vocabs))
+	#print(json.dumps(vocabs, indent=2, ensure_ascii=False))
+
+	# Embed qu_phrase
+	tokens = [str(tok) for tok in tokenizer(qu_phrase)]
+	print(f">> tokenize >> {qu_phrase} <<\t{len(tokens)} {tokens}")
+
+	tfidf_matrix_qu = tfidf_vec.transform(tokens)
+	print(f"RF: {tfidf_matrix_rf.shape}\tQU: {tfidf_matrix_qu.shape}")# (n_sample, n_vocab))
+	#print(tfidf_matrix_qu.toarray())
+
+	# Create list with similarity between query and dataset
+	kernel_matrix = cosine_similarity(tfidf_matrix_qu, tfidf_matrix_rf)
+	print(kernel_matrix.shape)
+
+	# Best cosine distance for each token independantly
+	best_index = extract_best_indices(kernel_matrix, topk=topN)
+	print(best_index)
+	print(f"> You searched for {qu_phrase}\tTop-{topN} Recommendations:")
+	#return dframe[["query_word", ""]]
+		
+
 
 def get_TFIDF_RecSys(dframe, qu_phrase="kirjasto", user_name=args.qusr, nwp_title_issue_page_name=args.qtip, topN=5):
 	print(f"{'RecSys (TFIDF)'.center(80, '-')}")
@@ -464,15 +571,6 @@ def get_query_user_details(usr_q, dframe):
 	else:
 		return
 
-
-
-
-
-
-
-
-
-
 def get_snippet_hw_counts(results_list):
 	return [ len(el.get("terms")) if el.get("terms") else 0 for ei, el in enumerate(results_list) ]
 
@@ -610,11 +708,14 @@ def run_RecSys(df):
 	print(f"{f'Running {__file__} for DF: {df.shape}'.center(80, '-')}")
 
 	print(df.info(verbose=True, memory_usage="deep"))
+	
 	print("#"*100)
-	get_basic_RecSys_rest_api(df)
-
 	#get_basic_RecSys(df, )
 	#get_TFIDF_RecSys(qu_phrase=args.qphrase, dframe=df)
+	
+	
+	#get_basic_RecSys_rest_api(df)
+	get_TFIDF_RecSys_rest_api(qu_phrase=args.qphrase, dframe=df)
 
 def main():
 	df = load_df(infile=args.inputDF)

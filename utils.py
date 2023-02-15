@@ -322,7 +322,47 @@ def make_folder(folder_name="MUST_BE_RENAMED"):
 		#print(f"\n>> Creating DIR:\n{folder_name}")
 		os.makedirs( folder_name )
 
-def save_(df, infile="", saving_path="", save_csv=False, save_parquet=True):
+def save_tfidf_matrix(mtrx, fname=""):
+	print(f"Saving TFIDF matrix: {mtrx.shape}".center(100, '-'))
+	dump_file_name = fname
+	print(f"\n>> Saving {dump_file_name} ...")
+
+	with open(dump_file_name , "wb" ) as f:
+		joblib.dump(mtrx, f, compress='lz4',)
+
+	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
+	print(f"{fsize_dump:.1f} MB".center(100, '-'))
+
+def save_tfidf_vec(vec, fname=""):
+	print(f"Saving TFIDF vectorizer".center(100, '-'))
+	dump_file_name = fname
+	print(f"\n>> Saving {dump_file_name} ...")
+
+	with open(dump_file_name , "wb" ) as f:
+		joblib.dump(vec, f, compress='lz4',)
+
+	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
+	print(f"{fsize_dump:.1f} MB".center(100, '-'))
+
+def load_tfidf_matrix(fpath):
+	fsize = os.stat( fpath ).st_size / 1e9
+	print(f"Loading {fpath} | {fsize:.3f} GB")
+	st_t = time.time()
+	with open(fpath, "rb") as f:
+		mtrx = joblib.load(f)
+	print(f"Elapsed_t: {time.time() - st_t:.2f} s | {mtrx.shape}".center(100, " "))
+	return mtrx
+
+def load_tfidf_vec(fpath):
+	fsize = os.stat( fpath ).st_size / 1e9
+	print(f"Loading {fpath} | {fsize:.3f} GB")
+	st_t = time.time()
+	with open(fpath, "rb") as f:
+		vec = joblib.load(f)
+	print(f"Elapsed_t: {time.time() - st_t:.2f} s".center(100, " "))
+	return vec
+
+def save_(df, infile="", save_csv=False, save_parquet=True):
 	dfs_dict = {
 		f"{infile}":	df,
 	}

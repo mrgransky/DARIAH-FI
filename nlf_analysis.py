@@ -24,7 +24,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Data Analysis')
-parser.add_argument('--inputDF', default="~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
+parser.add_argument('--inputDF', default="/home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
 args = parser.parse_args()
 
 # how to run:
@@ -334,9 +334,6 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 
 	#print(MY_DICT)
 
-
-
-	
 	WIDTH = 0.4
 	BOTTOM = 0
 
@@ -1032,7 +1029,7 @@ def main():
 	#plot_usr_doc_type(df, RES_DIR=result_directory)
 
 	# query words & terms:
-	plot_query_phrases(df, RES_DIR=result_directory)
+	#plot_query_phrases(df, RES_DIR=result_directory)
 	#plot_nwp_content_parsed_term(df, RES_DIR=result_directory)
 
 if __name__ == '__main__':
