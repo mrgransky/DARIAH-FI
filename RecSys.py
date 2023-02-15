@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
-import spacy
+#import spacy
 from colorama import Fore, Style
 import seaborn as sns
 
