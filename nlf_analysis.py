@@ -1,3 +1,4 @@
+"""
 import re
 import string
 import os
@@ -8,6 +9,7 @@ import argparse
 import glob
 import numpy as np
 import pandas as pd
+"""
 
 from collections import Counter
 from natsort import natsorted
@@ -23,8 +25,10 @@ from wordcloud import WordCloud
 import matplotlib
 matplotlib.use("Agg")
 
-parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Data Analysis')
-parser.add_argument('--inputDF', default="/home/xenial/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
+parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Data Visualization & Analysis')
+
+parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
+
 args = parser.parse_args()
 
 # how to run:
@@ -91,6 +95,16 @@ clrs = ["#100874",
 			]
 
 my_cols = [ "#ffd100", '#16b3ff', '#0ecd19', '#ff9999',]
+
+def clean_(text_list):
+	#print(text_list)
+	assert len(text_list) == 1
+	cleaned_text = text_list[0].lower()
+	cleaned_text = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', cleaned_text)
+	cleaned_text = re.sub(r"\W+|_"," ", cleaned_text) # replace special characters with space
+	cleaned_text = re.sub("\s+", " ", cleaned_text)
+
+	return cleaned_text
 
 def get_query_dataframe(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -254,7 +268,9 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 	print("/"*150)
 	"""
 	
-	df_cleaned["query_word"] = df_cleaned['query_word'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	#df_cleaned["search_query_phrase"] = df_cleaned['search_query_phrase'].str.replace(r'[^\w\s]+|\d+', '', regex=True).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()#.str.replace(r'(?<=\D)(?=\d)', ' ', regex=True)
+	df_cleaned["search_query_phrase"] = df_cleaned['search_query_phrase'].map(clean_, na_action="ignore")
+
 	"""
 	print(df_cleaned["query_word"].value_counts())
 	print(list(zip(df_cleaned["query_word"].value_counts().index, df_cleaned["query_word"].value_counts().values)))
@@ -269,8 +285,8 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 												max_font_size=100,
 												stopwords=None,
 												collocations=False,
-												).generate_from_frequencies(dict(zip(	df_cleaned["query_word"].value_counts().index, 
-																															df_cleaned["query_word"].value_counts().values,
+												).generate_from_frequencies(dict(zip(	df_cleaned["search_query_phrase"].value_counts().index, 
+																															df_cleaned["search_query_phrase"].value_counts().values,
 																															)
 																												)
 																										)
@@ -278,7 +294,7 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"Cloud Distribution\n{len(df_cleaned['query_word'].value_counts())} Unique Query Phrases (total: {df_cleaned['query_word'].notnull().sum()})", color="k")
+	plt.title(f"Cloud Distribution\n{len(df_cleaned['search_query_phrase'].value_counts())} Unique Query Phrases (total: {df_cleaned['search_query_phrase'].notnull().sum()})", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"query_phrases_cloud.png" ), )
@@ -287,16 +303,17 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 
 	#plt.subplots()
 	plt.figure()
-	p = sns.barplot(x=df_cleaned["query_word"].value_counts()[:Nq].index,
-									y=df_cleaned["query_word"].value_counts()[:Nq].values,
+	p = sns.barplot(x=df_cleaned["search_query_phrase"].value_counts()[:Nq].index,
+									y=df_cleaned["search_query_phrase"].value_counts()[:Nq].values,
 									palette=clrs, 
 									saturation=1,
 									edgecolor="#450f30",
 									linewidth=1,
+									#orient = "h",
 									)
 
-	p.set_xticklabels(df_cleaned["query_word"].value_counts()[:Nq].index, size=10)
-	p.axes.set_title(	f"Top-{Nq} Query Phrases (unique: {len(df_cleaned['query_word'].value_counts())})")
+	p.set_xticklabels(df_cleaned["search_query_phrase"].value_counts()[:Nq].index, size=10)
+	p.axes.set_title(	f"Top-{Nq} Query Phrases (unique: {len(df_cleaned['search_query_phrase'].value_counts())})")
 	plt.ylabel("Counts", )
 	plt.xlabel("Query Phrase",)
 	plt.xticks(rotation=90, fontsize=17)
@@ -324,10 +341,10 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 
 	for usr in df_cleaned["user_ip"].value_counts()[:Nu].index:
 		lst = []
-		for qu in df_cleaned["query_word"].value_counts()[:Nq].index:
+		for qu in df_cleaned["search_query_phrase"].value_counts()[:Nq].index:
 			#print(usr, qu)
 			#c = df[(df["query_word"] == qu) & (df["user_ip"] == usr) ].user_ip.count()
-			c = df_cleaned[(df_cleaned["query_word"] == qu) & (df_cleaned["user_ip"] == usr) ].user_ip.count()
+			c = df_cleaned[(df_cleaned["search_query_phrase"] == qu) & (df_cleaned["user_ip"] == usr) ].user_ip.count()
 			#print(c)		
 			lst.append(c)
 		MY_DICT[usr] = lst
@@ -340,7 +357,7 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 	fig, axs = plt.subplots()
 	for k, v in MY_DICT.items():
 			#print(k, v)
-			axs.bar(x=df_cleaned["query_word"].value_counts()[:Nq].index,
+			axs.bar(x=df_cleaned["search_query_phrase"].value_counts()[:Nq].index,
 								height=v, 
 								width=WIDTH,
 								bottom=BOTTOM, 
@@ -992,7 +1009,7 @@ def main():
 	print("%"*140)
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("%"*90)
-
+	print(df[["user_ip", "search_query_phrase", "search_results"]].tail(10))
 	"""
 	cols = list(df.columns)
 	print(len(cols), cols)
@@ -1029,7 +1046,7 @@ def main():
 	#plot_usr_doc_type(df, RES_DIR=result_directory)
 
 	# query words & terms:
-	#plot_query_phrases(df, RES_DIR=result_directory)
+	plot_query_phrases(df, RES_DIR=result_directory)
 	#plot_nwp_content_parsed_term(df, RES_DIR=result_directory)
 
 if __name__ == '__main__':

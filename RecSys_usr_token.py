@@ -34,14 +34,6 @@ nltk.download('all',
 #STOPWORDS = nltk.corpus.stopwords.words('english')
 #print(nltk.corpus.stopwords.words('finnish'))
 
-if os.path.expanduser('~') == "/users/alijanif":
-	def_inp_df_dir = "/scratch/project_2004072/Nationalbiblioteket/dataframes"
-elif os.path.expanduser('~') == "/home/xenial":
-	def_inp_df_dir = f"{os.path.expanduser('~')}/Datasets/Nationalbiblioteket/dataframes" 
-else:
-	print(f"{os.path.expanduser('~')} is unknown! Please check your dataframe directory!")
-	sys.exit()
-
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
@@ -160,9 +152,9 @@ def get_complete_BoWs(dframe):
 	print(len(raw_docs_list), type(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF.lz4")
-	vocab_json_file = os.path.join(dfs_path, f"{fprefix}_vocabs.json")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer_large.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF_large.lz4")
+	vocab_json_file = os.path.join(dfs_path, f"{fprefix}_vocabs_large.json")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(110, " "))
@@ -512,7 +504,7 @@ def get_sparse_matrix(df):
 
 def run_RecSys(df_inp, qu_phrase, topK=5):
 	print_df_detail(df=df_inp, fname=__file__)
-	
+	#return
 	#BoWs = get_bag_of_words(dframe=df_inp)
 	BoWs = get_complete_BoWs(dframe=df_inp)
 	#return

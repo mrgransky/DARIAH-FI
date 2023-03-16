@@ -2,15 +2,16 @@
 
 #SBATCH --account=project_2004072
 #SBATCH -J recSys_user_tokens_init_test
-#SBATCH -o NLF_logs/q%a_%x_%N_%j.out
+#SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem-per-cpu=380G
-#SBATCH --time=02-23:59:59
+#SBATCH --mem-per-cpu=699G
+#SBATCH --time=07-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
 
 # # # # # # SBATCH --array=0-69
+# # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 # # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 
 stars=$(printf '%*s' 90 '')
