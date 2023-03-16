@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J recSys_test
+#SBATCH -J recSys_user_tokens_init_test
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
-#SBATCH --partition=small
-#SBATCH --mem-per-cpu=32G
-#SBATCH --time=2-23:59:59
+#SBATCH --partition=hugemem_longrun
+#SBATCH --mem-per-cpu=370G
+#SBATCH --time=13-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
@@ -38,7 +38,8 @@ elif [ $user == 'alijanif' ]; then
 fi
 
 #python nationalbiblioteket_logs.py --saveDF True --query $SLURM_ARRAY_TASK_ID
-python RecSys.py --inputDF $dfs_dir/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+#python RecSys.py --inputDF $dfs_dir/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+python RecSys_usr_token.py --inputDF $dfs_dir/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
