@@ -34,6 +34,14 @@ nltk.download('all',
 #STOPWORDS = nltk.corpus.stopwords.words('english')
 #print(nltk.corpus.stopwords.words('finnish'))
 
+if os.path.expanduser('~') == "/users/alijanif":
+	def_inp_df_dir = "/scratch/project_2004072/Nationalbiblioteket/dataframes"
+elif os.path.expanduser('~') == "/home/xenial":
+	def_inp_df_dir = f"{os.path.expanduser('~')}/Datasets/Nationalbiblioteket/dataframes" 
+else:
+	print(f"{os.path.expanduser('~')} is unknown! Please check your dataframe directory!")
+	sys.exit()
+
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
@@ -52,11 +60,13 @@ STOPWORDS.extend(my_custom_stopwords)
 UNIQUE_STOPWORDS = list(set(STOPWORDS))
 #print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 
+if 
+
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
-parser.add_argument('--inputDF', default=f"{os.path.expanduser('~')}/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
+parser.add_argument('--inputDF', default=f"{def_inp_df_dir}/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
-parser.add_argument('--qphrase', default="ystävä", type=str) # smallest
+parser.add_argument('--qphrase', default="pyhäkosken lohi", type=str) # smallest
 
 args = parser.parse_args()
 
@@ -382,7 +392,7 @@ def get_usr_tk_df(dframe, bow):
 
 	print(df_preprocessed.info())
 	print(df_preprocessed.tail(60))
-	print(f"<>"*120)
+	print(f"<>"*60)
 	
 	users_list = list()
 	search_query_phrase_tokens_list = list()
