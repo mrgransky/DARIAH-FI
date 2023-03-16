@@ -37,21 +37,20 @@ nltk.download('all',
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
-												#'aldiz', 'baizik', 'bukatzeko', 
-												#'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
-												#'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
-												#'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
-												#'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
-												#'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
-												#'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
-												#'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
-												#'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
-												#'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
+												'aldiz', 'baizik', 'bukatzeko', 
+												'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
+												'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
+												'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
+												'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
+												'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
+												'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
+												'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
+												'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
+												'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
 												]
 STOPWORDS.extend(my_custom_stopwords)
-#print(len(STOPWORDS), STOPWORDS)
 UNIQUE_STOPWORDS = list(set(STOPWORDS))
-print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
+#print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default=f"{os.path.expanduser('~')}/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
@@ -153,9 +152,9 @@ def get_complete_BoWs(dframe):
 	print(len(raw_docs_list), type(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer_qu_phrases.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF_qu_phrases.lz4")
-	vocab_json_file = os.path.join(dfs_path, f"{fprefix}_vocabs_qu_phrase.json")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF.lz4")
+	vocab_json_file = os.path.join(dfs_path, f"{fprefix}_vocabs.json")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(110, " "))
@@ -214,9 +213,9 @@ def get_bag_of_words(dframe):
 	print(len(raw_phrases_list), type(raw_phrases_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer_qu_phrases.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF_qu_phrases.lz4")
-	vocab_json_file = os.path.join(dfs_path, f"{fprefix}_vocabs_qu_phrase.json")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF.lz4")
+	vocab_json_file = os.path.join(dfs_path, f"{fprefix}_vocabs.json")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_phrases_list)} query phrases, might take a while...".center(110, " "))
