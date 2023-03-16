@@ -260,9 +260,7 @@ def get_bag_of_words(dframe):
 
 	print(f"Feature names: {feat_names.shape}\t{type(feat_names)}")
 	print(f"BoWs: {len(BOWs)}\t{type(BOWs)}")
-
-	#save_vocab(vb=BOWs, fname=vocab_json_file)
-
+	print(f"{'Bag-of-Words'.center(80, '-')}")
 	return BOWs
 
 def count_tokens_vocab(dframe, weights_list, vb):
@@ -343,7 +341,7 @@ def get_usr_tk_df(dframe, bow):
 	try:
 		df_preprocessed = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_df_preprocessed.lz4"))
 	except:
-		print(f"Updating DF: {dframe.shape} with Tokenized texts".center(100, "-"))
+		print(f"Updating DF: {dframe.shape} with Tokenized texts".center(110, "-"))
 		print(f">> Analyzing query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
 		dframe["search_query_phrase_tklm"] = dframe["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
@@ -385,12 +383,14 @@ def get_usr_tk_df(dframe, bow):
 		dframe_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_df_preprocessed.lz4")
 		save_pickle(pkl=dframe, fname=dframe_preprocessed_fname)
 		df_preprocessed = dframe.copy()
+		print(f"Updated DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
 	print(df_preprocessed.info())
 	print(df_preprocessed.tail(60))
 	print(df_preprocessed.shape)
 	print(f"<>"*60)
 	
+	print(f"USER-TOKENS DF".center(60, "-"))
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
@@ -409,12 +409,12 @@ def get_usr_tk_df(dframe, bow):
 		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 
 		# comment for speedup:
-		#search_results_snippets_tokens_list.append( [tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		#nwp_content_tokens_list.append([tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		search_results_snippets_tokens_list.append( [tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		nwp_content_tokens_list.append([tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 
 	# uncomment for speedup:
-	nwp_content_tokens_list = [f"nwp_content_{i}" for i in range(len(users_list))]
-	search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
+	#nwp_content_tokens_list = [f"nwp_content_{i}" for i in range(len(users_list))]
+	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
 	print(len(users_list), 
 				len(search_query_phrase_tokens_list),
@@ -427,7 +427,6 @@ def get_usr_tk_df(dframe, bow):
 	#return
 
 	usr_interest_vb = dict.fromkeys(bow.keys(), 0.0)
-	print(f"USER-TOKENS DF".center(60, "-"))
 	df_user_token = pd.DataFrame(list(zip(users_list, 
 																				search_query_phrase_tokens_list, 
 																				search_results_hw_snippets_tokens_list, 
@@ -449,8 +448,8 @@ def get_usr_tk_df(dframe, bow):
 	
 	# list of all weights:
 	weightQueryAppearance = 1.0 							# suggested by Jakko: 1.0
-	weightSnippetAppearance = 0.25 						# suggested by Jakko: 0.2
-	weightSnippetHighlightAppearance = 0.4 		# suggested by Jakko: 0.2
+	weightSnippetAppearance = 0.2 						# suggested by Jakko: 0.2
+	weightSnippetHighlightAppearance = 0.2 		# suggested by Jakko: 0.2
 	weightContentAppearance = 0.05 						# suggested by Jakko: 0.05
 	weightContentHighlightAppearance = 0.05 	# suggested by Jakko: 0.05
 	weightContentParsedAppearance = 0.005			# Did not consider!
@@ -484,6 +483,7 @@ def get_usr_tk_df(dframe, bow):
 		json.dump(df_user_token[df_user_token["user_ip"]=="ip3539"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
 	"""
 
+	print(f"USER-TOKENS DF".center(60, "-"))
 	return df_user_token
 
 def get_sparse_matrix(df):
@@ -513,8 +513,8 @@ def get_sparse_matrix(df):
 def run_RecSys(df_inp, qu_phrase, topK=5):
 	print_df_detail(df=df_inp, fname=__file__)
 	
-	BoWs = get_bag_of_words(dframe=df_inp)
-	#BoWs = get_complete_BoWs(dframe=df_inp)
+	#BoWs = get_bag_of_words(dframe=df_inp)
+	BoWs = get_complete_BoWs(dframe=df_inp)
 	#return
 
 	try:
