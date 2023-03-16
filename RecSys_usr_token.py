@@ -50,8 +50,8 @@ my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m",
 												]
 STOPWORDS.extend(my_custom_stopwords)
 #print(len(STOPWORDS), STOPWORDS)
-UNIQUE_STOPWORDS = set(STOPWORDS)
-#print(len(UNIQUE_STOPWORDS), UNIQUE_STOPWORDS)
+UNIQUE_STOPWORDS = list(set(STOPWORDS))
+print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default=f"{os.path.expanduser('~')}/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
@@ -87,7 +87,7 @@ def nltk_tokenizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words=
 
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
 	tokens = tokenizer.tokenize(sentences)
-	filtered_tokens = [w for w in tokens if not w in UNIQUE_STOPWORDS]
+	filtered_tokens = [w for w in tokens if not w in stopwords]
 
 	#lematized_tokens = [wnl.lemmatize(i,j[0].lower()) if j[0].lower() in ['a','n','v'] else wnl.lemmatize(i) for i,j in nltk.pos_tag(filtered_tokens)]
 	lematized_tokens = [wnl.lemmatize(word,tag[0].lower()) if tag[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(word) for word,tag in nltk.pos_tag(filtered_tokens)]
