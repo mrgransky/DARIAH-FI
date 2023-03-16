@@ -3,9 +3,9 @@
 #SBATCH --account=project_2004072
 #SBATCH -J recSys_user_tokens_init_test
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
-#SBATCH --partition=hugemem_longrun
+#SBATCH --partition=hugemem
 #SBATCH --mem-per-cpu=370G
-#SBATCH --time=06-23:59:59
+#SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
