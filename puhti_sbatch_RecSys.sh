@@ -4,7 +4,7 @@
 #SBATCH -J recSys_user_tokens_init_test
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem-per-cpu=370G
+#SBATCH --mem-per-cpu=380G
 #SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
