@@ -217,7 +217,7 @@ def get_bag_of_words(dframe):
 	
 	raw_phrases_list = dframe.loc[:, "search_query_phrase"].values.flatten().tolist()
 
-	print(raw_phrases_list)
+	#print(raw_phrases_list)
 	print(len(raw_phrases_list), type(raw_phrases_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
@@ -367,7 +367,6 @@ def get_usr_tk_df(dframe, bow):
 		dframe['nwp_content_ocr_text_pt_tklm'] = dframe["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 
-		"""
 		#####################################################
 		# comment for speedup:
 		print(f">> Analyzing newspaper content [tokenization + lemmatization]...")
@@ -382,7 +381,6 @@ def get_usr_tk_df(dframe, bow):
 		dframe['search_results_snippets_tklm'] = dframe["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		#####################################################
-		"""
 
 		dframe_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_df_preprocessed.lz4")
 		save_pickle(pkl=dframe, fname=dframe_preprocessed_fname)
@@ -390,6 +388,7 @@ def get_usr_tk_df(dframe, bow):
 
 	print(df_preprocessed.info())
 	print(df_preprocessed.tail(60))
+	print(df_preprocessed.shape)
 	print(f"<>"*60)
 	
 	users_list = list()
