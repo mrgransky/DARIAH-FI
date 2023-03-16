@@ -5,7 +5,7 @@
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=hugemem
 #SBATCH --mem-per-cpu=699G
-#SBATCH --time=07-23:59:59
+#SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
