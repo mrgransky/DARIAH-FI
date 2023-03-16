@@ -61,7 +61,7 @@ UNIQUE_STOPWORDS = list(set(STOPWORDS))
 #print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
-parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump", type=str) # smallest
+parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="pyhäkosken lohi", type=str) # smallest
