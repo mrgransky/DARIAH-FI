@@ -11,10 +11,46 @@ import glob
 import webbrowser
 import string
 import time
+import logging
+import warnings
+warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd
 from natsort import natsorted
+
+from scipy.sparse import csr_matrix, coo_matrix
+from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
+
+#import spacy
+from colorama import Fore, Style
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+import matplotlib.pylab as pylab
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import Colormap as cm
+
+import matplotlib
+matplotlib.use("Agg")
+
+sz=13
+params = {
+		'figure.figsize':	(sz*1.0, sz*0.7),  # W, H
+		'figure.dpi':		200,
+		'figure.autolayout': True,
+		#'figure.constrained_layout.use': True,
+		'legend.fontsize':	sz*0.8,
+		'axes.labelsize':	sz*1.0,
+		'axes.titlesize':	sz*1.0,
+		'xtick.labelsize':	sz*0.8,
+		'ytick.labelsize':	sz*0.8,
+		'lines.linewidth' :	sz*0.1,
+		'lines.markersize':	sz*0.8,
+		'font.size':		sz*1.0,
+		'font.family':		"serif",
+	}
+pylab.rcParams.update(params)
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
@@ -29,6 +65,155 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
+
+
+def get_filename_prefix(dfname):
+	fprefix = "_".join(dfname.split("/")[-1].split(".")[:-2]) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+	return fprefix
+
+def plot_heatmap(mtrx, name_="user-based", RES_DIR=""):
+	st_t = time.time()
+	hm_title = f"{name_} similarity heatmap".capitalize()
+	print(f"{hm_title.center(70,'-')}")
+	print(type(mtrx), mtrx.shape, mtrx.nbytes)
+	#RES_DIR = make_result_dir(infile=args.inputDF)
+
+	f, ax = plt.subplots()
+
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes('right', size='5%', pad=0.05)
+	im = ax.imshow(mtrx, 
+								cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
+								)
+	cbar = ax.figure.colorbar(im,
+														ax=ax,
+														label="Similarity",
+														orientation="vertical",
+														cax=cax,
+														ticks=[0.0, 0.5, 1.0],
+														)
+
+	ax.set_ylabel(f"{name_.split('-')[0].capitalize()}")
+	#ax.set_yticks([])
+	#ax.set_xticks([])
+	ax.xaxis.tick_top()
+	ax.tick_params(axis='x', labelrotation=90, labelsize=10.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=10.0)
+	plt.suptitle(f"{hm_title}\n{mtrx.shape[0]} Unique Elements")
+	#print(os.path.join( RES_DIR, f'{name_}_similarity_heatmap.png' ))
+	plt.savefig(os.path.join( RES_DIR, f"{name_}_similarity_heatmap.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+	print(f"Done".center(70, "-"))
+
+def get_similarity_df(df, sprs_mtx, method="user-based", result_dir=""):
+	method_dict = {"user-based": "user_ip", 
+								"item-based": "title_issue_page",
+								"token-based": "something_TBD",
+								}
+	print(f"Getting {method} similarity of {type(sprs_mtx)} : {sprs_mtx.shape}")
+
+	similarity = cosine_similarity( sprs_mtx )
+	#similarity = linear_kernel(sprs_mtx)
+	
+	plot_heatmap(mtrx=similarity.astype(np.float32), 
+							name_=method,
+							RES_DIR=result_dir,
+							)
+
+	sim_df = pd.DataFrame(similarity,#.astype(np.float32), 
+												index=df[method_dict.get(method)].unique(),
+												columns=df[method_dict.get(method)].unique(),
+												)
+	#print(sim_df.shape)
+	#print(sim_df.info(verbose=True, memory_usage="deep"))
+	#print(sim_df.head(25))
+	#print("><"*60)
+
+	return sim_df
+
+def get_snippet_hw_counts(results_list):
+	return [ len(el.get("terms")) if el.get("terms") else 0 for ei, el in enumerate(results_list) ]
+
+def get_content_hw_counts(results_dict):
+	hw_count = 0
+	if results_dict.get("highlighted_term"):
+		hw_count = len(results_dict.get("highlighted_term"))
+	return hw_count
+
+def get_search_title_issue_page(results_list):
+	return [f'{el.get("bindingTitle")}_{el.get("issue")}_{el.get("pageNumber")}' for ei, el in enumerate(results_list)]
+
+def get_content_title_issue_page(results_dict):
+	return f'{results_dict.get("title")}_{results_dict.get("issue")}_{results_dict.get("page")[0]}'
+
+def get_sparse_mtx(df):
+	print(f"Sparse Matrix (USER-ITEM): {df.shape}".center(100, '-'))
+	print(list(df.columns))
+	print(df.dtypes)
+	print(f">> Checking positive indices?")
+	assert np.all(df["user_index"] >= 0)
+	assert np.all(df["nwp_tip_index"] >= 0)
+	print(f">> Done!")
+
+	sparse_mtx = csr_matrix( ( df["implicit_feedback"], (df["user_index"], df["nwp_tip_index"]) ), dtype=np.int8 ) # num, row, col
+	#csr_matrix( ( data, (row, col) ), shape=(3, 3))
+	##########################Sparse Matrix info##########################
+	print("#"*110)
+	print(f"Sparse: {sparse_mtx.shape} : |elem|: {sparse_mtx.shape[0]*sparse_mtx.shape[1]}")
+	print(f"<> Non-zeros vals: {sparse_mtx.data}")# Viewing stored data (not the zero items)
+	#print(sparse_mtx.toarray()[:25, :18])
+	print(f"<> |Non-zero vals|: {sparse_mtx.count_nonzero()}") # Counting nonzeros
+	print("#"*110)
+	##########################Sparse Matrix info##########################
+	return sparse_mtx
+
+def print_df_detail(df, fname="unkonwn"):
+	print(f"{f'{fname} | DF: {df.shape}'.center(80, '-')}")
+
+	print(df.info(verbose=True, memory_usage="deep"))
+	"""
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 50):
+		print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
+	"""
+	#print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
+
+	print(df[["user_ip",
+						"search_query_phrase", 
+						"search_results",
+						]
+					].head(10)
+				)
+
+	print(f"{len(list(df['search_results'][1][0].keys()))}\t",
+				f"{list(df['search_results'][1][0].keys())} ", 
+			)
+	print("<>"*90)
+
+	print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
+	print("#"*150)
+
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(df[["user_ip", 
+							"search_referer",
+							]
+						].head(10))
+
+	print("#"*150)
+
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(df[[#nwp_content_results", 
+							"nwp_content_referer",
+							]
+						].head(10))
+
+	print("<>"*100)
+	print(list(df["nwp_content_results"][4].keys()))
+	
+	print("#"*150)
+	print(json.dumps(df["nwp_content_results"][4], indent=2, ensure_ascii=False))
+	
+	print("DONE".center(80, "-"))
 
 def make_result_dir(infile=""):
 	f = infile.split("/")[-1]
@@ -316,51 +501,39 @@ def checking_(url):
 					) as e:
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
 		return
+	except Exception as e:
+		logging.exception(e)
+		return
 
 def make_folder(folder_name="MUST_BE_RENAMED"):
 	if not os.path.exists(folder_name): 
 		#print(f"\n>> Creating DIR:\n{folder_name}")
 		os.makedirs( folder_name )
 
-def save_tfidf_matrix(mtrx, fname=""):
-	print(f"Saving TFIDF matrix: {mtrx.shape}".center(100, '-'))
+def save_pickle(pkl, fname=""):
 	dump_file_name = fname
-	print(f"\n>> Saving {dump_file_name} ...")
+	print(f"Saving {type(pkl)}:\n{dump_file_name}")
 
 	with open(dump_file_name , "wb" ) as f:
-		joblib.dump(mtrx, f, compress='lz4',)
+		joblib.dump(pkl, f, compress='lz4',)
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"{fsize_dump:.1f} MB".center(100, '-'))
+	print(f"{fsize_dump:.1f} MB".center(150, '-'))
 
-def save_tfidf_vec(vec, fname=""):
-	print(f"Saving TFIDF vectorizer".center(100, '-'))
-	dump_file_name = fname
-	print(f"\n>> Saving {dump_file_name} ...")
+def save_vocab(vb, fname=""):
+	print(f">> Saving {len(vb)} TFIDF vocabs in {fname} ...")
+	with open(fname, "w") as fw:
+		json.dump(vb, fw, indent=4, ensure_ascii=False)
+	print(">> Done!")
 
-	with open(dump_file_name , "wb" ) as f:
-		joblib.dump(vec, f, compress='lz4',)
-
-	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"{fsize_dump:.1f} MB".center(100, '-'))
-
-def load_tfidf_matrix(fpath):
-	fsize = os.stat( fpath ).st_size / 1e9
-	print(f"Loading {fpath} | {fsize:.3f} GB")
+def load_pickle(fpath):
+	fsize = os.stat( fpath ).st_size / 1e6
+	print(f"\nfile: {fpath} exists, Loading... | {fsize:.3f} MB")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
-		mtrx = joblib.load(f)
-	print(f"Elapsed_t: {time.time() - st_t:.2f} s | {mtrx.shape}".center(100, " "))
-	return mtrx
-
-def load_tfidf_vec(fpath):
-	fsize = os.stat( fpath ).st_size / 1e9
-	print(f"Loading {fpath} | {fsize:.3f} GB")
-	st_t = time.time()
-	with open(fpath, "rb") as f:
-		vec = joblib.load(f)
-	print(f"Elapsed_t: {time.time() - st_t:.2f} s".center(100, " "))
-	return vec
+		pkl = joblib.load(f)
+	print(f"Elapsed time: {time.time() - st_t:.3f} s | {type(pkl)}".center(160, " "))
+	return pkl
 
 def save_(df, infile="", save_csv=False, save_parquet=True):
 	dfs_dict = {
@@ -424,7 +597,6 @@ def get_query_phrase(inp_url):
 	params = urllib.parse.parse_qs( p_url.query, keep_blank_values=True)
 	#print(parameters)
 	return params.get("query")
-
 
 def just_test_for_expected_results(df):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
