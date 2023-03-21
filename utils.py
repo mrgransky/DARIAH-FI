@@ -513,13 +513,13 @@ def make_folder(folder_name="MUST_BE_RENAMED"):
 
 def save_pickle(pkl, fname=""):
 	dump_file_name = fname
-	print(f"Saving {type(pkl)}:\n{dump_file_name}")
+	print(f">> Saving {type(pkl)}\n{dump_file_name}")
 
 	with open(dump_file_name , "wb" ) as f:
 		joblib.dump(pkl, f, compress='lz4',)
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"{fsize_dump:.1f} MB".center(150, '-'))
+	print(f"{fsize_dump:.1f} MB".center(60, '-'))
 
 def save_vocab(vb, fname=""):
 	print(f">> Saving {len(vb)} TFIDF vocabs in {fname} ...")

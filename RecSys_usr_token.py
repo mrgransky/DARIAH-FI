@@ -189,7 +189,7 @@ def get_complete_BoWs(dframe):
 	return BOWs
 
 def get_bag_of_words(dframe):
-	print(f"{f'Bag-of-Words [{userName}]'.center(80, '-')}")
+	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 	print(f">> Extracting texts from query phrases...")
 	st_t = time.time()
 	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
@@ -209,11 +209,11 @@ def get_bag_of_words(dframe):
 																	columns =['user_ip', 'raw_text', ])
 	df_usr_raw_texts['raw_text'] = [ np.NaN if len(txt) == 0 else txt for txt in df_usr_raw_texts['raw_text'] ]
 	
-	print(df_usr_raw_texts.info())
+	#print(df_usr_raw_texts.info())
 
 	raw_docs_list = [subitem for item in df_usr_raw_texts.loc[df_usr_raw_texts["raw_text"].notnull(), "raw_text"].values.flatten().tolist() for subitem in item]
 
-	print(len(raw_docs_list), type(raw_docs_list))
+	#print(len(raw_docs_list), type(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
@@ -255,7 +255,7 @@ def get_bag_of_words(dframe):
 	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)}")
 	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
 	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
-	print(f"{f'Bag-of-Words [{userName}]'.center(80, '-')}")
+	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 	return BOWs
 
 def count_tokens_vocab(dframe, weights_list, vb):
@@ -333,8 +333,7 @@ def tokenize_query_phrase(qu_list):
 def get_usr_tk_df(dframe, bow):
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_df_preprocessed.lz4")
-	
-	print(f">> Getting {df_preprocessed_fname} ...")
+	print(f"\n>> Getting {df_preprocessed_fname} ...")
 	
 	try:
 		df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
@@ -363,7 +362,7 @@ def get_usr_tk_df(dframe, bow):
 		df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_pt, na_action='ignore')
 		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = df_preprocessed["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		"""
+		
 		#####################################################
 		# comment for speedup:
 		print(f">> Analyzing newspaper content [tokenization + lemmatization]...")
@@ -378,15 +377,15 @@ def get_usr_tk_df(dframe, bow):
 		df_preprocessed['search_results_snippets_tklm'] = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		#####################################################
-		"""
+		
 		save_pickle(pkl=df_preprocessed, fname=df_preprocessed_fname)
 	
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
-	print(df_preprocessed.info())
+	#print(df_preprocessed.info())
 	#print(df_preprocessed.tail(60))
 	
-	print(f"USER-TOKENS DF".center(60, "-"))
+	print(f"USER-TOKENS DF".center(100, "-"))
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
@@ -405,12 +404,12 @@ def get_usr_tk_df(dframe, bow):
 		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 
 		# comment for speedup:
-		#search_results_snippets_tokens_list.append( [tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		#nwp_content_tokens_list.append([tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		search_results_snippets_tokens_list.append( [tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		nwp_content_tokens_list.append([tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 
 	# uncomment for speedup:
-	nwp_content_tokens_list = [f"nwp_content_{i}" for i in range(len(users_list))]
-	search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
+	#nwp_content_tokens_list = [f"nwp_content_{i}" for i in range(len(users_list))]
+	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
 	print(len(users_list), 
 				len(search_query_phrase_tokens_list),
@@ -457,13 +456,12 @@ def get_usr_tk_df(dframe, bow):
 						weightContentAppearance,
 					]
 
-	print(f">> Creating Implicit Feedback for user interests")
+	print(f">> Creating Implicit Feedback for user interests...")
 	usr_interest_vb = dict.fromkeys(bow.keys(), 0.0)
 	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: count_tokens_vocab(x_df, w_list, usr_interest_vb.copy()), axis=1, )
 	
-	print(df_user_token.shape, list(df_user_token.columns))
-
-	print(df_user_token.info())
+	#print(df_user_token.shape, list(df_user_token.columns))
+	#print(df_user_token.info())
 
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
@@ -479,7 +477,7 @@ def get_usr_tk_df(dframe, bow):
 		json.dump(df_user_token[df_user_token["user_ip"]=="ip3539"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
 	"""
 
-	print(f"USER-TOKENS DF".center(60, "-"))
+	#print(f"USER-TOKENS DF".center(100, "-"))
 	return df_user_token
 
 def get_sparse_matrix(df):
@@ -522,8 +520,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 	except:
 		df = get_usr_tk_df(dframe=df_inp, bow=BoWs)
 	
-	print(list(df.columns), df.shape)
-	print(df.info())
+	#print(list(df.columns), df.shape)
+	#print(df.info())
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
@@ -556,8 +554,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	#nUsers = 5
-	#nItems = 11
 	nUsers, nItems = sp_mat_rf.toarray().shape
 	#print(f"Users: {nUsers} vs. Tokenzied word Items: {nItems}")
 	#cos = np.random.rand(nUsers).reshape(1, -1)
