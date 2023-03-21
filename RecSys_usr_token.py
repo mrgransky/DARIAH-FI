@@ -78,23 +78,21 @@ def nltk_tokenizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words=
 	sentences = sentence.lower()
 	sentences = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', sentences)
 	sentences = re.sub(r"\W+|_"," ", sentences) # replace special characters with space
-	sentences = re.sub("\s+", " ", sentences)
-
-	# works not good: 
-	#tokens = [w for w in nltk.tokenize.word_tokenize(sentences)]
-	#filtered_tokens = [w for w in tokens if ( w not in stopwords and w not in string.punctuation )]
+	#sentences = re.sub("\s+", " ", sentences)
+	sentences = re.sub("\s+", " ", sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
 
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
 	tokens = tokenizer.tokenize(sentences)
-	filtered_tokens = [w for w in tokens if not w in stopwords]
 
-	#lematized_tokens = [wnl.lemmatize(i,j[0].lower()) if j[0].lower() in ['a','n','v'] else wnl.lemmatize(i) for i,j in nltk.pos_tag(filtered_tokens)]
-	lematized_tokens = [wnl.lemmatize(word,tag[0].lower()) if tag[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(word) for word,tag in nltk.pos_tag(filtered_tokens)]
+	#filtered_tokens = [w for w in tokens if not w in stopwords]
+	filtered_tokens = [w for w in tokens if not w in stopwords and len(w) > 1 and not w.isnumeric() ]
+
+	lematized_tokens = [wnl.lemmatize(w,t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w,t in nltk.pos_tag(filtered_tokens)]
 
 	return lematized_tokens    
 
 def get_qu_phrase_raw_text(phrase_list):
-	assert len(phrase_list) == 1
+	assert len(phrase_list) == 1, f"Wrong len for {phrase_list}"
 	phrase = phrase_list[0]
 	return phrase
 
@@ -512,8 +510,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
 
-	#BoWs = get_bag_of_words(dframe=df_inp)
-	BoWs = get_complete_BoWs(dframe=df_inp)
+	BoWs = get_bag_of_words(dframe=df_inp)
+	#BoWs = get_complete_BoWs(dframe=df_inp)
 	#return
 
 	try:
@@ -545,10 +543,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 
 	print(f"QUERY_VECTOR: {query_vector.shape} REFERENCE_SPARSE_MATRIX: {sp_mat_rf.shape}") # QU: (1, n_vocabs) | RF: (n_usr, n_vocab) 
 
-	kernel_matrix = cosine_similarity(query_vector, sp_mat_rf) # (1, n_usr)
+	kernel_vector = cosine_similarity(query_vector, sp_mat_rf) # (1, n_usr)
 	
-	print(f"kernel{kernel_matrix.shape}: {kernel_matrix.flatten()} Allzero: {np.all(kernel_matrix.flatten() == 0.0)}")
-	if np.all(kernel_matrix.flatten() == 0.0):
+	print(f"kernel_vec: {kernel_vector.shape} {type(kernel_vector)}\t" 
+				f"Allzero: {np.all(kernel_vector.flatten() == 0.0)}\t"
+				f"(min, max, sum): ({kernel_vector.min()}, {kernel_vector.max():.2f}, {kernel_vector.sum():.2f})")
+
+	if np.all(kernel_vector.flatten() == 0.0):
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
@@ -576,29 +577,41 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 		#userInterest = userInterest / np.linalg.norm(userInterest)
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
 		#print(f"<> userInterest_norm{userInterest.shape}:\n{userInterest}")
-		#print(f"cos[{iUser}]: {kernel_matrix[0, iUser]}")
+		#print(f"cos[{iUser}]: {kernel_vector[0, iUser]}")
 		#print(f"<> avgrec (B4):{avgrec.shape}\n{avgrec}")
-		avgrec = avgrec + kernel_matrix[0, iUser] * userInterest
+		avgrec = avgrec + kernel_vector[0, iUser] * userInterest
 		#print(f"<> avgrec (After):{avgrec.shape}\n{avgrec}")
 		#print()
 
 	#print(f"-"*100)
-	avgrec = avgrec / np.sum(kernel_matrix)
-	#print(f"avgrec:{avgrec.shape}\n{avgrec}")
+	avgrec = avgrec / np.sum(kernel_vector)
 	
-	#all_topk_match_indeces = avgrec.flatten().argsort()#[-(topK+1):-1]
-	#all_topk_matches = np.sort(avgrec.flatten())#[-(topK+1):-1]
-	#print(f"ALL top-{topK} idx: {all_topk_match_indeces}\nALL top-{topK} res: {all_topk_matches}")
+	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
+				f"Allzero: {np.all(avgrec.flatten() == 0.0)}\t"
+				f"(min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})")
 
-	# to exclude the query words:
-	topk_match_indeces = avgrec.flatten().argsort()[-(topK+1):-1]
-	topk_matches = np.sort(avgrec.flatten())[-(topK+1):-1]
+	#all_topk_matches_idx_avgRecSys = avgrec.flatten().argsort()
+	#all_topk_matches_avgRecSys = np.sort(avgrec.flatten())
+	#print(f"ALL top-{topK} idx: {all_topk_matches_idx_avgRecSys}\nALL top-{topK} res: {all_topk_matches_avgRecSys}")
 
-	#topk_match_indeces = avgrec.flatten().argsort()[-topK:]
-	#topk_matches = np.sort(avgrec.flatten())[-topK:]
+	# AVG RecSys: to exclude the query words:
+	#topk_matches_idx_avgRecSys = avgrec.flatten().argsort()[-(topK+1):-1]
+	#topk_matches_avgRecSys = np.sort(avgrec.flatten())[-(topK+1):-1]
+	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()[-topK:]
+	topk_matches_avgRecSys = np.sort(avgrec.flatten())[-topK:]
+
+	# Kernel Vector: to exclude the query words:
+	#topk_matches_idx_kernel_vec = kernel_vector.flatten().argsort()[-(topK+1):-1]
+	#topk_matches_kernel_vec = np.sort(kernel_vector.flatten())[-(topK+1):-1]
+	topk_matches_idx_kernel_vec = kernel_vector.flatten().argsort()[-topK:]
+	topk_matches_kernel_vec = np.sort(kernel_vector.flatten())[-topK:]
+
 	
-	#print(f"top-{topK} idx: {topk_match_indeces}\ntop-{topK} res: {topk_matches}")
-	topk_recom_tks = [k for idx in topk_match_indeces for k, v in BoWs.items() if v == idx]
+
+
+
+	#print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
+	topk_recom_tks = [k for idx in topk_matches_idx_avgRecSys for k, v in BoWs.items() if v == idx]
 	print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 
 	print()
@@ -607,9 +620,9 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 				f"\tTokenized + Lemmatized: {query_phrase_tk}\n"
 				f"you might also be interested in Phrases:\n{Fore.GREEN}{topk_recom_tks[::-1]}{Style.RESET_ALL}")
 	print()
-	print(f"{f'Top-{topK} Tokens' : <20}{'Weighted User Interest' : ^20}")
-	for tk, sim_val in zip(topk_recom_tks[::-1], topk_matches[::-1]):
-		print(f"{tk : <20} {sim_val:^{20}.{3}f}")
+	print(f"{f'Top-{topK} Tokens':<25}{f'Weighted userInterest (min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})':<60}{f'(Cosine) simVal. (min, max, sum): ({kernel_vector.min()}, {kernel_vector.max():.2f}, {kernel_vector.sum():.2f})':^50}")
+	for tk, weighted_usrInterest, cos_sim in zip(topk_recom_tks[::-1], topk_matches_avgRecSys[::-1], topk_matches_kernel_vec[::-1]):
+		print(f"{tk:<25}{weighted_usrInterest:^{60}.{3}f}{cos_sim:^{50}.{3}f}")
 	print()
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(100,'-'))
 
@@ -648,10 +661,10 @@ def practice(topK=5):
 	print(f"-"*100)
 	avgrec = avgrec / np.sum(cos)
 	print(f"avgrec:{avgrec.shape}\n{avgrec}")
-	topk_match_indeces = avgrec.flatten().argsort()#[-(topK+1):-1]
-	topk_matches = np.sort(avgrec.flatten())#[-(topK+1):-1]
+	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()#[-(topK+1):-1]
+	topk_matches_avgRecSys = np.sort(avgrec.flatten())#[-(topK+1):-1]
 
-	print(f"top-{topK} idx: {topk_match_indeces}\ntop-{topK} res: {topk_matches}")
+	print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 
 if __name__ == '__main__':
 	os.system("clear")

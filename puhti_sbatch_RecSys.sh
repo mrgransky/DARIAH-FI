@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J recSys_user_tokens_init_test
+#SBATCH -J recSys_usr_tk
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem-per-cpu=709G
+#SBATCH --mem-per-cpu=600G
 #SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
