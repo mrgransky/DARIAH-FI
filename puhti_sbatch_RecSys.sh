@@ -4,7 +4,7 @@
 #SBATCH -J recSys_usr_tk
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=hugemem
-#SBATCH --mem-per-cpu=600G
+#SBATCH --mem-per-cpu=601G
 #SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -33,8 +33,7 @@ echo "Cluster: $cluster Current User: $user"
 if [ $user == 'alijani' ]; then
 	source activate py3_gpu
 elif [ $user == 'alijanif' ]; then
-	echo ">> Using Puhti Conda Environment..."
-	#source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
+	echo ">> Using Puhti conda env from tykky module..."
 	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/dataframes/"
 fi
 
