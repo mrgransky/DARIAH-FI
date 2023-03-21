@@ -58,6 +58,7 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 				}
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
+userName = os.path.expanduser("~")
 
 dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
