@@ -21,7 +21,7 @@ from natsort import natsorted
 
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
-
+from sklearn.preprocessing import normalize
 #import spacy
 from colorama import Fore, Style
 import seaborn as sns
@@ -34,7 +34,7 @@ import matplotlib.ticker as ticker
 import matplotlib
 matplotlib.use("Agg")
 
-sz=12
+sz=14
 params = {
 		'figure.figsize':	(sz*1.0, sz*0.7),  # W, H
 		'figure.dpi':		200,
@@ -47,28 +47,31 @@ params = {
 		'ytick.labelsize':	sz*0.8,
 		'lines.linewidth' :	sz*0.1,
 		'lines.markersize':	sz*0.8,
+		"markers.fillstyle": "left",
 		'font.size':		sz*1.0,
 		'font.family':		"serif",
 	}
 pylab.rcParams.update(params)
 clrs = ["#ee0031",
-				"#100874",
-				"#ffee32",
 				'#0ecd19',
-				'#e377c2',
 				'#16b3ff',
+				'#e377c2',
+				"#ffee32",
+				"#031e",
 				'#007749',
 				'#77b4',
 				'#bcbd22',
 				'#864b',
+				"#742802",
 				'#1f77b4',
 				'#7f7f7f', 
 				"#ee5540", 
-				"#031e",
 				"#ffb563",
 				'#25e682', 
+				"#100874",
 				'#900fcc99',
 				"#931e00",
+				"#a98d19",
 				"#a416",
 				'#d62789', 
 				'#7f0e',
@@ -219,7 +222,7 @@ def print_df_detail(df, fname="unkonwn"):
 						]
 					].tail(30)
 				)
-	
+
 	print(f"{len(list(df['search_results'][1][0].keys()))}\t",
 				f"{list(df['search_results'][1][0].keys())} ", 
 			)
@@ -560,11 +563,11 @@ def save_vocab(vb, fname=""):
 
 def load_pickle(fpath):
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"\nfile: {fpath} exists, Loading... | {fsize:.3f} MB")
+	print(f"\nfile: {fpath} exists, Loading...")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
 		pkl = joblib.load(f)
-	print(f"Elapsed time: {time.time() - st_t:.3f} s | {type(pkl)}".center(160, " "))
+	print(f"Elapsed_t: {time.time() - st_t:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
 def save_(df, infile="", save_csv=False, save_parquet=True):

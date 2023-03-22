@@ -507,7 +507,7 @@ def get_sparse_matrix(df):
 
 	return sparse_matrix
 
-def run_RecSys(df_inp, qu_phrase, topK=5):
+def run_RecSys(df_inp, qu_phrase, topK=5, nomalize_sparse_matrix=True):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
 
@@ -546,9 +546,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 	print(f">> queryVec in vocab: Allzero: {np.all(query_vector==0.0)}\t"
 				f"( |NonZero|: {np.count_nonzero(query_vector)} idx: {np.nonzero(query_vector)[0]} )")
 
-	# TODO: plot histogram tokens in sparse matrix:
+	if nomalize_sparse_matrix:
+		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
+	
 	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, BoWs)
-
 	query_vector = query_vector.reshape(1, -1) # (nItems,) => (1, nItems)
 	print(f"QUERY_VEC: {query_vector.shape} vs. REFERENCE_SPARSE_MATRIX: {sp_mat_rf.shape}".center(120, "¤")) # QU: (1, n_vocabs) | RF: (n_usr, n_vocab) 
 	print()
@@ -634,23 +635,22 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, bow):
 	RES_DIR = make_result_dir(infile=args.inputDF)
 
 	print(f"{'Plot Tokens Distribution'.center(80, '-')}")
-	#data_df = pd.DataFrame.sparse.from_spmatrix(sparseMat)
-	data_df = pd.DataFrame(sparseMat.toarray())
-	#data_df.columns = data_df.columns.map(str) # convert int col -> str col
-	#print(data_df.head(20))
-
+	#sparse_df = pd.DataFrame.sparse.from_spmatrix(sparseMat)
+	sparse_df = pd.DataFrame(sparseMat.toarray(), index=users_tokens_df["user_ip"])
+	#sparse_df.columns = sparse_df.columns.map(str) # convert int col -> str col
+	#print(sparse_df.head(20))
+	
 	qu_indices = np.nonzero(queryVec)[0]
 	print(type(qu_indices), qu_indices.shape, qu_indices, type(qu_indices[0]), type(f"{qu_indices[0]}"))
-
-	#return
-	#f, ax = plt.subplots(figsize=(11, 6))
+	
 	f, ax = plt.subplots()
-	data_df.set_index(users_tokens_df["user_ip"])[qu_indices].plot(	
+	#sparse_df[qu_indices].plot(	
+	sparse_df[sparse_df[qu_indices]!=0.0][qu_indices].plot(
 		kind='line', 
 		ax=ax, 
-		#marker="*", 
-		linestyle="-",
-		linewidth=0.8,
+		marker=".",
+		#linestyle="-.",
+		linestyle='',
 		color=clrs,
 		ylabel="Cell Value in Sparse Matrix",
 		title=f"Token(s) Distribution\nRaw Input Query Phrase: {args.qphrase}",
