@@ -507,7 +507,7 @@ def get_sparse_matrix(df):
 
 	return sparse_matrix
 
-def run_RecSys(df_inp, qu_phrase, topK=5, nomalize_sparse_matrix=True):
+def run_RecSys(df_inp, qu_phrase, topK=10, nomalized_sparse_matrix=True):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
 
@@ -546,10 +546,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5, nomalize_sparse_matrix=True):
 	print(f">> queryVec in vocab: Allzero: {np.all(query_vector==0.0)}\t"
 				f"( |NonZero|: {np.count_nonzero(query_vector)} idx: {np.nonzero(query_vector)[0]} )")
 
-	if nomalize_sparse_matrix:
+	if nomalized_sparse_matrix:
 		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
 	
-	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, BoWs)
+	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, BoWs, norm_sp=nomalized_sparse_matrix)
 	query_vector = query_vector.reshape(1, -1) # (nItems,) => (1, nItems)
 	print(f"QUERY_VEC: {query_vector.shape} vs. REFERENCE_SPARSE_MATRIX: {sp_mat_rf.shape}".center(120, "¤")) # QU: (1, n_vocabs) | RF: (n_usr, n_vocab) 
 	print()
@@ -603,16 +603,16 @@ def run_RecSys(df_inp, qu_phrase, topK=5, nomalize_sparse_matrix=True):
 	#print(f"ALL top-{topK} idx: {all_topk_matches_idx_avgRecSys}\nALL top-{topK} res: {all_topk_matches_avgRecSys}")
 
 	# AVG RecSys: to exclude the query words:
-	#topk_matches_idx_avgRecSys = avgrec.flatten().argsort()[-(topK+1):-1]
-	#topk_matches_avgRecSys = np.sort(avgrec.flatten())[-(topK+1):-1]
-	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()[-topK:]
-	topk_matches_avgRecSys = np.sort(avgrec.flatten())[-topK:]
+	#topk_matches_idx_avgRecSys = avgrec.flatten().argsort()[-(topK+0):-1]
+	#topk_matches_avgRecSys = np.sort(avgrec.flatten())[-(topK+0):-1]
+	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()[-(topK+0):]
+	topk_matches_avgRecSys = np.sort(avgrec.flatten())[-(topK+0):]
 
 	# Kernel Vector: to exclude the query words:
-	#topk_matches_idx_kernel_vec = cos_sim.flatten().argsort()[-(topK+1):-1]
-	#topk_matches_kernel_vec = np.sort(cos_sim.flatten())[-(topK+1):-1]
-	topk_matches_idx_kernel_vec = cos_sim.flatten().argsort()[-topK:]
-	topk_matches_kernel_vec = np.sort(cos_sim.flatten())[-topK:]
+	#topk_matches_idx_kernel_vec = cos_sim.flatten().argsort()[-(topK+0):-1]
+	#topk_matches_kernel_vec = np.sort(cos_sim.flatten())[-(topK+0):-1]
+	topk_matches_idx_kernel_vec = cos_sim.flatten().argsort()[-(topK+0):]
+	topk_matches_kernel_vec = np.sort(cos_sim.flatten())[-(topK+0):]
 
 	#print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 	topk_recom_tks = [k for idx in topk_matches_idx_avgRecSys for k, v in BoWs.items() if v == idx]
@@ -625,13 +625,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5, nomalize_sparse_matrix=True):
 				f"\tTokenized + Lemmatized: {query_phrase_tk}\n"
 				f"you might also be interested in Phrases:\n{Fore.GREEN}{topk_recom_tks[::-1]}{Style.RESET_ALL}")
 	print()
-	print(f"{f'Top-{topK} Tokens':<20}{f'Weighted userInterest {avgrec.shape} (min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})':<80}{f'(Cosine) simVec. {cos_sim.shape} (min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})':^60}")
+	print(f"{f'Top-{topK+0} Tokens':<20}{f'Weighted userInterest {avgrec.shape} (min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})':<80}{f'(Cosine) simVec. {cos_sim.shape} (min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})':^60}")
 	for tk, weighted_usrInterest, cos_sim in zip(topk_recom_tks[::-1], topk_matches_avgRecSys[::-1], topk_matches_kernel_vec[::-1]):
 		print(f"{tk:<20}{weighted_usrInterest:^{60}.{3}f}{cos_sim:^{90}.{3}f}")
 	print()
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
-def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, bow):
+def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, bow, norm_sp=False):
 	RES_DIR = make_result_dir(infile=args.inputDF)
 
 	print(f"{'Plot Tokens Distribution'.center(80, '-')}")
@@ -652,7 +652,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, bow):
 		#linestyle="-.",
 		linestyle='',
 		color=clrs,
-		ylabel="Cell Value in Sparse Matrix",
+		ylabel=f"Cell Value in L2-Normalized Sparse Matrix" if norm_sp else f"Cell Value in Original Sparse Matrix",
 		title=f"Token(s) Distribution\nRaw Input Query Phrase: {args.qphrase}",
 		)
 	ax.spines[['top', 'right']].set_visible(False)
@@ -668,7 +668,11 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, bow):
 							title=f"Tokens",
 							)
 
-	plt.savefig(os.path.join( RES_DIR, f"tokens_distribution_qu_{args.qphrase.replace(' ', '_')}.png" ), bbox_inches='tight')
+	if norm_sp:
+		plt.savefig(os.path.join( RES_DIR, f"tokens_distribution_norm_sparse_matrix_rawQu_{args.qphrase.replace(' ', '_')}.png" ), bbox_inches='tight')
+	else:
+		plt.savefig(os.path.join( RES_DIR, f"tokens_distribution_rawQu_{args.qphrase.replace(' ', '_')}.png" ), bbox_inches='tight')
+
 	plt.clf()
 	plt.close(f)
 
@@ -707,8 +711,8 @@ def practice(topK=5):
 	print(f"-"*100)
 	avgrec = avgrec / np.sum(cos)
 	print(f"avgrec:{avgrec.shape}\n{avgrec}")
-	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()#[-(topK+1):-1]
-	topk_matches_avgRecSys = np.sort(avgrec.flatten())#[-(topK+1):-1]
+	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()
+	topk_matches_avgRecSys = np.sort(avgrec.flatten())
 
 	print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 
