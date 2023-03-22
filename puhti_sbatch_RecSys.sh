@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J recSys_usr_tk
+#SBATCH -J recSys_usr_tk_nikeX
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=hugemem
 #SBATCH --mem-per-cpu=680G
