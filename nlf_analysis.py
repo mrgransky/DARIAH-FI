@@ -59,41 +59,6 @@ sns.set(font_scale=1.3,
 				color_codes=True,
 				)
 
-clrs = ["#100874",
-				"#ee0031",
-				'#0ecd19',
-				"#ffee32",
-				'#e377c2',
-				'#16b3ff',
-				'#007749',
-				'#77b4',
-				'#bcbd22',
-				'#864b',
-				'#1f77b4',
-				'#7f7f7f', 
-				"#ee5540", 
-				"#031e",
-				"#ffb563",
-				'#25e682', 
-				'#900fcc99',
-				"#931e00",
-				"#a416",
-				'#d62789', 
-				'#7f0e',
-				"#242265",
-				"#e4d10888",
-				"#006cf789",
-				'#d72448', 
-				"#1004",
-				"#7e88",
-				'#99f9',
-				"#d6d6cf",
-				"#f095",
-				'#2ca02c44', 
-				"#918450",
-				'#17becf',
-			]
-
 my_cols = [ "#ffd100", '#16b3ff', '#0ecd19', '#ff9999',]
 
 def clean_(text_list):
@@ -187,7 +152,7 @@ def plot_missing_features(df, RES_DIR):
 	plt.clf()
 	plt.close(f)
 
-def plot_language(df,RES_DIR, N=20):
+def plot_language(df, RES_DIR, N=20):
 	df_cleaned = df.dropna(axis=0, how="any", subset=["language"]).reset_index()
 
 	df_unq = df_cleaned.assign(language=df_cleaned['language'].str.split(',')).explode('language')
@@ -294,7 +259,8 @@ def plot_query_phrases(df,RES_DIR, Nq=50, Nu=5):
 	plt.figure(figsize=(14, 8))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.title(f"Cloud Distribution\n{len(df_cleaned['search_query_phrase'].value_counts())} Unique Query Phrases (total: {df_cleaned['search_query_phrase'].notnull().sum()})", color="k")
+	plt.title(f"Cloud Distribution\n{len(df_cleaned['search_query_phrase'].value_counts())}\n" 
+						f"Unique Query Phrases (total: {df_cleaned['search_query_phrase'].notnull().sum()})", color="k")
 	plt.margins(x=0, y=0)
 	plt.tight_layout(pad=0) 
 	plt.savefig(os.path.join( RES_DIR, f"query_phrases_cloud.png" ), )

@@ -30,11 +30,11 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
-
+import matplotlib.ticker as ticker
 import matplotlib
 matplotlib.use("Agg")
 
-sz=13
+sz=12
 params = {
 		'figure.figsize':	(sz*1.0, sz*0.7),  # W, H
 		'figure.dpi':		200,
@@ -51,6 +51,40 @@ params = {
 		'font.family':		"serif",
 	}
 pylab.rcParams.update(params)
+clrs = ["#ee0031",
+				"#100874",
+				"#ffee32",
+				'#0ecd19',
+				'#e377c2',
+				'#16b3ff',
+				'#007749',
+				'#77b4',
+				'#bcbd22',
+				'#864b',
+				'#1f77b4',
+				'#7f7f7f', 
+				"#ee5540", 
+				"#031e",
+				"#ffb563",
+				'#25e682', 
+				'#900fcc99',
+				"#931e00",
+				"#a416",
+				'#d62789', 
+				'#7f0e',
+				"#242265",
+				"#e4d10888",
+				"#006cf789",
+				'#d72448', 
+				"#1004",
+				"#7e88",
+				'#99f9',
+				"#d6d6cf",
+				"#f095",
+				'#2ca02c44', 
+				"#918450",
+				'#17becf',
+			]
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
@@ -183,9 +217,9 @@ def print_df_detail(df, fname="unkonwn"):
 						"search_query_phrase", 
 						"search_results",
 						]
-					].head(10)
+					].tail(30)
 				)
-
+	
 	print(f"{len(list(df['search_results'][1][0].keys()))}\t",
 				f"{list(df['search_results'][1][0].keys())} ", 
 			)
@@ -217,10 +251,7 @@ def print_df_detail(df, fname="unkonwn"):
 	print("DONE".center(80, "-"))
 
 def make_result_dir(infile=""):
-	f = infile.split("/")[-1]
-	#print(f)
-	f = f[:f.rfind(".log")]
-	#print(f)
+	f = get_filename_prefix(dfname=infile) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	res_dir = os.path.join(rpath, f)
 	make_folder(folder_name=res_dir)
 	return res_dir

@@ -246,6 +246,7 @@ def get_bag_of_words(dframe):
 	feat_names = tfidf_vec.get_feature_names_out()
 	#print(f"1st 100 features:\n{feat_names[:60]}\n")
 	
+	# dictionary mapping from words to their indices in vocabulary:
 	BOWs = tfidf_vec.vocabulary_ # dict mapping: key: term value: column positions(indices) of features.
 	# example:
 	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
@@ -338,8 +339,8 @@ def get_usr_tk_df(dframe, bow):
 	try:
 		df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
 	except:
+		print(f"Updating Original DF: {dframe.shape} with Tokenized texts".center(110, "-"))
 		df_preprocessed = dframe.copy()
-		print(f"Updating Originla DF: {dframe.shape} with Tokenized texts".center(110, "-"))
 		print(f">> Analyzing query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed["search_query_phrase_tklm"] = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
@@ -516,42 +517,48 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 	#return
 
 	try:
-		df = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
+		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
 	except:
-		df = get_usr_tk_df(dframe=df_inp, bow=BoWs)
+		df_usr_tk = get_usr_tk_df(dframe=df_inp, bow=BoWs)
 	
-	#print(list(df.columns), df.shape)
-	#print(df.info())
+	#print(df_usr_tk.info())
+	print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
 	except:
-		sp_mat_rf = get_sparse_matrix(df)
+		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 
-	print(f"{type(sp_mat_rf)}: {sp_mat_rf.shape}")
-
+	print(f"Sparse Matrix (Users-Tokens) | {type(sp_mat_rf)} {sp_mat_rf.shape}")
+	print("#"*150)
+	print(f"Input Raw Query Phrase: {qu_phrase}".center(120,' '))
 	# Embed qu_phrase
 	#tokens = [str(tok) for tok in my_tokenizer(qu_phrase)]
 	query_phrase_tk = tokenize_query_phrase(qu_list=[qu_phrase])
-	print(f"Tokenize(query phrase: >> {qu_phrase} <<) => {len(query_phrase_tk)} {query_phrase_tk}")
-	query_vector = np.zeros((1, len(BoWs)))
+	print(f"\nTokenized & Lemmatized '{qu_phrase}' contains {len(query_phrase_tk)} element(s) =>\t{query_phrase_tk}")
 
+	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
+		print(qutk, BoWs.get(qutk))
 		if BoWs.get(qutk):
-			query_vector[0, BoWs.get(qutk)] += 1.0 
+			query_vector[BoWs.get(qutk)] += 1.0 
+	print(f">> queryVec in vocab: Allzero: {np.all(query_vector==0.0)}\t"
+				f"( |NonZero|: {np.count_nonzero(query_vector)} idx: {np.nonzero(query_vector)[0]} )")
+
+	# TODO: plot histogram tokens in sparse matrix:
+	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, BoWs)
+
+	query_vector = query_vector.reshape(1, -1) # (nItems,) => (1, nItems)
+	print(f"QUERY_VEC: {query_vector.shape} vs. REFERENCE_SPARSE_MATRIX: {sp_mat_rf.shape}".center(120, "¤")) # QU: (1, n_vocabs) | RF: (n_usr, n_vocab) 
+	print()
+	cos_sim = cosine_similarity(query_vector, sp_mat_rf.toarray()) # (1, nUsers)
 	
-	print(f"query {query_vector.shape}: {query_vector.flatten()} Allzero: {np.all(query_vector.flatten() == 0.0)}") 
+	print(f"cos_sim: {cos_sim.shape} {type(cos_sim)}\t" 
+				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
+				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})")
 
-	print(f"QUERY_VECTOR: {query_vector.shape} REFERENCE_SPARSE_MATRIX: {sp_mat_rf.shape}") # QU: (1, n_vocabs) | RF: (n_usr, n_vocab) 
-
-	kernel_vector = cosine_similarity(query_vector, sp_mat_rf) # (1, n_usr)
-	
-	print(f"kernel_vec: {kernel_vector.shape} {type(kernel_vector)}\t" 
-				f"Allzero: {np.all(kernel_vector.flatten() == 0.0)}\t"
-				f"(min, max, sum): ({kernel_vector.min()}, {kernel_vector.max():.2f}, {kernel_vector.sum():.2f})")
-
-	if np.all(kernel_vector.flatten() == 0.0):
-		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} << in our database! Search again!")
+	if np.all(cos_sim.flatten() == 0.0):
+		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
 	nUsers, nItems = sp_mat_rf.toarray().shape
@@ -576,14 +583,14 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 		#userInterest = userInterest / np.linalg.norm(userInterest)
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
 		#print(f"<> userInterest_norm{userInterest.shape}:\n{userInterest}")
-		#print(f"cos[{iUser}]: {kernel_vector[0, iUser]}")
+		#print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
 		#print(f"<> avgrec (B4):{avgrec.shape}\n{avgrec}")
-		avgrec = avgrec + kernel_vector[0, iUser] * userInterest
+		avgrec = avgrec + cos_sim[0, iUser] * userInterest
 		#print(f"<> avgrec (After):{avgrec.shape}\n{avgrec}")
 		#print()
 
 	#print(f"-"*100)
-	avgrec = avgrec / np.sum(kernel_vector)
+	avgrec = avgrec / np.sum(cos_sim)
 	
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)}\t"
@@ -600,30 +607,69 @@ def run_RecSys(df_inp, qu_phrase, topK=5):
 	topk_matches_avgRecSys = np.sort(avgrec.flatten())[-topK:]
 
 	# Kernel Vector: to exclude the query words:
-	#topk_matches_idx_kernel_vec = kernel_vector.flatten().argsort()[-(topK+1):-1]
-	#topk_matches_kernel_vec = np.sort(kernel_vector.flatten())[-(topK+1):-1]
-	topk_matches_idx_kernel_vec = kernel_vector.flatten().argsort()[-topK:]
-	topk_matches_kernel_vec = np.sort(kernel_vector.flatten())[-topK:]
-
-	
-
-
+	#topk_matches_idx_kernel_vec = cos_sim.flatten().argsort()[-(topK+1):-1]
+	#topk_matches_kernel_vec = np.sort(cos_sim.flatten())[-(topK+1):-1]
+	topk_matches_idx_kernel_vec = cos_sim.flatten().argsort()[-topK:]
+	topk_matches_kernel_vec = np.sort(cos_sim.flatten())[-topK:]
 
 	#print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 	topk_recom_tks = [k for idx in topk_matches_idx_avgRecSys for k, v in BoWs.items() if v == idx]
+	
 	print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 
 	print()
-	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(100,'-'))
-	print(f"Since you searched for query phrase(s):\t{Fore.BLUE+Back.YELLOW}{args.qphrase}{Style.RESET_ALL}"
+	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
+	print(f"Since you searched for query phrase(s)\t{Fore.BLUE+Back.YELLOW}{args.qphrase}{Style.RESET_ALL}"
 				f"\tTokenized + Lemmatized: {query_phrase_tk}\n"
 				f"you might also be interested in Phrases:\n{Fore.GREEN}{topk_recom_tks[::-1]}{Style.RESET_ALL}")
 	print()
-	print(f"{f'Top-{topK} Tokens':<25}{f'Weighted userInterest (min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})':<60}{f'(Cosine) simVal. (min, max, sum): ({kernel_vector.min()}, {kernel_vector.max():.2f}, {kernel_vector.sum():.2f})':^50}")
+	print(f"{f'Top-{topK} Tokens':<20}{f'Weighted userInterest {avgrec.shape} (min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})':<80}{f'(Cosine) simVec. {cos_sim.shape} (min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})':^60}")
 	for tk, weighted_usrInterest, cos_sim in zip(topk_recom_tks[::-1], topk_matches_avgRecSys[::-1], topk_matches_kernel_vec[::-1]):
-		print(f"{tk:<25}{weighted_usrInterest:^{60}.{3}f}{cos_sim:^{50}.{3}f}")
+		print(f"{tk:<20}{weighted_usrInterest:^{60}.{3}f}{cos_sim:^{90}.{3}f}")
 	print()
-	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(100,'-'))
+	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
+
+def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, bow):
+	RES_DIR = make_result_dir(infile=args.inputDF)
+
+	print(f"{'Plot Tokens Distribution'.center(80, '-')}")
+	#data_df = pd.DataFrame.sparse.from_spmatrix(sparseMat)
+	data_df = pd.DataFrame(sparseMat.toarray())
+	#data_df.columns = data_df.columns.map(str) # convert int col -> str col
+	#print(data_df.head(20))
+
+	qu_indices = np.nonzero(queryVec)[0]
+	print(type(qu_indices), qu_indices.shape, qu_indices, type(qu_indices[0]), type(f"{qu_indices[0]}"))
+
+	#return
+	#f, ax = plt.subplots(figsize=(11, 6))
+	f, ax = plt.subplots()
+	data_df.set_index(users_tokens_df["user_ip"])[qu_indices].plot(	
+		kind='line', 
+		ax=ax, 
+		#marker="*", 
+		linestyle="-",
+		linewidth=0.8,
+		color=clrs,
+		ylabel="Cell Value in Sparse Matrix",
+		title=f"Token(s) Distribution\nRaw Input Query Phrase: {args.qphrase}",
+		)
+	ax.spines[['top', 'right']].set_visible(False)
+
+	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%100==0], 
+							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%100==0],
+							rotation=90,
+							fontsize=10,
+							)
+	plt.legend(	[f"{k} (vb_idx: {idx})" for idx in qu_indices for k, v in bow.items() if v==idx], 
+							#ncol=len(qu_indices), 
+							#frameon=False,
+							title=f"Tokens",
+							)
+
+	plt.savefig(os.path.join( RES_DIR, f"tokens_distribution_qu_{args.qphrase.replace(' ', '_')}.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
 
 def main():
 	df_raw = load_df(infile=args.inputDF)
