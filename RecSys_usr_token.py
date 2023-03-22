@@ -338,6 +338,7 @@ def get_usr_tk_df(dframe, bow):
 	
 	try:
 		df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
+		print(f"\tLoaded from {df_preprocessed_fname} successfully!")
 	except:
 		print(f"Updating Original DF: {dframe.shape} with Tokenized texts".center(110, "-"))
 		df_preprocessed = dframe.copy()
