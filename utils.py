@@ -3,6 +3,7 @@ import subprocess
 import urllib
 import requests
 import joblib
+import itertools
 import re
 import json
 import argparse
@@ -17,6 +18,7 @@ warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd
+import hvplot.pandas
 from natsort import natsorted
 
 from scipy.sparse import csr_matrix, coo_matrix
@@ -34,9 +36,9 @@ import matplotlib.ticker as ticker
 import matplotlib
 matplotlib.use("Agg")
 
-sz=14
+sz=16
 params = {
-		'figure.figsize':	(sz*1.0, sz*0.7),  # W, H
+		'figure.figsize':	(sz*1.0, sz*0.5),  # W, H
 		'figure.dpi':		200,
 		'figure.autolayout': True,
 		#'figure.constrained_layout.use': True,
@@ -46,47 +48,48 @@ params = {
 		'xtick.labelsize':	sz*0.8,
 		'ytick.labelsize':	sz*0.8,
 		'lines.linewidth' :	sz*0.1,
-		'lines.markersize':	sz*0.8,
-		"markers.fillstyle": "left",
+		'lines.markersize':	sz*0.4,
+		"markers.fillstyle": "full",
 		'font.size':		sz*1.0,
 		'font.family':		"serif",
+		'legend.title_fontsize':'small'
 	}
 pylab.rcParams.update(params)
-clrs = ["#ee0031",
-				'#0ecd19',
+clrs = ['#2ca02c44',
 				'#16b3ff',
-				'#e377c2',
-				"#ffee32",
-				"#031e",
-				'#007749',
+				"#ee0031",
+				"#a416", 
 				'#77b4',
 				'#bcbd22',
-				'#864b',
+				"#100874",
 				"#742802",
+				'#0ecd19',
+				"#ffee32",
+				'#e377c2',
+				'#d72448', 
+				'#864b',
 				'#1f77b4',
-				'#7f7f7f', 
-				"#ee5540", 
 				"#ffb563",
 				'#25e682', 
-				"#100874",
-				'#900fcc99',
 				"#931e00",
 				"#a98d19",
-				"#a416",
-				'#d62789', 
-				'#7f0e',
-				"#242265",
-				"#e4d10888",
-				"#006cf789",
-				'#d72448', 
-				"#1004",
-				"#7e88",
-				'#99f9',
+				'#007749',
 				"#d6d6cf",
-				"#f095",
-				'#2ca02c44', 
 				"#918450",
+				"#031e",
+				'#900fcc99',
+				'#d62789',
 				'#17becf',
+				"#265",
+				"#e4d10888",
+				'#99f9',
+				"#006cf789",
+				'#7f688e',
+				"#7eee88", 
+				"#f095",
+				'#7f7f7f', 
+				"#ee5540", 
+				"#104",
 			]
 
 usr_ = {'alijani': '/lustre/sgn-data/vision', 
@@ -104,6 +107,44 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
+def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025", topTKs=100, ):
+	matrix = sp_mtrx.toarray()
+	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
+	#print(df_usr_tk[["user_ip", "user_token_interest"]].head(10))
+	#print(list(df_usr_tk.columns))
+	user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == user].tolist()[0])
+	print(f"Getting top-{topTKs} Tokens by (User {user} idx: {user_idx}) {sp_type} Sparse Matrix".center(100, '-'))
+
+	tk_indeces_sorted_no_0 = np.argsort( matrix[user_idx, :] )[np.where(matrix[user_idx, :]!=0)]
+	"""
+	print(f"<<User>> : {user} idx: {user_idx} | { tk_indeces_sorted_no_0 }\t"
+				f"{len( tk_indeces_sorted_no_0 )}" 
+				#f"Name: {df_usr_tk.loc[np.argmax( matrix[:, int(bow.get(word))], axis=0), 'user_ip']}\t"
+				#f"{np.sort(matrix[:, int(bow.get(word))], axis=0)[-1]}\t"
+				#f"value in sparse matrix: {matrix[np.argmax( matrix[:, int(bow.get(word))], axis=0), bow.get(word)]}"
+			)
+	"""
+	tks_name = [k for idx in tk_indeces_sorted_no_0[(-topTKs+0):] for k, v in bow.items() if v==idx]
+	tks_value = matrix[user_idx, tk_indeces_sorted_no_0[(-topTKs+0):]]
+	#print("#"*100)
+	return tks_name[::-1], tks_value[::-1] 
+
+def get_topUsers_byTK(sp_mtrx, df_usr_tk, bow, token="häst", topU=100, ):
+	matrix = sp_mtrx.toarray()
+	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
+	#print(df_usr_tk[["user_ip", "user_token_interest"]].head(10))
+	#print(list(df_usr_tk.columns))
+	tkIdx = bow.get(token)
+
+	print(f"Getting top-{topU} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(110, '-'))
+
+	usr_indeces_sorted_no_0 = np.argsort( matrix[:, tkIdx] )[np.where(matrix[:, tkIdx]!=0)]
+	usr_indeces_sorted = np.argsort( matrix[:, tkIdx] )
+
+	usrs_value = matrix[usr_indeces_sorted_no_0[(-topU+0):], tkIdx]
+	usrs_name = [df_usr_tk.loc[idx, 'user_ip'] for idx in usr_indeces_sorted_no_0[(-topU+0):] ]
+	
+	return usrs_name[::-1], usrs_value[::-1] 
 
 def get_filename_prefix(dfname):
 	fprefix = "_".join(dfname.split("/")[-1].split(".")[:-2]) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
@@ -113,6 +154,7 @@ def plot_heatmap(mtrx, name_="user-based", RES_DIR=""):
 	st_t = time.time()
 	hm_title = f"{name_} similarity heatmap".capitalize()
 	print(f"{hm_title.center(70,'-')}")
+
 	print(type(mtrx), mtrx.shape, mtrx.nbytes)
 	#RES_DIR = make_result_dir(infile=args.inputDF)
 

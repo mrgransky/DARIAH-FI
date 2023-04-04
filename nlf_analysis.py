@@ -933,7 +933,7 @@ def plot_usr_doc_type(df,RES_DIR, Nu=25):
 	print("#"*150)
 
 
-	print(df_cleaned[df_cleaned["document_type"]=="NEWSPAPER"][["user_ip","document_type"]])
+	print( df_cleaned[df_cleaned["document_type"]=="NEWSPAPER"][["user_ip","document_type"]])
 	print("/"*150)
 	
 	# TOP-N users:	
