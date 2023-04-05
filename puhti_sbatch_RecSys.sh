@@ -4,6 +4,7 @@
 #SBATCH -J recSys_trankit_tk_nikeX
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=gpu
+#SBATCH --gres=gpu:v100:1
 #SBATCH --mem=256G
 #SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
