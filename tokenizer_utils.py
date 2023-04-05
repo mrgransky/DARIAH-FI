@@ -4,13 +4,13 @@ import nltk
 import trankit
 from trankit import Pipeline
 
-p = Pipeline('auto', embedding='xlm-roberta-large')
-"""
+#p = Pipeline('auto', embedding='xlm-roberta-large')
 p = Pipeline('english', embedding='xlm-roberta-large')
-p.add('finnish')
+p.add('finnish-ftb')
 p.add('swedish')
+p.add('russian')
+p.add('estonian')
 p.set_auto(True)
-"""
 
 nltk_modules = ['punkt', 
 							 'averaged_perceptron_tagger', 
