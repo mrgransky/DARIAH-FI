@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J recSys_trankit_tk_nikeX
+#SBATCH -J recSys_trankitTK_nikeY
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
