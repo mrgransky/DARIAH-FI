@@ -19,7 +19,6 @@ warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd
-import hvplot.pandas
 from natsort import natsorted
 
 from scipy.sparse import csr_matrix, coo_matrix
