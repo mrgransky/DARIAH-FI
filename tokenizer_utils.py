@@ -64,7 +64,8 @@ def trankit_lemmatizer(docs):
 		#lm = [ tk.get("lemma").lower()  for tk in all_dict.get("tokens") if ( tk.get("lemma") and tk.get("upos") not in useless_upos_tags ) ]
 
 		# treat all as document
-		all_dict = p(docs)
+		docs = re.sub(r'[+]', ' ', docs ) # +kotola+tohmajärvi+nyman
+    all_dict = p(docs)
 		lm = [ re.sub('#', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 		#lm = [ re.sub('#', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len( tk.get("lemma") ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 		#lm = [ tk.get("lemma").lower()  for tk in all_dict.get("tokens") if ( tk.get("lemma") and tk.get("upos") not in useless_upos_tags ) ]
@@ -90,6 +91,4 @@ def nltk_lemmatizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words
 	filtered_tokens = [w for w in tokens if not w in stopwords and len(w) > 1 and not w.isnumeric() ]
 
 	lematized_tokens = [wnl.lemmatize(w, t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w, t in nltk.pos_tag(filtered_tokens)]
-
-	return lematized_tokens    
-
+	return lematized_tokens
