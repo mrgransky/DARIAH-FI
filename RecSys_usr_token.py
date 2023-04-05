@@ -38,7 +38,7 @@ RES_DIR = make_result_dir(infile=args.inputDF)
 MODULE=60
 
 def get_qu_phrase_raw_text(phrase_list):
-	assert len(phrase_list) == 1, f"Wrong len for {phrase_list}"
+	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
 	phrase = phrase_list[0]
 	return phrase
 
