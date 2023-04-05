@@ -272,7 +272,7 @@ def tokenize_pt_nwp_content(results_list):
 
 def tokenize_query_phrase(qu_list):
 	# qu_list = ['some word in this format with always length 1']
-	#print(len(qu_list), qu_list)
+	print(len(qu_list), qu_list)
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
@@ -626,7 +626,7 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 	ax.set_title(	f"QU (1 x nItems): {QU.reshape(1, -1).shape} | RF (normalized: {norm_sp}) (nUsers x nItems): {RF.shape}\n"
 								f"Cosine Similarity (1 x nUsers): {cos_sim.shape}\n"
 								f"Raw Input Query Phrase: {query_phrase}\n"
-								f"max(cosine): {cos_sim.max():.3f}@(userIdx: {np.argmax(cos_sim)} userName: {users_tokens_df.loc[np.argmax(cos_sim), 'user_ip']})", 
+								f"max(cosine): {cos_sim.max():.3f}@(userIdx: {np.argmax(cos_sim)} userIP: {users_tokens_df.loc[np.argmax(cos_sim), 'user_ip']})", 
 								fontsize=11,
 							)
 
@@ -713,7 +713,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	ax.set_ylabel('UserInterest [Implicit Feedback]', fontsize=10)
 	ax.set_title(	f"{sp_type} Sparse Matrix (nUsers x nItems): {matrix.shape}\n"
 								f"Users Interests by (token: {token} idx: {tkIdx})\n"
-								f"max(UserInterest): {usersInt.max():.3f}@(userIdx: {np.argmax(usersInt)} userName: {users_tokens_df.loc[np.argmax(usersInt), 'user_ip']})", 
+								f"max(UserInterest): {usersInt.max():.3f}@(userIdx: {np.argmax(usersInt)} userIP: {users_tokens_df.loc[np.argmax(usersInt), 'user_ip']})", 
 								fontsize=10,
 							)
 
