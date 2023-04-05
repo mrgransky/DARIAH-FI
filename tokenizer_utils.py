@@ -5,11 +5,11 @@ import trankit
 from trankit import Pipeline
 
 #p = Pipeline('auto', embedding='xlm-roberta-large')
-p = Pipeline('english', embedding='xlm-roberta-large')
-p.add('finnish-ftb')
+p = Pipeline('finnish-ftb', embedding='xlm-roberta-large')
 p.add('swedish')
 p.add('russian')
-p.add('estonian')
+#p.add('english')
+#p.add('estonian')
 p.set_auto(True)
 
 nltk_modules = ['punkt', 
@@ -54,7 +54,7 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def trankit_lemmatizer(docs):
-	print(f"raw inp docs: {docs}", end='\t=>\t')
+	print(f'raw inp: >>{docs}<<', end='\t')
 	if not docs:
 				return
 	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV"]
@@ -65,10 +65,10 @@ def trankit_lemmatizer(docs):
 
 	# treat all as document
 	docs = re.sub(r'[+]', ' ', docs ) # +kotola+tohmajärvi+nyman
-	print(f"preprocessed: {docs}", end=' ')
+	print(f'preprocessed: >>{docs}<<', end=' ')
 
 	all_dict = p(docs)
-	lm = [ re.sub('#', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
+	lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 	#lm = [ re.sub('#', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len( tk.get("lemma") ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 	#lm = [ tk.get("lemma").lower()  for tk in all_dict.get("tokens") if ( tk.get("lemma") and tk.get("upos") not in useless_upos_tags ) ]
 	print(lm)
