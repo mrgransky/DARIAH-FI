@@ -54,23 +54,19 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def trankit_lemmatizer(docs):
-	print(f'raw inp: >>{docs}<<', end='\t')
+	print(f'<> Raw inp: >>{docs}<<', end='\t')
 	if not docs:
-				return
+		return
 	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV"]
-	# treat all as sentences
-	#all_dict = p(docs, is_sent=True)
-	#lm = [ re.sub('#', '', tk.get("lemma").lower())  for tk in all_dict.get("tokens") if ( tk.get("lemma") and len(tk.get("lemma")) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
-	#lm = [ tk.get("lemma").lower()  for tk in all_dict.get("tokens") if ( tk.get("lemma") and tk.get("upos") not in useless_upos_tags ) ]
 
 	# treat all as document
-	docs = re.sub(r'[+]', ' ', docs ) # +kotola+tohmajärvi+nyman
-	print(f'preprocessed: >>{docs}<<', end=' ')
+	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
+	print(f'preprocessed: >>{docs}<<', end='\t')
 
 	all_dict = p(docs)
-	lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
-	#lm = [ re.sub('#', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len( tk.get("lemma") ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
-	#lm = [ tk.get("lemma").lower()  for tk in all_dict.get("tokens") if ( tk.get("lemma") and tk.get("upos") not in useless_upos_tags ) ]
+	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
+	#lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
+
 	print(lm)
 	return list( set( lm ) )
 

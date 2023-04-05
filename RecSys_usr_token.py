@@ -272,7 +272,7 @@ def tokenize_pt_nwp_content(results_list):
 
 def tokenize_query_phrase(qu_list):
 	# qu_list = ['some word in this format with always length 1']
-	print(len(qu_list), qu_list)
+	#print(len(qu_list), qu_list)
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
