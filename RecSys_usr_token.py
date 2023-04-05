@@ -10,90 +10,32 @@ import matplotlib
 matplotlib.use("Agg")
 
 from utils import *
+from tokenizer_utils import *
 from collections import Counter
 
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-import spacy
-import nltk
-
-nltk_modules = ['punkt', 
-							 'averaged_perceptron_tagger', 
-							 'stopwords',
-							 'wordnet',
-							 'omw-1.4',
-							 ]
-nltk.download('all',
-							quiet=True, 
-							raise_on_error=True,
-							)
-
-# Adapt stop words
-#STOPWORDS = nltk.corpus.stopwords.words('english')
-#print(nltk.corpus.stopwords.words('finnish'))
-
-STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
-my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
-												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
-												'aldiz', 'baizik', 'bukatzeko', 
-												'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
-												'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
-												'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
-												'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
-												'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
-												'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
-												'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
-												'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
-												'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
-												]
-STOPWORDS.extend(my_custom_stopwords)
-UNIQUE_STOPWORDS = list(set(STOPWORDS))
-#print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
-
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="pyhäkosken lohi", type=str) # smallest
+parser.add_argument('--lmMethod', default="trankit", type=str) # smallest
 parser.add_argument('--normSparseMat', default=False, type=bool) # smallest
 parser.add_argument('--topTKs', default=5, type=int) # smallest
-
 args = parser.parse_args()
-
 # how to run:
-# python RecSys_XXXX.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+# python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+
+lemmatizer_methods = {"nltk": nltk_lemmatizer,
+											"spacy": spacy_tokenizer,
+											"trankit": trankit_lemmatizer,
+											}
+
 RES_DIR = make_result_dir(infile=args.inputDF)
 MODULE=60
-
-def spacy_tokenizer(sentence):
-	sentences = sentence.lower()
-	sentences = re.sub(r'[~|^|*][\d]+', '', sentences)
-
-	lematized_tokens = [word.lemma_ for word in sp(sentences) if word.lemma_.lower() not in sp.Defaults.stop_words and word.is_punct==False and not word.is_space]
-	
-	return lematized_tokens
-
-def nltk_tokenizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words=200, ):	
-	#print(sentence)
-	wnl = nltk.stem.WordNetLemmatizer()
-
-	sentences = sentence.lower()
-	sentences = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', sentences)
-	sentences = re.sub(r"\W+|_"," ", sentences) # replace special characters with space
-	#sentences = re.sub("\s+", " ", sentences)
-	sentences = re.sub("\s+", " ", sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
-
-	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
-	tokens = tokenizer.tokenize(sentences)
-
-	#filtered_tokens = [w for w in tokens if not w in stopwords]
-	filtered_tokens = [w for w in tokens if not w in stopwords and len(w) > 1 and not w.isnumeric() ]
-
-	lematized_tokens = [wnl.lemmatize(w,t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w,t in nltk.pos_tag(filtered_tokens)]
-
-	return lematized_tokens    
 
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong len for {phrase_list}"
@@ -105,7 +47,7 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_complete_BoWs(dframe):
+def get_complete_BoWs(dframe,):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	print(f">> Extracting texts from query phrases...")
 	st_t = time.time()
@@ -160,7 +102,7 @@ def get_complete_BoWs(dframe):
 		# Fit TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(#min_df=5,
 															#ngram_range=(1, 2),
-															tokenizer=nltk_tokenizer,
+															tokenizer=lemmatizer_methods.get(args.lmMethod),
 															stop_words=UNIQUE_STOPWORDS,
 															)
 
@@ -192,7 +134,7 @@ def get_complete_BoWs(dframe):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs
 
-def get_bag_of_words(dframe):
+def get_bag_of_words(dframe,):
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 	print(f">> Extracting texts from query phrases...")
 	st_t = time.time()
@@ -217,7 +159,7 @@ def get_bag_of_words(dframe):
 
 	raw_docs_list = [subitem for item in df_usr_raw_texts.loc[df_usr_raw_texts["raw_text"].notnull(), "raw_text"].values.flatten().tolist() for subitem in item]
 
-	#print(len(raw_docs_list), type(raw_docs_list))
+	print(len(raw_docs_list), type(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
@@ -230,8 +172,8 @@ def get_bag_of_words(dframe):
 		# Fit TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(#min_df=5,
 															#ngram_range=(1, 2),
-															tokenizer=nltk_tokenizer,
-															stop_words=UNIQUE_STOPWORDS,
+															tokenizer=lemmatizer_methods.get(args.lmMethod),
+															#stop_words=UNIQUE_STOPWORDS,
 															)
 
 		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
@@ -314,26 +256,25 @@ def get_nwp_content_hw(cnt_dict):
 	return cnt_dict.get("highlighted_term")
 
 def tokenize_hw_snippets(results_list):
-	#return [nltk_tokenizer( " ".join(res) )  for res in results_list]
-	return [tklm for el in results_list for tklm in nltk_tokenizer(el)]
-
+	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
+	
 def tokenize_snippets(results_list):
-	return [tklm for el in results_list for tklm in nltk_tokenizer(el)]
+	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
 def tokenize_nwp_content(sentences):
-	return nltk_tokenizer(sentences)
+	return lemmatizer_methods.get(args.lmMethod)(sentences)
 
 def tokenize_hw_nwp_content(results_list):
-	return [tklm for el in results_list for tklm in nltk_tokenizer(el)]
+	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
 def tokenize_pt_nwp_content(results_list):
-	return [tklm for el in results_list for tklm in nltk_tokenizer(el)]
+	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
 def tokenize_query_phrase(qu_list):
 	# qu_list = ['some word in this format with always length 1']
 	#print(len(qu_list), qu_list)
-	assert len(qu_list) == 1
-	return nltk_tokenizer(qu_list[0])
+	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
+	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
 def get_usr_tk_df(dframe, bow):
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
@@ -511,16 +452,19 @@ def get_sparse_matrix(df):
 
 	return sparse_matrix
 
-def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False):
+def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
-
+	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
+	"""
 	if userName.endswith("xenial"):
 		BoWs = get_bag_of_words(dframe=df_inp)
 	else:
 		BoWs = get_complete_BoWs(dframe=df_inp)
 	#return
-
+	"""
+	BoWs = get_bag_of_words(dframe=df_inp)
+	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
 	except:
