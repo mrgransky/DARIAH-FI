@@ -643,7 +643,7 @@ def save_(df, infile="", save_csv=False, save_parquet=True):
 
 def load_df(infile=""):
 	#fpath = os.path.join(dfs_path, f"{infile}.dump")
-	fpath = infile
+	fpath = infile # ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 	fsize = os.stat( fpath ).st_size / 1e9
 	print(f"Loading {fpath} | {fsize:.3f} GB")
 	st_t = time.time()

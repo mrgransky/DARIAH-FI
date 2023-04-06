@@ -32,6 +32,7 @@ args = parser.parse_args()
 lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"spacy": spacy_tokenizer,
 											"trankit": trankit_lemmatizer,
+											"stanza": stanza_lemmatizer,
 											}
 
 RES_DIR = make_result_dir(infile=args.inputDF)
@@ -92,8 +93,8 @@ def get_complete_BoWs(dframe,):
 	print(len(raw_docs_list), type(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer_large.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF_large.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.lz4")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(110, " "))
@@ -111,7 +112,7 @@ def get_complete_BoWs(dframe,):
 
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(vb=tfidf_vec.vocabulary_, fname=os.path.join(dfs_path, f"{fprefix}_{len(tfidf_vec.vocabulary_)}_vocabs.json"))
+		save_vocab(vb=tfidf_vec.vocabulary_, fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"))
 
 		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 	else:
@@ -162,8 +163,8 @@ def get_bag_of_words(dframe,):
 	print(len(raw_docs_list), type(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_vectorizer.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_tfidf_matrix_RF.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.lz4")
 
 	if not os.path.exists(tfidf_vec_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases, might take a while...".center(110, " "))
@@ -181,7 +182,7 @@ def get_bag_of_words(dframe,):
 
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(vb=tfidf_vec.vocabulary_, fname=os.path.join(dfs_path, f"{fprefix}_{len(tfidf_vec.vocabulary_)}_vocabs.json"))
+		save_vocab(vb=tfidf_vec.vocabulary_, fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"))
 
 		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 	else:
@@ -278,7 +279,7 @@ def tokenize_query_phrase(qu_list):
 
 def get_usr_tk_df(dframe, bow):
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_df_preprocessed.lz4")
+	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
 	print(f"\n>> Getting {df_preprocessed_fname} ...")
 	
 	try:
@@ -410,7 +411,7 @@ def get_usr_tk_df(dframe, bow):
 	#print(df_user_token.shape, list(df_user_token.columns))
 	#print(df_user_token.info())
 
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_user_tokens_df_{len(bow)}_BoWs.lz4")
+	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
 	"""
@@ -446,7 +447,7 @@ def get_sparse_matrix(df):
 	print("#"*110)
 	##########################Sparse Matrix info##########################
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.lz4")
+	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.lz4")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 
@@ -466,7 +467,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	BoWs = get_bag_of_words(dframe=df_inp)
 	
 	try:
-		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
+		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
 	except:
 		df_usr_tk = get_usr_tk_df(dframe=df_inp, bow=BoWs)
 	
@@ -474,7 +475,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
 	except:
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 

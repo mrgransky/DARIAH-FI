@@ -1,8 +1,27 @@
 import re
+
 import spacy
+
 import nltk
+
 import trankit
 from trankit import Pipeline
+
+import stanza
+from stanza.pipeline.multilingual import MultilingualPipeline
+from stanza.pipeline.core import DownloadMethod
+
+lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
+lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse,ner"},
+                "ru": {"processors": "tokenize,lemma,pos,depparse,ner"},
+                "sv": {"processors": "tokenize,lemma,pos,depparse,ner"},
+                "fi": {"processors": "tokenize,lemma,pos,depparse,ner"},
+                }
+stanza_multi_pipeline = MultilingualPipeline(lang_id_config=lang_id_config, 
+                               use_gpu=True,
+                               lang_configs=lang_configs,
+                               download_method=DownloadMethod.REUSE_RESOURCES,
+                               )
 
 #p = Pipeline('auto', embedding='xlm-roberta-large')
 p = Pipeline('finnish-ftb', embedding='xlm-roberta-large')
@@ -53,6 +72,23 @@ def spacy_tokenizer(sentence):
 	
 	return lematized_tokens
 
+def stanza_lemmatizer(docs):
+	print(f'<> Raw inp: >>{docs}<<', end='\t')
+	if not docs:
+		return
+	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV"]
+
+	# treat all as document
+	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
+	print(f'preprocessed: >>{docs}<<', end='\t')
+
+	all_ = stanza_multi_pipeline(docs)
+	#lm = [ word.lemma.lower() for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
+	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
+
+	print(lm)
+	return list( set( lm ) )
+
 def trankit_lemmatizer(docs):
 	print(f'<> Raw inp: >>{docs}<<', end='\t')
 	if not docs:
@@ -64,7 +100,7 @@ def trankit_lemmatizer(docs):
 	print(f'preprocessed: >>{docs}<<', end='\t')
 
 	all_dict = p(docs)
-	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
+	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 	#lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 
 	print(lm)
