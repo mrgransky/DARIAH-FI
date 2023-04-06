@@ -64,6 +64,7 @@ my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m",
 STOPWORDS.extend(my_custom_stopwords)
 UNIQUE_STOPWORDS = list(set(STOPWORDS))
 #print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
+useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ"]
 
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
@@ -77,10 +78,9 @@ def stanza_lemmatizer(docs):
 	print(f'<> Raw inp: >>{docs}<<', end='\t')
 	if not docs:
 		return
-	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV"]
 
 	# treat all as document
-	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
+	docs = re.sub(r'["]|[+]|[*]|\s+', ' ', docs ).strip()
 	print(f'preprocessed: >>{docs}<<', end='\t')
 
 	all_ = stanza_multi_pipeline(docs)
@@ -94,7 +94,6 @@ def trankit_lemmatizer(docs):
 	print(f'<> Raw inp: >>{docs}<<', end='\t')
 	if not docs:
 		return
-	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV"]
 
 	# treat all as document
 	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
