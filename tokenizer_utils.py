@@ -1,4 +1,4 @@
-import re
+from utils import *
 
 import spacy
 
@@ -24,7 +24,7 @@ stanza_multi_pipeline = MultilingualPipeline(lang_id_config=lang_id_config,
                                )
 
 #p = Pipeline('auto', embedding='xlm-roberta-large')
-p = Pipeline('finnish-ftb', embedding='xlm-roberta-large')
+p = Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 p.add('swedish')
 p.add('russian')
 #p.add('english')
@@ -37,7 +37,8 @@ nltk_modules = ['punkt',
 							 'wordnet',
 							 'omw-1.4',
 							 ]
-nltk.download('all',
+nltk.download(#'all',
+							nltk_modules,
 							quiet=True, 
 							raise_on_error=True,
 							)
