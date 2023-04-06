@@ -5,7 +5,7 @@
 #SBATCH -o NLF_logs/%x_%N_%j.out
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=300G
+#SBATCH --mem=64G
 #SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
