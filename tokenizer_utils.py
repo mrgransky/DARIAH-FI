@@ -75,19 +75,21 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):
-	print(f'<> Raw inp: >>{docs}<<', end='\t')
+	print(f'<> Raw inp: ({len(docs)}) >>{docs}<<', end='\t')
 	if not docs:
 		return
 
 	# treat all as document
 	docs = re.sub(r'["]|[+]|[*]|\s+', ' ', docs ).strip()
-	print(f'preprocessed: >>{docs}<<', end='\t')
+	if not docs:
+		return
 
+	#print(f'preprocessed: >>{docs}<<', end='\t')
 	all_ = stanza_multi_pipeline(docs)
 	#lm = [ word.lemma.lower() for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
 	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
 
-	print(lm)
+	#print(lm)
 	return list( set( lm ) )
 
 def trankit_lemmatizer(docs):
@@ -97,6 +99,8 @@ def trankit_lemmatizer(docs):
 
 	# treat all as document
 	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
+	if not docs:
+		return
 	print(f'preprocessed: >>{docs}<<', end='\t')
 
 	all_dict = p(docs)
