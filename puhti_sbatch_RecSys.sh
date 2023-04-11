@@ -2,7 +2,7 @@
 
 #SBATCH --account=project_2004072
 #SBATCH -J nikeX_trankitTK
-#SBATCH -o NLF_logs/%x_%N_%j.out
+#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
 #SBATCH --mem=196G

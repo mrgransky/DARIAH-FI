@@ -75,7 +75,7 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):
-	print(f'<> Raw inp: ({len(docs)}) >>{docs}<<', end='\t')
+	print(f'Raw inp: (len: {len(docs)}) >>{docs}<<', end='\t')
 	if not docs:
 		return
 
@@ -89,11 +89,11 @@ def stanza_lemmatizer(docs):
 	#lm = [ word.lemma.lower() for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
 	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
 
-	print(lm)
+	print( list( set( lm ) ) )
 	return list( set( lm ) )
 
 def trankit_lemmatizer(docs):
-	print(f'<> Raw inp: >>{docs}<<', end='\t')
+	print(f'Raw inp ({len(docs)}): >>{docs}<<', end='\t')
 	if not docs:
 		return
 
@@ -107,7 +107,7 @@ def trankit_lemmatizer(docs):
 	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 	#lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 
-	print(lm)
+	print( list( set( lm ) ) )
 	return list( set( lm ) )
 
 def nltk_lemmatizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words=200, ):	
