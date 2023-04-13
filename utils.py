@@ -107,42 +107,31 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
 
-def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025", topTKs=100, ):
+def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	matrix = sp_mtrx.toarray()
 	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
-	#print(df_usr_tk[["user_ip", "user_token_interest"]].head(10))
-	#print(list(df_usr_tk.columns))
-	user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == user].tolist()[0])
-	print(f"Getting top-{topTKs} Tokens by (User {user} idx: {user_idx}) {sp_type} Sparse Matrix".center(100, '-'))
 
-	tk_indeces_sorted_no_0 = np.argsort( matrix[user_idx, :] )[np.where(matrix[user_idx, :]!=0)]
-	"""
-	print(f"<<User>> : {user} idx: {user_idx} | { tk_indeces_sorted_no_0 }\t"
-				f"{len( tk_indeces_sorted_no_0 )}" 
-				#f"Name: {df_usr_tk.loc[np.argmax( matrix[:, int(bow.get(word))], axis=0), 'user_ip']}\t"
-				#f"{np.sort(matrix[:, int(bow.get(word))], axis=0)[-1]}\t"
-				#f"value in sparse matrix: {matrix[np.argmax( matrix[:, int(bow.get(word))], axis=0), bow.get(word)]}"
-			)
-	"""
-	tks_name = [k for idx in tk_indeces_sorted_no_0[(-topTKs+0):] for k, v in bow.items() if v==idx]
-	tks_value = matrix[user_idx, tk_indeces_sorted_no_0[(-topTKs+0):]]
-	#print("#"*100)
+	user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == user].tolist()[0])
+
+	tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
+	
+	tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
+	tks_value = matrix[user_idx, tk_indeces_sorted_no_0]
+	assert len(tks_name) == len(tks_value), f"found {len(tks_name)} tokens names & {len(tks_value)} tokens values"
+	print(f"Retrieving {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(100, ' '))
+
 	return tks_name[::-1], tks_value[::-1] 
 
-def get_topUsers_byTK(sp_mtrx, df_usr_tk, bow, token="häst", topU=100, ):
+def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 	matrix = sp_mtrx.toarray()
 	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
-	#print(df_usr_tk[["user_ip", "user_token_interest"]].head(10))
-	#print(list(df_usr_tk.columns))
 	tkIdx = bow.get(token)
 
-	print(f"Getting top-{topU} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(110, '-'))
+	usr_indeces_sorted_no_0 = np.where(matrix[:, tkIdx] != 0, matrix[:, tkIdx], np.nan).argsort()[:(matrix[:, tkIdx] != 0).sum()] # ref: https://stackoverflow.com/questions/40857349/np-argsort-which-excludes-zero-values
 
-	usr_indeces_sorted_no_0 = np.argsort( matrix[:, tkIdx] )[np.where(matrix[:, tkIdx]!=0)]
-	usr_indeces_sorted = np.argsort( matrix[:, tkIdx] )
-
-	usrs_value = matrix[usr_indeces_sorted_no_0[(-topU+0):], tkIdx]
-	usrs_name = [df_usr_tk.loc[idx, 'user_ip'] for idx in usr_indeces_sorted_no_0[(-topU+0):] ]
+	usrs_value = matrix[usr_indeces_sorted_no_0, tkIdx]
+	usrs_name = [df_usr_tk.loc[idx, 'user_ip'] for idx in usr_indeces_sorted_no_0 ]
+	print(f"Retrieving {len(usrs_name)} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(100, ' '))
 	
 	return usrs_name[::-1], usrs_value[::-1] 
 

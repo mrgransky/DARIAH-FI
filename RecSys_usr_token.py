@@ -22,8 +22,8 @@ parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="pyhäkosken lohi", type=str) # smallest
-parser.add_argument('--lmMethod', default="trankit", type=str) # smallest
-parser.add_argument('--normSparseMat', default=False, type=bool) # smallest
+parser.add_argument('--lmMethod', default="nltk", type=str) # smallest
+parser.add_argument('--normSP', default=False, type=bool) # smallest
 parser.add_argument('--topTKs', default=5, type=int) # smallest
 args = parser.parse_args()
 # how to run:
@@ -36,6 +36,7 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 RES_DIR = make_result_dir(infile=args.inputDF)
+
 MODULE=60
 
 def get_qu_phrase_raw_text(phrase_list):
@@ -442,7 +443,7 @@ def get_sparse_matrix(df):
 	print("#"*110)
 	print(f"Sparse: {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
 	print(f"<> Non-zeros vals: {sparse_matrix.data}")# Viewing stored data (not the zero items)
-	print(sparse_matrix.toarray()[:25, :18])
+	#print(sparse_matrix.toarray()[:25, :18])
 	print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
 	print("#"*110)
 	##########################Sparse Matrix info##########################
@@ -489,11 +490,11 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#return
 	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx)
 	
-	print("#"*150)
-	print(f"Input Raw Query Phrase: {qu_phrase}".center(120,' '))
+	#print("#"*150)
+	print(f"Input Raw Query Phrase: {qu_phrase}".center(100,' '))
 
 	query_phrase_tk = tokenize_query_phrase(qu_list=[qu_phrase])
-	print(f"\nTokenized & Lemmatized '{qu_phrase}' contains {len(query_phrase_tk)} element(s) =>\t{query_phrase_tk}")
+	print(f"\nTokenized & Lemmatized '{qu_phrase}' contains {len(query_phrase_tk)} element(s)\t{query_phrase_tk}")
 
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
@@ -502,26 +503,27 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			query_vector[BoWs.get(qutk)] += 1.0
 
 	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)}\t"
-				f"( |NonZeros|: {np.count_nonzero(query_vector)} idx: {np.nonzero(query_vector)[0]} )")
+				f"( |NonZeros|: {np.count_nonzero(query_vector)} @ idx(s): {np.nonzero(query_vector)[0]} )")
 
 	cos_sim = get_cosine_similarity(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	
-	print(f"cos_sim(1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
+	"""
+	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
 				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
 			)
-	
+	"""
 	if np.all(cos_sim.flatten()==0.0):
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
+	plot_tokens_by_max(cos_sim, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	#return
 	nUsers, nItems = sp_mat_rf.shape
-	print(f"Users: {nUsers} vs. Tokenzied word Items: {nItems}")
-	print("#"*120)
+	print(f"Getting avgRecSysVec (1 x nItems) | Users: {nUsers} vs. Items: {nItems}".center(110, "-"))
+	#print("#"*120)
 	#cos = np.random.rand(nUsers).reshape(1, -1)
 	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
-	avgrec = np.zeros((1,nItems))
+	avgrec = np.zeros((1, nItems))
 	#print(f"> avgrec{avgrec.shape}:\n{avgrec}")
 	#print()
 	
@@ -533,6 +535,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	st_t = time.time()
 	for iUser in range(nUsers):
 		userInterest = sp_mat_rf.toarray()[iUser, :]
+		"""
 		print(f"user: {iUser} | {df_usr_tk.loc[iUser, 'user_ip']}".center(100, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(idx), sum): ({userInterest.min()}, {userInterest.max():.2f}_@(idx: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
@@ -543,46 +546,50 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"(min, max_@(idx), sum): ({avgrec.min()}, {avgrec.max():.2f}_@(idx: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-
+		"""
 		#userInterest = userInterest / np.linalg.norm(userInterest)
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
+		"""
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(idx), sum): ({userInterest.min()}, {userInterest.max():.2f}_@(idx: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
 		print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
-
+		"""
 		avgrec = avgrec + (cos_sim[0, iUser] * userInterest)
-
+		"""
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(idx), sum): ({avgrec.min()}, {avgrec.max():.2f}_@(idx: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*130)
-
+		"""
 	avgrec = avgrec / np.sum(cos_sim)
-	print(f"-"*100)
 	
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)}\t"
 				f"(min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})")
 	
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
-	print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
+	#print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
 	
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
-	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
+	#print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
-	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
+	#print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	
-	print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
+	#print(f"-"*100)
 
+	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(100, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
-		users_names, users_values = get_topUsers_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv, topU=80)
-		plot_topUsers_by(token=tkv, usrs_name=users_names, usrs_value=users_values, topU=80, norm_sp=normalize_sp_mtrx )
+		users_names, users_values = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
+		print(f"Found {len(users_names)} userIPs & {len(users_values)} userIPs values for token: {tkv}")
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value=users_values, topUSRs=80, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
+	print(f"DONE".center(100, "-"))
 	print()
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 	print(f"Since you searched for query phrase(s)\t{Fore.BLUE+Back.YELLOW}{args.qphrase}{Style.RESET_ALL}"
@@ -598,16 +605,17 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
-def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=False):
-	print(f">> Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}") # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+	sp_type = "Normalized" if norm_sp else "Original"
+
+	print(f"Getting Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU.reshape(1, -1), RF) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 
-	print(f"Plot Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}".center(120, "-"))	
+	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
 	
 	alphas = np.ones_like(cos_sim.flatten())
-	scales = 40*np.ones_like(cos_sim.flatten())
+	scales = 100*np.ones_like(cos_sim.flatten())
 	for i, v in np.ndenumerate(cos_sim.flatten()):
 		if v==0:
 			alphas[i] = 0.05
@@ -620,17 +628,19 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 							s=scales, 
 							edgecolors='w',
 							alpha=alphas,
+							marker=".",
 						)
 	
+	N=5
+	if np.count_nonzero(cos_sim.flatten()) < N:
+		N = np.count_nonzero(cos_sim.flatten())
+	
+	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
+	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
+	topN_max_cosine_user_ip = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+	ax.scatter(x=topN_max_cosine_user_idx, y=topN_max_cosine, facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
-	ax.set_title(	f"QU (1 x nItems): {QU.reshape(1, -1).shape} | RF (normalized: {norm_sp}) (nUsers x nItems): {RF.shape}\n"
-								f"Cosine Similarity (1 x nUsers): {cos_sim.shape}\n"
-								f"Raw Input Query Phrase: {query_phrase}\n"
-								f"max(cosine): {cos_sim.max():.3f}@(userIdx: {np.argmax(cos_sim)} userIP: {users_tokens_df.loc[np.argmax(cos_sim), 'user_ip']})", 
-								fontsize=11,
-							)
-
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0], 
 							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0],
@@ -646,46 +656,135 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 	ax.margins(1e-3, 3e-2)
 	ax.spines[['top', 'right']].set_visible(False)
 
-	plt.savefig(os.path.join( RES_DIR, f"cosine_similarity_RawQu_{query_phrase.replace(' ', '_')}_normalized_sparse_matrix_{norm_sp}.png" ), bbox_inches='tight')
+	plt.text(	x=0.5, 
+						y=0.94, 
+						s=f"Raw Input Query Phrase: {query_phrase}", 
+						fontsize=10.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+	plt.text(	x=0.5,
+						y=0.91,
+						s=f"Query (1 x nItems): {QU.reshape(1, -1).shape} & {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} : Cosine Similarity (1 x nUsers): {cos_sim.shape}",
+						fontsize=9.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+
+	plt.text(	x=0.5,
+						y=0.88,
+						s=f"{N}-Max cosine(s): {topN_max_cosine_user_ip} : {topN_max_cosine}",
+						fontsize=9.0, 
+						ha="center", 
+						color="r",
+						transform=f.transFigure,
+					)
+
+	plt.subplots_adjust(top=0.86, wspace=0.1)
+
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cos_sim_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+
 	return cos_sim
 
-def plot_tokens_by(user, tks_name, tks_value, topTKs=100, norm_sp=False):
-	sp_type = "Normalized" if norm_sp else "Original" 
+def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
+	"""
+	# retrieve user with max cosine:
+	max_cosine = cos_sim.max()
+	max_cosine_user_idx = np.argmax(cos_sim)
+	max_cosine_user_ip = users_tokens_df.loc[np.argmax(cos_sim), 'user_ip']
+	print(f"Sparse Matrix (normalized: {norm_sp}) (nUsers x nItems): {sp_mtrx.shape}\n"
+				f"Cosine Similarity (1 x nUsers): {cos_sim.shape}\n"
+				f"max(cosine) = {max_cosine:.3f} @ (userIdx: {max_cosine_user_idx} userIP: {max_cosine_user_ip})\n",
+			)
+	"""
+	N=5
+	if np.count_nonzero(cos_sim.flatten()) < N:
+		N = np.count_nonzero(cos_sim.flatten())
+
+	print(f"Getting tokens of {N} users with max cosine similarity".center(100, "-"))
+	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
+	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
+	topN_max_cosine_user_ip = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+
+	for _, usr in enumerate(topN_max_cosine_user_ip):
+		tokens_names, tokens_values = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
+		print(f"Found {len(tokens_names)} tokens names & {len(tokens_values)} tokens values for {usr}")
+		plot_tokens_by(userIP=usr, tks_name=tokens_names, tks_value=tokens_values, norm_sp=norm_sp)
+	print(f"DONE".center(100, "-"))
+
+def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
+	sp_type = "Normalized" if norm_sp else "Original"
+	nTokens_orig = len(tks_name)
+
+	if len(tks_name) > topTKs:
+		tks_name = tks_name[:topTKs]
+		tks_value = tks_value[:topTKs]
+
+	nTokens = len(tks_name)
+
+	print(f"<> Plotting top-{nTokens} / |ALL_TKs = {nTokens_orig}| tokens by user: {userIP}")
 
 	f, ax = plt.subplots()
-	ax.bar(tks_name, tks_value, color=clrs,width=0.2)
+	ax.barh(tks_name, 
+					tks_value, 
+					color=clrs, 
+					height=0.35,
+				)
 	
-	#ax.set_xlabel('Tokens', rotation=90)
-	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
-	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
+	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 	
-	ax.set_ylabel(f'Cell Value in {sp_type} Sparse Matrix')
-	ax.set_title(f'Top-{topTKs} Tokens by User: {user}', fontsize=11)
-	ax.margins(1e-2, 3e-2)
+	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
+	ax.invert_yaxis()  # labels read top-to-botto
+	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
+	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
 	for container in ax.containers:
-		ax.bar_label(container, rotation=45, fontsize=7,fmt='%.2f', label_type='edge')
+		ax.bar_label(	container, 
+									#rotation=45, # no rotation for barh 
+									fontsize=7,
+									padding=1.5,
+									fmt='%.4f' if norm_sp else '%.2f',
+									label_type='edge',
+								)
 
-	plt.savefig(os.path.join( RES_DIR, f"top{topTKs}_tokens_by_user_{user}_normalized_sparse_matrix_{norm_sp}.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
-def plot_topUsers_by(token, usrs_name, usrs_value, topU=100, norm_sp=False):
+def plot_users_by(token, usrs_name, usrs_value, topUSRs=100, norm_sp=False):
 	sp_type = "Normalized" if norm_sp else "Original"
+	
+	nUsers_orig = len(usrs_name)
+
+	if len(usrs_name) > topUSRs:
+		usrs_name = usrs_name[:topUSRs]
+		usrs_value = usrs_value[:topUSRs]
+
+	nUsers = len(usrs_name)
+
+	print(f"<> Plotting top-{nUsers} users / |ALL_USRs = {nUsers_orig}| for token: {token}")
+
 	f, ax = plt.subplots()
-	ax.bar(usrs_name, usrs_value, color=clrs,width=0.2)
+	ax.bar(usrs_name, usrs_value, color=clrs, width=0.2)
 	#ax.set_xlabel('Tokens', rotation=90)
 	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
-	ax.set_ylabel(f'Cell Value in {sp_type} Sparse Matrix')
-	ax.set_title(f'Top-{topU} Users by Token: {token}', fontsize=11)
+	ax.set_ylabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
+	ax.set_title(f'Top-{nUsers} User(s) / |ALL_USRs = {nUsers_orig}| for token: {token}', fontsize=11)
 	ax.margins(1e-2, 3e-2)
 	ax.spines[['top', 'right']].set_visible(False)
 	for container in ax.containers:
-		ax.bar_label(container, rotation=45, fontsize=7,fmt='%.2f', label_type='edge')
-	plt.savefig(os.path.join( RES_DIR, f"top{topU}_users_by_token_{token}_normalized_sparse_matrix_{norm_sp}.png" ), bbox_inches='tight')
+		ax.bar_label(	container, 
+									rotation=45, 
+									fontsize=7,
+									fmt='%.4f' if norm_sp else '%.2f', 
+									label_type='edge',
+									)
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -695,7 +794,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	tkIdx = bow.get(token)
 	usersInt = matrix[:, tkIdx]
 	alphas = np.ones_like(usersInt)
-	scales = 40*np.ones_like(usersInt)
+	scales = 100*np.ones_like(usersInt)
 	for i, v in np.ndenumerate(usersInt):
 		if v==0:
 			alphas[i] = 0.05
@@ -708,16 +807,27 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 							s=scales,
 							edgecolors='w',
 							alpha=alphas,
+							marker=".",
 						)
 	
+	N=5
+	if np.count_nonzero(usersInt) < N:
+		N = np.count_nonzero(usersInt)
+
+	topN_max_usrInt_user_idx = np.argsort(usersInt)[-N:]
+	topN_max_user_interest = usersInt[topN_max_usrInt_user_idx]
+	topN_max_usrInt_user_ip = users_tokens_df.loc[topN_max_usrInt_user_idx, 'user_ip'].values.tolist()
+	ax.scatter(x=topN_max_usrInt_user_idx, y=topN_max_user_interest, facecolor='none', marker="o", edgecolors="r", s=100)
+
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('UserInterest [Implicit Feedback]', fontsize=10)
+	"""
 	ax.set_title(	f"{sp_type} Sparse Matrix (nUsers x nItems): {matrix.shape}\n"
 								f"Users Interests by (token: {token} idx: {tkIdx})\n"
 								f"max(UserInterest): {usersInt.max():.3f}@(userIdx: {np.argmax(usersInt)} userIP: {users_tokens_df.loc[np.argmax(usersInt), 'user_ip']})", 
 								fontsize=10,
 							)
-
+	"""
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0], 
 							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0],
@@ -733,17 +843,51 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	ax.margins(1e-3, 3e-2)
 	ax.spines[['top', 'right']].set_visible(False)
 
-	plt.savefig(os.path.join( RES_DIR, f"usersInterest_tk_{token}_normalized_sparse_matrix_{norm_sp}.png" ), bbox_inches='tight')
+	plt.text(	x=0.5, 
+						y=0.94, 
+						s=f"Raw Input Query Phrase: {args.qphrase}", 
+						fontsize=10.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+	plt.text(	x=0.5,
+						y=0.91,
+						s=f"{sp_type} Sparse Matrix (nUsers x nItems): {matrix.shape} | Users Interests by (token: {token} @ idx: {tkIdx})",
+						fontsize=9.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+
+	plt.text(	x=0.5,
+						y=0.88,
+						s=f"{N}-Max UsersInterest(s): {topN_max_usrInt_user_ip} : {topN_max_user_interest}",
+						fontsize=9.0, 
+						ha="center", 
+						color="r",
+						transform=f.transFigure,
+					)
+
+	plt.subplots_adjust(top=0.86, wspace=0.1)
+
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_usersInterest_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
-def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False):
-	name_="sparse_matrix_user_vs_token"	
-	print(f"{f'Sparse Matrix (Normalized: {norm_sp}) {sp_mtrx.shape}'.center(100,'-')}")
+def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False, ifb_log10=False):
+	name_="sparse_matrix_user_vs_token"
+	sp_type = "Normalized" if norm_sp else "Original"
+
+	print(f"{f'{sp_type} Sparse Matrix {sp_mtrx.shape}'.center(100,'-')}")
 
 	print(f"<> Non-zeros vals: {sp_mtrx.data}")# Viewing stored data (not the zero items)
 	print(f"<> |Non-zero cells|: {sp_mtrx.count_nonzero()}") # Counting nonzeros
 	mtrx = sp_mtrx.toarray() # to numpy array
+
+	####################################################
+	if ifb_log10:
+		mtrx = np.log10(mtrx, out=np.zeros_like(mtrx), where=(mtrx!=0))
+	####################################################
+
 	max_pose = np.unravel_index(mtrx.argmax(), mtrx.shape)
 	print(mtrx.max(), 
 				max_pose,
@@ -762,17 +906,21 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False):
 	cax = divider.append_axes('right', size='5%', pad=0.05)
 	im = ax.imshow(mtrx, 
 								#cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
-								cmap="gist_yarg",
-								#cmap="gist_gray",
+								#cmap="gist_yarg",
+								cmap="gist_gray",
 								)
 	cbar = ax.figure.colorbar(im,
 														ax=ax,
-														label="Implicit Feedback",
 														orientation="vertical",
 														cax=cax,
 														#ticks=[0.0, 0.5, 1.0],
 														)
-
+	cbar.ax.tick_params(labelsize=7.5)
+	cbar.set_label(	label="Implicit Feedback ( $Log_{{10}}$ )" if ifb_log10 else "Implicit Feedback",
+									size=9.0, 
+									#weight='bold',
+									style='italic',
+								)
 	ax.set_xlabel(f"Token Indices", fontsize=10.0)
 	ax.set_ylabel(f"{'user indeces'.capitalize()}\n"
 								f"{df_usr_tk['user_ip'].iloc[-1]}$\longleftarrow${df_usr_tk['user_ip'].iloc[0]}", fontsize=10.0)
@@ -783,28 +931,30 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False):
 	ax.tick_params(axis='x', labelrotation=0, labelsize=8.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
 
-	plt.text(x=0.5, y=0.94, s=f"Sparse Matrix (Normalized: {norm_sp}) Heatmap (nUsers, nItems): {sp_mtrx.shape}", fontsize=10.0, ha="center", transform=f.transFigure)
+	plt.text(x=0.5, y=0.94, s=f"{sp_type} Sparse Matrix Heatmap (nUsers, nItems): {sp_mtrx.shape}", fontsize=10.0, ha="center", transform=f.transFigure)
 	plt.text(	x=0.5, 
 						y=0.88, 
 						s=f"|non-zeros|: {sp_mtrx.count_nonzero()} / |tot_elem|: {sp_mtrx.shape[0]*sp_mtrx.shape[1]}\n"
 							f"max: {mtrx.max():{2}.{1}f}@{max_pose}: (User: {df_usr_tk['user_ip'].iloc[max_pose[0]]}, Token: {[k for k, v in bow.items() if v==max_pose[1]]})", 
 						fontsize=9.0, 
 						ha="center", 
-						transform=f.transFigure
+						transform=f.transFigure,
 					)
 	plt.subplots_adjust(top=0.8, wspace=0.3)
 
-	plt.savefig(os.path.join( RES_DIR, f"{name_}_heatmap_normalized_{norm_sp}.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"heatmap_{sp_type}_log10_{ifb_log10}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 	print(f"Done".center(70, "-"))
 
 def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bow, norm_sp=False, topK=5):
-	print(f"{f'Plot Tokens Distribution in Sparse Matrix (Normalized: {norm_sp}) (nUsers, nItems): {sparseMat.shape}'.center(120, '-')}")
+	sp_type = "Normalized" if norm_sp else "Original"
+
+	print(f"<> Plotting Tokens Distribution in {sp_type} Sparse Matrix (nUsers, nItems): {sparseMat.shape}")
 	sparse_df = pd.DataFrame(sparseMat.toarray(), index=users_tokens_df["user_ip"])
 	#sparse_df.columns = sparse_df.columns.map(str) # convert int col -> str col
 	sparse_df = sparse_df.replace(0.0, np.nan) # 0.0 -> None: Matplotlib won't plot NaN values.
-	print(f">> queryVec: {queryVec.shape} | recSysVec: {recSysVec.shape}")
+	#print(f">> queryVec: {queryVec.shape} | recSysVec: {recSysVec.shape}")
 
 	if len(recSysVec.shape) > 1:
 		recSysVec = recSysVec.flatten()	
@@ -815,12 +965,12 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	qu_indices = np.nonzero(queryVec)[0]
 
 	all_recommended_tks = [k for idx in recSysVec.flatten().argsort()[-50:] for k, v in bow.items() if (idx not in qu_indices and v==idx)]
-	print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
+	#print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
 	
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
-	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
+	#print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ recSysVec.flatten()[bow.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
-	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
+	#print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 
 	#recSysVec_indices = recSysVec.argsort()[-(topK+0):]
 	recSysVec_indices = np.array([bow.get(vTKs) for iTKs, vTKs in enumerate(topK_recommended_tokens)])
@@ -869,22 +1019,23 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 							)
 
 	plt.yticks(fontsize=10.0)
-	plt.ylabel(f"Cell Value in L2-Normalized Sparse Matrix" if norm_sp else f"Cell Value in Original Sparse Matrix", fontsize=10)
+	plt.ylabel(f"Cell Value in {sp_type} Sparse Matrix", fontsize=10)
 	#plt.xlabel(f"Users", fontsize=11)
-	plt.title(f"Token(s) Distribution | Sparse Matrix (Normalized: {norm_sp}) (nUsers, nItems): {sparse_df.shape}\n"
+	plt.title(f"Token(s) Distribution | {sp_type} Sparse Matrix (nUsers, nItems): {sparse_df.shape}\n"
 						f"Raw Input Query Phrase: {args.qphrase}\n"
 						f"Top-{topK}: {[k for idx in recSysVec_indices for k, v in bow.items() if v==idx][::-1]}", 
 						fontsize=9.0,
 					)
 
-	plt.savefig(os.path.join( RES_DIR, f"tokens_distribution_top{topK}_recommendations_normalized_sparse_matrix_{norm_sp}_rawQu_{args.qphrase.replace(' ', '_')}.png" ), bbox_inches='tight')
-	
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_top{topK}_recs_{sp_type}_SP.png" ), bbox_inches='tight')
+
 	plt.clf()
 	plt.close(f)
+	print(">> Done!")
 
 def main():
 	df_raw = load_df(infile=args.inputDF)
-	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSparseMat, topK=args.topTKs)
+	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 	#return
 
 def practice(topK=5):
