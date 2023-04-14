@@ -245,19 +245,19 @@ def count_tokens_vocab(dframe, weights_list, vb):
 		if updated_vocab.get(q_tk) is not None:
 			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
 		
-		if updated_vocab.get(q_tk) is not None:
+		if updated_vocab.get(sn_hw_tk) is not None:
 			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
 		
-		if updated_vocab.get(q_tk) is not None:
+		if updated_vocab.get(sn_tk) is not None:
 			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
 		
-		if updated_vocab.get(q_tk) is not None:
+		if updated_vocab.get(c_hw_tk) is not None:
 			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
 		
-		if updated_vocab.get(q_tk) is not None:
+		if updated_vocab.get(c_pt_tk) is not None:
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
 		
-		if updated_vocab.get(q_tk) is not None:
+		if updated_vocab.get(c_tk) is not None:
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
 		
 	return updated_vocab
