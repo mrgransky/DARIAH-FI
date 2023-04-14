@@ -207,7 +207,15 @@ def get_bag_of_words(dframe,):
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 	return BOWs
 
-def count_tokens_vocab(dframe, weights_list, vb):
+def sum_tk_apperance_vb(tk_list, wg, vb):
+	updated_vb = vb.copy()
+	for tk in tk_list:
+		if updated_vb.get(tk) is not None:
+			updated_vb[tk] = updated_vb.get(tk) + wg
+
+	return updated_vb
+
+def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights_list
 	updated_vocab = vb.copy()
 	for q_tk, sn_hw_tk, sn_tk, c_hw_tk, c_pt_tk, c_tk in zip(	dframe.qu_tokens, 
@@ -392,26 +400,51 @@ def get_usr_tk_df(dframe, bow):
 	# list of all weights:
 	weightQueryAppearance = 1.0 							# suggested by Jakko: 1.0
 	weightSnippetAppearance = 0.2 						# suggested by Jakko: 0.2
-	weightSnippetHighlightAppearance = 0.2 		# suggested by Jakko: 0.2
+	weightSnippetHWAppearance = 0.2 		# suggested by Jakko: 0.2
 	weightContentAppearance = 0.05 						# suggested by Jakko: 0.05
-	weightContentHighlightAppearance = 0.05 	# suggested by Jakko: 0.05
+	weightContentHWAppearance = 0.05 	# suggested by Jakko: 0.05
 	weightContentParsedAppearance = 0.005			# Did not consider!
 	
 	w_list = [weightQueryAppearance, 
-						weightSnippetHighlightAppearance,
+						weightSnippetHWAppearance,
 						weightSnippetAppearance,
-						weightContentHighlightAppearance,
+						weightContentHWAppearance,
 						weightContentParsedAppearance,
 						weightContentAppearance,
 					]
 
 	print(f">> Creating Implicit Feedback for user interests...")
 	usr_interest_vb = dict.fromkeys(bow.keys(), 0.0)
-	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: count_tokens_vocab(x_df, w_list, usr_interest_vb.copy()), axis=1, )
-	
-	#print(df_user_token.shape, list(df_user_token.columns))
-	#print(df_user_token.info())
+	usr_interest_vb_cpy = usr_interest_vb.copy()
+	vb_wg = [usr_interest_vb.copy(), weightQueryAppearance]
+	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, usr_interest_vb.copy()), axis=1, )
 
+	df_user_token["usrInt_qu_tk"] = df_user_token["qu_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightQueryAppearance, usr_interest_vb.copy()),)
+	df_user_token["usrInt_sn_hw_tk"] = df_user_token["snippets_hw_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightSnippetHWAppearance, usr_interest_vb.copy()),)
+	df_user_token["usrInt_sn_tk"] = df_user_token["snippets_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightSnippetAppearance, usr_interest_vb.copy()),)
+	df_user_token["usrInt_cnt_tk"] = df_user_token["nwp_content_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightContentAppearance, usr_interest_vb.copy()),)
+	df_user_token["usrInt_cnt_hw_tk"] = df_user_token["nwp_content_hw_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightContentHWAppearance, usr_interest_vb.copy()),)
+	df_user_token["usrInt_cnt_pt_tk"] = df_user_token["nwp_content_pt_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightContentParsedAppearance, usr_interest_vb.copy()),)
+	
+	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
+	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
+	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
+	"""
+	assert df_user_token["user_token_interest"] == (Counter(df_user_token["usrInt_qu_tk"]) + 
+																									Counter(df_user_token["usrInt_sn_hw_tk"]) + 
+																									Counter(df_user_token["usrInt_sn_tk"]) + 
+																									Counter(df_user_token["usrInt_cnt_tk"]) + 
+																									Counter(df_user_token["usrInt_cnt_hw_tk"]) +
+																									Counter(df_user_token["usrInt_cnt_pt_tk"]) ) , f"ERROR"
+	"""
+	print(df_user_token.shape, list(df_user_token.columns))
+	print(df_user_token.info())
+	print("#"*100)
+	
+	print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
+	print("#"*100)
+	print(df_user_token[["user_ip", "user_token_interest"]].head())
+	
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
