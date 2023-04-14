@@ -210,7 +210,7 @@ def get_bag_of_words(dframe,):
 def count_tokens_vocab(dframe, weights_list, vb):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights_list
 	updated_vocab = vb.copy()
-
+	"""
 	for val in dframe["qu_tokens"]:
 		if updated_vocab.get(val) is not None:
 			updated_vocab[val] = updated_vocab.get(val) + w_qu
@@ -234,7 +234,32 @@ def count_tokens_vocab(dframe, weights_list, vb):
 	for val in dframe["nwp_content_tokens"]:
 		if updated_vocab.get(val) is not None:
 			updated_vocab[val] = updated_vocab.get(val) + w_cnt
-
+	"""
+	for q_tk, sn_hw_tk, sn_tk, c_hw_tk, c_pt_tk, c_tk in zip(	dframe.qu_tokens, 
+																														dframe.snippets_hw_tokens, 
+																														dframe.snippets_tokens, 
+																														dframe.nwp_content_hw_tokens, 
+																														dframe.nwp_content_pt_tokens, 
+																														dframe.nwp_content_tokens
+																													):
+		if updated_vocab.get(q_tk) is not None:
+			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
+		
+		if updated_vocab.get(q_tk) is not None:
+			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
+		
+		if updated_vocab.get(q_tk) is not None:
+			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
+		
+		if updated_vocab.get(q_tk) is not None:
+			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
+		
+		if updated_vocab.get(q_tk) is not None:
+			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
+		
+		if updated_vocab.get(q_tk) is not None:
+			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
+		
 	return updated_vocab
 
 def get_search_results_snippet_text(search_results_list):
