@@ -210,31 +210,6 @@ def get_bag_of_words(dframe,):
 def count_tokens_vocab(dframe, weights_list, vb):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights_list
 	updated_vocab = vb.copy()
-	"""
-	for val in dframe["qu_tokens"]:
-		if updated_vocab.get(val) is not None:
-			updated_vocab[val] = updated_vocab.get(val) + w_qu
-	
-	for val in dframe["snippets_hw_tokens"]:
-		if updated_vocab.get(val) is not None:
-			updated_vocab[val] = updated_vocab.get(val) + w_hw_sn
-
-	for val in dframe["snippets_tokens"]:
-		if updated_vocab.get(val) is not None:
-			updated_vocab[val] = updated_vocab.get(val) + w_sn
-	
-	for val in dframe["nwp_content_hw_tokens"]:
-		if updated_vocab.get(val) is not None:
-			updated_vocab[val] = updated_vocab.get(val) + w_hw_cnt
-
-	for val in dframe["nwp_content_pt_tokens"]:
-		if updated_vocab.get(val) is not None:
-			updated_vocab[val] = updated_vocab.get(val) + w_pt_cnt
-	
-	for val in dframe["nwp_content_tokens"]:
-		if updated_vocab.get(val) is not None:
-			updated_vocab[val] = updated_vocab.get(val) + w_cnt
-	"""
 	for q_tk, sn_hw_tk, sn_tk, c_hw_tk, c_pt_tk, c_tk in zip(	dframe.qu_tokens, 
 																														dframe.snippets_hw_tokens, 
 																														dframe.snippets_tokens, 
