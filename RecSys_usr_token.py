@@ -90,7 +90,7 @@ def get_complete_BoWs(dframe,):
 	print(df_usr_raw_texts.info())
 
 	#raw_docs_list = [subitem for itm in df_usr_raw_texts.loc[df_usr_raw_texts["raw_text"].notnull(), "raw_text"].values.flatten().tolist() for subitem in itm if subitem is not None]
-	raw_docs_list = [subitem for itm in raw_texts_list for subitem in itm if len(subitem) > 0]
+	raw_docs_list = [ subitem for itm in raw_texts_list if itm is not None for subitem in itm if ( len(subitem) > 0 and subitem is not None ) ]
 
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
