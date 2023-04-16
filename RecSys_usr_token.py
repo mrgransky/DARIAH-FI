@@ -398,12 +398,12 @@ def get_usr_tk_df(dframe, bow):
 															)
 	
 	# list of all weights:
-	weightQueryAppearance = 1.0 							# suggested by Jakko: 1.0
-	weightSnippetAppearance = 0.2 						# suggested by Jakko: 0.2
-	weightSnippetHWAppearance = 0.2 		# suggested by Jakko: 0.2
-	weightContentAppearance = 0.05 						# suggested by Jakko: 0.05
-	weightContentHWAppearance = 0.05 	# suggested by Jakko: 0.05
-	weightContentParsedAppearance = 0.005			# Did not consider!
+	weightQueryAppearance = 1.0 					# suggested by Jakko: 1.0
+	weightSnippetAppearance = 0.2 				# suggested by Jakko: 0.2
+	weightSnippetHWAppearance = 0.25			# suggested by Jakko: 0.2
+	weightContentAppearance = 0.05 				# suggested by Jakko: 0.05
+	weightContentHWAppearance = 0.055			# suggested by Jakko: 0.05
+	weightContentParsedAppearance = 0.005	# Did not consider initiially!
 	
 	w_list = [weightQueryAppearance, 
 						weightSnippetHWAppearance,
@@ -596,7 +596,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"(min, max_@(idx), sum): ({avgrec.min()}, {avgrec.max():.2f}_@(idx: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		print("-"*130)
+		print("-"*110)
 		"""
 	avgrec = avgrec / np.sum(cos_sim)
 	
@@ -619,7 +619,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
 		print(f"Found {len(users_names)} userIPs & {len(users_values)} userIPs values for token: {tkv}")
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value=users_values, topUSRs=80, norm_sp=normalize_sp_mtrx )
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value=users_values, topUSRs=20, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
@@ -664,7 +664,7 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 							marker=".",
 						)
 	
-	N=5
+	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
@@ -703,16 +703,16 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 						ha="center", 
 						transform=f.transFigure,
 					)
-
+	
 	plt.text(	x=0.5,
 						y=0.88,
 						s=f"{N}-Max cosine(s): {topN_max_cosine_user_ip} : {topN_max_cosine}",
-						fontsize=9.0, 
+						fontsize=8.5,
 						ha="center", 
 						color="r",
 						transform=f.transFigure,
 					)
-
+	
 	plt.subplots_adjust(top=0.86, wspace=0.1)
 
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cos_sim_{sp_type}_SP.png" ), bbox_inches='tight')
@@ -733,7 +733,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 				f"max(cosine) = {max_cosine:.3f} @ (userIdx: {max_cosine_user_idx} userIP: {max_cosine_user_ip})\n",
 			)
 	"""
-	N=5
+	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 
@@ -745,7 +745,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	for _, usr in enumerate(topN_max_cosine_user_ip):
 		tokens_names, tokens_values = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 		print(f"Found {len(tokens_names)} tokens names & {len(tokens_values)} tokens values for {usr}")
-		plot_tokens_by(userIP=usr, tks_name=tokens_names, tks_value=tokens_values, norm_sp=norm_sp)
+		plot_tokens_by(userIP=usr, tks_name=tokens_names, tks_value=tokens_values, topTKs=10, norm_sp=norm_sp)
 	print(f"DONE".center(100, "-"))
 
 def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
@@ -778,9 +778,9 @@ def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
 	for container in ax.containers:
 		ax.bar_label(	container, 
 									#rotation=45, # no rotation for barh 
-									fontsize=7,
+									fontsize=7.0,
 									padding=1.5,
-									fmt='%.4f' if norm_sp else '%.2f',
+									fmt='%.4f', #if norm_sp else '%.2f',
 									label_type='edge',
 								)
 
@@ -788,7 +788,7 @@ def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
 	plt.clf()
 	plt.close(f)
 
-def plot_users_by(token, usrs_name, usrs_value, topUSRs=100, norm_sp=False):
+def plot_users_by(token, usrs_name, usrs_value, topUSRs=50, norm_sp=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	
 	nUsers_orig = len(usrs_name)
@@ -814,7 +814,7 @@ def plot_users_by(token, usrs_name, usrs_value, topUSRs=100, norm_sp=False):
 		ax.bar_label(	container, 
 									rotation=45, 
 									fontsize=7,
-									fmt='%.4f' if norm_sp else '%.2f', 
+									fmt='%.4f',# if norm_sp else '%.2f', 
 									label_type='edge',
 									)
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{sp_type}_SP.png" ), bbox_inches='tight')
@@ -843,7 +843,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 							marker=".",
 						)
 	
-	N=5
+	N=3
 	if np.count_nonzero(usersInt) < N:
 		N = np.count_nonzero(usersInt)
 
@@ -1016,7 +1016,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 											y=sparse_df[col], 
 											label=f"{[k for k, v in bow.items() if v==col]} | {col}",
 											marker="H",
-											s=200,
+											s=260,
 											facecolor="none", 
 											edgecolors=clrs[::-1][int(ix[0])],
 										)
@@ -1037,7 +1037,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 										)
 		recLegends.append(sc2)
 
-	leg1 = plt.legend(handles=quTksLegends, loc=(1.03, 0.8), fontsize=8.0, title=f"Searched Query Phrase(s)\nToken | vbIdx", fancybox=True, shadow=True,)
+	leg1 = plt.legend(handles=quTksLegends, loc=(1.03, 0.8), fontsize=9.0, title=f"Lemmatized Query Phrase(s)\nToken | vbIdx", fancybox=True, shadow=True,)
 	plt.setp(leg1.get_title(), multialignment='center', fontsize=9.0)
 	plt.gca().add_artist(leg1)
 	leg2 = plt.legend(handles=recLegends, loc=(1.03, 0.0), fontsize=8.0, title=f"Top-{topK} Recommended Results\nToken | vbIdx | wightedUserInterest", fancybox=True, shadow=True,)
@@ -1060,7 +1060,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 						fontsize=9.0,
 					)
 
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_top{topK}_recs_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{args.lmMethod}_top{topK}_recs_{sp_type}_SP.png" ), bbox_inches='tight')
 
 	plt.clf()
 	plt.close(f)
