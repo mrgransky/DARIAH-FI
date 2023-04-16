@@ -76,22 +76,23 @@ def get_complete_BoWs(dframe,):
 	
 	for n, g in dframe.groupby("user_ip"):
 		users_list.append(n)
-		lq = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ]
-		ls = [sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ]
-		lc = [sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ]
+		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ]
+		ls = [ sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ]
+		lc = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ]
 		ltot = lq + ls + lc
 		raw_texts_list.append( ltot )
 
-	print(len(users_list), len(raw_texts_list),)
+	print(len(users_list), len(raw_texts_list), )
 	df_usr_raw_texts = pd.DataFrame(list(zip(users_list, raw_texts_list,)), 
 																	columns =['user_ip', 'raw_text', ])
 	df_usr_raw_texts['raw_text'] = [ np.NaN if len(txt) == 0 else txt for txt in df_usr_raw_texts['raw_text'] ]
 	
 	print(df_usr_raw_texts.info())
 
-	raw_docs_list = [subitem for item in df_usr_raw_texts.loc[df_usr_raw_texts["raw_text"].notnull(), "raw_text"].values.flatten().tolist() for subitem in item if subitem is not None]
+	#raw_docs_list = [subitem for itm in df_usr_raw_texts.loc[df_usr_raw_texts["raw_text"].notnull(), "raw_text"].values.flatten().tolist() for subitem in itm if subitem is not None]
+	raw_docs_list = [subitem for itm in raw_texts_list for subitem in itm if len(subitem) > 0]
 
-	print(len(raw_docs_list), type(raw_docs_list), )
+	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.lz4")
