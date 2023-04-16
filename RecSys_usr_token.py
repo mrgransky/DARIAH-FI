@@ -76,7 +76,7 @@ def get_complete_BoWs(dframe,):
 	
 	for n, g in dframe.groupby("user_ip"):
 		users_list.append(n)
-		lq = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
+		lq = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ]
 		ls = [sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ]
 		lc = [sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ]
 		ltot = lq + ls + lc
@@ -105,7 +105,7 @@ def get_complete_BoWs(dframe,):
 		tfidf_vec = TfidfVectorizer(#min_df=5,
 															#ngram_range=(1, 2),
 															tokenizer=lemmatizer_methods.get(args.lmMethod),
-															stop_words=UNIQUE_STOPWORDS,
+															#stop_words=UNIQUE_STOPWORDS,
 															)
 
 		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
