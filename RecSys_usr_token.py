@@ -93,10 +93,11 @@ def get_complete_BoWs(dframe,):
 	#raw_docs_list = [ subitem for itm in raw_texts_list if itm is not None for subitem in itm if ( len(subitem) > 0 and subitem is not None ) ]
 	raw_docs_list = list()
 	for itm in raw_texts_list:
-		print(itm)
+		print(f">>>> item: {itm}")
 		if itm is not None:
 			for subitem in itm:
 				if ( len(subitem) > 0 and subitem is not None ):
+					print(f"<> subitem: {subitem}")
 					raw_docs_list.append(subitem)
 
 
