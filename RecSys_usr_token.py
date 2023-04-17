@@ -97,7 +97,8 @@ def get_complete_BoWs(dframe,):
 		if ( itm is not None and len(itm) > 0 ):
 			for subitem in itm:
 				#print(f"<<!>> subitem: (none: {subitem is None})\tlen: {len(subitem)}")
-				if ( subitem.isalpha() or subitem.isdigit() ):
+				#if ( subitem.isalpha() or subitem.isdigit() ):
+				if re.search(r"\S", subitem):
 					#print(f"<> {subitem}")
 					raw_docs_list.append(subitem)
 
