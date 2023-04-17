@@ -22,7 +22,7 @@ parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="pyhäkosken lohi", type=str) # smallest
-parser.add_argument('--lmMethod', default="nltk", type=str) # smallest
+parser.add_argument('--lmMethod', default="stanza", type=str) # smallest
 parser.add_argument('--normSP', default=False, type=bool) # smallest
 parser.add_argument('--topTKs', default=5, type=int) # smallest
 args = parser.parse_args()
@@ -93,14 +93,13 @@ def get_complete_BoWs(dframe,):
 	#raw_docs_list = [ subitem for itm in raw_texts_list if itm is not None for subitem in itm if ( len(subitem) > 0 and subitem is not None ) ]
 	raw_docs_list = list()
 	for itm in raw_texts_list:
-		print(f">>>> item: (none: {itm is None})\tlen: {len(itm)}: {itm}")
-		if itm is not None:
+		#print(f">>>> item: (none: {itm is None})\tlen: {len(itm)}: {itm}")
+		if itm is not None and len(itm) > 0:
 			for subitem in itm:
-				print(f"<> subitem: (none: {subitem is None})\tlen: {len(subitem)}")
+				#print(f"<<!>> subitem: (none: {subitem is None})\tlen: {len(subitem)}")
 				if ( len(subitem) > 0 and subitem is not None ):
-					print(f"<> subitem: {subitem}")
+					#print(f"<> {subitem}")
 					raw_docs_list.append(subitem)
-
 
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
