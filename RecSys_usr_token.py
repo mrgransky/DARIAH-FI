@@ -83,7 +83,7 @@ def get_complete_BoWs(dframe,):
 		raw_texts_list.append( ltot )
 
 	print(len(users_list), len(raw_texts_list), )
-
+	"""
 	raw_docs_list = list()
 	for itm in raw_texts_list:
 		#print(f">>>> item: (none: {itm is None})\tlen: {len(itm)}: {itm}")
@@ -94,6 +94,8 @@ def get_complete_BoWs(dframe,):
 				if re.search(r"\S", subitem):
 					#print(f"<> {subitem}")
 					raw_docs_list.append(subitem)
+	"""
+	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if re.search(r"\S", subitem) ]
 
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 

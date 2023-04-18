@@ -78,11 +78,9 @@ def stanza_lemmatizer(docs):
 	#print(f'Raw inp: (len: {len(docs)}) >>{docs}<<', end='\t')
 	if not docs:
 		return
-
 	# treat all as document
 	docs = re.sub(r'["]|[+]|[*]|\s+', ' ', docs ).strip()
 	#print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
-
 	if ( not docs or len(docs)==0 ):
 		return
 
