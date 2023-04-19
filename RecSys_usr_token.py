@@ -903,7 +903,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	print(f"<> Plotting top-{nUsers} users / |ALL_USRs = {nUsers_orig}| for token: {token}")
 
 	f, ax = plt.subplots()
-	ax.bar(usrs_name, usrs_value_all, color="#a99", width=0.4)
+	ax.bar(usrs_name, usrs_value_all, color="#a6aa1122", width=0.4)
 	#ax.set_xlabel('Tokens', rotation=90)
 	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
