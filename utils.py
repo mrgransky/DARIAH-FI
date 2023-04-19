@@ -73,9 +73,11 @@ clrs = ['#0eca11',
 				'#d72448', 
 				'#864b',
 				"#a99",
+				"#a91449",
 				'#1f77b4',
 				'#e377c2',
 				'#bcbd22',
+				'#688e',
 				"#100874",
 				"#931e00",
 				"#a98d19",
@@ -86,6 +88,7 @@ clrs = ['#0eca11',
 				'#900fcc99',
 				'#25e682', 
 				'#17becf',
+				"#e56699",
 				"#265",
 				'#7f688e',
 				"#e4d10888",
@@ -124,11 +127,25 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
 	
 	tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
-	tks_value = matrix[user_idx, tk_indeces_sorted_no_0]
-	assert len(tks_name) == len(tks_value), f"found {len(tks_name)} tokens names & {len(tks_value)} tokens values"
+	tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
+	assert len(tks_name) == len(tks_value_all), f"found {len(tks_name)} tokens names & {len(tks_value_all)} tokens values"
+
 	print(f"Retrieving {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(100, ' '))
 
-	return tks_name[::-1], tks_value[::-1] 
+	tks_value_separated = list()
+	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
+		#print(col)
+		oneTK_separated_vals = list()
+		for tkn in tks_name:
+			#print(tkn)
+			#print(df_usr_tk.loc[user_idx , col].get(tkn))
+			oneTK_separated_vals.append( df_usr_tk.loc[user_idx , col].get(tkn) )
+		#print(oneTK_separated_vals)
+		tks_value_separated.append(oneTK_separated_vals)
+		#print("-"*80)
+	print(len(tks_name), len(tks_value_all), len(tks_value_separated), len(tks_value_separated[0]))
+	#assert len(tks_name) == len(tks_value_all) == len(tks_value_separated), f"tokens: {len(tks_name)} names, {len(tks_value_all)} tot_values, {len(tks_value_separated)} sep_values,"
+	return tks_name[::-1], tks_value_all[::-1], tks_value_separated[::-1]
 
 def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 	matrix = sp_mtrx.toarray()

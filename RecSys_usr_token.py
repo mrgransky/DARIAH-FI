@@ -22,7 +22,7 @@ parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="Tampereen seudun työväenopisto", type=str) # smallest
-parser.add_argument('--lmMethod', default="stanza", type=str) # smallest
+parser.add_argument('--lmMethod', default="nltk", type=str) # smallest
 parser.add_argument('--normSP', default=False, type=bool) # smallest
 parser.add_argument('--topTKs', default=5, type=int) # smallest
 args = parser.parse_args()
@@ -159,15 +159,9 @@ def get_bag_of_words(dframe,):
 		raw_texts_list.append( ltot )
 
 	print(len(users_list), len(raw_texts_list),)
-	df_usr_raw_texts = pd.DataFrame(list(zip(users_list, raw_texts_list,)), 
-																	columns =['user_ip', 'raw_text', ])
-	df_usr_raw_texts['raw_text'] = [ np.NaN if len(txt) == 0 else txt for txt in df_usr_raw_texts['raw_text'] ]
-	
-	#print(df_usr_raw_texts.info())
 
-	raw_docs_list = [subitem for item in df_usr_raw_texts.loc[df_usr_raw_texts["raw_text"].notnull(), "raw_text"].values.flatten().tolist() for subitem in item]
-
-	print(len(raw_docs_list), type(raw_docs_list))
+	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if re.search(r"\S", subitem) ]
+	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.lz4")
@@ -213,42 +207,52 @@ def get_bag_of_words(dframe,):
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 	return BOWs
 
-def sum_tk_apperance_vb(tk_list, wg, vb):
-	updated_vb = vb.copy()
-	for tk in tk_list:
+def sum_tk_apperance_vb(dframe, qcol, wg, vb):
+	updated_vb = dict.fromkeys(vb.keys(), 0.0)
+	for tk in dframe[qcol]:
 		if updated_vb.get(tk) is not None:
 			updated_vb[tk] = updated_vb.get(tk) + wg
-
+			print(tk, wg, updated_vb[tk])
+	print(f"{dframe.user_ip}".center(50, '-'))
 	return updated_vb
 
 def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights_list
-	updated_vocab = vb.copy()
-	for q_tk, sn_hw_tk, sn_tk, c_hw_tk, c_pt_tk, c_tk in zip(	dframe.qu_tokens, 
-																														dframe.snippets_hw_tokens, 
-																														dframe.snippets_tokens, 
-																														dframe.nwp_content_hw_tokens, 
-																														dframe.nwp_content_pt_tokens, 
-																														dframe.nwp_content_tokens
-																													):
+	"""
+	w_list = [weightQueryAppearance, 
+						weightSnippetHWAppearance,
+						weightSnippetAppearance,
+						weightContentHWAppearance,
+						weightContentParsedAppearance,
+						weightContentAppearance,
+					]
+	"""
+	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
+
+	for q_tk in dframe.qu_tokens:
 		if updated_vocab.get(q_tk) is not None:
 			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
-		
+
+	for sn_hw_tk in dframe.snippets_hw_tokens:
 		if updated_vocab.get(sn_hw_tk) is not None:
 			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
 		
+	for sn_tk in dframe.snippets_tokens:
 		if updated_vocab.get(sn_tk) is not None:
 			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
 		
+	for c_hw_tk in dframe.nwp_content_hw_tokens:
 		if updated_vocab.get(c_hw_tk) is not None:
 			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
 		
+	for c_pt_tk in dframe.nwp_content_pt_tokens:
 		if updated_vocab.get(c_pt_tk) is not None:
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
 		
+	for c_tk in dframe.nwp_content_tokens:
 		if updated_vocab.get(c_tk) is not None:
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
-		
+
 	return updated_vocab
 
 def get_search_results_snippet_text(search_results_list):
@@ -402,14 +406,16 @@ def get_usr_tk_df(dframe, bow):
 																					'nwp_content_pt_tokens',
 																				]
 															)
-	
+	#print(df_user_token[["user_ip", "qu_tokens", "snippets_tokens", "snippets_hw_tokens", "nwp_content_tokens", "nwp_content_hw_tokens", "nwp_content_pt_tokens"]].head(50))
+	#print("#"*100)
+	#return
 	# list of all weights:
 	weightQueryAppearance = 1.0 					# suggested by Jakko: 1.0
-	weightSnippetAppearance = 0.2 				# suggested by Jakko: 0.2
 	weightSnippetHWAppearance = 0.25			# suggested by Jakko: 0.2
-	weightContentAppearance = 0.05 				# suggested by Jakko: 0.05
+	weightSnippetAppearance = 0.2 				# suggested by Jakko: 0.2
 	weightContentHWAppearance = 0.055			# suggested by Jakko: 0.05
 	weightContentParsedAppearance = 0.005	# Did not consider initiially!
+	weightContentAppearance = 0.05 				# suggested by Jakko: 0.05
 	
 	w_list = [weightQueryAppearance, 
 						weightSnippetHWAppearance,
@@ -420,17 +426,14 @@ def get_usr_tk_df(dframe, bow):
 					]
 
 	print(f">> Creating Implicit Feedback for user interests...")
-	usr_interest_vb = dict.fromkeys(bow.keys(), 0.0)
-	usr_interest_vb_cpy = usr_interest_vb.copy()
-	vb_wg = [usr_interest_vb.copy(), weightQueryAppearance]
-	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, usr_interest_vb.copy()), axis=1, )
-
-	df_user_token["usrInt_qu_tk"] = df_user_token["qu_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightQueryAppearance, usr_interest_vb.copy()),)
-	df_user_token["usrInt_sn_hw_tk"] = df_user_token["snippets_hw_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightSnippetHWAppearance, usr_interest_vb.copy()),)
-	df_user_token["usrInt_sn_tk"] = df_user_token["snippets_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightSnippetAppearance, usr_interest_vb.copy()),)
-	df_user_token["usrInt_cnt_tk"] = df_user_token["nwp_content_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightContentAppearance, usr_interest_vb.copy()),)
-	df_user_token["usrInt_cnt_hw_tk"] = df_user_token["nwp_content_hw_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightContentHWAppearance, usr_interest_vb.copy()),)
-	df_user_token["usrInt_cnt_pt_tk"] = df_user_token["nwp_content_pt_tokens"].apply(lambda df_col: sum_tk_apperance_vb(df_col, weightContentParsedAppearance, usr_interest_vb.copy()),)
+	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )
+	
+	df_user_token["usrInt_qu_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_sn_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_tokens", wg=weightSnippetHWAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_tokens", wg=weightSnippetAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_tokens", wg=weightContentHWAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_tokens", wg=weightContentParsedAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_tokens", wg=weightContentAppearance, vb=bow), axis=1)
 	
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
@@ -444,12 +447,13 @@ def get_usr_tk_df(dframe, bow):
 																									Counter(df_user_token["usrInt_cnt_pt_tk"]) ) , f"ERROR"
 	"""
 	print(df_user_token.shape, list(df_user_token.columns))
-	print(df_user_token.info())
-	print("#"*100)
 	
-	print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
-	print("#"*100)
-	print(df_user_token[["user_ip", "user_token_interest"]].head())
+	#print(df_user_token.info())
+	#print("#"*100)
+	
+	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
+	#print("#"*100)
+	#print(df_user_token[["user_ip", "user_token_interest"]].head())
 	
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
@@ -497,14 +501,14 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	
+	"""
 	if userName.endswith("xenial"):
 		BoWs = get_bag_of_words(dframe=df_inp)
 	else:
 		BoWs = get_complete_BoWs(dframe=df_inp)
 	#return
-	
-	#BoWs = get_bag_of_words(dframe=df_inp)
+	"""
+	BoWs = get_bag_of_words(dframe=df_inp)
 	#BoWs = get_complete_BoWs(dframe=df_inp)
 	
 	try:
@@ -514,6 +518,37 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	
 	#print(df_usr_tk.info())
 	print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
+
+	"""
+	#print(df_usr_tk.info())
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print( df_usr_tk[["user_ip", "usrInt_qu_tk",]].tail(20) )
+
+	print("#"*150)
+
+	print(json.dumps(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], indent=2, ensure_ascii=False))
+	print("#"*150)
+	"""
+	
+	with open("ip6840_qu.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], fw, indent=4, ensure_ascii=False)
+
+	with open("ip6840_sn.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_sn_tk"], fw, indent=4, ensure_ascii=False)
+
+	with open("ip6840_cnt.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_tk"], fw, indent=4, ensure_ascii=False)
+
+	with open("ip6840_sn_hw.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_sn_hw_tk"], fw, indent=4, ensure_ascii=False)
+
+	with open("ip6840_cnt_hw.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_hw_tk"], fw, indent=4, ensure_ascii=False)
+
+	with open("ip6840_cnt_pt.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_pt_tk"], fw, indent=4, ensure_ascii=False)
+
+	#return
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
@@ -544,6 +579,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)}\t"
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} @ idx(s): {np.nonzero(query_vector)[0]} )")
+
+	if np.all( query_vector==0.0 ):
+		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		return
 
 	cos_sim = get_cosine_similarity(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	"""
@@ -750,18 +789,26 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	topN_max_cosine_user_ip = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
 
 	for _, usr in enumerate(topN_max_cosine_user_ip):
-		tokens_names, tokens_values = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
-		print(f"Found {len(tokens_names)} tokens names & {len(tokens_values)} tokens values for {usr}")
-		plot_tokens_by(userIP=usr, tks_name=tokens_names, tks_value=tokens_values, topTKs=10, norm_sp=norm_sp)
+		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
+		print(f"Found {len(tokens_names)} tokens names, {len(tokens_values_total)} tokens values (total) & {len(tokens_values_separated)} tokens values (separated) for {usr}")
+		plot_tokens_by(	userIP=usr, 
+										tks_name=tokens_names, 
+										tks_value_all=tokens_values_total, 
+										tks_value_separated=tokens_values_separated, 
+										topTKs=50, 
+										norm_sp=norm_sp,
+									)
+
 	print(f"DONE".center(100, "-"))
 
-def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
+def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=50, norm_sp=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	nTokens_orig = len(tks_name)
 
 	if len(tks_name) > topTKs:
 		tks_name = tks_name[:topTKs]
-		tks_value = tks_value[:topTKs]
+		tks_value_all = tks_value_all[:topTKs]
+		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
 
 	nTokens = len(tks_name)
 
@@ -769,8 +816,9 @@ def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
 
 	f, ax = plt.subplots()
 	ax.barh(tks_name, 
-					tks_value, 
-					color=clrs, 
+					tks_value_all, 
+					#color=clrs,
+					color="#0000ff",
 					height=0.35,
 				)
 	
@@ -792,6 +840,34 @@ def plot_tokens_by(userIP, tks_name, tks_value, topTKs=50, norm_sp=False):
 								)
 
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+
+	f, ax = plt.subplots()
+	lft = 0
+	for i, v in enumerate( tks_value_separated ):
+		print(i, tks_name, v)
+		ax.barh(tks_name, v, color=clrs[i], height=0.35, left=lft,)
+		lft = v
+
+	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
+	
+	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
+	ax.invert_yaxis()  # labels read top-to-botto
+	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
+	ax.margins(1e-2, 5e-3)
+	ax.spines[['top', 'right']].set_visible(False)
+	for container in ax.containers:
+		ax.bar_label(	container, 
+									#rotation=45, # no rotation for barh 
+									fontsize=7.0,
+									padding=1.5,
+									fmt='%.4f', #if norm_sp else '%.2f',
+									label_type='edge',
+								)
+
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
