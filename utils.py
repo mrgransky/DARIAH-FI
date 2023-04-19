@@ -55,22 +55,22 @@ params = {
 		'legend.title_fontsize':'small'
 	}
 pylab.rcParams.update(params)
-clrs = ['#0eca11',
+clrs = ["#ff2eee",
 				'#16b3fd',
+				'#0eca11',
+				"#7422",
 				"#ee0038",
-				'#771',
-				"#416",
-				'#7ede2333',
+				"#ffee32",
+				"#4aaaa5",
 				"#742802",
 				'#0ef',
-				'#7f7f7f', 
+				'#771',
+				'#d72448', 
+				'#7ede2333',
+				"#416",
 				"#ffb563",
-				"#7422",
-				"#ff2eee",
-				"#ffee32",
 				"#031eee",
 				'#a0ee2c44',
-				'#d72448', 
 				'#864b',
 				"#a99",
 				"#a91449",
@@ -81,25 +81,26 @@ clrs = ['#0eca11',
 				"#100874",
 				"#931e00",
 				"#a98d19",
+				'#1eeeee7f',
 				'#007749',
 				"#d6df",
 				"#918450",
-				"#450",
 				'#900fcc99',
-				'#25e682', 
 				'#17becf',
 				"#e56699",
 				"#265",
 				'#7f688e',
-				"#e4d10888",
+				'#d62789',
 				'#99f9',
 				'#d627',
 				"#006cf789",
 				"#7eee88", 
 				"#10e4",
 				"#f095",
-				"#ee5540", 
-				'#d62789',
+				"#ee5540",
+				'#25e682', 
+				"#e4d10888",
+				"#0000ff",
 				"#102d",
 			]
 
@@ -124,10 +125,29 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 
 	user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == user].tolist()[0])
 
-	tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
+	print(f"\n\n>> user_idx: {user_idx} - ")
+	#tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
+	#print(tk_indeces_sorted_no_0[-50:])
+	#tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
+	#tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
+
+	with open(f"temp_{user_idx}_raw_dict_.json", "w") as fw:
+		json.dump(df_usr_tk.loc[user_idx , "user_token_interest" ], fw, indent=4, ensure_ascii=False)
+
+	tk_dict = dict( sorted( df_usr_tk.loc[user_idx , "user_token_interest" ].items(), key=lambda x:x[1], reverse=True ) )
+	with open("temp_sorted_discending.json", "w") as fw:
+		json.dump(tk_dict, fw, indent=4, ensure_ascii=False)
 	
-	tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
-	tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
+	tk_dict = {k: v for k, v in tk_dict.items() if v!=0}
+	with open("temp_sorted_no0.json", "w") as fw:
+		json.dump(tk_dict, fw, indent=4, ensure_ascii=False)
+	
+	tks_name = list(tk_dict.keys())
+	tks_value_all = list(tk_dict.values())
+	
+	print(tks_name[:50])
+	print(tks_value_all[:50])
+
 	assert len(tks_name) == len(tks_value_all), f"found {len(tks_name)} tokens names & {len(tks_value_all)} tokens values"
 
 	print(f"Retrieving {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(100, ' '))
@@ -144,8 +164,7 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 		tks_value_separated.append(oneTK_separated_vals)
 		#print("-"*80)
 	print(len(tks_name), len(tks_value_all), len(tks_value_separated), len(tks_value_separated[0]))
-	#assert len(tks_name) == len(tks_value_all) == len(tks_value_separated), f"tokens: {len(tks_name)} names, {len(tks_value_all)} tot_values, {len(tks_value_separated)} sep_values,"
-	return tks_name[::-1], tks_value_all[::-1], tks_value_separated[::-1]
+	return tks_name, tks_value_all, tks_value_separated
 
 def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 	matrix = sp_mtrx.toarray()
@@ -154,11 +173,23 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 
 	usr_indeces_sorted_no_0 = np.where(matrix[:, tkIdx] != 0, matrix[:, tkIdx], np.nan).argsort()[:(matrix[:, tkIdx] != 0).sum()] # ref: https://stackoverflow.com/questions/40857349/np-argsort-which-excludes-zero-values
 
-	usrs_value = matrix[usr_indeces_sorted_no_0, tkIdx]
+	usrs_value_all = matrix[usr_indeces_sorted_no_0, tkIdx]
 	usrs_name = [df_usr_tk.loc[idx, 'user_ip'] for idx in usr_indeces_sorted_no_0 ]
 	print(f"Retrieving {len(usrs_name)} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(100, ' '))
 	
-	return usrs_name[::-1], usrs_value[::-1] 
+	usrs_value_separated = list()
+	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
+		#print(col)
+		oneUSR_separated_vals = list()
+		for usr in usrs_name:
+			user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == usr].tolist()[0])
+			oneUSR_separated_vals.append( df_usr_tk.loc[user_idx , col].get(token) )
+		#print(oneUSR_separated_vals)
+		usrs_value_separated.append(oneUSR_separated_vals)
+		#print("-"*80)
+	print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
+
+	return usrs_name[::-1], usrs_value_all[::-1], usrs_value_separated
 
 def get_filename_prefix(dfname):
 	fprefix = "_".join(dfname.split("/")[-1].split(".")[:-2]) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021

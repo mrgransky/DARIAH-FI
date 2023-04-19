@@ -183,7 +183,9 @@ def get_bag_of_words(dframe,):
 
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(vb=tfidf_vec.vocabulary_, fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"))
+		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
+								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
+							)
 
 		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 	else:
@@ -195,13 +197,14 @@ def get_bag_of_words(dframe,):
 	#print(f"1st 100 features:\n{feat_names[:60]}\n")
 	
 	# dictionary mapping from words to their indices in vocabulary:
-	BOWs = tfidf_vec.vocabulary_ # dict mapping: key: term value: column positions(indices) of features.
+	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
+
 	# example:
 	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
 	#	   		example   is         simple     this	
 	# 0  		0.377964  0.377964   0.377964   0.377964
 
-	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)}")
+	print(f"Features: {feat_names.shape} | {type(feat_names)} | BOWs: {len(BOWs)} | {type(BOWs)}")
 	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
 	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
@@ -212,8 +215,8 @@ def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	for tk in dframe[qcol]:
 		if updated_vb.get(tk) is not None:
 			updated_vb[tk] = updated_vb.get(tk) + wg
-			print(tk, wg, updated_vb[tk])
-	print(f"{dframe.user_ip}".center(50, '-'))
+			#print(tk, wg, updated_vb[tk])
+	#print(f"{dframe.user_ip}".center(50, '-'))
 	return updated_vb
 
 def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
@@ -458,33 +461,25 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
-	"""
-	with open("ip3540.json", "w") as fw:
-		json.dump(df_user_token[df_user_token["user_ip"]=="ip3540"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with open("ip6843.json", "w") as fw:
-		json.dump(df_user_token[df_user_token["user_ip"]=="ip6843"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with open("ip3539.json", "w") as fw:
-		json.dump(df_user_token[df_user_token["user_ip"]=="ip3539"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-	"""
-
 	#print(f"USER-TOKENS DF".center(100, "-"))
 	return df_user_token
 
 def get_sparse_matrix(df):
-	print(f"Sparse Matrix | DF: {df.shape}".center(80, '-'))
+	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	print(list(df.columns))
-	print(df.dtypes)
+	#print(df.dtypes)
 
+	#print( df['user_token_interest'].apply(pd.Series).head(15) )
+	#print(">"*100)
 	df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
-	sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
-	print(sparse_matrix.shape, type(sparse_matrix))
+	#print(df_new.head(15))
+	#print("<"*100)
 
 	##########################Sparse Matrix info##########################
+	sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
 	print("#"*110)
-	print(f"Sparse: {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
+	print(f"{type(sparse_matrix)} {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
 	print(f"<> Non-zeros vals: {sparse_matrix.data}")# Viewing stored data (not the zero items)
 	#print(sparse_matrix.toarray()[:25, :18])
 	print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
@@ -510,6 +505,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	"""
 	BoWs = get_bag_of_words(dframe=df_inp)
 	#BoWs = get_complete_BoWs(dframe=df_inp)
+	with open("bow_sorted_ascending.json", "w") as fw:
+		json.dump(BoWs, fw, indent=4, ensure_ascii=False)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
@@ -518,17 +515,25 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	
 	#print(df_usr_tk.info())
 	print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
-
 	"""
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
+		print( df_usr_tk[["user_ip", "user_token_interest",]].tail(10) )
+
 	#print(df_usr_tk.info())
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
-		print( df_usr_tk[["user_ip", "usrInt_qu_tk",]].tail(20) )
 
 	print("#"*150)
 
 	print(json.dumps(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], indent=2, ensure_ascii=False))
 	print("#"*150)
-	"""
+
+	with open("ip6840.json", "w") as fw:
+		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip6840"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
+
+	with open("ip3665.json", "w") as fw:
+		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip3665"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
+
+	with open("ip6020.json", "w") as fw:
+		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip6020"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
 	
 	with open("ip6840_qu.json", "w") as fw:
 		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], fw, indent=4, ensure_ascii=False)
@@ -549,6 +554,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_pt_tk"], fw, indent=4, ensure_ascii=False)
 
 	#return
+	"""
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
@@ -651,21 +657,24 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 				f"(min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})")
 	
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
-	#print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
+	print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
 	
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
-	#print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
+	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
-	#print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
+	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
-	#print(f"-"*100)
+	print(f"-"*100)
+	#return
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(100, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
-		users_names, users_values = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
-		print(f"Found {len(users_names)} userIPs & {len(users_values)} userIPs values for token: {tkv}")
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value=users_values, topUSRs=20, norm_sp=normalize_sp_mtrx )
+		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
+		
+		print(f"Found {len(users_names)} userIPs, {len(users_values_total)} total userIPs values & {len(users_values_separated)} separated userIPs values | token: {tkv}")
+
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=20, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
@@ -710,7 +719,7 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 							marker=".",
 						)
 	
-	N=3
+	N=5
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
@@ -749,7 +758,6 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 						ha="center", 
 						transform=f.transFigure,
 					)
-	
 	plt.text(	x=0.5,
 						y=0.88,
 						s=f"{N}-Max cosine(s): {topN_max_cosine_user_ip} : {topN_max_cosine}",
@@ -779,7 +787,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 				f"max(cosine) = {max_cosine:.3f} @ (userIdx: {max_cosine_user_idx} userIP: {max_cosine_user_ip})\n",
 			)
 	"""
-	N=3
+	N=5
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 
@@ -795,7 +803,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
-										topTKs=50, 
+										topTKs=15,
 										norm_sp=norm_sp,
 									)
 
@@ -811,7 +819,6 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
 
 	nTokens = len(tks_name)
-
 	print(f"<> Plotting top-{nTokens} / |ALL_TKs = {nTokens_orig}| tokens by user: {userIP}")
 
 	f, ax = plt.subplots()
@@ -821,10 +828,8 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 					color="#0000ff",
 					height=0.35,
 				)
-	
 	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
-	
 	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 	ax.invert_yaxis()  # labels read top-to-botto
 	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
@@ -844,12 +849,16 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	plt.close(f)
 
 	f, ax = plt.subplots()
-	lft = 0
+	lft = np.zeros(len(tks_name))
+	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet App", "Content HWs", "Content PTs", "Content App",]
+	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
 		print(i, tks_name, v)
-		ax.barh(tks_name, v, color=clrs[i], height=0.35, left=lft,)
-		lft = v
-
+		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.5, label=f"{qcol_list[i]:<25}{[f'{val:.3f}' for val in v]}")
+		lft += v
+		hbars.append(hbar)
+		#print(hbar.datavalues)
+	
 	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 	
@@ -858,34 +867,43 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	for container in ax.containers:
-		ax.bar_label(	container, 
-									#rotation=45, # no rotation for barh 
-									fontsize=7.0,
-									padding=1.5,
-									fmt='%.4f', #if norm_sp else '%.2f',
+	ax.legend(loc="best", fontsize=8.0)
+
+	for bar in hbars:
+		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
+		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
+
+	"""
+	for c in ax.containers:
+		print(f">> container: {c}")
+		ax.bar_label(	c, 
+									rotation=45, # no rotation for barh 
+									fontsize=5.0,
+									padding=2.5,
+									fmt='%.3f', #if norm_sp else '%.2f',
 									label_type='edge',
 								)
-
+	"""
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
-def plot_users_by(token, usrs_name, usrs_value, topUSRs=50, norm_sp=False):
+def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs=50, norm_sp=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	
 	nUsers_orig = len(usrs_name)
 
 	if len(usrs_name) > topUSRs:
 		usrs_name = usrs_name[:topUSRs]
-		usrs_value = usrs_value[:topUSRs]
+		usrs_value_all = usrs_value_all[:topUSRs]
+		usrs_value_separated = [elem[:topUSRs] for elem in usrs_value_separated]
 
 	nUsers = len(usrs_name)
 
 	print(f"<> Plotting top-{nUsers} users / |ALL_USRs = {nUsers_orig}| for token: {token}")
 
 	f, ax = plt.subplots()
-	ax.bar(usrs_name, usrs_value, color=clrs, width=0.2)
+	ax.bar(usrs_name, usrs_value_all, color="#a99", width=0.4)
 	#ax.set_xlabel('Tokens', rotation=90)
 	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
@@ -895,12 +913,38 @@ def plot_users_by(token, usrs_name, usrs_value, topUSRs=50, norm_sp=False):
 	ax.spines[['top', 'right']].set_visible(False)
 	for container in ax.containers:
 		ax.bar_label(	container, 
-									rotation=45, 
-									fontsize=7,
-									fmt='%.4f',# if norm_sp else '%.2f', 
+									rotation=0, 
+									fontsize=6.5,
+									fmt='%.3f',# if norm_sp else '%.2f', 
 									label_type='edge',
 									)
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+
+	f, ax = plt.subplots()
+	btn = np.zeros(len(usrs_name))
+	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet App", "Content HWs", "Content PTs", "Content App",]
+	vbars = list()
+	for i, v in enumerate( usrs_value_separated ):
+		print(i, usrs_name, v)
+		vbar = ax.bar(usrs_name, v, color=clrs[i], width=0.4, bottom=btn, edgecolor='w', lw=0.5, label=f"{qcol_list[i]:<25}{[f'{val:.3f}' for val in v]}")
+		btn += v
+		vbars.append(vbar)
+	
+	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
+	ax.set_ylabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)	
+	ax.set_title(f'Top-{nUsers} User(s) / |ALL_USRs = {nUsers_orig}| for token: {token}', fontsize=11)
+	ax.margins(1e-2, 5e-3)
+	ax.spines[['top', 'right']].set_visible(False)
+	ax.legend(loc="best", fontsize=8.0)
+
+	for b in vbars:
+		filtered_lbls = [f"{v:.1f}" if v>=1.0 else "" for v in b.datavalues]
+		ax.bar_label(b, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=8.0)
+
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_separated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -926,7 +970,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 							marker=".",
 						)
 	
-	N=3
+	N=5
 	if np.count_nonzero(usersInt) < N:
 		N = np.count_nonzero(usersInt)
 
