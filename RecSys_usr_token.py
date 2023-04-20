@@ -842,13 +842,13 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
 	ax.legend(loc="best", fontsize=8.0)
-	ax.set_xlim(auto=True)
-	ax.set_ylim(auto=True)
 	
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
 	
+	ax.set_xlim(auto=True)
+	ax.set_ylim(auto=True)
 	"""
 	for c in ax.containers:
 		print(f">> container: {c}")
