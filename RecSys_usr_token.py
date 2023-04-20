@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser(description='National Library of Finland (NLF) 
 parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
-parser.add_argument('--qphrase', default="helsingin kaupunginteatteri", type=str)
+parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str) # smallest
 parser.add_argument('--normSP', default=False, type=bool) # smallest
 parser.add_argument('--topTKs', default=5, type=int) # smallest
