@@ -23,6 +23,22 @@ RES_DIR = make_result_dir(infile=args.inputDF)
 
 MODULE=60
 
+# list of all weights:
+weightQueryAppearance = 1.0 					# suggested by Jakko: 1.0
+weightSnippetHWAppearance = 0.25			# suggested by Jakko: 0.2
+weightSnippetAppearance = 0.2 				# suggested by Jakko: 0.2
+weightContentHWAppearance = 0.055			# suggested by Jakko: 0.05
+weightContentParsedAppearance = 0.005	# Did not consider initiially!
+weightContentAppearance = 0.05 				# suggested by Jakko: 0.05
+
+w_list = [weightQueryAppearance, 
+					weightSnippetHWAppearance,
+					weightSnippetAppearance,
+					weightContentHWAppearance,
+					weightContentParsedAppearance,
+					weightContentAppearance,
+				]
+
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
 	phrase = phrase_list[0]
@@ -205,15 +221,6 @@ def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 
 def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights_list
-	"""
-	w_list = [weightQueryAppearance, 
-						weightSnippetHWAppearance,
-						weightSnippetAppearance,
-						weightContentHWAppearance,
-						weightContentParsedAppearance,
-						weightContentAppearance,
-					]
-	"""
 	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
 
 	for q_tk in dframe.qu_tokens:
@@ -396,22 +403,7 @@ def get_usr_tk_df(dframe, bow):
 	#print(df_user_token[["user_ip", "qu_tokens", "snippets_tokens", "snippets_hw_tokens", "nwp_content_tokens", "nwp_content_hw_tokens", "nwp_content_pt_tokens"]].head(50))
 	#print("#"*100)
 	#return
-	# list of all weights:
-	weightQueryAppearance = 1.0 					# suggested by Jakko: 1.0
-	weightSnippetHWAppearance = 0.25			# suggested by Jakko: 0.2
-	weightSnippetAppearance = 0.2 				# suggested by Jakko: 0.2
-	weightContentHWAppearance = 0.055			# suggested by Jakko: 0.05
-	weightContentParsedAppearance = 0.005	# Did not consider initiially!
-	weightContentAppearance = 0.05 				# suggested by Jakko: 0.05
 	
-	w_list = [weightQueryAppearance, 
-						weightSnippetHWAppearance,
-						weightSnippetAppearance,
-						weightContentHWAppearance,
-						weightContentParsedAppearance,
-						weightContentAppearance,
-					]
-
 	print(f">> Creating Implicit Feedback for user interests...")
 	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )
 	
@@ -828,7 +820,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
 		print(i, tks_name, v)
-		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<25}{[f'{val:.3f}' for val in v]}")
+		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<15}w: {w_list[i]:<8}{[f'{val:.3f}' for val in v]}")
 		lft += v
 		hbars.append(hbar)
 		#print(hbar.datavalues)
@@ -853,9 +845,9 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 			xmax = max(bar.datavalues)
 		"""
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
-	l, r = ax.get_xlim()
-	print(l, r)
-	ax.set_xlim(right=r+2.0, auto=True)
+	#l, r = ax.get_xlim()
+	#print(l, r)
+	ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
 	"""
 	for c in ax.containers:
 		print(f">> container: {c}")
