@@ -505,8 +505,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	"""
 	BoWs = get_bag_of_words(dframe=df_inp)
 	#BoWs = get_complete_BoWs(dframe=df_inp)
-	with open("bow_sorted_ascending.json", "w") as fw:
-		json.dump(BoWs, fw, indent=4, ensure_ascii=False)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
