@@ -22,7 +22,7 @@ parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.
 parser.add_argument('--qusr', default="ip69", type=str)
 parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="Tampereen seudun työväenopisto", type=str) # smallest
-parser.add_argument('--lmMethod', default="nltk", type=str) # smallest
+parser.add_argument('--lmMethod', default="stanza", type=str) # smallest
 parser.add_argument('--normSP', default=False, type=bool) # smallest
 parser.add_argument('--topTKs', default=5, type=int) # smallest
 args = parser.parse_args()
