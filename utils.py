@@ -20,12 +20,15 @@ warnings.filterwarnings('ignore')
 import numpy as np
 import pandas as pd
 from natsort import natsorted
+from collections import Counter
 
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
+
 #import spacy
-from colorama import Fore, Style
+from colorama import Fore, Style, Back
 import seaborn as sns
 
 import matplotlib.pyplot as plt

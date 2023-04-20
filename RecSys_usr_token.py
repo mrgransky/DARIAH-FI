@@ -1,21 +1,5 @@
-import matplotlib.pyplot as plt
-import matplotlib.pylab as pylab
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib.colors import Colormap as cm
-#import spacy
-from colorama import Back, Fore, Style
-import seaborn as sns
-
-import matplotlib
-matplotlib.use("Agg")
-
 from utils import *
 from tokenizer_utils import *
-from collections import Counter
-
-from scipy.sparse import csr_matrix, coo_matrix
-from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
 parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
@@ -441,14 +425,6 @@ def get_usr_tk_df(dframe, bow):
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
 	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
-	"""
-	assert df_user_token["user_token_interest"] == (Counter(df_user_token["usrInt_qu_tk"]) + 
-																									Counter(df_user_token["usrInt_sn_hw_tk"]) + 
-																									Counter(df_user_token["usrInt_sn_tk"]) + 
-																									Counter(df_user_token["usrInt_cnt_tk"]) + 
-																									Counter(df_user_token["usrInt_cnt_hw_tk"]) +
-																									Counter(df_user_token["usrInt_cnt_pt_tk"]) ) , f"ERROR"
-	"""
 	print(df_user_token.shape, list(df_user_token.columns))
 	
 	#print(df_user_token.info())
