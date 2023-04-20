@@ -34,7 +34,8 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
 import matplotlib.ticker as ticker
 import matplotlib
-matplotlib.use("Agg")
+
+#matplotlib.use("Agg")
 
 sz=16
 params = {
