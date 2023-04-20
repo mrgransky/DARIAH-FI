@@ -847,13 +847,13 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
-		print(bar.datavalues)
+		print(bar.datavalues, max(bar.datavalues), xmax)
 		if max(bar.datavalues) > xmax:
 			xmax = max(bar.datavalues)
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
 	l, r = ax.get_xlim()
 	print(l, r)
-	ax.set_xlim(right=xmax+5.0, auto=True)
+	ax.set_xlim(right=xmax+10.0, auto=True)
 	"""
 	for c in ax.containers:
 		print(f">> container: {c}")
