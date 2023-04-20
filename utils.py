@@ -41,7 +41,7 @@ sz=16
 params = {
 		'figure.figsize':	(sz*1.0, sz*0.5),  # W, H
 		'figure.dpi':		200,
-		'figure.autolayout': True,
+		#'figure.autolayout': True,
 		#'figure.constrained_layout.use': True,
 		'legend.fontsize':	sz*0.8,
 		'axes.labelsize':	sz*1.0,
