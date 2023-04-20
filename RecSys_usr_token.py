@@ -814,7 +814,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 									#rotation=45, # no rotation for barh 
 									fontsize=7.0,
 									padding=1.5,
-									fmt='%.4f', #if norm_sp else '%.2f',
+									fmt='%.3f', #if norm_sp else '%.2f',
 									label_type='edge',
 								)
 
@@ -851,8 +851,9 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		if max(bar.datavalues) > xmax:
 			xmax = max(bar.datavalues)
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
-	
-	ax.set_xlim(right=xmax+3.0, auto=True)
+	l, r = ax.get_xlim()
+	print(l, r)
+	ax.set_xlim(right=xmax+5.0, auto=True)
 	"""
 	for c in ax.containers:
 		print(f">> container: {c}")
