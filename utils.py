@@ -136,6 +136,7 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	#tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
 	#tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
 
+	"""
 	with open(f"temp_{user_idx}_raw_dict_.json", "w") as fw:
 		json.dump(df_usr_tk.loc[user_idx , "user_token_interest" ], fw, indent=4, ensure_ascii=False)
 
@@ -146,6 +147,7 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	tk_dict = {k: v for k, v in tk_dict.items() if v!=0}
 	with open("temp_sorted_no0.json", "w") as fw:
 		json.dump(tk_dict, fw, indent=4, ensure_ascii=False)
+	"""
 	
 	tks_name = list(tk_dict.keys())
 	tks_value_all = list(tk_dict.values())
