@@ -809,18 +809,18 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 									fmt='%.3f', #if norm_sp else '%.2f',
 									label_type='edge',
 								)
-
+	ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
 	f, ax = plt.subplots()
 	lft = np.zeros(len(tks_name))
-	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet App", "Content HWs", "Content PTs", "Content App",]
+	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
 	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
 		print(i, tks_name, v)
-		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<15}w: {w_list[i]:<8}{[f'{val:.3f}' for val in v]}")
+		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
 		lft += v
 		hbars.append(hbar)
 		#print(hbar.datavalues)
@@ -835,32 +835,13 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.spines[['top', 'right']].set_visible(False)
 	ax.legend(loc="best", fontsize=8.0)
 	
-	xmax = 0.0
-
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
-		"""
-		print(bar.datavalues, max(bar.datavalues), xmax)
-		if max(bar.datavalues) > xmax:
-			xmax = max(bar.datavalues)
-		"""
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
-	#l, r = ax.get_xlim()
-	#print(l, r)
+	
 	ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
-	"""
-	for c in ax.containers:
-		print(f">> container: {c}")
-		ax.bar_label(	c, 
-									rotation=45, # no rotation for barh 
-									fontsize=5.0,
-									padding=2.5,
-									fmt='%.3f', #if norm_sp else '%.2f',
-									label_type='edge',
-								)
-	"""
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
 
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
