@@ -839,15 +839,13 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 	ax.invert_yaxis()  # labels read top-to-botto
 	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
-	ax.margins(1e-2, 5e-3)
+	#ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
 	ax.legend(loc="best", fontsize=8.0)
 
-	"""
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
-	"""
 	
 	"""
 	for c in ax.containers:
@@ -861,7 +859,6 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 								)
 	"""
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
-	#plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_sep_{sp_type}_SP.png" ))
 
 	plt.clf()
 	plt.close(f)
