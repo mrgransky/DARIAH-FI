@@ -119,7 +119,9 @@ def get_complete_BoWs(dframe,):
 
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(vb=tfidf_vec.vocabulary_, fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"))
+		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
+								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
+							)
 
 		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 	else:
@@ -130,7 +132,7 @@ def get_complete_BoWs(dframe,):
 	feat_names = tfidf_vec.get_feature_names_out()
 	#print(f"1st 100 features:\n{feat_names[:60]}\n")
 	
-	BOWs = tfidf_vec.vocabulary_ # dict mapping: key: term value: column positions(indices) of features.
+	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	# example:
 	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
 	#	   		example   is         simple     this	
@@ -186,7 +188,6 @@ def get_bag_of_words(dframe,):
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
 								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 							)
-
 		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
 	else:
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
@@ -464,14 +465,14 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	"""
+	
 	if userName.endswith("xenial"):
 		BoWs = get_bag_of_words(dframe=df_inp)
 	else:
 		BoWs = get_complete_BoWs(dframe=df_inp)
 	#return
-	"""
-	BoWs = get_bag_of_words(dframe=df_inp)
+	
+	#BoWs = get_bag_of_words(dframe=df_inp)
 	#BoWs = get_complete_BoWs(dframe=df_inp)
 	
 	try:
@@ -638,8 +639,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
 		
-		print(f"Found {len(users_names)} userIPs, {len(users_values_total)} total userIPs values & {len(users_values_separated)} separated userIPs values | token: {tkv}")
-
 		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=20, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
@@ -764,7 +763,6 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 
 	for _, usr in enumerate(topN_max_cosine_user_ip):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
-		print(f"Found {len(tokens_names)} tokens names, {len(tokens_values_total)} tokens values (total) & {len(tokens_values_separated)} tokens values (separated) for {usr}")
 		plot_tokens_by(	userIP=usr, 
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
@@ -785,7 +783,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
 
 	nTokens = len(tks_name)
-	print(f"<> Plotting top-{nTokens} / |ALL_TKs = {nTokens_orig}| tokens by user: {userIP}")
+	print(f"<> Plotting top-{nTokens} out of |ALL_TKs = {nTokens_orig}| tokens by user: {userIP}")
 
 	f, ax = plt.subplots()
 	ax.barh(tks_name, 
@@ -809,7 +807,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 									fmt='%.3f', #if norm_sp else '%.2f',
 									label_type='edge',
 								)
-	ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
+	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
@@ -839,7 +837,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
 	
-	ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
+	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
 
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
@@ -857,10 +855,10 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 
 	nUsers = len(usrs_name)
 
-	print(f"<> Plotting top-{nUsers} users / |ALL_USRs = {nUsers_orig}| for token: {token}")
+	print(f"Plotting top-{nUsers} users out of |ALL_USRs = {nUsers_orig} | token: {token}".center(110, "-"))
 
 	f, ax = plt.subplots()
-	ax.bar(usrs_name, usrs_value_all, color="#a6aa1122", width=0.4)
+	ax.bar(usrs_name, usrs_value_all, color="#a6111122", width=0.4)
 	#ax.set_xlabel('Tokens', rotation=90)
 	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
@@ -872,20 +870,21 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 		ax.bar_label(	container, 
 									rotation=0, 
 									fontsize=6.5,
+									padding=1.5,
 									fmt='%.3f',# if norm_sp else '%.2f', 
 									label_type='edge',
 									)
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
-
+	print(f"Separated Values".center(100, " "))
 	f, ax = plt.subplots()
 	btn = np.zeros(len(usrs_name))
-	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet App", "Content HWs", "Content PTs", "Content App",]
+	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
 	vbars = list()
 	for i, v in enumerate( usrs_value_separated ):
 		print(i, usrs_name, v)
-		vbar = ax.bar(usrs_name, v, color=clrs[i], width=0.4, bottom=btn, edgecolor='w', lw=0.5, label=f"{qcol_list[i]:<25}{[f'{val:.3f}' for val in v]}")
+		vbar = ax.bar(usrs_name, v, color=clrs[i], width=0.4, bottom=btn, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
 		btn += v
 		vbars.append(vbar)
 	

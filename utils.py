@@ -170,7 +170,8 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 		#print(oneTK_separated_vals)
 		tks_value_separated.append(oneTK_separated_vals)
 		#print("-"*80)
-	print(len(tks_name), len(tks_value_all), len(tks_value_separated), len(tks_value_separated[0]))
+	#print(len(tks_name), len(tks_value_all), len(tks_value_separated), len(tks_value_separated[0]))
+	print(f"Found {len(tks_name)} tokens names, {len(tks_value_all)} tokens values (total) & {len(tks_value_separated)} tokens values (separated) | {user}")
 	return tks_name, tks_value_all, tks_value_separated
 
 def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
@@ -190,13 +191,15 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 		oneUSR_separated_vals = list()
 		for usr in usrs_name:
 			user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == usr].tolist()[0])
+			#print(f"tk: {token:<15}{usr:<10}@idx: {user_idx:<10}{col:<20}{df_usr_tk.loc[user_idx , col].get(token)}")
 			oneUSR_separated_vals.append( df_usr_tk.loc[user_idx , col].get(token) )
 		#print(oneUSR_separated_vals)
 		usrs_value_separated.append(oneUSR_separated_vals)
+		#print("#"*100)
 		#print("-"*80)
-	print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
-
-	return usrs_name[::-1], usrs_value_all[::-1], usrs_value_separated
+	#print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
+	print(f"Found {len(usrs_name)} userIPs, {len(usrs_value_all)} all userIPs values & {len(usrs_value_separated)} separated userIPs values | token: {token}")
+	return usrs_name[::-1], usrs_value_all[::-1], usrs_value_separated#[::-1]
 
 def get_filename_prefix(dfname):
 	fprefix = "_".join(dfname.split("/")[-1].split(".")[:-2]) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
