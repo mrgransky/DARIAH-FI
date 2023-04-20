@@ -828,7 +828,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
 		print(i, tks_name, v)
-		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.5, label=f"{qcol_list[i]:<25}{[f'{val:.3f}' for val in v]}")
+		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<25}{[f'{val:.3f}' for val in v]}")
 		lft += v
 		hbars.append(hbar)
 		#print(hbar.datavalues)
@@ -839,10 +839,12 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 	ax.invert_yaxis()  # labels read top-to-botto
 	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
-	#ax.margins(1e-2, 5e-3)
+	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
 	ax.legend(loc="best", fontsize=8.0)
-
+	ax.set_xlim(auto=True)
+	ax.set_ylim(auto=True)
+	
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
 		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
