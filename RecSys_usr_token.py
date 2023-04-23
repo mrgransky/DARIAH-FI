@@ -1,14 +1,16 @@
 from utils import *
 from tokenizer_utils import *
 
-parser = argparse.ArgumentParser(description='National Library of Finland (NLF) RecSys')
+parser = argparse.ArgumentParser(	description='User-Item Recommendation system developed based on National Library of Finland (NLF) dataset', 
+																	prog='RecSys USER-TOKEN', 
+																	epilog='Developed by Farid Alijani',
+																)
+
 parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
-parser.add_argument('--qusr', default="ip69", type=str)
-parser.add_argument('--qtip', default="Kristiinan Sanomat_77 A_1", type=str) # smallest
 parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
-parser.add_argument('--lmMethod', default="stanza", type=str) # smallest
-parser.add_argument('--normSP', default=False, type=bool) # smallest
-parser.add_argument('--topTKs', default=5, type=int) # smallest
+parser.add_argument('--lmMethod', default="stanza", type=str)
+parser.add_argument('--normSP', default=False, type=bool)
+parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
@@ -130,8 +132,6 @@ def get_complete_BoWs(dframe,):
 	#return
 
 	feat_names = tfidf_vec.get_feature_names_out()
-	#print(f"1st 100 features:\n{feat_names[:60]}\n")
-	
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	# example:
 	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
@@ -1190,7 +1190,7 @@ def practice(topK=5):
 	print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 
 if __name__ == '__main__':
-	os.system("clear")
+	#os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
 	main()
 	#practice()
