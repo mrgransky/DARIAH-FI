@@ -3,9 +3,8 @@
 #SBATCH --account=project_2004072
 #SBATCH -J nikeX_stanzaTK_full_bow
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:v100:1
-#SBATCH --mem=381G
+#SBATCH --partition=hugemem
+#SBATCH --mem-per-cpu=760G
 #SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -16,6 +15,10 @@
 # # # # # # SBATCH --mem=8G # fatal: --mem, --mem-per-cpu, and --mem-per-gpu are mutually exclusive
 # # # # # # SBATCH --partition=hugemem
 # # # # # # SBATCH --mem-per-cpu=680G
+
+# # # # # # SBATCH --partition=gpu
+# # # # # # SBATCH --gres=gpu:v100:1
+# # # # # # SBATCH --mem=360G
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
