@@ -87,7 +87,7 @@ def stanza_lemmatizer(docs):
 	#print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
 	all_ = stanza_multi_pipeline(docs)
 	#lm = [ word.lemma.lower() for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
-	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
+	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
 
 	#print( list( set( lm ) ) )
 	#print("#"*150)
@@ -100,12 +100,13 @@ def trankit_lemmatizer(docs):
 
 	# treat all as document
 	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
+
 	if not docs:
 		return
 	#print(f'preprocessed: >>{docs}<<', end='\t')
 
 	all_dict = p(docs)
-	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+|\b[A-Za-z][\s]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
+	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 	#lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
 
 	#print( list( set( lm ) ) )
@@ -119,8 +120,7 @@ def nltk_lemmatizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words
 
 	sentences = sentence.lower()
 	sentences = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', sentences)
-	sentences = re.sub(r"\W+|_"," ", sentences) # replace special characters with space
-	#sentences = re.sub("\s+", " ", sentences)
+	sentences = re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', sentences)
 	sentences = re.sub("\s+", " ", sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
 
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
