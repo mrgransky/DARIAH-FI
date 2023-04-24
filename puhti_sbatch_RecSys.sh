@@ -3,12 +3,16 @@
 #SBATCH --account=project_2004072
 #SBATCH -J nikeX_stanzaTK
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
-#SBATCH --partition=small
-#SBATCH --mem-per-cpu=24G
-#SBATCH --time=02-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
+#SBATCH --time=02-23:59:59
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:v100:1
+#SBATCH --mem=22G
+
+# # # # # # SBATCH --partition=small
+# # # # # # SBATCH --mem-per-cpu=24G
 
 # # # # # # SBATCH --array=0-69
 # # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
@@ -16,9 +20,6 @@
 # # # # # # SBATCH --partition=hugemem
 # # # # # # SBATCH --mem-per-cpu=680G
 
-# # # # # # SBATCH --partition=gpu
-# # # # # # SBATCH --gres=gpu:v100:1
-# # # # # # SBATCH --mem=360G
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
