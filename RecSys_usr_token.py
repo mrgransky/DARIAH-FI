@@ -465,14 +465,14 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print_df_detail(df=df_inp, fname=__file__)
 	#return
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	
+	"""
 	if userName.endswith("xenial"):
 		BoWs = get_bag_of_words(dframe=df_inp)
 	else:
 		BoWs = get_complete_BoWs(dframe=df_inp)
 	#return
-	
-	#BoWs = get_bag_of_words(dframe=df_inp)
+	"""
+	BoWs = get_bag_of_words(dframe=df_inp)
 	#BoWs = get_complete_BoWs(dframe=df_inp)
 	
 	try:
