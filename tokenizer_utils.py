@@ -79,7 +79,7 @@ def stanza_lemmatizer(docs):
 	if not docs:
 		return
 	# treat all as document
-	docs = re.sub(r'["]|[+]|[*]|\s+', ' ', docs ).strip()
+	docs = re.sub(r'["]|[+]|[*]|”|“|\s+|\d', ' ', docs ).strip()
 	#print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
 		return
@@ -99,7 +99,7 @@ def trankit_lemmatizer(docs):
 		return
 
 	# treat all as document
-	docs = re.sub(r'[+]|[*]|\s+', ' ', docs ).strip()
+	docs = re.sub(r'["]|[+]|[*]|”|“|\s+|\d', ' ', docs ).strip()
 
 	if not docs:
 		return
@@ -121,7 +121,7 @@ def nltk_lemmatizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words
 	sentences = sentence.lower()
 	sentences = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', sentences)
 	sentences = re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', sentences)
-	sentences = re.sub("\s+", " ", sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
+	sentences = re.sub(r'["]|[+]|[*]|”|“|\s+|\d', ' ', sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
 
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
 	tokens = tokenizer.tokenize(sentences)
