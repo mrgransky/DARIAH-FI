@@ -12,9 +12,9 @@ from stanza.pipeline.multilingual import MultilingualPipeline
 from stanza.pipeline.core import DownloadMethod
 
 lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
-lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse,ner"},
-                "ru": {"processors": "tokenize,lemma,pos,depparse,ner"},
-                "sv": {"processors": "tokenize,lemma,pos,depparse,ner"},
+lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
+                "ru": {"processors": "tokenize,lemma,pos,depparse"},
+                "sv": {"processors": "tokenize,lemma,pos,depparse"},
                 "fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
 												"package": 		'ftb',
 											},
@@ -96,21 +96,21 @@ def stanza_lemmatizer(docs):
 	return list( set( lm ) )
 
 def trankit_lemmatizer(docs):
-	print(f'Raw inp ({len(docs)}): >>{docs}<<', end='\t')
+	#print(f'Raw inp ({len(docs)}): >>{docs}<<', end='\t')
 	if not docs:
 		return
 
 	# treat all as document
 	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
 	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“]', ' ', docs ).strip()
-	print(f'preprocessed: {len(docs)} >>{docs}<<')
+	#print(f'preprocessed: {len(docs)} >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
 		return
 
 	all_dict = p(docs)
 	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ] 
 
-	print( list( set( lm ) ) )
+	#print( list( set( lm ) ) )
 	return list( set( lm ) )
 
 def nltk_lemmatizer(sentence):	
