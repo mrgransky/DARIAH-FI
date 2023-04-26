@@ -97,8 +97,7 @@ def get_complete_BoWs(dframe,):
 					#print(f"<> {subitem}")
 					raw_docs_list.append(subitem)
 	"""
-	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if re.search(r"\S", subitem) ]
-
+	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021

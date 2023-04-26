@@ -15,7 +15,9 @@ lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
 lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse,ner"},
                 "ru": {"processors": "tokenize,lemma,pos,depparse,ner"},
                 "sv": {"processors": "tokenize,lemma,pos,depparse,ner"},
-                "fi": {"processors": "tokenize,lemma,pos,depparse,ner"},
+                "fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
+												"package": 		'ftb',
+											},
                 }
 stanza_multi_pipeline = MultilingualPipeline(lang_id_config=lang_id_config, 
                                use_gpu=True,
@@ -23,7 +25,6 @@ stanza_multi_pipeline = MultilingualPipeline(lang_id_config=lang_id_config,
                                download_method=DownloadMethod.REUSE_RESOURCES,
                                )
 
-#p = Pipeline('auto', embedding='xlm-roberta-large')
 p = Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 p.add('swedish')
 p.add('russian')
@@ -79,15 +80,16 @@ def stanza_lemmatizer(docs):
 	if not docs:
 		return
 	# treat all as document
-	docs = re.sub(r'["]|[+]|[*]|”|“|\s+|[~]', ' ', docs ).strip()
+	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
+	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“]', ' ', docs ).strip()
+
 	print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
 		return
 
 	#print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
 	all_ = stanza_multi_pipeline(docs)
-	lm = [ word.lemma.lower() for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
-	#lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', word.lemma ) ) > 2 and word.pos not in useless_upos_tags ) ]
+	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', word.lemma ) ) > 2 and word.upos not in useless_upos_tags and word.lemma.lower() not in UNIQUE_STOPWORDS ) ]
 
 	print( list( set( lm ) ) )
 	print("#"*150)
@@ -99,19 +101,19 @@ def trankit_lemmatizer(docs):
 		return
 
 	# treat all as document
-	docs = re.sub(r'["]|[+]|[*]|”|“|\s+|[~]', ' ', docs ).strip()
+	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
+	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“]', ' ', docs ).strip()
 	print(f'preprocessed: {len(docs)} >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
 		return
 
 	all_dict = p(docs)
-	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
-	#lm = [ re.sub('#|_', '', tk.get("lemma").lower()) for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'[A-Za-z][.][\s]+|[A-Za-z][.]+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags ) ] 
+	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ] 
 
 	print( list( set( lm ) ) )
 	return list( set( lm ) )
 
-def nltk_lemmatizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words=200, ):	
+def nltk_lemmatizer(sentence):	
 	print(f'Raw inp ({len(sentence)}): >>{sentence}<<', end='\t')
 	if not sentence:
 		return
@@ -121,13 +123,14 @@ def nltk_lemmatizer(sentence, stopwords=UNIQUE_STOPWORDS, min_words=4, max_words
 	sentences = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', sentences)
 	sentences = re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', sentences)
 	sentences = re.sub(r'["]|[+]|[*]|”|“|\s+|\d', ' ', sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
-	print(f'preprocessed: {len(sentences)} >>{sentences}<<')
+	print(f'preprocessed: {len(sentences)} >>{sentences}<<', end='\t')
 
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
 	tokens = tokenizer.tokenize(sentences)
 
-	#filtered_tokens = [w for w in tokens if not w in stopwords]
-	filtered_tokens = [w for w in tokens if not w in stopwords and len(w) > 1 and not w.isnumeric() ]
+	filtered_tokens = [w for w in tokens if not w in UNIQUE_STOPWORDS and len(w) > 1 and not w.isnumeric() ]
 
 	lematized_tokens = [wnl.lemmatize(w, t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w, t in nltk.pos_tag(filtered_tokens)]
-	return lematized_tokens
+	print( list( set( lematized_tokens ) ) )
+
+	return list( set( lematized_tokens ) )
