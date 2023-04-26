@@ -638,7 +638,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
 		
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=20, norm_sp=normalize_sp_mtrx )
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=12, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
@@ -834,7 +834,12 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
-		ax.bar_label(bar, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=6.0)
+		ax.bar_label(	container=bar, 
+									labels=filtered_lbls, 
+									label_type='center', 
+									rotation=0.0, 
+									fontsize=6.0,
+								)
 	
 	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
 
@@ -876,6 +881,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
+
 	print(f"Separated Values".center(100, " "))
 	f, ax = plt.subplots()
 	btn = np.zeros(len(usrs_name))
@@ -896,8 +902,13 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	ax.legend(loc="best", fontsize=8.0)
 
 	for b in vbars:
-		filtered_lbls = [f"{v:.1f}" if v>=1.0 else "" for v in b.datavalues]
-		ax.bar_label(b, labels=filtered_lbls, label_type='center', rotation=0.0, fontsize=8.0)
+		filtered_lbls = [f"{v:.1f}" if v>=5.0 else "" for v in b.datavalues]
+		ax.bar_label(	b, 
+									labels=filtered_lbls, 
+									label_type='center', 
+									rotation=0.0, 
+									fontsize=7.0,
+								)
 
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_separated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()

@@ -187,17 +187,17 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 	
 	usrs_value_separated = list()
 	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
-		#print(col)
 		oneUSR_separated_vals = list()
 		for usr in usrs_name:
 			user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == usr].tolist()[0])
 			#print(f"tk: {token:<15}{usr:<10}@idx: {user_idx:<10}{col:<20}{df_usr_tk.loc[user_idx , col].get(token)}")
 			oneUSR_separated_vals.append( df_usr_tk.loc[user_idx , col].get(token) )
 		#print(oneUSR_separated_vals)
-		usrs_value_separated.append(oneUSR_separated_vals)
+		usrs_value_separated.append(oneUSR_separated_vals[::-1])
 		#print("#"*100)
-		#print("-"*80)
-	#print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
+	#print("-"*80)
+	#print(usrs_value_separated)
+	print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
 	print(f"Found {len(usrs_name)} userIPs, {len(usrs_value_all)} all userIPs values & {len(usrs_value_separated)} separated userIPs values | token: {token}")
 	return usrs_name[::-1], usrs_value_all[::-1], usrs_value_separated#[::-1]
 
