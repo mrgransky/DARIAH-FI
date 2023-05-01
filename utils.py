@@ -130,11 +130,13 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 
 	user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == user].tolist()[0])
 
-	print(f"\n\n>> user_idx: {user_idx} - ")
+	#print(f"\n\n>> user_idx: {user_idx} - ")
+	
 	#tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
 	#print(tk_indeces_sorted_no_0[-50:])
 	#tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
 	#tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
+	
 	tk_dict = dict( sorted( df_usr_tk.loc[user_idx , "user_token_interest" ].items(), key=lambda x:x[1], reverse=True ) )
 	tk_dict = {k: v for k, v in tk_dict.items() if v!=0}
 
@@ -152,12 +154,12 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	tks_name = list(tk_dict.keys())
 	tks_value_all = list(tk_dict.values())
 	
-	print(tks_name[:50])
-	print(tks_value_all[:50])
+	#print(tks_name[:50])
+	#print(tks_value_all[:50])
 
 	assert len(tks_name) == len(tks_value_all), f"found {len(tks_name)} tokens names & {len(tks_value_all)} tokens values"
 
-	print(f"Retrieving {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(100, ' '))
+	print(f"Retrieving all {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(120, '-'))
 
 	tks_value_separated = list()
 	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
@@ -183,7 +185,7 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 
 	usrs_value_all = matrix[usr_indeces_sorted_no_0, tkIdx]
 	usrs_name = [df_usr_tk.loc[idx, 'user_ip'] for idx in usr_indeces_sorted_no_0 ]
-	print(f"Retrieving {len(usrs_name)} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(100, ' '))
+	print(f"Retrieving all {len(usrs_name)} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(120, '-'))
 	
 	usrs_value_separated = list()
 	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
@@ -197,7 +199,7 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 		#print("#"*100)
 	#print("-"*80)
 	#print(usrs_value_separated)
-	print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
+	#print(len(usrs_name), len(usrs_value_all), len(usrs_value_separated), len(usrs_value_separated[0]))
 	print(f"Found {len(usrs_name)} userIPs, {len(usrs_value_all)} all userIPs values & {len(usrs_value_separated)} separated userIPs values | token: {token}")
 	return usrs_name[::-1], usrs_value_all[::-1], usrs_value_separated#[::-1]
 

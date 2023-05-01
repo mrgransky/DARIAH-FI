@@ -157,6 +157,7 @@ def get_bag_of_words(dframe,):
 		users_list.append(n)
 		lq = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
 		ltot = lq
+		print(n, ltot)
 		raw_texts_list.append( ltot )
 
 	print(len(users_list), len(raw_texts_list),)
@@ -556,13 +557,29 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
+	print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
+	for iTK, vTK in enumerate(query_phrase_tk):
+		if BoWs.get(vTK):
+			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
+			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=25, norm_sp=normalize_sp_mtrx )
+			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+
+
+
+
+
+
+
+
+
+
 	cos_sim = get_cosine_similarity(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	"""
+	
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
 				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
 			)
-	"""
+	
 	if np.all(cos_sim.flatten()==0.0):
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
@@ -570,7 +587,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	plot_tokens_by_max(cos_sim, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	#return
 	nUsers, nItems = sp_mat_rf.shape
-	print(f"Getting avgRecSysVec (1 x nItems) | Users: {nUsers} vs. Items: {nItems}".center(110, "-"))
+	print(f"Getting avgRecSysVec (1 x nItems) |nUsers={nUsers}|, |nItems={nItems}|".center(120, "-"))
 	#print("#"*120)
 	#cos = np.random.rand(nUsers).reshape(1, -1)
 	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
@@ -586,55 +603,82 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	st_t = time.time()
 	for iUser in range(nUsers):
 		userInterest = sp_mat_rf.toarray()[iUser, :]
-		"""
-		print(f"user: {iUser} | {df_usr_tk.loc[iUser, 'user_ip']}".center(100, " "))
+		print(f"iUSR: {iUser}\t\t{df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
-					f"(min, max_@(idx), sum): ({userInterest.min()}, {userInterest.max():.2f}_@(idx: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
+					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
-		
+			
 		print(f"avgrec (previous): {avgrec.shape} "
-					f"(min, max_@(idx), sum): ({avgrec.min()}, {avgrec.max():.2f}_@(idx: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
+					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		"""
+			
 		#userInterest = userInterest / np.linalg.norm(userInterest)
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
-		"""
+			
 		print(f"<> userInterest(norm): {userInterest.shape} " 
-					f"(min, max_@(idx), sum): ({userInterest.min()}, {userInterest.max():.2f}_@(idx: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
+					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
 		print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
-		"""
+			
 		avgrec = avgrec + (cos_sim[0, iUser] * userInterest)
-		"""
+			
 		print(f"avgrec (current): {avgrec.shape} "
-					f"(min, max_@(idx), sum): ({avgrec.min()}, {avgrec.max():.2f}_@(idx: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
+					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		print("-"*110)
-		"""
+		print("-"*150)
+		
 	avgrec = avgrec / np.sum(cos_sim)
 	
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)}\t"
-				f"(min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})")
+				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})")
 	
+
+	f, ax = plt.subplots()
+	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
+							y=avgrec.flatten(), 
+							facecolor="k",
+							#s=scales,
+							edgecolors='w',
+							#alpha=alphas,
+							marker=".",
+						)
+	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK: {np.argmax(avgrec)})")
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+
+
+	all_recommended_tks_idx = avgrec.flatten().argsort()
+	all_rec_sorted = np.sort(avgrec.flatten())
+	print(f">> idx: {all_recommended_tks_idx[-15:]}")
+	print(f">> sorted_recsys: {all_rec_sorted[-15:]}")
+
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
-	print(f"ALL (15): {len(all_recommended_tks)} : {all_recommended_tks[-15:]}")
+	
+	print(f"TOP-15: (all: {len(all_recommended_tks)}) : {all_recommended_tks[-15:]}")
 	
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
 	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
-	print(f"-"*100)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
+	print(f"DONE".center(120, "-"))
 	#return
 
-	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(100, "-"))
+
+
+
+
+
+
+	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
 		
@@ -766,7 +810,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
-										topTKs=15,
+										topTKs=20,
 										norm_sp=norm_sp,
 									)
 
@@ -782,12 +826,11 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
 
 	nTokens = len(tks_name)
-	print(f"<> Plotting top-{nTokens} out of |ALL_TKs = {nTokens_orig}| tokens by user: {userIP}")
+	print(f"Plotting top-{nTokens} token(s) out of |ALL_TKs = {nTokens_orig} | user: {userIP}".center(110, " "))
 
 	f, ax = plt.subplots()
 	ax.barh(tks_name, 
-					tks_value_all, 
-					#color=clrs,
+					tks_value_all,
 					color="#0000ff",
 					height=0.35,
 				)
@@ -816,7 +859,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
 	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
-		print(i, tks_name, v)
+		#print(i, tks_name, v)
 		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
 		lft += v
 		hbars.append(hbar)
@@ -830,7 +873,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc="best", fontsize=8.0)
+	ax.legend(loc='lower right', fontsize=(120.0/topTKs))
 	
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=0.8 else "" for v in bar.datavalues]
@@ -859,10 +902,10 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 
 	nUsers = len(usrs_name)
 
-	print(f"Plotting top-{nUsers} users out of |ALL_USRs = {nUsers_orig} | token: {token}".center(110, "-"))
+	print(f"Plotting top-{nUsers} users out of |ALL_USRs = {nUsers_orig} | token: {token}".center(110, " "))
 
 	f, ax = plt.subplots()
-	ax.bar(usrs_name, usrs_value_all, color="#a6111122", width=0.4)
+	ax.bar(usrs_name, usrs_value_all, color="#a6111122", width=0.58)
 	#ax.set_xlabel('Tokens', rotation=90)
 	ax.tick_params(axis='x', labelrotation=90, labelsize=8.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=8.0)
@@ -882,14 +925,14 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	plt.clf()
 	plt.close(f)
 
-	print(f"Separated Values".center(100, " "))
+	#print(f"Separated Values".center(100, " "))
 	f, ax = plt.subplots()
 	btn = np.zeros(len(usrs_name))
 	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
 	vbars = list()
 	for i, v in enumerate( usrs_value_separated ):
-		print(i, usrs_name, v)
-		vbar = ax.bar(usrs_name, v, color=clrs[i], width=0.4, bottom=btn, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
+		#print(i, usrs_name, v)
+		vbar = ax.bar(usrs_name, v, color=clrs[i], width=0.58, bottom=btn, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
 		btn += v
 		vbars.append(vbar)
 	
@@ -899,7 +942,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	ax.set_title(f'Top-{nUsers} User(s) / |ALL_USRs = {nUsers_orig}| for token: {token}', fontsize=11)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc="best", fontsize=8.0)
+	ax.legend(loc="upper right", fontsize=(120.0/topUSRs) )
 
 	for b in vbars:
 		filtered_lbls = [f"{v:.1f}" if v>=5.0 else "" for v in b.datavalues]

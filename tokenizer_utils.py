@@ -81,7 +81,7 @@ def stanza_lemmatizer(docs):
 		return
 	# treat all as document
 	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
-	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“]', ' ', docs ).strip()
+	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“|:]', ' ', docs ).strip()
 
 	#print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
@@ -102,7 +102,7 @@ def trankit_lemmatizer(docs):
 
 	# treat all as document
 	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
-	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“]', ' ', docs ).strip()
+	docs = re.sub(r'[+|*|"|^|~|.|(|)|”|“|:]', ' ', docs ).strip()
 	#print(f'preprocessed: {len(docs)} >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
 		return
@@ -125,12 +125,12 @@ def nltk_lemmatizer(sentence):
 	sentences = re.sub(r'["]|[+]|[*]|”|“|\s+|\d', ' ', sentences).strip() # strip() removes leading (spaces at the beginning) & trailing (spaces at the end) characters
 	print(f'preprocessed: {len(sentences)} >>{sentences}<<', end='\t')
 
-	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')	
+	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 	tokens = tokenizer.tokenize(sentences)
 
 	filtered_tokens = [w for w in tokens if not w in UNIQUE_STOPWORDS and len(w) > 1 and not w.isnumeric() ]
-
-	lematized_tokens = [wnl.lemmatize(w, t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w, t in nltk.pos_tag(filtered_tokens)]
+	# nltk.pos_tag: cheatsheet: pg2: https://computingeverywhere.soc.northwestern.edu/wp-content/uploads/2017/07/Text-Analysis-with-NLTK-Cheatsheet.pdf
+	lematized_tokens = [wnl.lemmatize(w, t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w, t in nltk.pos_tag(filtered_tokens)] 
 	print( list( set( lematized_tokens ) ) )
 
 	return list( set( lematized_tokens ) )
