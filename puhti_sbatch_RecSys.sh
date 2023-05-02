@@ -7,11 +7,11 @@
 #SBATCH --mail-type=ALL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=5
+#SBATCH --cpus-per-task=2
 #SBATCH --time=02-23:59:59
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=22G
+#SBATCH --mem=32G
 
 # # # # # # SBATCH --partition=small
 # # # # # # SBATCH --mem-per-cpu=24G
