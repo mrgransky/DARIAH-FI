@@ -952,7 +952,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 									rotation=0.0, 
 									fontsize=7.0,
 								)
-
+	ax.set_ylim(right=ax.get_ylim()[1]+1.0, auto=True)
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_separated_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
