@@ -832,7 +832,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.barh(tks_name, 
 					tks_value_all,
 					color="#0000ff",
-					height=0.35,
+					height=0.5,
 				)
 	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
@@ -860,7 +860,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
 		#print(i, tks_name, v)
-		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.4, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
+		hbar = ax.barh(tks_name, v, color=clrs[i], height=0.5, left=lft, edgecolor='w', lw=0.4, label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}")
 		lft += v
 		hbars.append(hbar)
 		#print(hbar.datavalues)
