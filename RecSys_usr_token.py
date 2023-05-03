@@ -257,7 +257,7 @@ def get_selected_content_vb(dframe, qcol, vb):
 	# tokenize: [cnt1, cnt2, …, cntN] => [[tk1, …], [tk1, …], ..., [tk1, …]]
 	
 	tokenized_content = list(filter(None, [tokenize_nwp_content(sentences=cnt) for cnt in dframe[qcol] if cnt and len(cnt)>0]))
-	print(len(tokenized_content))
+	#print(len(tokenized_content), tokenized_content is None)
 
 	"""
 	if tokenized_content:
