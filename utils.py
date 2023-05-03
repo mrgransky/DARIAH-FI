@@ -5,6 +5,7 @@ import urllib
 import requests
 import joblib
 import pickle
+import dill
 import itertools
 import re
 import json
@@ -641,10 +642,11 @@ def make_folder(folder_name="MUST_BE_RENAMED"):
 
 def save_pickle(pkl, fname=""):
 	dump_file_name = fname
-	print(f">> Saving {type(pkl)}\n{dump_file_name} using protocol: {pickle.HIGHEST_PROTOCOL}")
+	print(f">> Saving {type(pkl)}\n{dump_file_name}")
 
 	with open(dump_file_name , "wb" ) as f:
-		joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL)
+		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"{fsize_dump:.1f} MB".center(60, '-'))
@@ -660,7 +662,9 @@ def load_pickle(fpath):
 	print(f"\nfile: {fpath} exists, Loading...")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
-		pkl = joblib.load(f)
+		#pkl = joblib.load(f)
+		pkl = dill.load(f)
+
 	print(f"Elapsed_t: {time.time() - st_t:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
