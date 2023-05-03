@@ -353,7 +353,7 @@ def get_usr_tk_df(dframe, bow):
 		print(df_preprocessed[["user_ip", "nwp_content_ocr_text", "search_results_snippets"]].head(40))
 	print("-"*150)
 	"""
-	print(f"USER-TOKENS DF".center(100, " "))
+	print(f"USERs-TOKENs DataFrame".center(80, " "))
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
