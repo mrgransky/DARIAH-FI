@@ -259,8 +259,7 @@ def all_queries(file_="", ts=None):
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("<>"*80)
 
-	cols = list(df.columns)
-	print(len(cols), cols)
+	print(df.shape, list(df.columns))
 	
 	if args.saveDF:
 		save_(df, infile=file_, saving_path=dfs_path)
@@ -296,15 +295,8 @@ def run():
 	
 	print(f"\t\tCOMPLETED!")
 
-def run_all():
-	for q in range(70):
-		all_queries(file_=get_query_log(QUERY=q),)
-
 if __name__ == '__main__':
 	os.system('clear')
 	print(f">> Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 	run()
-	#rest_api()
-	#rest_api_sof()
-	#run_all()
 	print(f">> Done: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

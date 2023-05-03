@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 
 parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
-parser.add_argument('--lmMethod', default="stanza", type=str)
+parser.add_argument('--lmMethod', default="nltk", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
@@ -26,18 +26,18 @@ RES_DIR = make_result_dir(infile=args.inputDF)
 MODULE=60
 
 # list of all weights:
-weightQueryAppearance = 1.0 					# suggested by Jakko: 1.0
-weightSnippetHWAppearance = 0.25			# suggested by Jakko: 0.2
-weightSnippetAppearance = 0.2 				# suggested by Jakko: 0.2
-weightContentHWAppearance = 0.055			# suggested by Jakko: 0.05
-weightContentParsedAppearance = 0.005	# Did not consider initiially!
-weightContentAppearance = 0.05 				# suggested by Jakko: 0.05
+weightQueryAppearance = 1.0				# suggested by Jakko: 1.0
+weightSnippetHWAppearance = 0.4		# suggested by Jakko: 0.2
+weightSnippetAppearance = 0.2			# suggested by Jakko: 0.2
+weightContentHWAppearance = 0.1		# suggested by Jakko: 0.05
+weightContentPTAppearance = 0.005	# Did not consider initiially!
+weightContentAppearance = 0.05 		# suggested by Jakko: 0.05
 
 w_list = [weightQueryAppearance, 
 					weightSnippetHWAppearance,
 					weightSnippetAppearance,
 					weightContentHWAppearance,
-					weightContentParsedAppearance,
+					weightContentPTAppearance,
 					weightContentAppearance,
 				]
 
@@ -228,23 +228,23 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 		if updated_vocab.get(q_tk) is not None:
 			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
 
-	for sn_hw_tk in dframe.snippets_hw_tokens:
+	for sn_hw_tk in dframe.snippets_hw_token:
 		if updated_vocab.get(sn_hw_tk) is not None:
 			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
 		
-	for sn_tk in dframe.snippets_tokens:
+	for sn_tk in dframe.snippets_token:
 		if updated_vocab.get(sn_tk) is not None:
 			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
 		
-	for c_hw_tk in dframe.nwp_content_hw_tokens:
+	for c_hw_tk in dframe.nwp_content_hw_token:
 		if updated_vocab.get(c_hw_tk) is not None:
 			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
 		
-	for c_pt_tk in dframe.nwp_content_pt_tokens:
+	for c_pt_tk in dframe.nwp_content_pt_token:
 		if updated_vocab.get(c_pt_tk) is not None:
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
 		
-	for c_tk in dframe.nwp_content_tokens:
+	for c_tk in dframe.nwp_content_token:
 		if updated_vocab.get(c_tk) is not None:
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
 
@@ -302,6 +302,7 @@ def get_usr_tk_df(dframe, bow):
 	except:
 		print(f"Updating Original DF: {dframe.shape} with Tokenized texts".center(110, "-"))
 		df_preprocessed = dframe.copy()
+
 		print(f">> Analyzing query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed["search_query_phrase_tklm"] = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
@@ -344,30 +345,45 @@ def get_usr_tk_df(dframe, bow):
 	
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
-	#print(df_preprocessed.info())
-	#print(df_preprocessed.tail(60))
-	
-	print(f"USER-TOKENS DF".center(100, "-"))
+	print(df_preprocessed.info())
+	#print(list(df_preprocessed.columns))
+	#print("<>"*110)
+	"""
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(df_preprocessed[["user_ip", "nwp_content_ocr_text", "search_results_snippets"]].head(40))
+	print("-"*150)
+	"""
+	print(f"USER-TOKENS DF".center(100, " "))
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
 	search_results_snippets_tokens_list = list()
+	search_results_snippets_raw_texts_list = list()
 
 	nwp_content_pt_tokens_list = list()
 	nwp_content_hw_tokens_list = list()
 	nwp_content_tokens_list = list()
+	nwp_content_raw_texts_list = list()
+
 	
 	for n, g in df_preprocessed.groupby("user_ip"):
+		#print(n)
 		users_list.append(n)
 
 		search_query_phrase_tokens_list.append( [tk for tokens in g[g["search_query_phrase_tklm"].notnull()]["search_query_phrase_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		search_results_hw_snippets_tokens_list.append( [tk for tokens in g[g["search_results_hw_snippets_tklm"].notnull()]["search_results_hw_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		nwp_content_hw_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_hw_tklm"].notnull()]["nwp_content_ocr_text_hw_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-
+		
 		# comment for speedup:
 		search_results_snippets_tokens_list.append( [tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		nwp_content_tokens_list.append([tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		search_results_snippets_raw_texts_list.append( [ sent for sentences in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if sentences for sent in sentences if sent ] )
+	
+		#print( len( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() ) )
+		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
+		nwp_content_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] )
+		#print("#"*150)
 
 	# uncomment for speedup:
 	#nwp_content_tokens_list = [f"nwp_content_{i}" for i in range(len(users_list))]
@@ -380,6 +396,8 @@ def get_usr_tk_df(dframe, bow):
 				len(nwp_content_tokens_list),
 				len(nwp_content_pt_tokens_list),
 				len(nwp_content_hw_tokens_list),
+				len(nwp_content_raw_texts_list),
+				len(search_results_snippets_raw_texts_list),
 				)
 	#return
 
@@ -390,18 +408,22 @@ def get_usr_tk_df(dframe, bow):
 																				nwp_content_tokens_list, 
 																				nwp_content_pt_tokens_list, 
 																				nwp_content_hw_tokens_list,
+																				nwp_content_raw_texts_list,
+																				search_results_snippets_raw_texts_list,
 																			)
 																	),
 																columns =['user_ip', 
 																					'qu_tokens', 
-																					'snippets_hw_tokens', 
-																					'snippets_tokens', 
-																					'nwp_content_tokens', 
-																					'nwp_content_hw_tokens', 
-																					'nwp_content_pt_tokens',
+																					'snippets_hw_token', 
+																					'snippets_token', 
+																					'nwp_content_token',  
+																					'nwp_content_pt_token',
+																					'nwp_content_hw_token',
+																					'nwp_content_raw_text',
+																					'snippets_raw_text',
 																				]
 															)
-	#print(df_user_token[["user_ip", "qu_tokens", "snippets_tokens", "snippets_hw_tokens", "nwp_content_tokens", "nwp_content_hw_tokens", "nwp_content_pt_tokens"]].head(50))
+	#print(df_user_token[["user_ip", "qu_tokens", "snippets_token", "snippets_hw_token", "nwp_content_token", "nwp_content_pt_token", "nwp_content_hw_token"]].head(50))
 	#print("#"*100)
 	#return
 	
@@ -409,11 +431,11 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )
 	
 	df_user_token["usrInt_qu_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_sn_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_tokens", wg=weightSnippetHWAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_tokens", wg=weightSnippetAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_tokens", wg=weightContentHWAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_tokens", wg=weightContentParsedAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_tokens", wg=weightContentAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_sn_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
 	
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
@@ -462,8 +484,6 @@ def get_sparse_matrix(df):
 	return sparse_matrix
 
 def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
-	#print_df_detail(df=df_inp, fname=__file__)
-	#return
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	"""
 	if userName.endswith("xenial"):
@@ -1204,6 +1224,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	df_raw = load_df(infile=args.inputDF)
+	#print_df_detail(df=df_raw, fname=__file__)
 	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 	#return
 

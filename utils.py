@@ -4,6 +4,7 @@ import subprocess
 import urllib
 import requests
 import joblib
+import pickle
 import itertools
 import re
 import json
@@ -315,27 +316,21 @@ def print_df_detail(df, fname="unkonwn"):
 	"""
 	#print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
-	print(df[["user_ip",
-						"search_query_phrase", 
-						"search_results",
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(df[["user_ip",
+							"search_query_phrase", 
+							"search_results",
+							"search_referer",
 						]
-					].tail(30)
+					].head(20)
 				)
 
-	print(f"{len(list(df['search_results'][1][0].keys()))}\t",
+	print(f"|search results| = {len(list(df['search_results'][1][0].keys()))}\t",
 				f"{list(df['search_results'][1][0].keys())} ", 
 			)
-	print("<>"*90)
+	print("<>"*120)
 
 	print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
-	print("#"*150)
-
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
-		print(df[["user_ip", 
-							"search_referer",
-							]
-						].head(10))
-
 	print("#"*150)
 
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
@@ -646,10 +641,10 @@ def make_folder(folder_name="MUST_BE_RENAMED"):
 
 def save_pickle(pkl, fname=""):
 	dump_file_name = fname
-	print(f">> Saving {type(pkl)}\n{dump_file_name}")
+	print(f">> Saving {type(pkl)}\n{dump_file_name} using protocol: {pickle.HIGHEST_PROTOCOL}")
 
 	with open(dump_file_name , "wb" ) as f:
-		joblib.dump(pkl, f, compress='lz4',)
+		joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL)
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"{fsize_dump:.1f} MB".center(60, '-'))

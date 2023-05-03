@@ -325,8 +325,9 @@ def scrap_search_page(URL):
 		#print(r.status_code)
 
 		res = r.json()
-		#print(res.keys())
-		SEARCH_RESULTS = res.get("rows")
+		# a list of up to 20 results, each of which contains: 
+		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']
+		SEARCH_RESULTS = res.get("rows") 
 	except (requests.exceptions.Timeout,
 					requests.exceptions.ConnectionError, 
 					requests.exceptions.RequestException, 
