@@ -250,6 +250,35 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 
 	return updated_vocab
 
+def get_selected_content_vb(dframe, qcol, vb):
+	#updated_vb = dict.fromkeys(vb.keys(), [0, 0]) # (idx_cnt, no_occ), # (0, 25)
+	updated_vb = dict.fromkeys(vb.keys(), None) # (idx_cnt, no_occ), # (0, 25)
+	
+	# tokenize: [cnt1, cnt2, …, cntN] => [[tk1, …], [tk1, …], ..., [tk1, …]]
+	
+	tokenized_content = list(filter(None, [tokenize_nwp_content(sentences=cnt) for cnt in dframe[qcol] if cnt and len(cnt)>0]))
+	print(len(tokenized_content))
+
+	"""
+	if tokenized_content:
+		for k in updated_vb:
+			counters = list()
+			#print(k)
+			for cnt_i, cnt_v in enumerate( tokenized_content ):
+				#print(cnt_v.count(k))
+				counters.append( cnt_v.count(k) ) # [42, 6, 0, ...]
+			#print(counters)
+			updated_vb[k] = [np.argmax(counters), max(counters)]
+	"""
+	if tokenized_content:
+		list_of_dicts = [ Counter(l) for l in tokenized_content ]
+		for k in updated_vb:
+			i, m = max(enumerate(list_of_dicts), key=lambda d: d[1].get(k, 0))
+			if k in m:
+				updated_vb[k] = [i, list_of_dicts[i][k]]
+
+	return updated_vb
+
 def get_search_results_snippet_text(search_results_list):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in search_results_list if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
@@ -353,7 +382,7 @@ def get_usr_tk_df(dframe, bow):
 		print(df_preprocessed[["user_ip", "nwp_content_ocr_text", "search_results_snippets"]].head(40))
 	print("-"*150)
 	"""
-	print(f"USERs-TOKENs DataFrame".center(80, " "))
+	print(f"USERs-TOKENs DataFrame".center(110, " "))
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
@@ -376,13 +405,13 @@ def get_usr_tk_df(dframe, bow):
 		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		
 		# comment for speedup:
-		search_results_snippets_tokens_list.append( [tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		search_results_snippets_tokens_list.append( [ tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		search_results_snippets_raw_texts_list.append( [ sent for sentences in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if sentences for sent in sentences if sent ] )
 	
 		#print( len( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() ) )
 		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
 		nwp_content_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] )
+		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
 		#print("#"*150)
 
 	# uncomment for speedup:
@@ -436,7 +465,9 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
+	df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
 	
+
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
 	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
