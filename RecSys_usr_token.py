@@ -297,8 +297,9 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 
 	# tokenize: [[cnt1, cnt2, ...], [cnt1, cnt2, ...], [cnt1, cnt2, ...]] => [ [[tk1, …]], [[tk1, …]], [[tk1, …]] ]
 	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
-		user_selected_content_counter = 0
+		user_selected_content_counter = None
 		user_selected_content = None
+		user_selected_content_idx = None
 		
 		print(usr, type(content), len(content))
 		for sent_i, sent in enumerate(content):
@@ -311,10 +312,11 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 					print(f"bingoo: {tokenized_content.count(vTK)}".center(50, "#"))
 					user_selected_content_counter = tokenized_content.count(vTK)
 					user_selected_content = sent
+					user_selected_content_idx = sent_i
 
 			print("-"*70)
-		print(f"user_sel_cnt: {user_selected_content_counter}")
-		print(f"\nSelected content:")
+		print(f"\nuser: {usr} selected content (@idx: {user_selected_content_idx}) num_occurrence(s): {user_selected_content_counter}")
+		#print(f"\nSelected content:")
 		print(user_selected_content)
 		print("-"*60)
 
