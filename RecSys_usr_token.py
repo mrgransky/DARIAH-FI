@@ -157,7 +157,7 @@ def get_bag_of_words(dframe,):
 		users_list.append(n)
 		lq = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
 		ltot = lq
-		print(n, ltot)
+		#print(n, ltot)
 		raw_texts_list.append( ltot )
 
 	print(len(users_list), len(raw_texts_list),)
@@ -270,6 +270,7 @@ def get_selected_content_vb(dframe, qcol, vb):
 			#print(counters)
 			updated_vb[k] = [np.argmax(counters), max(counters)]
 	"""
+
 	if tokenized_content:
 		list_of_dicts = [ Counter(l) for l in tokenized_content ]
 		for k in updated_vb:
@@ -278,6 +279,56 @@ def get_selected_content_vb(dframe, qcol, vb):
 				updated_vb[k] = [i, list_of_dicts[i][k]]
 
 	return updated_vb
+
+def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
+	selected_contents = list()
+	#print(df_users_tokens.shape) # n_user x
+
+	N=3
+	if np.count_nonzero(cos_sim.flatten()) < N:
+		N = np.count_nonzero(cos_sim.flatten())
+	
+	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
+	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
+	topN_max_cosine_user_ip = df_users_tokens.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+	
+	df = df_users_tokens.iloc[topN_max_cosine_user_idx]
+	print(df.shape)
+
+	# tokenize: [[cnt1, cnt2, ...], [cnt1, cnt2, ...], [cnt1, cnt2, ...]] => [ [[tk1, …]], [[tk1, …]], [[tk1, …]] ]
+	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
+		user_selected_content_counter = 0
+		user_selected_content = None
+		
+		print(usr, type(content), len(content))
+		for sent_i, sent in enumerate(content):
+			tokenized_content = tokenize_nwp_content(sentences=sent)
+			print(f">> tokenizing {type(sent)} doc: {sent_i} => {type(tokenized_content)} | {len(tokenized_content)}")
+			#print(tokenized_content[:4])
+			for iTK, vTK in enumerate(recommended_tokens):
+				print(f"rectk: {iTK}: {vTK}")
+				if tokenized_content.count(vTK) > user_selected_content_counter:
+					print(f"bingoo: {tokenized_content.count(vTK)}".center(100, "-"))
+					user_selected_content_counter = tokenized_content.count(vTK)
+					user_selected_content = sent
+			print("#"*80)
+		print(f"user_sel_cnt: {user_selected_content_counter}")
+		print(f"\nSelected content:")
+		print(user_selected_content)
+		print("-"*60)
+
+		#print(cnt)
+
+	#tokenized_content = list(filter(None, [tokenize_nwp_content(sentences=cnt) for cnt in df_users_tokens["nwp_content_raw_text"] if cnt and len(cnt)>0]))
+
+	max_occurrence = 0.0
+
+		
+		
+
+
+
+	return selected_contents
 
 def get_search_results_snippet_text(search_results_list):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in search_results_list if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
@@ -395,7 +446,6 @@ def get_usr_tk_df(dframe, bow):
 	nwp_content_hw_tokens_list = list()
 	nwp_content_tokens_list = list()
 	nwp_content_raw_texts_list = list()
-
 	
 	for n, g in df_preprocessed.groupby("user_ip"):
 		#print(n)
@@ -454,9 +504,6 @@ def get_usr_tk_df(dframe, bow):
 																					'snippets_raw_text',
 																				]
 															)
-	#print(df_user_token[["user_ip", "qu_tokens", "snippets_token", "snippets_hw_token", "nwp_content_token", "nwp_content_pt_token", "nwp_content_hw_token"]].head(50))
-	#print("#"*100)
-	#return
 	
 	print(f">> Creating Implicit Feedback for user interests...")
 	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )
@@ -658,6 +705,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	st_t = time.time()
 	for iUser in range(nUsers):
 		userInterest = sp_mat_rf.toarray()[iUser, :]
+		"""
 		print(f"iUSR: {iUser}\t\t{df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
@@ -668,25 +716,25 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-			
+		"""
 		#userInterest = userInterest / np.linalg.norm(userInterest)
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
-			
+		"""
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
 		print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
-			
+		"""
 		avgrec = avgrec + (cos_sim[0, iUser] * userInterest)
-			
+		"""
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*150)
-		
+		"""
 	avgrec = avgrec / np.sum(cos_sim)
 	
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
@@ -724,10 +772,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	print(f"DONE".center(120, "-"))
+	print(f"DONE".center(120, " "))
 	#return
 
-
+	get_selected_content(cos_sim=cos_sim, recommended_tokens=topK_recommended_tokens, df_users_tokens=df_usr_tk)
 
 
 
@@ -782,13 +830,14 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 							marker=".",
 						)
 	
-	N=5
+	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
 	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
 	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
 	topN_max_cosine_user_ip = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+
 	ax.scatter(x=topN_max_cosine_user_idx, y=topN_max_cosine, facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
@@ -850,7 +899,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 				f"max(cosine) = {max_cosine:.3f} @ (userIdx: {max_cosine_user_idx} userIP: {max_cosine_user_ip})\n",
 			)
 	"""
-	N=5
+	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 
@@ -1034,7 +1083,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 							marker=".",
 						)
 	
-	N=5
+	N=3
 	if np.count_nonzero(usersInt) < N:
 		N = np.count_nonzero(usersInt)
 
