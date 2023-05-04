@@ -297,7 +297,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 
 	# tokenize: [[cnt1, cnt2, ...], [cnt1, cnt2, ...], [cnt1, cnt2, ...]] => [ [[tk1, …]], [[tk1, …]], [[tk1, …]] ]
 	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
-		user_selected_content_counter = None
+		user_selected_content_counter = 0
 		user_selected_content = None
 		user_selected_content_idx = None
 		
