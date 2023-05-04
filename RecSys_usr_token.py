@@ -374,7 +374,7 @@ def get_usr_tk_df(dframe, bow):
 	
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
-	print(df_preprocessed.info())
+	#print(df_preprocessed.info())
 	#print(list(df_preprocessed.columns))
 	#print("<>"*110)
 	"""
@@ -383,6 +383,8 @@ def get_usr_tk_df(dframe, bow):
 	print("-"*150)
 	"""
 	print(f"USERs-TOKENs DataFrame".center(110, " "))
+	st_t = time.time()
+
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
@@ -468,6 +470,7 @@ def get_usr_tk_df(dframe, bow):
 	
 	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
 	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
@@ -484,7 +487,7 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
-	#print(f"USER-TOKENS DF".center(100, "-"))
+	print(f"USERs-TOKENs DataFrame".center(110, " "))
 	return df_user_token
 
 def get_sparse_matrix(df):
