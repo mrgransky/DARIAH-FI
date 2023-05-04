@@ -301,7 +301,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		user_selected_content = None
 		user_selected_content_idx = None
 		
-		print(usr, type(content), len(content))
+		print(f"{usr} visisted {len(content)} document(s) {type(content)}, lets start analyzing each...")
 		for sent_i, sent in enumerate(content):
 			tokenized_content = tokenize_nwp_content(sentences=sent)
 			print(f"<> tokenized {type(sent)} document: (idx: {sent_i}) "
