@@ -303,15 +303,16 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		print(usr, type(content), len(content))
 		for sent_i, sent in enumerate(content):
 			tokenized_content = tokenize_nwp_content(sentences=sent)
-			print(f">> tokenizing {type(sent)} doc: {sent_i} => {type(tokenized_content)} | {len(tokenized_content)}")
+			print(f"<> tokenized {type(sent)} document: (idx: {sent_i})\t|{type(tokenized_content)} TOKENS| = {len(tokenized_content)}")
 			#print(tokenized_content[:4])
 			for iTK, vTK in enumerate(recommended_tokens):
 				print(f"rectk: {iTK}: {vTK}")
 				if tokenized_content.count(vTK) > user_selected_content_counter:
-					print(f"bingoo: {tokenized_content.count(vTK)}".center(100, "-"))
+					print(f"bingoo: {tokenized_content.count(vTK)}".center(50, "#"))
 					user_selected_content_counter = tokenized_content.count(vTK)
 					user_selected_content = sent
-			print("#"*80)
+
+			print("-"*70)
 		print(f"user_sel_cnt: {user_selected_content_counter}")
 		print(f"\nSelected content:")
 		print(user_selected_content)
