@@ -705,7 +705,7 @@ def load_df(infile=""):
 	st_t = time.time()
 	df_dict = joblib.load(fpath)
 	#print(list(df_dict.keys()))# dict:{key(nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log) : value (df)}
-	print(f"\t\tElapsed_t: {time.time() - st_t:.2f} s")
+	print(f"Elapsed_t: {time.time() - st_t:.2f} s".center(100, " "))
 	df = df_dict[list(df_dict.keys())[0]]
 	return df	
 

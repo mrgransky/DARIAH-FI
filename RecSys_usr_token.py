@@ -252,7 +252,7 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 
 def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0,0])
-	print(f"{dframe['user_ip']}\t{len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
+	print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
 	for ic, vc in enumerate( dframe[qcol] ): # nwp_content_raw_text: [cnt1, cnt2, …, cntN]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
 		for vTK in tokenize_nwp_content(sentences=vc): # [tk1, tk2, ..., tkN]
@@ -684,8 +684,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=25, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-
-
 	cos_sim = get_cosine_similarity(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
@@ -752,7 +750,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)}\t"
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})")
 	
-
 	f, ax = plt.subplots()
 	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
 							y=avgrec.flatten(), 
@@ -766,7 +763,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
-
 
 	all_recommended_tks_idx = avgrec.flatten().argsort()
 	all_rec_sorted = np.sort(avgrec.flatten())
@@ -787,9 +783,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#return
 
 	get_selected_content(cos_sim=cos_sim, recommended_tokens=topK_recommended_tokens, df_users_tokens=df_usr_tk)
-
-
-
 
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
