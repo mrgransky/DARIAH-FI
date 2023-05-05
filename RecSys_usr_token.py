@@ -293,15 +293,13 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	topN_max_cosine_user_ip = df_users_tokens.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
 	
 	df = df_users_tokens.iloc[topN_max_cosine_user_idx]
-	print(df.shape)
+	#print(df.shape)
 
 	# tokenize: [[cnt1, cnt2, ...], [cnt1, cnt2, ...], [cnt1, cnt2, ...]] => [ [[tk1, …]], [[tk1, …]], [[tk1, …]] ]
 	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
-		user_selected_content_counter = 0
-		user_selected_content = None
-		user_selected_content_idx = None
+		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
 		
-		print(f"{usr} visisted {len(content)} document(s) {type(content)}, lets start analyzing each...")
+		print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...\n")
 		for sent_i, sent in enumerate(content):
 			tokenized_content = tokenize_nwp_content(sentences=sent)
 			print(f"<> tokenized {type(sent)} document: (idx: {sent_i}) "
@@ -309,7 +307,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 					)
 			#print(tokenized_content[:4])
 			for iTK, vTK in enumerate(recommended_tokens):
-				print(f"rectk: {iTK}: {vTK}")
+				print(f"recommended token: @idx: {iTK}\t{vTK}")
 				if tokenized_content.count(vTK) > user_selected_content_counter:
 					print(f"bingoo: {tokenized_content.count(vTK)}".center(50, " "))
 					user_selected_content_counter = tokenized_content.count(vTK)
@@ -317,10 +315,10 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 					user_selected_content_idx = sent_i
 
 			print("-"*100)
-		print(f"\nuser: {usr} selected content (@idx: {user_selected_content_idx}) num_occurrence(s): {user_selected_content_counter}")
+		print(f"\n{usr} selected content @idx: {user_selected_content_idx} | num_occurrence(s): {user_selected_content_counter}")
 		#print(f"\nSelected content:")
 		print(user_selected_content)
-		print("-"*60)
+		print("+"*110)
 
 		#print(cnt)
 
