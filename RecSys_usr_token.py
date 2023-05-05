@@ -213,8 +213,8 @@ def get_bag_of_words(dframe,):
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
-	for tk in dframe[qcol]:
-		if updated_vb.get(tk) is not None:
+	for tk in dframe[qcol]: # [tk1, tk2, …]
+		if updated_vb.get(tk) is not None: # check if this token is available in BoWs
 			updated_vb[tk] = updated_vb.get(tk) + wg
 			#print(tk, wg, updated_vb[tk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
@@ -249,6 +249,25 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
 
 	return updated_vocab
+
+def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
+	updated_vb = dict.fromkeys(vb.keys(), [0,0])
+	print(f">> {len(dframe[qcol])} {type(dframe[qcol])} contents...")
+	for ic, vc in enumerate( dframe[qcol] ): # nwp_content_raw_text: [cnt1, cnt2, …, cntN]
+		new_boosts = dict.fromkeys(vb.keys(), 0.0)
+		for vTK in tokenize_nwp_content(sentences=vc): # [tk1, tk2, ..., tkN]
+			if vb.get(vTK) is not None:
+				new_boosts[vTK] = new_boosts[vTK] + wg
+		
+		new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
+		print(f">> content: {ic} new_boosts: {len(new_boosts)}" )
+		for k, v in new_boosts.items():
+			total_boost = v
+			prev_best_boost, prev_best_doc = updated_vb[k]
+			if total_boost > prev_best_boost:
+				updated_vb[k] = [total_boost, ic]
+
+	return updated_vb
 
 def get_selected_content_vb(dframe, qcol, vb):
 	#updated_vb = dict.fromkeys(vb.keys(), [0, 0]) # (idx_cnt, no_occ), # (0, 25)
@@ -325,11 +344,6 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	#tokenized_content = list(filter(None, [tokenize_nwp_content(sentences=cnt) for cnt in df_users_tokens["nwp_content_raw_text"] if cnt and len(cnt)>0]))
 
 	max_occurrence = 0.0
-
-		
-		
-
-
 
 	return selected_contents
 
@@ -519,6 +533,7 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
 	
 	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
+	df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_newspaper_content(x_df, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance), axis=1)
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
@@ -668,13 +683,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=25, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
-
-
-
-
-
-
-
 
 
 
