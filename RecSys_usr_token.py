@@ -255,18 +255,21 @@ def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 	print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
 	for ic, vc in enumerate( dframe[qcol] ): # nwp_content_raw_text: [cnt1, cnt2, …, cntN]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
-		print(len(tokenize_nwp_content(sentences=vc)), tokenize_nwp_content(sentences=vc) is None)
-		for vTK in tokenize_nwp_content(sentences=vc): # [tk1, tk2, ..., tkN]
-			if vb.get(vTK) is not None:
-				new_boosts[vTK] = new_boosts[vTK] + wg
+
+		tokenized_newspaper_content = tokenize_nwp_content(sentences=vc)
+
+		if tokenized_newspaper_content: # to ensure list is not empty!
+			for vTK in tokenized_newspaper_content: # [tk1, tk2, ..., tkN]
+				if vb.get(vTK) is not None:
+					new_boosts[vTK] = new_boosts[vTK] + wg		
 		
-		new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-		print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
-		for k, v in new_boosts.items():
-			total_boost = v
-			prev_best_boost, prev_best_doc = updated_vb[k]
-			if total_boost > prev_best_boost:
-				updated_vb[k] = [total_boost, ic]
+			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
+			print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
+			for k, v in new_boosts.items():
+				total_boost = v
+				prev_best_boost, prev_best_doc = updated_vb[k]
+				if total_boost > prev_best_boost:
+					updated_vb[k] = [total_boost, ic]
 
 	return updated_vb
 
