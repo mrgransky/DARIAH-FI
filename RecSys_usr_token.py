@@ -252,7 +252,7 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 
 def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0,0])
-	print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
+	#print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
 	for ic, vc in enumerate( dframe[qcol] ): # nwp_content_raw_text: [cnt1, cnt2, …, cntN]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
 
@@ -264,7 +264,7 @@ def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 					new_boosts[vTK] = new_boosts[vTK] + wg		
 		
 			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-			print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
+			#print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
 			for k, v in new_boosts.items():
 				total_boost = v
 				prev_best_boost, prev_best_doc = updated_vb[k]
