@@ -11,7 +11,7 @@
 #SBATCH --time=02-23:59:59
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=25G
+#SBATCH --mem=128G
 
 # # # # # # SBATCH --partition=small
 # # # # # # SBATCH --mem-per-cpu=24G

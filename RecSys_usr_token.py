@@ -255,6 +255,7 @@ def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 	#print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
 	for ic, vc in enumerate( dframe[qcol] ): # nwp_content_raw_text: [cnt1, cnt2, …, cntN]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
+		#print(type(vc), len(vc), vc)
 
 		tokenized_newspaper_content = tokenize_nwp_content(sentences=vc)
 
@@ -538,6 +539,8 @@ def get_usr_tk_df(dframe, bow):
 	
 	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
 	df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_newspaper_content(x_df, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance), axis=1)
+	#df_user_token["selected_content"] = get_newspaper_content(df_user_token, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance)
+	
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
