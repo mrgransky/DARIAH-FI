@@ -558,24 +558,32 @@ def get_usr_tk_df(dframe, bow):
 																					'snippets_raw_text',
 																				]
 															)
-	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+
+
 	print(f">> Creating Implicit Feedback for user interests...")
-	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )
-	
+	st_t = time.time()
+	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	df_user_token["usrInt_qu_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_sn_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	
 	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
 	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_newspaper_content(x_df, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance), axis=1)
+
+	print(f">> newspaper content text [lemmatization]: [cnt1, cnt2, ...] => [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]")
+	st_t = time.time()
 	df_user_token["nwp_content_lemmatized"] = df_user_token["nwp_content_raw_text"].map(lambda lst: [lemmatizer_methods.get(args.lmMethod)(cnt) for cnt in lst if cnt], na_action="ignore")
-	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+
+
+	print(f">> Get selected_content")
+	st_t = time.time()
 	df_user_token["selected_content"] = get_newspaper_content(df_user_token["nwp_content_lemmatized"].values.tolist(), vb=bow, wg=weightContentAppearance)
-	
-	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
