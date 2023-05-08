@@ -277,6 +277,7 @@ def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 
 	return updated_vb
 """
+
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
@@ -285,15 +286,16 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 
 	for ilm, vlm in enumerate( lemmatized_content ): # [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
-		print(type(vlm), len(vlm), vlm)
+		print(f"cnt: {ilm} contains: {len(vlm)} {type(vlm)} token(s)")
 
 		if vlm: # to ensure list is not empty!
-			for vTK in vlm: # [tk1, tk2, ..., tkN]
+			for iTK, vTK in enumerate( vlm ): # [tk1, tk2, ..., tkN]
+				print(f"tk@idx:{iTK} | {type(vTK)} | {len(vTK)}")
 				if vb.get(vTK) is not None:
 					new_boosts[vTK] = new_boosts[vTK] + wg		
 		
 			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-			#print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
+			print(f"\t\tcontent @idx: {ilm} new_boosts: {len(new_boosts)}" )
 			for k, v in new_boosts.items():
 				total_boost = v
 				prev_best_boost, prev_best_doc = updated_vb[k]
@@ -301,7 +303,6 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 					updated_vb[k] = [total_boost, ilm]
 
 	return updated_vb
-
 
 def get_selected_content_vb(dframe:pd.DataFrame, qcol:str, vb:Dict[str, int]):
 	#updated_vb = dict.fromkeys(vb.keys(), [0, 0]) # (idx_cnt, no_occ), # (0, 25)
@@ -579,7 +580,9 @@ def get_usr_tk_df(dframe, bow):
 
 	print(f">> Get selected_content")
 	st_t = time.time()
-	df_user_token["selected_content"] = get_newspaper_content(df_user_token["nwp_content_lemmatized"].values.tolist(), vb=bow, wg=weightContentAppearance)
+	#df_user_token["selected_content"] = get_newspaper_content(df_user_token["nwp_content_lemmatized"].values.tolist(), vb=bow, wg=weightContentAppearance)
+	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
+
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
