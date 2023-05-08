@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 from natsort import natsorted
 from collections import Counter
+from typing import List, Set, Dict, Tuple
 
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel

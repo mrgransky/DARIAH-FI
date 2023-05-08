@@ -277,11 +277,11 @@ def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 
 	return updated_vb
 """
-def get_newspaper_content(lemmatized_content, vb, wg=weightContentAppearance):
-	updated_vb = dict.fromkeys(vb.keys(), [0,0])
+def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
+	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 
-	print(f"{dframe['user_ip']} visited {len(lemmatized_content)} content(s) {type(lemmatized_content)}...")
+	print(f"{len(lemmatized_content)} content(s) {type(lemmatized_content)}...")
 
 	for ilm, vlm in enumerate( lemmatized_content ): # [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
@@ -303,10 +303,7 @@ def get_newspaper_content(lemmatized_content, vb, wg=weightContentAppearance):
 	return updated_vb
 
 
-
-
-
-def get_selected_content_vb(dframe, qcol, vb):
+def get_selected_content_vb(dframe:pd.DataFrame, qcol:str, vb:Dict[str, int]):
 	#updated_vb = dict.fromkeys(vb.keys(), [0, 0]) # (idx_cnt, no_occ), # (0, 25)
 	updated_vb = dict.fromkeys(vb.keys(), None) # (idx_cnt, no_occ), # (0, 25)
 	
@@ -579,7 +576,6 @@ def get_usr_tk_df(dframe, bow):
 	st_t = time.time()
 	df_user_token["nwp_content_lemmatized"] = df_user_token["nwp_content_raw_text"].map(lambda lst: [lemmatizer_methods.get(args.lmMethod)(cnt) for cnt in lst if cnt], na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
-
 
 	print(f">> Get selected_content")
 	st_t = time.time()
