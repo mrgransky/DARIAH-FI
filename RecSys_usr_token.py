@@ -250,6 +250,9 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 
 	return updated_vocab
 
+
+
+"""
 def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0,0])
 	#print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
@@ -273,6 +276,35 @@ def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
 					updated_vb[k] = [total_boost, ic]
 
 	return updated_vb
+"""
+def get_newspaper_content(lemmatized_content, vb, wg=weightContentAppearance):
+	updated_vb = dict.fromkeys(vb.keys(), [0,0])
+	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
+
+	print(f"{dframe['user_ip']} visited {len(lemmatized_content)} content(s) {type(lemmatized_content)}...")
+
+	for ilm, vlm in enumerate( lemmatized_content ): # [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
+		new_boosts = dict.fromkeys(vb.keys(), 0.0)
+		print(type(vlm), len(vlm), vlm)
+
+		if vlm: # to ensure list is not empty!
+			for vTK in vlm: # [tk1, tk2, ..., tkN]
+				if vb.get(vTK) is not None:
+					new_boosts[vTK] = new_boosts[vTK] + wg		
+		
+			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
+			#print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
+			for k, v in new_boosts.items():
+				total_boost = v
+				prev_best_boost, prev_best_doc = updated_vb[k]
+				if total_boost > prev_best_boost:
+					updated_vb[k] = [total_boost, ilm]
+
+	return updated_vb
+
+
+
+
 
 def get_selected_content_vb(dframe, qcol, vb):
 	#updated_vb = dict.fromkeys(vb.keys(), [0, 0]) # (idx_cnt, no_occ), # (0, 25)
@@ -538,8 +570,10 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
 	
 	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
-	df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_newspaper_content(x_df, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance), axis=1)
-	#df_user_token["selected_content"] = get_newspaper_content(df_user_token, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance)
+	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_newspaper_content(x_df, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance), axis=1)
+	df_user_token["nwp_content_lemmatized"] = df_user_token["nwp_content_raw_text"].map(lambda lst: [lemmatizer_methods.get(args.lmMethod)(cnt) for cnt in lst if cnt], na_action="ignore")
+	
+	df_user_token["selected_content"] = get_newspaper_content(df_user_token["nwp_content_lemmatized"].values.tolist(), vb=bow, wg=weightContentAppearance)
 	
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
