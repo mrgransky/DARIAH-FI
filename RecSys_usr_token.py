@@ -578,9 +578,8 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["nwp_content_lemmatized"] = df_user_token["nwp_content_raw_text"].map(lambda lst: [lemmatizer_methods.get(args.lmMethod)(cnt) for cnt in lst if cnt], na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
-	print(f">> Get selected_content")
+	print(f">> Getting selected_content")
 	st_t = time.time()
-	#df_user_token["selected_content"] = get_newspaper_content(df_user_token["nwp_content_lemmatized"].values.tolist(), vb=bow, wg=weightContentAppearance)
 	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
