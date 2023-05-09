@@ -188,7 +188,7 @@ def get_bag_of_words(dframe,):
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
 								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 							)
-		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	else:
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
 		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
@@ -1358,8 +1358,8 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def main():
 	#df_raw = load_df(infile=args.inputDF) # previous approach for loading saved dict of df, saved via joblib
 	df_raw = load_pickle(fpath=args.inputDF) # new approach to load df as pickle from dill
-	#print_df_detail(df=df_raw, fname=__file__)
-	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	print_df_detail(df=df_raw, fname=__file__)
+	#run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 	#return
 
 def practice(topK=5):
