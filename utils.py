@@ -327,13 +327,15 @@ def print_df_detail(df, fname="unkonwn"):
 						]
 					].head(20)
 				)
-
-	print(f"|search results| = {len(list(df['search_results'][1][0].keys()))}\t",
-				f"{list(df['search_results'][1][0].keys())} ", 
+	
+	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
+				f"{list(df.loc[1, 'search_results'][0].keys())}", 
 			)
 	print("<>"*120)
 
-	print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
+	#print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
+	print(json.dumps(df.loc[1, "search_results"][0], indent=2, ensure_ascii=False))
+
 	print("#"*150)
 
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
@@ -656,7 +658,6 @@ def save_pickle(pkl, fname:str=""):
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 	print(f"<Elapsed_t: {time.time()-st_t:.2f}> | {fsize_dump:.1f} MB".center(110, " "))
-
 
 def load_pickle(fpath:str):
 	print(f"\nfile: {fpath} exists, Loading...")
