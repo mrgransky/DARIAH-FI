@@ -653,10 +653,10 @@ def save_pickle(pkl, fname=""):
 	dump_file_name = fname
 	print(f">> Saving {type(pkl)}\n{dump_file_name}")
 	st_t = time.time()
-	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	with open(dump_file_name , "wb" ) as f:
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"<Elapsed_t: {time.time()-st_t:.2f}> | {fsize_dump:.1f} MB".center(110, " "))
 
 def load_pickle(fpath:str):
