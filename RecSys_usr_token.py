@@ -286,16 +286,16 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 
 	for ilm, vlm in enumerate( lemmatized_content ): # [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
-		print(f"cnt: {ilm} contains: {len(vlm)} {type(vlm)} token(s)")
+		#print(f"cnt: {ilm} contains: {len(vlm)} {type(vlm)} token(s)")
 
 		if vlm: # to ensure list is not empty!
 			for iTK, vTK in enumerate( vlm ): # [tk1, tk2, ..., tkN]
-				print(f"tk@idx:{iTK} | {type(vTK)} | {len(vTK)}")
+				#print(f"tk@idx:{iTK} | {type(vTK)} | {len(vTK)}")
 				if vb.get(vTK) is not None:
 					new_boosts[vTK] = new_boosts[vTK] + wg		
 		
 			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-			print(f"\t\tcontent @idx: {ilm} new_boosts: {len(new_boosts)}" )
+			#print(f"\t\tcontent @idx: {ilm} new_boosts: {len(new_boosts)}" )
 			for k, v in new_boosts.items():
 				total_boost = v
 				prev_best_boost, prev_best_doc = updated_vb[k]

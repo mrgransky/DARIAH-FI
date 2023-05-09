@@ -135,7 +135,7 @@ def all_queries(file_="", ts=None):
 	#save_(df, infile=file_)
 	#return
 
-	print(f"{f'{get_query_log(args.query)} page analysis'.center(100, '*')}\n"
+	print(f"{f'{get_query_log(args.query)} page analysis'.center(100, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "
 				f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "
@@ -166,61 +166,6 @@ def all_queries(file_="", ts=None):
 
 		print("#"*100)
 		return df
-		"""
-		# Query Extraction for up to 20 search results: 
-		if parameters.get("query"):
-			if parameters.get("fuzzy"): df["fuzzy"] = ",".join(parameters.get("fuzzy"))
-			if parameters.get("qMeta"): df["has_metadata"] = ",".join(parameters.get("qMeta"))
-			if parameters.get("hasIllustrations"): df["has_illustration"] = ",".join(parameters.get("hasIllustrations"))
-			if parameters.get("showUnauthorizedResults"): df["show_unauthorized_results"] = ",".join(parameters.get("showUnauthorizedResults"))
-			if parameters.get("pages"): df["pages"] = ",".join(parameters.get("pages"))
-			if parameters.get("importTime"): df["import_time"] = ",".join(parameters.get("importTime"))
-			if parameters.get("collection"): df["collection"] = ",".join(parameters.get("collection"))
-			if parameters.get("author"): df["author"] = ",".join(parameters.get("author"))
-			if parameters.get("tag"): df["keyword"] = ",".join(parameters.get("tag"))
-			if parameters.get("publicationPlace"): df["publication_place"] = ",".join(parameters.get("publicationPlace"))
-			if parameters.get("lang"): df["language"] = ",".join(parameters.get("lang"))
-			if parameters.get("formats"): df["document_type"] = ",".join(parameters.get("formats"))
-			if parameters.get("showLastPage"): df["show_last_page"] = ",".join(parameters.get("showLastPage"))
-			if parameters.get("orderBy"): df["order_by"] = ",".join(parameters.get("orderBy"))
-			if parameters.get("publisher"): df["publisher"] = ",".join(parameters.get("publisher"))
-			if parameters.get("startDate"): df["start_date"] = ",".join(parameters.get("startDate"))
-			if parameters.get("endDate"): df["end_date"] = ",".join(parameters.get("endDate"))
-			if parameters.get("requireAllKeywords"): df["require_all_keywords"] = ",".join(parameters.get("requireAllKeywords"))
-			if parameters.get("resultType"): df["result_type"] = ",".join(parameters.get("resultType"))
-		
-			#print(f"\nurl: {in_url}")
-			#my_query_word = ",".join(parameters.get("query")) # 'global warming'
-			my_query_word = parameters.get("query") # ['global warming']
-			df["query_word"] = my_query_word
-
-			#print("#"*65)
-			#print(f"\tEXECUTE BASH REST API for {my_query_word}")
-			#print("#"*65)
-
-			df["search_results"] = scrap_search_page(in_url)
-
-			# get 20 search results using web scraping:
-			#df["search_results"] = get_all_search_details(in_url)
-
-		# OCR extraction:
-		if parameters.get("term"):
-			ttl, dtyp, issue, publisher, pub_date, pub_place, lang, trm, hw, pg, txt = scrap_ocr_page_content(in_url)
-			df["nwp_content_title"] = ttl
-			df["document_type"] = dtyp
-			df["nwp_content_issue"] = issue
-			df["publisher"] = publisher
-			df["nwp_content_publication_date"] = pub_date
-			df["publication_place"] = pub_place
-			df["language"] = lang
-			df["nwp_content_parsed_term"] = trm
-			df["nwp_content_highlighted_term"] = hw
-			df["nwp_content_page"] = pg
-			df["nwp_content_text"] = txt
-
-		#print("#"*200)
-		return df
-		"""
 	
 	parsing_t = time.time()
 	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
@@ -231,14 +176,14 @@ def all_queries(file_="", ts=None):
 	df["collection_referer"] = df[df.referer.str.contains('/collections')]["referer"]
 	df["collection_query_phrase"] = df["collection_referer"].map(get_query_phrase, na_action='ignore')
 	df["collection_results"] = df["collection_referer"].map(scrap_collection_page, na_action='ignore')
-	print(f"{f'<Elapsed_t: {time.time()-st_collection_t:.2f} sec>'.center(60, '#')}")
+	print(f"{f'<Elapsed_t: {time.time()-st_collection_t:.2f} sec>'.center(60, ' ')}")
 
 	print(f">> Scraping Search Pages...")
 	st_search_t = time.time()
 	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
 	df["search_query_phrase"] = df["search_referer"].map(get_query_phrase, na_action='ignore')
 	df["search_results"] = df["search_referer"].map(scrap_search_page, na_action='ignore')
-	print(f"{f'<Elapsed_t: {time.time()-st_search_t:.2f} sec>'.center(60, '#')}")
+	print(f"{f'<Elapsed_t: {time.time()-st_search_t:.2f} sec>'.center(60, ' ')}")
 
 	print(f">> Scraping Clipping Pages...")
 	st_clipping_t = time.time()
@@ -292,11 +237,9 @@ def run():
 	all_queries(file_=get_query_log(QUERY=args.query),
 							#ts=["14:30:00", "14:56:59"],
 							)
-	
-	print(f"\t\tCOMPLETED!")
 
 if __name__ == '__main__':
 	os.system('clear')
-	print(f">> Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
 	run()
-	print(f">> Done: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))

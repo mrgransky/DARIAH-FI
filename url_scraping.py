@@ -268,7 +268,7 @@ def scrap_collection_page(URL):
 	return COLLECTION_RESULTS
 
 def scrap_search_page(URL):
-	print(f"Scraping browing page: {URL}")
+	print(f"Scraping: {URL}")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
@@ -343,7 +343,7 @@ def scrap_search_page(URL):
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
 		return
 
-	#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
 	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	return SEARCH_RESULTS
 

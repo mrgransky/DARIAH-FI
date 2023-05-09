@@ -4,7 +4,7 @@
 #SBATCH -J df_rest_api_updated_saveDF
 #SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=small
-#SBATCH --mem-per-cpu=8G
+#SBATCH --mem-per-cpu=16G
 #SBATCH --time=2-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -37,9 +37,7 @@ elif [ $user == 'alijanif' ]; then
 	#source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
 fi
 
-#python nationalbiblioteket.py
 python nationalbiblioteket_logs.py --saveDF True --query $SLURM_ARRAY_TASK_ID
-#python nationalbiblioteket_logs.py
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

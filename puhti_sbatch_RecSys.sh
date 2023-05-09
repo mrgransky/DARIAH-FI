@@ -12,7 +12,7 @@
 
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=42G
+#SBATCH --mem=36G
 
 # # # # # # SBATCH --partition=hugemem
 # # # # # # SBATCH --mem-per-cpu=386G
@@ -41,7 +41,7 @@ if [ $user == 'alijani' ]; then
 	source activate py3_gpu
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/dataframes/"
+	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
 fi
 
 #python nationalbiblioteket_logs.py --saveDF True --query $SLURM_ARRAY_TASK_ID
