@@ -637,37 +637,34 @@ def checking_(url):
 		logging.exception(e)
 		return
 
-def make_folder(folder_name="MUST_BE_RENAMED"):
+def make_folder(folder_name:str="MUST_BE_RENAMED"):
 	if not os.path.exists(folder_name): 
 		#print(f"\n>> Creating DIR:\n{folder_name}")
 		os.makedirs( folder_name )
 
-def save_pickle(pkl, fname=""):
-	dump_file_name = fname
-	print(f">> Saving {type(pkl)}\n{dump_file_name}")
-
-	with open(dump_file_name , "wb" ) as f:
-		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
-		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
-
-	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"{fsize_dump:.1f} MB".center(60, '-'))
-
-def save_vocab(vb, fname=""):
+def save_vocab(vb, fname:str=""):
 	print(f">> Saving {len(vb)} TFIDF vocabs in {fname} ...")
 	with open(fname, "w") as fw:
 		json.dump(vb, fw, indent=4, ensure_ascii=False)
-	print(">> Done!")
 
-def load_pickle(fpath):
-	fsize = os.stat( fpath ).st_size / 1e6
+def save_pickle(pkl, fname:str=""):
+	dump_file_name = fname
+	print(f">> Saving {type(pkl)}\n{dump_file_name}")
+	st_t = time.time()
+	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
+	with open(dump_file_name , "wb" ) as f:
+		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+	print(f"<Elapsed_t: {time.time()-st_t:.2f}> | {fsize_dump:.1f} MB".center(110, " "))
+
+def load_pickle(fpath:str):
 	print(f"\nfile: {fpath} exists, Loading...")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
 		#pkl = joblib.load(f)
 		pkl = dill.load(f)
-
-	print(f"Elapsed_t: {time.time() - st_t:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
+	fsize = os.stat( fpath ).st_size / 1e6
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
 def save_(df, infile="", save_csv=False, save_parquet=True):
