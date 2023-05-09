@@ -677,6 +677,8 @@ def save_(df, infile="", save_csv=False, save_parquet=True):
 
 	dump_file_name = os.path.join(dfs_path, f"{infile}.dump")
 	print(f"\n>> Saving {dump_file_name} ...")
+
+	#with open(dump_file_name, "wb"):
 	joblib.dump(	dfs_dict, 
 								dump_file_name,
 								compress='lz4', # zlib more info: https://joblib.readthedocs.io/en/latest/auto_examples/compressors_comparison.html#sphx-glr-auto-examples-compressors-comparison-py

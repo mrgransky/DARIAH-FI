@@ -268,10 +268,10 @@ def scrap_collection_page(URL):
 	return COLLECTION_RESULTS
 
 def scrap_search_page(URL):
-	print(f"Scraping: {URL}")
+	#print(f"Scraping: {URL}")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
-	print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
+	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	#print()
 
 	#print(f"parsed_url : {parsed_url}")
@@ -343,7 +343,7 @@ def scrap_search_page(URL):
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
 		return
 
-	print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+	#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
 	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	return SEARCH_RESULTS
 
@@ -395,7 +395,8 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	#print(f"Scraping newspaper content page: {URL}")
+	#print(f"\n<> Scraping: {URL}")
+	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
 
 	if "&page=" in URL:
@@ -403,14 +404,14 @@ def scrap_newspaper_content_page(URL):
 	else:
 		up_url = f"{URL}&page=1"
 
-	#print(f"\tUpdated: {up_url}")
+	#print(f"\t\tUpdated: {up_url}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	#print(json.dumps(parameters, indent=2, ensure_ascii=False))
+	print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	#print(f"parsed_url : {parsed_url}")
 	
 	ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"	
-	#print(f">> ocr_api_url: {ocr_api_url}")
+	#print(f"<> ocr_api_url: {ocr_api_url}")
 	text_response = checking_(txt_pg_url)
 	if text_response: # 200
 		NWP_CONTENT_RESULTS["text"] = text_response.text
@@ -474,10 +475,8 @@ def scrap_newspaper_content_page(URL):
 		lang = None
 		"""
 
-
 	#return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
-
-
+	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 
 	return NWP_CONTENT_RESULTS
 
