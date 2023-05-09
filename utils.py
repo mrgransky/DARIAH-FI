@@ -639,7 +639,7 @@ def checking_(url):
 		logging.exception(e)
 		return
 
-def make_folder(folder_name:str="MUST_BE_RENAMED"):
+def make_folder(folder_name="MUST_BE_RENAMED"):
 	if not os.path.exists(folder_name): 
 		#print(f"\n>> Creating DIR:\n{folder_name}")
 		os.makedirs( folder_name )
@@ -649,7 +649,7 @@ def save_vocab(vb, fname:str=""):
 	with open(fname, "w") as fw:
 		json.dump(vb, fw, indent=4, ensure_ascii=False)
 
-def save_pickle(pkl, fname:str=""):
+def save_pickle(pkl, fname=""):
 	dump_file_name = fname
 	print(f">> Saving {type(pkl)}\n{dump_file_name}")
 	st_t = time.time()
