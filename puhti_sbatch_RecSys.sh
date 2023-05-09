@@ -12,7 +12,7 @@
 
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=36G
+#SBATCH --mem=42G
 
 # # # # # # SBATCH --partition=hugemem
 # # # # # # SBATCH --mem-per-cpu=386G
