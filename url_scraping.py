@@ -406,7 +406,7 @@ def scrap_newspaper_content_page(URL):
 
 	#print(f"\t\tUpdated: {up_url}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	print(json.dumps(parameters, indent=2, ensure_ascii=False))
+	#print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	#print(f"parsed_url : {parsed_url}")
 	
 	ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
