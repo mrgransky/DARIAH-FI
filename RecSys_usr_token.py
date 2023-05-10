@@ -298,7 +298,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 						f"contain(s) {len(tks_list)} TOKEN(s) {type(tks_list)}"
 					)			
 			for iTK, vTK in enumerate(recommended_tokens):
-				print(f"recTK[{iTK}]: {vTK}")
+				print(f"recTK[{iTK}]: {vTK}\tprev_usr_counter: {user_selected_content_counter} & current_counter_tk: {tks_list.count(vTK)}")
 				if tks_list.count(vTK) > user_selected_content_counter:
 					print(f"bingoo, found with token[{iTK}]: {vTK}: {tks_list.count(vTK)}".center(50, " "))
 					user_selected_content_counter = tks_list.count(vTK)
