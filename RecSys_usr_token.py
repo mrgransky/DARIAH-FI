@@ -635,8 +635,15 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	#return
 	"""
+	with open("ip1715_sel_cnt.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1715"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
+
+	with open("ip1038_sel_cnt.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1038"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
+
 	with open("ip1516_sel_cnt.json", "w") as fw:
 		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1516"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
+
 
 
 	try:
@@ -912,6 +919,8 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 		for recTK in recommended_tokens:
 			print(recTK)
+			print(type(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"]))
+			print(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"])
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].get(recTK)
 			print(tboost, idoc)
 			#content = 
