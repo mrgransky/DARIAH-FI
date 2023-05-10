@@ -176,6 +176,10 @@ def get_bag_of_words(dframe,):
 	print(len(users_list), len(raw_texts_list),)
 	print(Counter(raw_texts_list))
 
+	with open("raw_list_words.json", "w") as fw:
+		json.dump(raw_texts_list, fw, indent=4, ensure_ascii=False)
+
+
 	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
