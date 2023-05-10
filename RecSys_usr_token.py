@@ -287,7 +287,7 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, df_users_tokens, N=3)
 	#df = df_users_tokens.iloc[topN_max_cosine_user_idx]
-	df = df_users_tokens.loc[df_users_tokens["user_ip"]==nUsers_with_max_cosine]
+	df = df_users_tokens[df_users_tokens["user_ip"].isin(nUsers_with_max_cosine)]
 	print(df.shape)
 
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
