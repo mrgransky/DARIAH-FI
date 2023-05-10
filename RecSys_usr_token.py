@@ -257,7 +257,7 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 		if updated_vocab.get(c_pt_tk) is not None:
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
 		
-	for c_tk in dframe.nwp_content_token:
+	for c_tk in dframe.nwp_content_lemma_all:
 		if updated_vocab.get(c_tk) is not None:
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
 
@@ -498,16 +498,16 @@ def get_usr_tk_df(dframe, bow):
 																				nwp_content_lemmas_separated_list,
 																			)
 																	),
-																columns =['user_ip', 
-																					'qu_tokens', 
+																columns =['user_ip',
+																					'qu_tokens',
 																					'snippets_hw_token', 
-																					'snippets_token', 
-																					'nwp_content_token',  
+																					'snippets_token',
+																					'nwp_content_lemma_all',
 																					'nwp_content_pt_token',
 																					'nwp_content_hw_token',
 																					'nwp_content_raw_text',
 																					'snippets_raw_text',
-																					'nwp_content_lemma',
+																					'nwp_content_lemma_separated',
 																				]
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
@@ -521,7 +521,7 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
+	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	
 	"""
@@ -535,7 +535,7 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	"""
-	df_user_token["selected_content"] = df_user_token["nwp_content_lemma"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
+	df_user_token["selected_content"] = df_user_token["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
