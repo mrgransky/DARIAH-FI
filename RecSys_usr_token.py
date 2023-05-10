@@ -173,7 +173,7 @@ def get_bag_of_words(dframe,):
 		#print(n, ltot)
 		raw_texts_list.append( ltot )
 
-	print(len(users_list), len(raw_texts_list),)
+	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 	print(Counter(raw_texts_list))
 
 	with open("raw_list_words.json", "w") as fw:
