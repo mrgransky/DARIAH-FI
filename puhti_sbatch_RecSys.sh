@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeY_nltkTK
+#SBATCH -J nikeY_nltkTK_dfs
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -12,7 +12,7 @@
 
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=36G
+#SBATCH --mem=6G
 
 # # # # # # SBATCH --partition=hugemem
 # # # # # # SBATCH --mem-per-cpu=386G
