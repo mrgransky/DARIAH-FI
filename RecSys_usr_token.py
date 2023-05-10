@@ -537,9 +537,7 @@ def get_usr_tk_df(dframe, bow):
 	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
 	#print(df_user_token.shape, list(df_user_token.columns))
 	
-	print(df_user_token.info())
-	print("#"*110)
-	
+	print(df_user_token.info())	
 	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
 	#print("#"*100)
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
@@ -900,11 +898,11 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 
-	print(f"Getting tokens of {N} users with max cosine similarity".center(100, "-"))
+	print(f"<> {N} user(s) with max cosine similarity:", end="\t")
 	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
 	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
 	topN_max_cosine_user_ip = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
-
+	print(topN_max_cosine_user_ip)
 	for _, usr in enumerate(topN_max_cosine_user_ip):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 		plot_tokens_by(	userIP=usr, 
