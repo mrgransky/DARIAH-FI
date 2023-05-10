@@ -367,7 +367,7 @@ def tokenize_query_phrase(qu_list):
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
-def get_usr_tk_df(dframe, bow):
+def get_users_tokens_df(dframe, bow):
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
 	print(f"\n>> Getting {df_preprocessed_fname} ...")
@@ -537,7 +537,7 @@ def get_usr_tk_df(dframe, bow):
 	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
 	#print(df_user_token.shape, list(df_user_token.columns))
 	
-	print(df_user_token.info())	
+	#print(df_user_token.info())	
 	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
 	#print("#"*100)
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
@@ -591,7 +591,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
 	except:
-		df_usr_tk = get_usr_tk_df(dframe=df_inp, bow=BoWs)
+		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	
 	print(df_usr_tk.info())
 	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
@@ -635,6 +635,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	#return
 	"""
+	with open("ip6840_cnt_pt.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_pt_tk"], fw, indent=4, ensure_ascii=False)
+
+
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
@@ -890,14 +894,14 @@ def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
 	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
 	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
-	print(nUsers_with_max_cosine)
+	print(nUsers_with_max_cosine, topN_max_cosine)
 	return nUsers_with_max_cosine
 
 def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
-		content = users_tokens_df[users_tokens_df["user_ip"==usr]]["selected_content"]
+		content = users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"]
 		print(content)
 		print("+"*180)
 
