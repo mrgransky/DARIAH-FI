@@ -635,9 +635,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	#return
 	"""
-	with open("ip6840_cnt_pt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_pt_tk"], fw, indent=4, ensure_ascii=False)
-
 
 
 	try:
@@ -774,12 +771,21 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	#return
+	
+	
 	"""
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
 	get_selected_content(cos_sim=cos_sim, recommended_tokens=topK_recommended_tokens, df_users_tokens=df_usr_tk)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	"""
+
+
+
+
+
+
+
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
