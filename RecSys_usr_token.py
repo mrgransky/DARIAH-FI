@@ -914,15 +914,15 @@ def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 
 def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
-	print(f"< top-{len(recommended_tokens)} recommeded token(s) > : {recommended_tokens}")
+	print(f"top-{len(recommended_tokens)} recommeded token(s): {recommended_tokens}")
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 		for recTK in recommended_tokens:
-			print(f">> recommended token: {recTK}", end=" ")
+			print(f">> recTK: {recTK}", end="\t")
 			#print(type(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0]))
 			#print(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0])
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0].get(recTK)
-			print(f"total_boost: {tboost} idoc: {idoc}")
+			print(f"total_boost: {tboost}\t@idoc: {idoc}")
 			#content = 
 		#print(content)
 		#print("+"*180)
@@ -937,7 +937,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
-										topTKs=20,
+										topTKs=30,
 										norm_sp=norm_sp,
 									)
 	print(f"DONE".center(100, "-"))
