@@ -306,8 +306,8 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...\n")
 		for sent_i, sent in enumerate(content):
 			tokenized_content = lemmatize_nwp_content(sentences=sent)
-			print(f"<> tokenized {type(sent)} document: (idx: {sent_i}) "
-						f"contains {len(tokenized_content)} TOKENS ({type(tokenized_content)})"
+			print(f"<> tokenized {type(sent)} document[{sent_i}] "
+						f"contain(s) {len(tokenized_content)} TOKEN(s) {type(tokenized_content)}"
 					)
 			#print(tokenized_content[:4])
 			for iTK, vTK in enumerate(recommended_tokens):
