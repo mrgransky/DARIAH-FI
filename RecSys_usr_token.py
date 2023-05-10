@@ -286,7 +286,6 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 
 def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, df_users_tokens, N=3)
-	#df = df_users_tokens.iloc[topN_max_cosine_user_idx]
 	df = df_users_tokens[df_users_tokens["user_ip"].isin(nUsers_with_max_cosine)]
 	print(df.shape)
 
@@ -295,15 +294,15 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
 		print(f"{usr} visited {len(lemmatized_content)} document(s) {type(lemmatized_content)}, analyzing...")
 		for idx_cnt, tks_list in enumerate(lemmatized_content):
-			print(f"<> tokenized {type(tks_list)} document[{idx_cnt}]/{len(lemmatized_content)-1}"
+			print(f"<> tokenized {type(tks_list)} document[{idx_cnt}] "
 						f"contain(s) {len(tks_list)} TOKEN(s) {type(tks_list)}"
 					)			
 			for iTK, vTK in enumerate(recommended_tokens):
-				print(f"recommended token: @idx: {iTK}\t{vTK}")
+				print(f"recTK[{iTK}]: {vTK}")
 				if tks_list.count(vTK) > user_selected_content_counter:
 					print(f"bingoo, found with token[{iTK}]: {vTK}: {tks_list.count(vTK)}".center(50, " "))
 					user_selected_content_counter = tks_list.count(vTK)
-					user_selected_content = content_text
+					user_selected_content = content_text[0]
 					user_selected_content_idx = idx_cnt
 
 			#print("-"*100)
