@@ -761,26 +761,23 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	all_recommended_tks_idx = avgrec.flatten().argsort()
 	all_rec_sorted = np.sort(avgrec.flatten())
-	print(f">> idx: {all_recommended_tks_idx[-15:]}")
-	print(f">> sorted_recsys: {all_rec_sorted[-15:]}")
+	print(f">> idx:\n{all_recommended_tks_idx[-15:]}")
+	print(f">> sorted_recsys:\n{all_rec_sorted[-15:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
-	
 	print(f"TOP-15: (all: {len(all_recommended_tks)}) : {all_recommended_tks[-15:]}")
-	
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
 	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)} : {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
-	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	#return
-	
+	"""
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
 	get_selected_content(cos_sim=cos_sim, recommended_tokens=topK_recommended_tokens, df_users_tokens=df_usr_tk)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	
+	"""
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
