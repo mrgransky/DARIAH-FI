@@ -651,7 +651,7 @@ def save_vocab(vb, fname:str=""):
 
 def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname
-	print(f">> Saving {type(pkl)}\n{dump_file_name}")
+	print(f">> Saving {type(pkl)}\n{dump_file_name}, might take a while...")
 	st_t = time.time()
 	with open(dump_file_name , "wb" ) as f:
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
@@ -668,49 +668,6 @@ def load_pickle(fpath:str):
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
-
-def save_(df, infile="", save_csv=False, save_parquet=True):
-	dfs_dict = {
-		f"{infile}":	df,
-	}
-
-	dump_file_name = os.path.join(dfs_path, f"{infile}.dump")
-	print(f"\n>> Saving {dump_file_name} ...")
-
-	#with open(dump_file_name, "wb"):
-	joblib.dump(	dfs_dict, 
-								dump_file_name,
-								compress='lz4', # zlib more info: https://joblib.readthedocs.io/en/latest/auto_examples/compressors_comparison.html#sphx-glr-auto-examples-compressors-comparison-py
-								)
-	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"\t\t{fsize_dump:.1f} MB")
-
-	if save_csv:
-		csv_file_name = os.path.join(dfs_path, f"{infile}.csv")
-		print(f"\n>> Saving {csv_file_name} ...")
-		df.to_csv(csv_file_name, index=False)
-		fsize_csv = os.stat( csv_file_name ).st_size / 1e6
-		print(f"\t\t{fsize_csv:.1f} MB")
-
-	if save_parquet:
-		parquet_file_name = os.path.join(dfs_path, f"{infile}.parquet")
-		print(f"\n>> Saving {parquet_file_name} ...")
-		df.to_parquet(parquet_file_name)
-		fsize_parquet = os.stat( parquet_file_name ).st_size / 1e6
-		print(f"\t\t{fsize_parquet:.1f} MB")
-		print(f">>>> To Read\tDF = pd.read_parquet({parquet_file_name})")
-
-def load_df(infile=""):
-	#fpath = os.path.join(dfs_path, f"{infile}.dump")
-	fpath = infile # ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
-	fsize = os.stat( fpath ).st_size / 1e9
-	print(f"Loading {fpath} | {fsize:.3f} GB")
-	st_t = time.time()
-	df_dict = joblib.load(fpath)
-	#print(list(df_dict.keys()))# dict:{key(nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log) : value (df)}
-	print(f"Elapsed_t: {time.time() - st_t:.2f} s".center(100, " "))
-	df = df_dict[list(df_dict.keys())[0]]
-	return df	
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")

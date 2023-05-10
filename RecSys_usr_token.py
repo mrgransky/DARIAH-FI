@@ -303,30 +303,28 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
 		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
 		
-		print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...\n")
+		#print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...\n")
 		for sent_i, sent in enumerate(content):
 			tokenized_content = lemmatize_nwp_content(sentences=sent)
-			print(f"<> tokenized {type(sent)} document[{sent_i}] "
+			"""
+			print(f"<> tokenized {type(sent)} document[{sent_i}]/{len(content)-1}"
 						f"contain(s) {len(tokenized_content)} TOKEN(s) {type(tokenized_content)}"
 					)
 			#print(tokenized_content[:4])
+			"""
 			for iTK, vTK in enumerate(recommended_tokens):
-				print(f"recommended token: @idx: {iTK}\t{vTK}")
+				#print(f"recommended token: @idx: {iTK}\t{vTK}")
 				if tokenized_content.count(vTK) > user_selected_content_counter:
-					print(f"bingoo: {tokenized_content.count(vTK)}".center(50, " "))
+					#print(f"bingoo: {tokenized_content.count(vTK)}".center(50, " "))
 					user_selected_content_counter = tokenized_content.count(vTK)
 					user_selected_content = sent
 					user_selected_content_idx = sent_i
 
-			print("-"*100)
+			#print("-"*100)
 		print(f"\n{usr} selected content @idx: {user_selected_content_idx} | num_occurrence(s): {user_selected_content_counter}")
 		#print(f"\nSelected content:")
 		print(user_selected_content)
-		print("+"*110)
-
-		#print(cnt)
-
-	max_occurrence = 0.0
+		print("+"*180)
 
 	return selected_contents
 
@@ -539,10 +537,10 @@ def get_usr_tk_df(dframe, bow):
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
 	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
-	print(df_user_token.shape, list(df_user_token.columns))
+	#print(df_user_token.shape, list(df_user_token.columns))
 	
 	print(df_user_token.info())
-	print("#"*100)
+	print("#"*110)
 	
 	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
 	#print("#"*100)
