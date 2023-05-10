@@ -635,6 +635,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	#return
 	"""
+	with open("ip1516_sel_cnt.json", "w") as fw:
+		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1516"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
 
 
 	try:
