@@ -91,8 +91,8 @@ def stanza_lemmatizer(docs):
 	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', word.lemma ) ) > 2 and word.upos not in useless_upos_tags and word.lemma.lower() not in UNIQUE_STOPWORDS ) ]
 
 	#print( list( set( lm ) ) )
-	#print("#"*150)
-	return list( set( lm ) )
+	#return list( set( lm ) )
+	return lm
 
 def trankit_lemmatizer(docs):
 	#print(f'Raw inp ({len(docs)}): >>{docs}<<', end='\t')
@@ -110,7 +110,8 @@ def trankit_lemmatizer(docs):
 	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ] 
 
 	#print( list( set( lm ) ) )
-	return list( set( lm ) )
+	#return list( set( lm ) )
+	return lm
 
 def nltk_lemmatizer(sentence):	
 	#print(f'Raw inp ({len(sentence)}): >>{sentence}<<', end='\t')
@@ -132,4 +133,4 @@ def nltk_lemmatizer(sentence):
 	lematized_tokens = [wnl.lemmatize(w, t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w, t in nltk.pos_tag(filtered_tokens)] 
 	#print( list( set( lematized_tokens ) ) )
 
-	return list( set( lematized_tokens ) )
+	return lematized_tokens
