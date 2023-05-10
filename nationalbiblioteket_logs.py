@@ -129,13 +129,6 @@ def all_queries(file_="", ts=None):
 	print(f">> Elapsed_t: {elapsed_t:.2f} s\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
 	print("-"*110)
 
-	#print(df.isna().sum())
-	#print("-"*50)
-
-	#save_(df, infile=file_)
-	#save_pickle(pkl=df, fname=os.path.join(dfs_path, f'{file_}.dump'))
-	#return
-
 	print(f"{f'Page Analysis'.center(100, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "
@@ -208,8 +201,7 @@ def all_queries(file_="", ts=None):
 	print(df.shape, list(df.columns))
 	
 	if args.saveDF:
-		#save_(df, infile=file_, saving_path=dfs_path)
-		save_pickle(pkl=df, fname=os.path.join(dfs_path, f'{file_}.dump'))
+		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
 
 def get_query_log(QUERY=0):
 	#print(f"\nGiven log file index: {QUERY}")
@@ -227,7 +219,7 @@ def get_query_log(QUERY=0):
 	return query_log_file
 
 def run():
-	make_folder(folder_name=dfs_path)
+	make_folder(folder_name=dataset_path)
 	"""	
 	# run single log file	
 	single_query(file_=get_query_log(QUERY=args.query), 

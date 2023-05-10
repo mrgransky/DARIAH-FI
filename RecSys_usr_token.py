@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('--inputDF', default=os.path.join(dataframes_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
+parser.add_argument('--inputDF', default=os.path.join(dataset_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
 parser.add_argument('--lmMethod', default="nltk", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -22,7 +22,7 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 RES_DIR = make_result_dir(infile=args.inputDF)
-
+make_folder(folder_name=dfs_path)
 MODULE=60
 
 # list of all weights:

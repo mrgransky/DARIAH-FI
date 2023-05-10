@@ -120,14 +120,11 @@ usr_ = {'alijani': '/lustre/sgn-data/vision',
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
 
-dataframes_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
+dataset_path = os.path.join( NLF_DATASET_PATH, f"dataframes" ) # TODO: must be renamed to datasets
 dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
-#dpath = os.path.join( NLF_DATASET_PATH, f"broken" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-#dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes" )
-#dfs_path = os.path.join( NLF_DATASET_PATH, f"dfs" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dfs_unq")
 
 def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
