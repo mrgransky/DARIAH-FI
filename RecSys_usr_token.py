@@ -276,7 +276,7 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 				if vb.get(vTK) is not None:
 					new_boosts[vTK] = new_boosts[vTK] + wg				
 			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-			print(f"\t\tcontent @idx: {ilm} new_boosts: {len(new_boosts)}" )
+			print(f"\t\tcontent[{ilm}] |new_boosts| = {len(new_boosts)}" )
 			for k, v in new_boosts.items():
 				total_boost = v
 				prev_best_boost, prev_best_doc = updated_vb[k]
@@ -302,8 +302,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	# tokenize: [[cnt1, cnt2, ...], [cnt1, cnt2, ...], [cnt1, cnt2, ...]] => [ [[tk1, …]], [[tk1, …]], [[tk1, …]] ]
 	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
 		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
-		
-		#print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...\n")
+		print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...")
 		for sent_i, sent in enumerate(content):
 			tokenized_content = lemmatize_nwp_content(sentences=sent)
 			"""
@@ -315,7 +314,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 			for iTK, vTK in enumerate(recommended_tokens):
 				#print(f"recommended token: @idx: {iTK}\t{vTK}")
 				if tokenized_content.count(vTK) > user_selected_content_counter:
-					#print(f"bingoo: {tokenized_content.count(vTK)}".center(50, " "))
+					print(f"bingoo, found with token[{iTK}]: {vTK}: {tokenized_content.count(vTK)}".center(50, " "))
 					user_selected_content_counter = tokenized_content.count(vTK)
 					user_selected_content = sent
 					user_selected_content_idx = sent_i
@@ -325,7 +324,6 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		#print(f"\nSelected content:")
 		print(user_selected_content)
 		print("+"*180)
-
 	return selected_contents
 
 def get_search_results_snippet_text(search_results_list):
@@ -776,11 +774,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	print(f"DONE".center(120, " "))
 	#return
-
+	
+	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
+	st_t = time.time()
 	get_selected_content(cos_sim=cos_sim, recommended_tokens=topK_recommended_tokens, df_users_tokens=df_usr_tk)
-
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
+	
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
