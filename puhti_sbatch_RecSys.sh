@@ -7,14 +7,14 @@
 #SBATCH --mail-type=ALL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=5
 #SBATCH --time=12-23:59:59
 
 # # # # # # SBATCH --partition=gpu
 # # # # # # SBATCH --gres=gpu:v100:1
 # # # # # # SBATCH --mem=24G
 
-#SBATCH --partition=longrun_hugemem
+#SBATCH --partition=hugemem_longrun
 #SBATCH --mem-per-cpu=486G
 
 # # # # # # SBATCH --array=0-69
