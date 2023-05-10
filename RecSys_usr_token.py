@@ -174,6 +174,7 @@ def get_bag_of_words(dframe,):
 		raw_texts_list.append( ltot )
 
 	print(len(users_list), len(raw_texts_list),)
+	print(Counter(raw_texts_list))
 
 	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
@@ -294,7 +295,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
 		print(f"{usr} visited {len(lemmatized_content)} document(s) {type(lemmatized_content)}, analyzing...")
 		for idx_cnt, tks_list in enumerate(lemmatized_content):
-			print(f"<> tokenized {type(tks_list)} document[{idx_cnt}] "
+			print(f"<> tokenized document[{idx_cnt}] "
 						f"contain(s) {len(tks_list)} TOKEN(s) {type(tks_list)}"
 					)			
 			for iTK, vTK in enumerate(recommended_tokens):
