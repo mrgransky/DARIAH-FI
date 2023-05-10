@@ -593,8 +593,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	except:
 		df_usr_tk = get_usr_tk_df(dframe=df_inp, bow=BoWs)
 	
-	#print(df_usr_tk.info())
-	print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
+	print(df_usr_tk.info())
+	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
 	"""
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
 		print( df_usr_tk[["user_ip", "user_token_interest",]].tail(10) )
@@ -886,27 +886,25 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
-	print(f"\n<{N}> user(s) with max cosine similarity:", end=" ")
+	print(f"\n< {N} > user(s) with max cosine similarity:", end=" ")
 	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
 	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
 	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
 	print(nUsers_with_max_cosine)
 	return nUsers_with_max_cosine
 
-def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
-	"""
-	# retrieve user with max cosine:
-	max_cosine = cos_sim.max()
-	max_cosine_user_idx = np.argmax(cos_sim)
-	max_cosine_user_ip = users_tokens_df.loc[np.argmax(cos_sim), 'user_ip']
-	print(f"Sparse Matrix (normalized: {norm_sp}) (nUsers x nItems): {sp_mtrx.shape}\n"
-				f"Cosine Similarity (1 x nUsers): {cos_sim.shape}\n"
-				f"max(cosine) = {max_cosine:.3f} @ (userIdx: {max_cosine_user_idx} userIP: {max_cosine_user_ip})\n",
-			)
-	"""
-
+def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
+	for _, usr in enumerate(nUsers_with_max_cosine):
+		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
+		content = users_tokens_df[users_tokens_df["user_ip"==usr]]["selected_content"]
+		print(content)
+		print("+"*180)
 
+	#return
+
+def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 		plot_tokens_by(	userIP=usr, 
@@ -916,8 +914,6 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 										topTKs=20,
 										norm_sp=norm_sp,
 									)
-		# get selected content with max occurance:
-
 	print(f"DONE".center(100, "-"))
 
 def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=50, norm_sp=False):
@@ -930,7 +926,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
 
 	nTokens = len(tks_name)
-	print(f"Plotting top-{nTokens} token(s) out of |ALL_TKs = {nTokens_orig} | user: {userIP}".center(110, " "))
+	print(f"Plotting top-{nTokens} token(s) out of |ALL_TKs = {nTokens_orig} | user: {userIP}".center(110, "-"))
 
 	f, ax = plt.subplots()
 	ax.barh(tks_name, 

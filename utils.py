@@ -163,7 +163,7 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 
 	assert len(tks_name) == len(tks_value_all), f"found {len(tks_name)} tokens names & {len(tks_value_all)} tokens values"
 
-	print(f"Retrieving all {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(120, '-'))
+	print(f"Retrieving all {len(tks_name)} Tokens for {user} @ idx: {user_idx} | {sp_type} Sparse Matrix".center(120, ' '))
 
 	tks_value_separated = list()
 	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
