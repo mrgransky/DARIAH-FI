@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeY_stanzaTK_unq_dfs
+#SBATCH -J nikeX_stanzaTK_unq_dfs
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -12,14 +12,13 @@
 
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=29G
+#SBATCH --mem=24G
 
 # # # # # # SBATCH --partition=hugemem
 # # # # # # SBATCH --mem-per-cpu=386G
 
 # # # # # # SBATCH --array=0-69
 # # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
-
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
@@ -44,8 +43,7 @@ elif [ $user == 'alijanif' ]; then
 	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
 fi
 
-#python nationalbiblioteket_logs.py --saveDF True --query $SLURM_ARRAY_TASK_ID
-python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza'
+python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza'
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
