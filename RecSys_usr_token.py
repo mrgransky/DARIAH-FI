@@ -444,7 +444,7 @@ def get_usr_tk_df(dframe, bow):
 
 	nwp_content_pt_tokens_list = list()
 	nwp_content_hw_tokens_list = list()
-	nwp_content_tokens_list = list()
+	nwp_content_lemmas_all_list = list()
 	nwp_content_raw_texts_list = list()
 	nwp_content_lemmas_separated_list = list()
 	
@@ -463,26 +463,26 @@ def get_usr_tk_df(dframe, bow):
 	
 		#print( len( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() ) )
 		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
-		nwp_content_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
+		nwp_content_lemmas_all_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
 		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
 		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
 
 		#print("#"*150)
 
 	# uncomment for speedup:
-	#nwp_content_tokens_list = [f"nwp_content_{i}" for i in range(len(users_list))]
+	#nwp_content_lemmas_all_list = [f"nwp_content_{i}" for i in range(len(users_list))]
 	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
 	print(len(users_list), 
 				len(search_query_phrase_tokens_list),
 				len(search_results_hw_snippets_tokens_list),
 				len(search_results_snippets_tokens_list),
-				len(nwp_content_tokens_list),
+				len(nwp_content_lemmas_all_list),
+				len(nwp_content_lemmas_separated_list),
 				len(nwp_content_pt_tokens_list),
 				len(nwp_content_hw_tokens_list),
 				len(nwp_content_raw_texts_list),
 				len(search_results_snippets_raw_texts_list),
-				len(nwp_content_lemmas_separated_list),
 				)
 	#return
 
@@ -490,12 +490,12 @@ def get_usr_tk_df(dframe, bow):
 																				search_query_phrase_tokens_list, 
 																				search_results_hw_snippets_tokens_list, 
 																				search_results_snippets_tokens_list, 
-																				nwp_content_tokens_list, 
+																				nwp_content_lemmas_all_list, 
+																				nwp_content_lemmas_separated_list,
 																				nwp_content_pt_tokens_list, 
 																				nwp_content_hw_tokens_list,
 																				nwp_content_raw_texts_list,
 																				search_results_snippets_raw_texts_list,
-																				nwp_content_lemmas_separated_list,
 																			)
 																	),
 																columns =['user_ip',
@@ -503,17 +503,16 @@ def get_usr_tk_df(dframe, bow):
 																					'snippets_hw_token', 
 																					'snippets_token',
 																					'nwp_content_lemma_all',
+																					'nwp_content_lemma_separated',
 																					'nwp_content_pt_token',
 																					'nwp_content_hw_token',
 																					'nwp_content_raw_text',
 																					'snippets_raw_text',
-																					'nwp_content_lemma_separated',
 																				]
 															)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(110, " "))
 
-
-	print(f">> Creating Implicit Feedback for user interests...")
+	print(f"Implicit Feedback".center(100, "-"))
 	st_t = time.time()
 	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	df_user_token["usrInt_qu_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
@@ -522,7 +521,7 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	df_user_token["selected_content"] = df_user_token["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	
 	"""
 	print(f"Newspaper content text [lemmatization]: [cnt1, cnt2, ...] => [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...] | might take a while...")
@@ -535,7 +534,7 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	"""
-	df_user_token["selected_content"] = df_user_token["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
