@@ -412,17 +412,8 @@ def get_users_tokens_df(dframe, bow):
 	
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
-	#print(df_preprocessed.info())
-	#print(list(df_preprocessed.columns))
-	#print("<>"*110)
-	"""
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
-		print(df_preprocessed[["user_ip", "nwp_content_ocr_text", "search_results_snippets"]].head(40))
-	print("-"*150)
-	"""
 	print(f"USERs-TOKENs DataFrame".center(110, " "))
 	st_t = time.time()
-
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
