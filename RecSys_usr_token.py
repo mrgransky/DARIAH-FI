@@ -263,86 +263,25 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 
 	return updated_vocab
 
-"""
-def get_newspaper_content(dframe, qcol, vb, wg=weightContentAppearance):
-	updated_vb = dict.fromkeys(vb.keys(), [0,0])
-	#print(f"{dframe['user_ip']} visited {len(dframe[qcol])} content(s) {type(dframe[qcol])}...")
-	for ic, vc in enumerate( dframe[qcol] ): # nwp_content_raw_text: [cnt1, cnt2, …, cntN]
-		new_boosts = dict.fromkeys(vb.keys(), 0.0)
-		#print(type(vc), len(vc), vc)
-
-		tokenized_newspaper_content = tokenize_nwp_content(sentences=vc)
-
-		if tokenized_newspaper_content: # to ensure list is not empty!
-			for vTK in tokenized_newspaper_content: # [tk1, tk2, ..., tkN]
-				if vb.get(vTK) is not None:
-					new_boosts[vTK] = new_boosts[vTK] + wg		
-		
-			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-			#print(f"\t\tcontent @idx: {ic} new_boosts: {len(new_boosts)}" )
-			for k, v in new_boosts.items():
-				total_boost = v
-				prev_best_boost, prev_best_doc = updated_vb[k]
-				if total_boost > prev_best_boost:
-					updated_vb[k] = [total_boost, ic]
-
-	return updated_vb
-"""
-
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
-
-	print(f"{len(lemmatized_content)} content(s) {type(lemmatized_content)}...")
-
+	print(f"Found {len(lemmatized_content)} content(s) {type(lemmatized_content)}".center(100, "-"))
 	for ilm, vlm in enumerate( lemmatized_content ): # [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
-		#print(f"cnt: {ilm} contains: {len(vlm)} {type(vlm)} token(s)")
-
+		print(f"cnt[{ilm}] contain(s): {len(vlm)} {type(vlm)} token(s)")
 		if vlm: # to ensure list is not empty!
 			for iTK, vTK in enumerate( vlm ): # [tk1, tk2, ..., tkN]
 				#print(f"tk@idx:{iTK} | {type(vTK)} | {len(vTK)}")
 				if vb.get(vTK) is not None:
-					new_boosts[vTK] = new_boosts[vTK] + wg		
-		
+					new_boosts[vTK] = new_boosts[vTK] + wg				
 			new_boosts = {k: v for k, v in new_boosts.items() if v} # get rid of those keys(tokens) with zero values to reduce size
-			#print(f"\t\tcontent @idx: {ilm} new_boosts: {len(new_boosts)}" )
+			print(f"\t\tcontent @idx: {ilm} new_boosts: {len(new_boosts)}" )
 			for k, v in new_boosts.items():
 				total_boost = v
 				prev_best_boost, prev_best_doc = updated_vb[k]
 				if total_boost > prev_best_boost:
 					updated_vb[k] = [total_boost, ilm]
-
-	return updated_vb
-
-def get_selected_content_vb(dframe:pd.DataFrame, qcol:str, vb:Dict[str, int]):
-	#updated_vb = dict.fromkeys(vb.keys(), [0, 0]) # (idx_cnt, no_occ), # (0, 25)
-	updated_vb = dict.fromkeys(vb.keys(), None) # (idx_cnt, no_occ), # (0, 25)
-	
-	# tokenize: [cnt1, cnt2, …, cntN] => [[tk1, …], [tk1, …], ..., [tk1, …]]
-	
-	tokenized_content = list(filter(None, [tokenize_nwp_content(sentences=cnt) for cnt in dframe[qcol] if cnt and len(cnt)>0]))
-	#print(len(tokenized_content), tokenized_content is None)
-
-	"""
-	if tokenized_content:
-		for k in updated_vb:
-			counters = list()
-			#print(k)
-			for cnt_i, cnt_v in enumerate( tokenized_content ):
-				#print(cnt_v.count(k))
-				counters.append( cnt_v.count(k) ) # [42, 6, 0, ...]
-			#print(counters)
-			updated_vb[k] = [np.argmax(counters), max(counters)]
-	"""
-
-	if tokenized_content:
-		list_of_dicts = [ Counter(l) for l in tokenized_content ]
-		for k in updated_vb:
-			i, m = max(enumerate(list_of_dicts), key=lambda d: d[1].get(k, 0))
-			if k in m:
-				updated_vb[k] = [i, list_of_dicts[i][k]]
-
 	return updated_vb
 
 def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
@@ -366,7 +305,7 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		
 		print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...\n")
 		for sent_i, sent in enumerate(content):
-			tokenized_content = tokenize_nwp_content(sentences=sent)
+			tokenized_content = lemmatize_nwp_content(sentences=sent)
 			print(f"<> tokenized {type(sent)} document: (idx: {sent_i}) "
 						f"contains {len(tokenized_content)} TOKENS ({type(tokenized_content)})"
 					)
@@ -386,8 +325,6 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 		print("+"*110)
 
 		#print(cnt)
-
-	#tokenized_content = list(filter(None, [tokenize_nwp_content(sentences=cnt) for cnt in df_users_tokens["nwp_content_raw_text"] if cnt and len(cnt)>0]))
 
 	max_occurrence = 0.0
 
@@ -419,7 +356,7 @@ def tokenize_hw_snippets(results_list):
 def tokenize_snippets(results_list):
 	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
-def tokenize_nwp_content(sentences):
+def lemmatize_nwp_content(sentences):
 	return lemmatizer_methods.get(args.lmMethod)(sentences)
 
 def tokenize_hw_nwp_content(results_list):
@@ -474,7 +411,7 @@ def get_usr_tk_df(dframe, bow):
 		print(f">> Analyzing newspaper content [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_tklm'] = df_preprocessed["nwp_content_ocr_text"].map(tokenize_nwp_content, na_action='ignore')
+		df_preprocessed['nwp_content_ocr_text_tklm'] = df_preprocessed["nwp_content_ocr_text"].map(lemmatize_nwp_content, na_action='ignore') # inp: "my car is black." => out ["car", "black"]
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		
 		print(f">> Analyzing snippets [tokenization + lemmatization]...")
@@ -525,8 +462,10 @@ def get_usr_tk_df(dframe, bow):
 	
 		#print( len( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() ) )
 		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
-		nwp_content_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		nwp_content_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
+		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
 		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
+
 		#print("#"*150)
 
 	# uncomment for speedup:
@@ -542,6 +481,7 @@ def get_usr_tk_df(dframe, bow):
 				len(nwp_content_hw_tokens_list),
 				len(nwp_content_raw_texts_list),
 				len(search_results_snippets_raw_texts_list),
+				len(nwp_content_lemmas_separated_list),
 				)
 	#return
 
@@ -554,6 +494,7 @@ def get_usr_tk_df(dframe, bow):
 																				nwp_content_hw_tokens_list,
 																				nwp_content_raw_texts_list,
 																				search_results_snippets_raw_texts_list,
+																				nwp_content_lemmas_separated_list,
 																			)
 																	),
 																columns =['user_ip', 
@@ -565,6 +506,7 @@ def get_usr_tk_df(dframe, bow):
 																					'nwp_content_hw_token',
 																					'nwp_content_raw_text',
 																					'snippets_raw_text',
+																					'nwp_content_lemma',
 																				]
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
@@ -581,27 +523,26 @@ def get_usr_tk_df(dframe, bow):
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_token", wg=weightContentAppearance, vb=bow), axis=1)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	
-	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_selected_content_vb(x_df, qcol="nwp_content_raw_text", vb=bow), axis=1)
-	#df_user_token["selected_content"] = df_user_token.apply(lambda x_df: get_newspaper_content(x_df, qcol="nwp_content_raw_text", vb=bow, wg=weightContentAppearance), axis=1)
-
-	print(f">> newspaper content text [lemmatization]: [cnt1, cnt2, ...] => [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]")
+	"""
+	print(f"Newspaper content text [lemmatization]: [cnt1, cnt2, ...] => [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...] | might take a while...")
 	st_t = time.time()
 	df_user_token["nwp_content_lemmatized"] = df_user_token["nwp_content_raw_text"].map(lambda lst: [lemmatizer_methods.get(args.lmMethod)(cnt) for cnt in lst if cnt], na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(110, " "))
 
 	print(f">> Getting selected_content")
 	st_t = time.time()
 	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
-
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	"""
+	df_user_token["selected_content"] = df_user_token["nwp_content_lemma"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
 	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
 	print(df_user_token.shape, list(df_user_token.columns))
 	
-	#print(df_user_token.info())
-	#print("#"*100)
+	print(df_user_token.info())
+	print("#"*100)
 	
 	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
 	#print("#"*100)
