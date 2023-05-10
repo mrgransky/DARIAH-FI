@@ -179,6 +179,7 @@ def get_bag_of_words(dframe,):
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	#print(Counter(raw_docs_list))
+	print(f"<<!>> unique query phrases: {len(list(set(raw_docs_list)))}")
 
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
