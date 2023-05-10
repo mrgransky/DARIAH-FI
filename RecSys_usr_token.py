@@ -886,9 +886,11 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
+	print(f"\n<{N}> user(s) with max cosine similarity:", end=" ")
 	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
 	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
 	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+	print(nUsers_with_max_cosine)
 	return nUsers_with_max_cosine
 
 def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
@@ -903,9 +905,7 @@ def plot_tokens_by_max(cos_sim, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 			)
 	"""
 
-	print(f"\n<{N}> user(s) with max cosine similarity:", end=" ")
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
-	print(nUsers_with_max_cosine)
 
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
