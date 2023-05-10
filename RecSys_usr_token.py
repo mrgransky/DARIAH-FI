@@ -784,7 +784,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 
 
-
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
 
 
 
@@ -907,11 +907,16 @@ def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 
 def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
+	print(f"< top-{len(recommended_tokens)} recommeded token(s) > : {recommended_tokens}")
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
-		content = users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"]
-		print(content)
-		print("+"*180)
+		for recTK in recommended_tokens:
+			print(recTK)
+			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].get(recTK)
+			print(tboost, idoc)
+			#content = 
+		#print(content)
+		#print("+"*180)
 
 	#return
 
