@@ -1311,8 +1311,8 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def main():
 	#df_raw = load_df(infile=args.inputDF) # previous approach for loading saved dict of df, saved via joblib
 	df_raw = load_pickle(fpath=args.inputDF) # new approach to load df as pickle from dill
-	print_df_detail(df=df_raw, fname=__file__)
-	#run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	#print_df_detail(df=df_raw, fname=__file__)
+	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 	#return
 
 def practice(topK=5):

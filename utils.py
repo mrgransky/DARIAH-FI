@@ -310,7 +310,7 @@ def get_sparse_mtx(df):
 	return sparse_mtx
 
 def print_df_detail(df, fname="unkonwn"):
-	print(f"{f'{fname} | DF: {df.shape}'.center(80, '-')}")
+	print(f"Printing detail: {f'{fname} | DF: {df.shape}'.center(150, ' ')}")
 
 	print(df.info(verbose=True, memory_usage="deep"))
 	"""
