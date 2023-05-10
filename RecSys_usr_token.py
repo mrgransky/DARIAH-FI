@@ -920,7 +920,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 		for recTK in recommended_tokens:
 			print(recTK)
 			print(type(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0]))
-			print(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0])
+			#print(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0])
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0].get(recTK)
 			print(tboost, idoc)
 			#content = 
