@@ -446,6 +446,7 @@ def get_usr_tk_df(dframe, bow):
 	nwp_content_hw_tokens_list = list()
 	nwp_content_tokens_list = list()
 	nwp_content_raw_texts_list = list()
+	nwp_content_lemmas_separated_list = list()
 	
 	for n, g in df_preprocessed.groupby("user_ip"):
 		#print(n)
