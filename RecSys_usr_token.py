@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('--inputDF', default=os.path.join(dfs_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
+parser.add_argument('--inputDF', default=os.path.join(dataframes_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
 parser.add_argument('--lmMethod', default="nltk", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -180,9 +180,10 @@ def get_bag_of_words(dframe,):
 
 	print(f"<<!>> unique query phrases: {len(list(set(raw_docs_list)))}")
 	raw_docs_list = list(set(raw_docs_list))
+	"""
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
-
+	"""
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.lz4")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.lz4")
