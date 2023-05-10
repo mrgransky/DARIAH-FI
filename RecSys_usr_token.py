@@ -285,46 +285,31 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 	return updated_vb
 
 def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
-	selected_contents = list()
-	#print(df_users_tokens.shape) # n_user x
-
-	N=3
-	if np.count_nonzero(cos_sim.flatten()) < N:
-		N = np.count_nonzero(cos_sim.flatten())
-	
-	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
-	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
-	nUsers_with_max_cosine = df_users_tokens.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
-	
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, df_users_tokens, N=3)
 	df = df_users_tokens.iloc[topN_max_cosine_user_idx]
 	#print(df.shape)
 
-	# tokenize: [[cnt1, cnt2, ...], [cnt1, cnt2, ...], [cnt1, cnt2, ...]] => [ [[tk1, …]], [[tk1, …]], [[tk1, …]] ]
-	for usr, content in zip(df["user_ip"], df["nwp_content_raw_text"]):
+	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
+	for usr, lemmatized_content, content_text in zip(df["user_ip"], df["nwp_content_lemma_separated"], df["nwp_content_raw_text"]):
 		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
-		print(f"{usr} visited {len(content)} document(s) {type(content)}, analyzing...")
-		for sent_i, sent in enumerate(content):
-			tokenized_content = lemmatize_nwp_content(sentences=sent)
-			"""
-			print(f"<> tokenized {type(sent)} document[{sent_i}]/{len(content)-1}"
-						f"contain(s) {len(tokenized_content)} TOKEN(s) {type(tokenized_content)}"
-					)
-			#print(tokenized_content[:4])
-			"""
+		print(f"{usr} visited {len(lemmatized_content)} document(s) {type(lemmatized_content)}, analyzing...")
+		for idx_cnt, tks_list in enumerate(lemmatized_content):
+			print(f"<> tokenized {type(tks_list)} document[{idx_cnt}]/{len(lemmatized_content)-1}"
+						f"contain(s) {len(tks_list)} TOKEN(s) {type(tks_list)}"
+					)			
 			for iTK, vTK in enumerate(recommended_tokens):
-				#print(f"recommended token: @idx: {iTK}\t{vTK}")
-				if tokenized_content.count(vTK) > user_selected_content_counter:
-					print(f"bingoo, found with token[{iTK}]: {vTK}: {tokenized_content.count(vTK)}".center(50, " "))
-					user_selected_content_counter = tokenized_content.count(vTK)
-					user_selected_content = sent
-					user_selected_content_idx = sent_i
+				print(f"recommended token: @idx: {iTK}\t{vTK}")
+				if tks_list.count(vTK) > user_selected_content_counter:
+					print(f"bingoo, found with token[{iTK}]: {vTK}: {tks_list.count(vTK)}".center(50, " "))
+					user_selected_content_counter = tks_list.count(vTK)
+					user_selected_content = content_text
+					user_selected_content_idx = idx_cnt
 
 			#print("-"*100)
 		print(f"\n{usr} selected content @idx: {user_selected_content_idx} | num_occurrence(s): {user_selected_content_counter}")
 		#print(f"\nSelected content:")
 		print(user_selected_content)
 		print("+"*180)
-	return selected_contents
 
 def get_search_results_snippet_text(search_results_list):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in search_results_list if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
@@ -782,12 +767,11 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#return
 	
 	
-	"""
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
-	get_selected_content(cos_sim=cos_sim, recommended_tokens=topK_recommended_tokens, df_users_tokens=df_usr_tk)
+	get_selected_content(cos_sim, topK_recommended_tokens, df_usr_tk)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	"""
+	
 
 
 
