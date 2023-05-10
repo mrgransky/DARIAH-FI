@@ -178,9 +178,8 @@ def get_bag_of_words(dframe,):
 	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
-	#print(Counter(raw_docs_list))
 	print(f"<<!>> unique query phrases: {len(list(set(raw_docs_list)))}")
-
+	raw_docs_list = list(set(raw_docs_list))
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
 
