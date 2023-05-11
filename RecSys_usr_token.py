@@ -905,15 +905,20 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 		print(f">> recTK[{recTK_idx}]: {recTK}")
 		max_boost = 0.0
 		max_boost_idoc = 0
+		winner_user = None
+		winner_content = None
 		for iUSR, vUSR in enumerate(nUsers_with_max_cosine):
-			print(vUSR, end=" ")
+			print(vUSR, end="\t")
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==vUSR]["selected_content"].values.tolist()[0].get(recTK)
 			print(f"[total_boost, idoc]: [{tboost}, {idoc}]")
 			if tboost > max_boost:
 				max_boost = tboost
 				max_boost_idoc = idoc
-		print(f"winner: {max_boost} | idoc: {max_boost_idoc}".center(50, " "))
-		print("-"*80)
+				winner_user = vUSR
+		print(f"winner: {max_boost} | idoc: {max_boost_idoc} | {winner_user}".center(100, " "))
+		user_best_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()[0]
+		print(user_best_doc)
+		print("-"*120)
 
 	#return
 
