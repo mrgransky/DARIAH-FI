@@ -908,7 +908,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 		winner_user = None
 		winner_content = None
 		for iUSR, vUSR in enumerate(nUsers_with_max_cosine):
-			tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
+			tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=vUSR)
 			print(vUSR, end="\t")
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==vUSR]["selected_content"].values.tolist()[0].get(recTK)
 			print(f"[total_boost, idoc]: [{tboost}, {idoc}]")
