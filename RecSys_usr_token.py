@@ -298,15 +298,15 @@ def get_selected_content(cos_sim, recommended_tokens, df_users_tokens):
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 	for usr, lemmatized_content, content_text in zip(df["user_ip"], df["nwp_content_lemma_separated"], df["nwp_content_raw_text"]):
 		user_selected_content_counter, user_selected_content, user_selected_content_idx = 0, None, None
-		print(f"{usr} visited {len(lemmatized_content)} document(s) {type(lemmatized_content)}, analyzing...")
+		print(f"{usr} visited {len(lemmatized_content)} document(s) {type(lemmatized_content)}".center(150, "-"))
 		for idx_cnt, tks_list in enumerate(lemmatized_content):
-			print(f"<> tokenized document[{idx_cnt}] "
+			print(f"<> document[{idx_cnt}] "
 						f"contain(s) {len(tks_list)} TOKEN(s) {type(tks_list)}"
 					)			
 			for iTK, vTK in enumerate(recommended_tokens):
-				print(f"recTK[{iTK}]: {vTK}\tprev_usr_counter: {user_selected_content_counter} & current_counter_tk: {tks_list.count(vTK)}")
+				print(f"recTK[{iTK}]: {vTK} => previous_counter: {user_selected_content_counter} & current_counter: {tks_list.count(vTK)}")
 				if tks_list.count(vTK) > user_selected_content_counter:
-					print(f"bingoo, found with token[{iTK}]: {vTK}: {tks_list.count(vTK)}".center(50, " "))
+					print(f"bingoo, found with token[{iTK}]: {vTK}: {tks_list.count(vTK)}".center(80, " "))
 					user_selected_content_counter = tks_list.count(vTK)
 					user_selected_content = content_text[0]
 					user_selected_content_idx = idx_cnt
@@ -626,8 +626,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#return
 	"""
 
-
-
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
 	except:
@@ -762,19 +760,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	#return
-	
-	
+		
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
 	get_selected_content(cos_sim, topK_recommended_tokens, df_usr_tk)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	
-
-
-
 	get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
-
-
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
@@ -896,8 +888,9 @@ def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
 	print(f"top-{len(recommended_tokens)} recommeded token(s): {recommended_tokens}")
+	"""
 	for _, usr in enumerate(nUsers_with_max_cosine):
-		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
+		#tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 		for recTK in recommended_tokens:
 			print(f">> recTK: {recTK}", end="\t")
 			#print(type(users_tokens_df[users_tokens_df["user_ip"]==usr]["selected_content"].values.tolist()[0]))
@@ -907,6 +900,14 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 			#content = 
 		#print(content)
 		#print("+"*180)
+	"""
+	for recTK_idx, recTK in enumerate(recommended_tokens):
+		print(f">> recTK[{recTK_idx}]: {recTK}")
+		for iUSR, vUSR in enumerate(nUsers_with_max_cosine):
+			print(vUSR)
+			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==vUSR]["selected_content"].values.tolist()[0].get(recTK)
+			print(f"\ttotal_boost: {tboost}\t@idoc: {idoc}")
+			
 
 	#return
 
