@@ -760,7 +760,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	#return
-		
+	
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
 	get_selected_content(cos_sim, topK_recommended_tokens, df_usr_tk)
@@ -908,6 +908,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 		winner_user = None
 		winner_content = None
 		for iUSR, vUSR in enumerate(nUsers_with_max_cosine):
+			tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
 			print(vUSR, end="\t")
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==vUSR]["selected_content"].values.tolist()[0].get(recTK)
 			print(f"[total_boost, idoc]: [{tboost}, {idoc}]")
@@ -915,8 +916,8 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 				max_boost = tboost
 				max_boost_idoc = idoc
 				winner_user = vUSR
-		print(f"winner: {max_boost} | idoc: {max_boost_idoc} | {winner_user}".center(100, " "))
-		user_best_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()[0]
+		print(f"winner: {winner_user} | idoc: {max_boost_idoc} | {max_boost}".center(100, " "))
+		user_best_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()#[0]
 		#print(user_best_doc)
 		print(len(user_best_doc), type(user_best_doc))
 		print("-"*120)
