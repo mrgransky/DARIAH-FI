@@ -125,8 +125,8 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-#dfs_path = os.path.join( NLF_DATASET_PATH, f"dfs_unq")
-dfs_path = os.path.join( NLF_DATASET_PATH, f"dfs")
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dfs_unq")
+#dfs_path = os.path.join( NLF_DATASET_PATH, f"dfs")
 
 def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	matrix = sp_mtrx.toarray()
@@ -651,7 +651,7 @@ def save_vocab(vb, fname:str=""):
 
 def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname
-	print(f"<<>> Saving {type(pkl)} might take a while...\n{dump_file_name}")
+	print(f"<<<==>>> Saving {type(pkl)} might take a while...\n{dump_file_name}")
 	st_t = time.time()
 	with open(dump_file_name , "wb" ) as f:
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
