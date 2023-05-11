@@ -895,7 +895,6 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 		winner_user = None
 		winner_content = None
 		for iUSR, vUSR in enumerate(nUsers_with_max_cosine):
-			tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=vUSR)
 			print(vUSR, end="\t")
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==vUSR]["selected_content"].values.tolist()[0].get(recTK)
 			print(f"[total_boost, idoc]: [{tboost}, {idoc}]")
@@ -903,10 +902,10 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 				max_boost = tboost
 				max_boost_idoc = idoc
 				winner_user = vUSR
-		print(f"winner: {winner_user} | idoc: {max_boost_idoc} | {max_boost}".center(120, "*"))
-		user_best_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()[0][max_boost_idoc]
+		user_best_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()[0]
+		print(f"winner: {winner_user} idoc: {max_boost_idoc} / ALL:|{len(user_best_doc)}| {max_boost}".center(120, "*"))
 		print(len(user_best_doc), type(user_best_doc))
-		print(user_best_doc)
+		print(user_best_doc[max_boost_idoc])
 		print("-"*120)
 
 	#return
