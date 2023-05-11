@@ -917,7 +917,8 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recom
 				winner_user = vUSR
 		print(f"winner: {max_boost} | idoc: {max_boost_idoc} | {winner_user}".center(100, " "))
 		user_best_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()[0]
-		print(user_best_doc)
+		#print(user_best_doc)
+		print(len(user_best_doc))
 		print("-"*120)
 
 	#return
