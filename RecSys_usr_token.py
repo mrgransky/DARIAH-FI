@@ -796,14 +796,16 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
-def get_cs_sklearn(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 
 	print(f"Getting Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU.reshape(1, -1), RF) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 
-	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=norm_sp)
+	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
+
 	"""
 	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
 	
@@ -956,8 +958,6 @@ def plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cos_sim_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
-
 
 def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
