@@ -15,8 +15,6 @@ args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-load_import(lm=args.lmMethod)
-
 lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"spacy": spacy_tokenizer,
 											"trankit": trankit_lemmatizer,

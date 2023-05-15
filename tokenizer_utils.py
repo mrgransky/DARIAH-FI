@@ -33,12 +33,12 @@ lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
 										"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
 														"package": 		'ftb',
 													},
-										}
-stanza_multi_pipeline = MultilingualPipeline(lang_id_config=lang_id_config, 
-																	use_gpu=True,
-																	lang_configs=lang_configs,
-																	download_method=DownloadMethod.REUSE_RESOURCES,
-																	)
+							}
+stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
+																							use_gpu=True,
+																							lang_configs=lang_configs,
+																							download_method=DownloadMethod.REUSE_RESOURCES,
+																					)
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
