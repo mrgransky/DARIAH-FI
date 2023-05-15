@@ -883,6 +883,7 @@ def get_cs_sklearn(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=N
 	return cos_sim
 
 def plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+	sp_type = "Normalized" if norm_sp else "Original"
 	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
