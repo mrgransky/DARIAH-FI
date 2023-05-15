@@ -15,6 +15,8 @@ args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
+load_import(lm=args.lmMethod)
+
 lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"spacy": spacy_tokenizer,
 											"trankit": trankit_lemmatizer,
@@ -53,10 +55,21 @@ def get_snippet_raw_text(search_results_list):
 
 def get_complete_BoWs(dframe,):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
+
 	print(f">> Extracting texts from query phrases...")
 	st_t = time.time()
 	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+	
+	print(f">> Extracting texts from collection query phrases...")
+	st_t = time.time()
+	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
+
+	print(f">> Extracting texts from clipping query phrases...")
+	st_t = time.time()
+	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
 
 	print(f">> Extracting texts from newspaper content...")
 	st_t = time.time()
@@ -67,7 +80,7 @@ def get_complete_BoWs(dframe,):
 	st_t = time.time()
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_snippet_raw_text, na_action='ignore')
 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-	
+
 	#print(dframe.info())
 	#print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
 	#print(f"<>"*120)
@@ -79,26 +92,20 @@ def get_complete_BoWs(dframe,):
 	for n, g in dframe.groupby("user_ip"):
 		users_list.append(n)
 		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ]
+		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
+		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
 		ls = [ sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ]
 		lc = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ]
-		ltot = lq + ls + lc
+		ltot = lq + lcol + lclp + ls + lc
 		raw_texts_list.append( ltot )
 
-	print(len(users_list), len(raw_texts_list), )
-	"""
-	raw_docs_list = list()
-	for itm in raw_texts_list:
-		#print(f">>>> item: (none: {itm is None})\tlen: {len(itm)}: {itm}")
-		if ( itm is not None and len(itm) > 0 ):
-			for subitem in itm:
-				#print(f"<<!>> subitem: (none: {subitem is None})\tlen: {len(subitem)}")
-				#if ( subitem.isalpha() or subitem.isdigit() ):
-				if re.search(r"\S", subitem):
-					#print(f"<> {subitem}")
-					raw_docs_list.append(subitem)
-	"""
+	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
+
 	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
+
+	print(f"<<!>> unique query phrases: {len(list(set(raw_docs_list)))}")
+	raw_docs_list = list(set(raw_docs_list))
 
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.lz4")
