@@ -803,7 +803,7 @@ def get_cs_sklearn(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=N
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU.reshape(1, -1), RF) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
-	plot_cs()
+	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=norm_sp)
 	"""
 	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
 	
