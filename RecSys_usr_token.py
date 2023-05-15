@@ -672,7 +672,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=25, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	cos_sim = get_cosine_similarity(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
@@ -796,13 +796,15 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
-def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+def get_cs_sklearn(QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 
 	print(f"Getting Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU.reshape(1, -1), RF) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
+	plot_cs()
+	"""
 	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
 	
 	alphas = np.ones_like(cos_sim.flatten())
@@ -877,8 +879,84 @@ def get_cosine_similarity(QU, RF, query_phrase, query_token, users_tokens_df, no
 	plt.clf()
 	plt.close(f)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
-
+	"""
 	return cos_sim
+
+def plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
+	alphas = np.ones_like(cos_sim.flatten())
+	scales = 100*np.ones_like(cos_sim.flatten())
+	for i, v in np.ndenumerate(cos_sim.flatten()):
+		if v==0:
+			alphas[i] = 0.05
+			scales[i] = 5
+
+	f, ax = plt.subplots()
+	ax.scatter(	x=np.arange(len(cos_sim.flatten())), 
+							y=cos_sim.flatten(), 
+							facecolor="g", 
+							s=scales, 
+							edgecolors='w',
+							alpha=alphas,
+							marker=".",
+						)
+	
+	N=3
+	if np.count_nonzero(cos_sim.flatten()) < N:
+		N = np.count_nonzero(cos_sim.flatten())
+	
+	topN_max_cosine_user_idx = np.argsort(cos_sim.flatten())[-N:]
+	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
+	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+
+	ax.scatter(x=topN_max_cosine_user_idx, y=topN_max_cosine, facecolor='none', marker="o", edgecolors="r", s=100)
+	#ax.set_xlabel('Users', fontsize=10)
+	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
+	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0], 
+							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0],
+							rotation=90,
+							fontsize=10.0,
+							)
+
+	#ax.grid(linestyle="dashed", linewidth=1.5, alpha=0.5)
+	ax.grid(which = "major", linewidth = 1)
+	ax.grid(which = "minor", linewidth = 0.2)
+	ax.minorticks_on()
+	ax.set_axisbelow(True)
+	ax.margins(1e-3, 3e-2)
+	ax.spines[['top', 'right']].set_visible(False)
+
+	plt.text(	x=0.5, 
+						y=0.94, 
+						s=f"Raw Input Query Phrase: {query_phrase}", 
+						fontsize=10.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+	plt.text(	x=0.5,
+						y=0.91,
+						s=f"Query (1 x nItems): {QU.reshape(1, -1).shape} & {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} : Cosine Similarity (1 x nUsers): {cos_sim.shape}",
+						fontsize=9.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+	plt.text(	x=0.5,
+						y=0.88,
+						s=f"{N}-Max cosine(s): {nUsers_with_max_cosine} : {topN_max_cosine}",
+						fontsize=8.5,
+						ha="center", 
+						color="r",
+						transform=f.transFigure,
+					)
+	
+	plt.subplots_adjust(top=0.86, wspace=0.1)
+
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cos_sim_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+
 
 def get_nUsers_with_max(cos_sim, users_tokens_df, N:int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
