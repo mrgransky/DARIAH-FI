@@ -724,10 +724,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
-		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0]
+		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		print(f"{idx_cosine} => cos{cos_sim_idx[0, idx_cosine]}: {cos_sim[0, idx_cosine]}")
 
-		avgrec = avgrec + (cos_sim[0, cos_sim_idx[0, iUser]] * userInterest)
+		avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
 
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
