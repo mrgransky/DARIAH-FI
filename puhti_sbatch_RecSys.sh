@@ -40,7 +40,7 @@ if [ $user == 'alijani' ]; then
 	source activate py3_gpu
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
+	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
 fi
 
 python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'trankit'
