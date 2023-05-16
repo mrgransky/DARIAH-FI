@@ -674,7 +674,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	#cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
- 
+
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
 				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
@@ -685,7 +685,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		return
 
 	plot_tokens_by_max(cos_sim, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
-	#return
+	return
 	nUsers, nItems = sp_mat_rf.shape
 	print(f"Getting avgRecSysVec (1 x nItems) |nUsers={nUsers}|, |nItems={nItems}|".center(120, "-"))
 	#print("#"*120)
@@ -826,6 +826,8 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	index.add(RF)	 
 	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
+	print(sorted_cosine_idx)
+	print(sorted_cosine)
 	plot_cs_faiss(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
