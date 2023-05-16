@@ -309,7 +309,7 @@ def get_selected_content(cos_sim, cos_sim_idx, recommended_tokens, df_users_toke
 						f"contain(s) {len(tks_list)} TOKEN(s) {type(tks_list)}"
 					)			
 			for iTK, vTK in enumerate(recommended_tokens):
-				print(f"recTK[{iTK}]: {vTK} => previous_counter: {user_selected_content_counter} & current_counter: {tks_list.count(vTK)}")
+				print(f"recTK[{iTK}]: {vTK:<30}=> previous_counter: {user_selected_content_counter:<15}current_counter: {tks_list.count(vTK)}")
 				if tks_list.count(vTK) > user_selected_content_counter:
 					print(f"bingoo, found with token[{iTK}]: {vTK}: {tks_list.count(vTK)}".center(80, " "))
 					user_selected_content_counter = tks_list.count(vTK)
@@ -317,7 +317,7 @@ def get_selected_content(cos_sim, cos_sim_idx, recommended_tokens, df_users_toke
 					user_selected_content_idx = idx_cnt
 
 			#print("-"*100)
-		print(f"\n{usr} selected content @idx: {user_selected_content_idx} | num_occurrence(s): {user_selected_content_counter}")
+		print(f"\n{usr} selected content @idx: {user_selected_content_idx} | num_occurrence(s): {user_selected_content_counter}:\n")
 		#print(f"\nSelected content:")
 		print(user_selected_content)
 		print("+"*180)
@@ -950,9 +950,9 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 				winner_user = vUSR
 		if winner_user:
 			user_all_doc = users_tokens_df[users_tokens_df["user_ip"]==winner_user]["nwp_content_raw_text"].values.tolist()[0]
-			print(f"winner: {winner_user}, idoc: {max_boost_idoc} / ALL:|{len(user_all_doc)}|, {max_boost}".center(120, "*"))
+			print(f"winner: {winner_user}, idoc: {max_boost_idoc} / ALL:|{len(user_all_doc)}|, {max_boost}".center(120, " "))
 			user_best_doc = user_all_doc[max_boost_idoc]
-			print(f"content {type(user_best_doc)} with {len(user_best_doc)} character(s):")
+			print(f"\ncontent {type(user_best_doc)} with {len(user_best_doc)} character(s):\n")
 			print(user_best_doc)
 		print("-"*120)
 
