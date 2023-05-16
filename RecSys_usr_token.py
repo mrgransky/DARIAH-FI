@@ -857,7 +857,7 @@ def plot_cs_faiss(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
-	topN_max_cosine_user_idx = cos_sim_idx.flatten()[-N:]
+	topN_max_cosine_user_idx = cos_sim_idx.flatten()[:N]
 	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
 	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
 
