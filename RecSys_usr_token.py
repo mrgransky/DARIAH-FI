@@ -780,7 +780,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_usr_tk)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	
-	get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
@@ -838,8 +838,6 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
 	sorted_cosine = np.flip(np.sort(cos_sim)) # descending
 	sorted_cosine_idx = np.flip(cos_sim.argsort()) # descending
-	#plot_cs_sklearn(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
-	#return cos_sim
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	print(sorted_cosine_idx.flatten()[:17])
 	print(sorted_cosine.flatten()[:17])
