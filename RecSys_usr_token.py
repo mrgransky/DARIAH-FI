@@ -719,7 +719,9 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		
-		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
+		#userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
+		userInterest = normalize(userInterest, norm="l2", axis=1)
+
 
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
@@ -812,10 +814,11 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	sp_type = "Normalized" if norm_sp else "Original"
 	device = "GPU" if torch.cuda.is_available() else "CPU"
 	print(f"Faiss {device} Cosine Similarity: "
-			 	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+			 	f"QUERY: {QU.reshape(1, -1).shape} vs. REFERENCE: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	RF = normalize(RF, norm="l2", axis=1)
 	QU = QU.reshape(1, -1)
-	QU = QU / np.linalg.norm(QU)
+	#QU = QU / np.linalg.norm(QU)
+	QU = normalize(QU, norm="l2", axis=1)
 
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	st_t = time.time()
