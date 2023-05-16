@@ -701,21 +701,21 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 	st_t = time.time()
-	#for iU, vU in enumerate(df_usr_tk['user_ip'].values.tolist()):
-	for iUser in cos_sim_idx.flatten():		
+	for iU, vU in enumerate(df_usr_tk['user_ip'].values.tolist()):
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 
-		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
-		print(f"<> userInterest: {userInterest.shape} " 
-					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
-					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
-				)
-			
 		print(f"avgrec (previous): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		
+
+		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
+
+		print(f"<> userInterest: {userInterest.shape} " 
+					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
+					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
+				)
+				
 		#userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
 		userInterest = normalize(userInterest, norm="l2", axis=1)
 
@@ -724,9 +724,9 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
-		print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
+		print(f"{cos_sim_idx[0, iUser]} => cos[{cos_sim_idx[0, iUser]}]: {cos_sim[0, cos_sim_idx[0, iUser]]}")
 
-		avgrec = avgrec + (cos_sim[0, iUser] * userInterest)
+		avgrec = avgrec + (cos_sim[0, cos_sim_idx[0, iUser]] * userInterest)
 
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
