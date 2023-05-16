@@ -672,9 +672,9 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=25, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim_faiss = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	assert cos_sim == cos_sim_faiss, f"sklearn != faiss"
+	#cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	#assert cos_sim == cos_sim_faiss, f"sklearn != faiss"
  
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
@@ -799,7 +799,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	print(f"Faiss GPU: {torch.cuda.is_available()} Cosine Similarity: "
+	device = "GPU" if torch.cuda.is_available() else "CPU"
+	print(f"Faiss {device} Cosine Similarity: "
        	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	# TODO: calcualte cosine similarity using faiss
@@ -816,7 +817,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	cos_sim, I = index.search(QU.reshape(1, -1), k=k)
 	print(f">> rf: {RF.shape} | qu: {QU.reshape(1, -1).shape} cosine: {cos_sim.shape}")
 
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	
 	return cos_sim
@@ -826,7 +827,7 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	print(f"Sklearn Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU.reshape(1, -1), RF) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 
 	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 
