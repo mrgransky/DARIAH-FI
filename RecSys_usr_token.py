@@ -799,7 +799,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	print(f"Sklearn Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	print(f"Faiss GPU: {torch.cuda.is_available()} Cosine Similarity:" 
+       	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	# TODO: calcualte cosine similarity using faiss
 	# Create an index with the normalized vectors
