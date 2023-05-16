@@ -827,8 +827,8 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	index.add(RF)	 
 	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
-	print(sorted_cosine_idx)
-	print(sorted_cosine)
+	print(sorted_cosine_idx.flatten()[:12])
+	print(sorted_cosine.flatten()[:12])
 	plot_cs_faiss(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
