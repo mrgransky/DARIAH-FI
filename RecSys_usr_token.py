@@ -704,7 +704,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	st_t = time.time()
 	for iU, vU in enumerate(df_usr_tk['user_ip'].values.tolist()):
 		iUser = int(df_usr_tk.index[df_usr_tk['user_ip'] == vU].tolist()[0])
-		print(iU, iUser)
+		#print(iU, iUser)
+		assert iU == iUser, f"{iU} != {iUser}"
 
 		userInterest = sp_mat_rf.toarray()[iUser, :]
 		
