@@ -676,7 +676,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	cos_sim = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	#assert cos_sim == cos_sim_faiss, f"sklearn != faiss"
  
-	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)}\t" 
+	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
 				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
 			)
@@ -805,7 +805,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	QU = QU.reshape(1, -1)
 	norm = np.linalg.norm(RF, axis=1)
 	RF = RF / norm[:, np.newaxis]
-	QU = np.where(np.linalg.norm(QU)!=0, QU/np.linalg.norm(QU), 0.0)
+	QU = QU / np.linalg.norm(QU)
 
 	st_t = time.time()
 	# TODO: calcualte cosine similarity using faiss
