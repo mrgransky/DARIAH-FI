@@ -676,7 +676,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
-				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
+				f"Allzero: {np.all(cos_sim.flatten()==0.0)} "
 				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
 			)
 	
@@ -702,37 +702,37 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print("#"*100)
 	st_t = time.time()
 	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
-		"""
+		
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"avgrec (previous): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		"""
+		
 		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
-		"""
+		
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
-		"""		
+		
 		userInterest = normalize(userInterest, norm="l2", axis=1)
-		"""
+		
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
-		"""
+		
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"{idx_cosine} => cos[{cos_sim_idx[0, idx_cosine]}]: {cos_sim[0, idx_cosine]}")
 		avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
-		"""
+		
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*150)
-		"""
+		
 	avgrec = avgrec / np.sum(cos_sim)
 
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
