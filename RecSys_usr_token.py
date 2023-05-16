@@ -51,7 +51,7 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_complete_BoWs(dframe,):
+def get_complete_BoWs(dframe:pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 
 	print(f">> Extracting texts from query phrases...")
