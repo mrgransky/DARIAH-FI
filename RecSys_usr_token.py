@@ -933,8 +933,8 @@ def get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df:pd.DataFrame, N:in
 	print(nUsers_with_max_cosine, topN_max_cosine)
 	return nUsers_with_max_cosine
 
-def get_nwp_cnt_by_nUsers_with_max(cos_sim, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
-	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, users_tokens_df, N=3)
+def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	print(f"top-{len(recommended_tokens)} recommeded token(s): {recommended_tokens}")
 	for recTK_idx, recTK in enumerate(recommended_tokens):
 		print(f">> recTK[{recTK_idx}]: {recTK}")
