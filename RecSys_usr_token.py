@@ -672,8 +672,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=25, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	#cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	#cos_sim = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	#assert cos_sim == cos_sim_faiss, f"sklearn != faiss"
  
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
@@ -702,9 +702,12 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 	st_t = time.time()
-	for iUser in range(nUsers):
+	for iU, vU in enumerate(df_usr_tk['user_ip'].values.tolist()):
+		iUser = int(df_usr_tk.index[df_usr_tk['user_ip'] == vU].tolist()[0])
+		print(iU, iUser)
+
 		userInterest = sp_mat_rf.toarray()[iUser, :]
-		"""
+		
 		print(f"iUSR: {iUser}\t\t{df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
@@ -715,24 +718,24 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		"""
+		
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
-		"""
+		
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
 		print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
-		"""
+		
 		avgrec = avgrec + (cos_sim[0, iUser] * userInterest)
-		"""
+		
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*150)
-		"""
+		
 	avgrec = avgrec / np.sum(cos_sim)
 	
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
@@ -821,8 +824,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	 
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	cos_sim, I = index.search(QU, k=k)
-	print(f">> rf: {RF.shape} | qu: {QU.shape} cosine: {cos_sim.shape}")
-
+	
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	
