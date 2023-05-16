@@ -673,7 +673,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
 	#cos_sim = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim, _ = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
  
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)}\t"
@@ -701,14 +701,11 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 	st_t = time.time()
-	for iU, vU in enumerate(df_usr_tk['user_ip'].values.tolist()):
-		iUser = int(df_usr_tk.index[df_usr_tk['user_ip'] == vU].tolist()[0])
-		#print(iU, iUser)
-		assert iU == iUser, f"{iU} != {iUser}"
+	#for iU, vU in enumerate(df_usr_tk['user_ip'].values.tolist()):
+	for iUser in cos_sim_idx.flatten():		
+		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 
 		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
-		
-		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
