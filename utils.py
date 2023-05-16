@@ -18,8 +18,8 @@ import webbrowser
 import string
 import time
 import logging
-import warnings
-warnings.filterwarnings('ignore')
+#import warnings
+#warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd

@@ -803,8 +803,10 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	print(f"Faiss {device} Cosine Similarity: "
 			 	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	QU = QU.reshape(1, -1)
-	norm = np.linalg.norm(RF, axis=1)
-	RF = RF / norm[:, np.newaxis]
+	
+	#norm = np.linalg.norm(RF, axis=1)
+	#RF = RF / norm[:, np.newaxis]
+	RF = normalize(RF, norm="l2", axis=1)
 	QU = QU / np.linalg.norm(QU)
 
 	st_t = time.time()
