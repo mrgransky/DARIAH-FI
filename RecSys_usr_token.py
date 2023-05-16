@@ -801,7 +801,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	sp_type = "Normalized" if norm_sp else "Original"
 	device = "GPU" if torch.cuda.is_available() else "CPU"
 	print(f"Faiss {device} Cosine Similarity: "
-       	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+			 	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	# TODO: calcualte cosine similarity using faiss
 	# Create an index with the normalized vectors
@@ -811,9 +811,8 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	else:
 		index = faiss.IndexFlatIP(RF.shape[1])
 	index.add(RF)
-
-	# Calculate the cosine similarity
-	k=RF.shape[0] if RF.shape[0]<2048 else 2048-1 # getting k nearest neighbors
+	 
+	k=2048 if RF.shape[0]>=2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	cos_sim, I = index.search(QU.reshape(1, -1), k=k)
 	print(f">> rf: {RF.shape} | qu: {QU.reshape(1, -1).shape} cosine: {cos_sim.shape}")
 
