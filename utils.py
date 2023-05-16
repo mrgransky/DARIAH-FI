@@ -1,5 +1,7 @@
 import os
 import sys
+import torch
+import faiss
 import subprocess
 import urllib
 import requests
