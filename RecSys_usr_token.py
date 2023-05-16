@@ -893,7 +893,7 @@ def plot_cs_faiss(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users
 					)
 	plt.text(	x=0.5,
 						y=0.88,
-						s=f"{N}-Max cosine(s): {nUsers_with_max_cosine} : {topN_max_cosine}",
+						s=f"{N}-Max cosine(s): {nUsers_with_max_cosine} : {cos_sim.flatten()[:N]}",
 						fontsize=8.5,
 						ha="center", 
 						color="r",
