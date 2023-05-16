@@ -812,7 +812,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 		index = faiss.IndexFlatIP(RF.shape[1])
 	index.add(RF)
 	 
-	k=2048 if RF.shape[0]>=2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
+	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	cos_sim, I = index.search(QU.reshape(1, -1), k=k)
 	print(f">> rf: {RF.shape} | qu: {QU.reshape(1, -1).shape} cosine: {cos_sim.shape}")
 
