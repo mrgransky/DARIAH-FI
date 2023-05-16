@@ -706,7 +706,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		#print(iU, iUser)
 		assert iU == iUser, f"{iU} != {iUser}"
 
-		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(-1, 1)
+		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
 		
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
