@@ -709,7 +709,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 		userInterest = sp_mat_rf.toarray()[iUser, :]
 		
-		print(f"iUSR: {iUser}\t\t{df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
+		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
@@ -806,46 +806,111 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	device = "GPU" if torch.cuda.is_available() else "CPU"
 	print(f"Faiss {device} Cosine Similarity: "
 			 	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
-	QU = QU.reshape(1, -1)
-	
-	#norm = np.linalg.norm(RF, axis=1)
-	#RF = RF / norm[:, np.newaxis]
 	RF = normalize(RF, norm="l2", axis=1)
+	QU = QU.reshape(1, -1)
 	QU = QU / np.linalg.norm(QU)
 
+	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	st_t = time.time()
-	# TODO: calcualte cosine similarity using faiss
-	# Create an index with the normalized vectors
 	if torch.cuda.is_available():
 		res = faiss.StandardGpuResources() # use a single GPU
 		index = faiss.GpuIndexFlatIP(res, RF.shape[1]) 
 	else:
 		index = faiss.IndexFlatIP(RF.shape[1])
-	index.add(RF)
-	 
-	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
-	cos_sim, I = index.search(QU, k=k)
-	
+	index.add(RF)	 
+	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
-	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
-	
-	return cos_sim
+	plot_cs_faiss(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
+	return sorted_cosine
 
 def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	QU = QU.reshape(1, -1) #qu_ (nItems,) => (1, nItems) 
-	print(f"Sklearn Cosine Similarity: QUERY_VEC: {QU.shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	print(f"Sklearn Cosine Similarity QUERY: {QU.shape} vs REFERENCE: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
-
-	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
-
+	plot_cs_sklearn(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return cos_sim
 
-def plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+def plot_cs_faiss(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	print(f"<> Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
+	print(f"Plotting FAISS Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
+	alphas = np.ones_like(cos_sim.flatten())
+	scales = 100*np.ones_like(cos_sim.flatten())
+	for i, v in np.ndenumerate(cos_sim.flatten()):
+		if v==0:
+			alphas[i] = 0.05
+			scales[i] = 5
+
+	f, ax = plt.subplots()
+	ax.scatter(	x=cos_sim_idx.flatten(),
+							y=cos_sim.flatten(), 
+							facecolor="g", 
+							s=scales, 
+							edgecolors='w',
+							alpha=alphas,
+							marker=".",
+						)
+	
+	N=3
+	if np.count_nonzero(cos_sim.flatten()) < N:
+		N = np.count_nonzero(cos_sim.flatten())
+	
+	topN_max_cosine_user_idx = cos_sim_idx.flatten()[-N:]
+	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
+	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+
+	ax.scatter(x=topN_max_cosine_user_idx, y=topN_max_cosine, facecolor='none', marker="o", edgecolors="r", s=100)
+	#ax.set_xlabel('Users', fontsize=10)
+	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
+	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
+	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0], 
+							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0],
+							rotation=90,
+							fontsize=10.0,
+							)
+
+	#ax.grid(linestyle="dashed", linewidth=1.5, alpha=0.5)
+	ax.grid(which = "major", linewidth = 1)
+	ax.grid(which = "minor", linewidth = 0.2)
+	ax.minorticks_on()
+	ax.set_axisbelow(True)
+	ax.margins(1e-3, 3e-2)
+	ax.spines[['top', 'right']].set_visible(False)
+
+	plt.text(	x=0.5, 
+						y=0.94, 
+						s=f"Raw Input Query Phrase: {query_phrase}", 
+						fontsize=10.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+	plt.text(	x=0.5,
+						y=0.91,
+						s=f"Query (1 x nItems): {QU.shape} & {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} : Cosine Similarity (1 x nUsers): {cos_sim.shape}",
+						fontsize=9.0, 
+						ha="center", 
+						transform=f.transFigure,
+					)
+	plt.text(	x=0.5,
+						y=0.88,
+						s=f"{N}-Max cosine(s): {nUsers_with_max_cosine} : {topN_max_cosine}",
+						fontsize=8.5,
+						ha="center", 
+						color="r",
+						transform=f.transFigure,
+					)
+	
+	plt.subplots_adjust(top=0.86, wspace=0.1)
+
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cos_sim_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+
+def plot_cs_sklearn(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
+	sp_type = "Normalized" if norm_sp else "Original"
+	print(f"Plotting Sklearn Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
 	for i, v in np.ndenumerate(cos_sim.flatten()):
