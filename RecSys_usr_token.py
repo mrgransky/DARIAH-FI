@@ -737,11 +737,16 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		print("-"*150)
 		"""
 	avgrec = avgrec / np.sum(cos_sim)
-	
-	print(f"avgRecSys: {avgrec.shape} {type(avgrec)}\t" 
-				f"Allzero: {np.all(avgrec.flatten() == 0.0)}\t"
-				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})")
-	
+
+	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
+				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
+				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})"
+			)
+	print(f">> checking avgRecSys")
+	print(avgrec.flatten()[:10])
+	print("#"*100)
+	print(avgrec.flatten()[-10:])
+	print(f">> checking avgRecSys")
 	f, ax = plt.subplots()
 	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
 							y=avgrec.flatten(), 
@@ -756,11 +761,10 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	plt.clf()
 	plt.close(f)
 
-	all_recommended_tks_idx = avgrec.flatten().argsort()
-	all_rec_sorted = np.sort(avgrec.flatten())
 
-	print(f">> idx:\n{all_recommended_tks_idx[-12:]}")
-	print(f">> sorted_recsys:\n{all_rec_sorted[-12:]}")
+
+	print(f">> idx:\n{avgrec.flatten().argsort()[-12:]}")
+	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-12:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	print(f"TOP-15: (all: {len(all_recommended_tks)}) : {all_recommended_tks[-15:]}")
@@ -769,8 +773,11 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	#return
-	
+	return
+
+
+
+
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
 	get_selected_content(cos_sim, topK_recommended_tokens, df_usr_tk)
