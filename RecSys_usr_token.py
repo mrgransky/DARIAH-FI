@@ -857,11 +857,9 @@ def plot_cs_faiss(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
-	topN_max_cosine_user_idx = cos_sim_idx.flatten()[:N]
-	topN_max_cosine = cos_sim.flatten()[topN_max_cosine_user_idx]
-	nUsers_with_max_cosine = users_tokens_df.loc[topN_max_cosine_user_idx, 'user_ip'].values.tolist()
+	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values.tolist()
 
-	ax.scatter(x=topN_max_cosine_user_idx, y=topN_max_cosine, facecolor='none', marker="o", edgecolors="r", s=100)
+	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
