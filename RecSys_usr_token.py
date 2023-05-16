@@ -706,7 +706,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		#print(iU, iUser)
 		assert iU == iUser, f"{iU} != {iUser}"
 
-		userInterest = sp_mat_rf.toarray()[iUser, :]
+		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(-1, 1)
 		
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
@@ -721,7 +721,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		
 		#userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
 		userInterest = normalize(userInterest, norm="l2", axis=1)
-
 
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
