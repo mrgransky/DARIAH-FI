@@ -707,7 +707,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		assert iU == iUser, f"{iU} != {iUser}"
 
 		userInterest = sp_mat_rf.toarray()[iUser, :]
-		"""		
+		
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"<> userInterest: {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
@@ -718,24 +718,24 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
-		"""
+		
 		userInterest = np.where(np.linalg.norm(userInterest) != 0, userInterest/np.linalg.norm(userInterest), 0.0)
-		"""
+
 		print(f"<> userInterest(norm): {userInterest.shape} " 
 					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 
 		print(f"cos[{iUser}]: {cos_sim[0, iUser]}")
-		"""
+
 		avgrec = avgrec + (cos_sim[0, iUser] * userInterest)
-		"""
+
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*150)
-		"""
+
 	avgrec = avgrec / np.sum(cos_sim)
 
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
@@ -763,7 +763,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 
 
-	print(f">> idx:\n{avgrec.flatten().argsort()[-12:]}")
+	print(f"idx: {avgrec.flatten().argsort()[-12:]}")
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-12:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
