@@ -802,6 +802,11 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	device = "GPU" if torch.cuda.is_available() else "CPU"
 	print(f"Faiss {device} Cosine Similarity: "
 			 	f"QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	QU = QU.reshape(1, -1)
+	norm = np.linalg.norm(RF, axis=1)
+	RF = RF / norm[:, np.newaxis]
+	QU = np.where(np.linalg.norm(QU)!=0, QU/np.linalg.norm(QU), 0.0)
+
 	st_t = time.time()
 	# TODO: calcualte cosine similarity using faiss
 	# Create an index with the normalized vectors
@@ -813,8 +818,8 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	index.add(RF)
 	 
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
-	cos_sim, I = index.search(QU.reshape(1, -1), k=k)
-	print(f">> rf: {RF.shape} | qu: {QU.reshape(1, -1).shape} cosine: {cos_sim.shape}")
+	cos_sim, I = index.search(QU, k=k)
+	print(f">> rf: {RF.shape} | qu: {QU.shape} cosine: {cos_sim.shape}")
 
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
@@ -823,9 +828,10 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 
 def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	print(f"Sklearn Cosine Similarity: QUERY_VEC: {QU.reshape(1, -1).shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	QU = QU.reshape(1, -1) #qu_ (nItems,) => (1, nItems) 
+	print(f"Sklearn Cosine Similarity: QUERY_VEC: {QU.shape} vs. REFERENCE_SPARSE_MATRIX: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
-	cos_sim = cosine_similarity(QU.reshape(1, -1), RF) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 
 	plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
@@ -887,7 +893,7 @@ def plot_cs(cos_sim, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp
 					)
 	plt.text(	x=0.5,
 						y=0.91,
-						s=f"Query (1 x nItems): {QU.reshape(1, -1).shape} & {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} : Cosine Similarity (1 x nUsers): {cos_sim.shape}",
+						s=f"Query (1 x nItems): {QU.shape} & {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} : Cosine Similarity (1 x nUsers): {cos_sim.shape}",
 						fontsize=9.0, 
 						ha="center", 
 						transform=f.transFigure,
