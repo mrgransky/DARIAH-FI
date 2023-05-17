@@ -691,7 +691,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print("#"*100)
 	st_t = time.time()
 	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
-		
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"avgrec (previous): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
@@ -728,11 +727,11 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})"
 			)
-	print(f"checking avgRecSys".center(100, "-"))
+	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
 	print(avgrec.flatten()[:10])
 	print("#"*100)
 	print(avgrec.flatten()[-10:])
-	print(f"checking avgRecSys".center(100, "-"))
+	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
 
 	f, ax = plt.subplots()
 	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
@@ -750,7 +749,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 
 
-	print(f"idx: {avgrec.flatten().argsort()[-20:]}")
+	print(f"idx:\n{avgrec.flatten().argsort()[-20:]}")
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-20:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
@@ -760,9 +759,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	return
-
-
+	#return
 
 
 	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
