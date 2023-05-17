@@ -749,8 +749,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 
 
-	print(f"idx: {avgrec.flatten().argsort()[-12:]}")
-	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-12:]}")
+	print(f"idx: {avgrec.flatten().argsort()[-20:]}")
+	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-20:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	print(f"TOP-15: (all: {len(all_recommended_tks)}) : {all_recommended_tks[-15:]}")
@@ -759,7 +759,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)} : {topK_recommended_tks_weighted_user_interest}")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	#return
+	return
 
 
 
