@@ -363,7 +363,7 @@ def tokenize_query_phrase(qu_list):
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
-def get_users_tokens_df(dframe, bow):
+def get_users_tokens_df(dframe: pd.DataFrame, bow):
 	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
 	print(f"\n>> Getting {df_preprocessed_fname} ...")
@@ -417,7 +417,7 @@ def get_users_tokens_df(dframe, bow):
 	
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
-	print(f"USERs-TOKENs DataFrame".center(110, " "))
+	print(f"USERs-TOKENs DataFrame".center(120, " "))
 	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
@@ -493,7 +493,7 @@ def get_users_tokens_df(dframe, bow):
 																					'snippets_raw_text',
 																				]
 															)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(110, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {df_user_token.shape}".center(120, " "))
 
 	print(f"Implicit Feedback".center(100, "-"))
 	st_t = time.time()
@@ -517,7 +517,7 @@ def get_users_tokens_df(dframe, bow):
 	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	"""
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+	print(f"<Elapsed_t: {time.time()-st_t:.2f} s> | {df_user_token.shape}".center(120, " "))
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
 	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
@@ -532,7 +532,7 @@ def get_users_tokens_df(dframe, bow):
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
-	print(f"USERs-TOKENs DataFrame".center(110, " "))
+	print(f"USERs-TOKENs DataFrame".center(120, " "))
 	return df_user_token
 
 def get_sparse_matrix(df):

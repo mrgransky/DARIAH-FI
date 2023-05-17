@@ -8,14 +8,14 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=02-23:59:59
+#SBATCH --time=13-23:59:59
 
 # # # # SBATCH --partition=gpu
 # # # # SBATCH --gres=gpu:v100:1
 # # # # SBATCH --mem=46G
 
-#SBATCH --partition=small
-#SBATCH --mem-per-cpu=32G
+#SBATCH --partition=hugemem_longrun
+#SBATCH --mem-per-cpu=584G
 
 # # # # # # SBATCH --array=0-69
 # # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
