@@ -26,20 +26,20 @@ make_folder(folder_name=dfs_path)
 MODULE=60
 
 # list of all weights:
-weightQueryAppearance = 1.0				# suggested by Jakko: 1.0
-weightSnippetHWAppearance = 0.4		# suggested by Jakko: 0.2
-weightSnippetAppearance = 0.2			# suggested by Jakko: 0.2
-weightContentHWAppearance = 0.1		# suggested by Jakko: 0.05
-weightContentPTAppearance = 0.005	# Did not consider initiially!
-weightContentAppearance = 0.05 		# suggested by Jakko: 0.05
+weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
+weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
+weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
+weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
+weightContentPTAppearance:float = 0.005	# Did not consider initiially!
+weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
 
-w_list = [weightQueryAppearance, 
-					weightSnippetHWAppearance,
-					weightSnippetAppearance,
-					weightContentHWAppearance,
-					weightContentPTAppearance,
-					weightContentAppearance,
-				]
+w_list:List[float] = [weightQueryAppearance, 
+											weightSnippetHWAppearance,
+											weightSnippetAppearance,
+											weightContentHWAppearance,
+											weightContentPTAppearance,
+											weightContentAppearance,
+										]
 
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
@@ -51,7 +51,7 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_complete_BoWs(dframe:pd.DataFrame):
+def get_cBoWs(dframe:pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 
 	print(f">> Extracting texts from query phrases...")
@@ -148,7 +148,7 @@ def get_complete_BoWs(dframe:pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs
 
-def get_bag_of_words(dframe,):
+def get_BoWs(dframe,):
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 
 	print(f">> Extracting texts from query phrases...")
@@ -244,8 +244,8 @@ def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	#print(f"{dframe.user_ip}".center(50, '-'))
 	return updated_vb
 
-def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
-	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights_list
+def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, int]):
+	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
 	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
 
 	for q_tk in dframe.qu_tokens:
@@ -277,10 +277,10 @@ def sum_all_tokens_appearance_in_vb(dframe, weights_list, vb):
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
-	print(f"Found {len(lemmatized_content)} content(s) {type(lemmatized_content)}".center(100, "-"))
+	print(f"Found {len(lemmatized_content)} content(s) {type(lemmatized_content)} [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]".center(150, "-"))
 	for ilm, vlm in enumerate( lemmatized_content ): # [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
 		new_boosts = dict.fromkeys(vb.keys(), 0.0)
-		print(f"cnt[{ilm}] contain(s): {len(vlm)} {type(vlm)} token(s)")
+		print(f"cnt[{ilm}] contain(s): {len(vlm)} token(s) {type(vlm)}")
 		if vlm: # to ensure list is not empty!
 			for iTK, vTK in enumerate( vlm ): # [tk1, tk2, ..., tkN]
 				#print(f"tk@idx:{iTK} | {type(vTK)} | {len(vTK)}")
@@ -506,17 +506,6 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow):
 	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
 	df_user_token["selected_content"] = df_user_token["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	
-	"""
-	print(f"Newspaper content text [lemmatization]: [cnt1, cnt2, ...] => [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...] | might take a while...")
-	st_t = time.time()
-	df_user_token["nwp_content_lemmatized"] = df_user_token["nwp_content_raw_text"].map(lambda lst: [lemmatizer_methods.get(args.lmMethod)(cnt) for cnt in lst if cnt], na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(110, " "))
-
-	print(f">> Getting selected_content")
-	st_t = time.time()
-	df_user_token["selected_content"] = df_user_token["nwp_content_lemmatized"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
-	"""
 	print(f"<Elapsed_t: {time.time()-st_t:.2f} s> | {df_user_token.shape}".center(120, " "))
 
 	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
@@ -567,13 +556,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	
 	if userName.endswith("xenial"):
-		BoWs = get_bag_of_words(dframe=df_inp)
+		BoWs = get_BoWs(dframe=df_inp)
 	else:
-		BoWs = get_complete_BoWs(dframe=df_inp)
+		BoWs = get_cBoWs(dframe=df_inp)
 	#return
 	
-	#BoWs = get_bag_of_words(dframe=df_inp)
-	#BoWs = get_complete_BoWs(dframe=df_inp)
+	#BoWs = get_BoWs(dframe=df_inp)
+	#BoWs = get_cBoWs(dframe=df_inp)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
