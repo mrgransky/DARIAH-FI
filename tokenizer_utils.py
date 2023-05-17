@@ -72,7 +72,7 @@ def stanza_lemmatizer(docs):
 		return
 	# treat all as document
 	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
-	docs = re.sub(r'[%|+|,|;|=|&|\'|*|"|^|~|?|!|—|.|°|•||\(\)|\”\“|:|/|‘|<|>|»|„|«|■|\\|\[\]|-]', ' ', docs ).strip()
+	docs = re.sub(r'[%|+|,|;|=|&|\'|*|"|^|~|?|!|—|.|°|•||\(\)|\”\“|:|/|‘|<|>|»|„|«|♦|■|\\|\[\]|-]+', ' ', docs ).strip()
 
 	print(f'preprocessed: (len: {len(docs)}) >>{docs}<<')
 	if ( not docs or len(docs)==0 ):
@@ -92,7 +92,7 @@ def trankit_lemmatizer(docs):
 
 	# treat all as document
 	docs = re.sub(r'"|<.*?>|[~|*|^][\d]+', '', docs)
-	docs = re.sub(r'[%|+|,|;|=|&|\'|*|"|^|~|?|!|—|.|°|•||\(\)|\”\“|:|/|‘|<|>|»|„|«|■|\\|\[\]|-]', ' ', docs ).strip()
+	docs = re.sub(r'[%|+|,|;|=|&|\'|*|"|^|~|?|!|—|.|°|•||\(\)|\”\“|:|/|‘|<|>|»|„|«|♦|■|\\|\[\]|-]+', ' ', docs ).strip()
 	
 	print(f'preprocessed: (len: {len(docs)}) >>{docs}<<', end='\t')
 	if ( not docs or len(docs)==0 ):
