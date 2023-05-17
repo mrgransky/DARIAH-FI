@@ -728,11 +728,12 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})"
 			)
-	print(f">> checking avgRecSys")
+	print(f"checking avgRecSys".center(100, "-"))
 	print(avgrec.flatten()[:10])
 	print("#"*100)
 	print(avgrec.flatten()[-10:])
-	print(f">> checking avgRecSys")
+	print(f"checking avgRecSys".center(100, "-"))
+
 	f, ax = plt.subplots()
 	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
 							y=avgrec.flatten(), 
