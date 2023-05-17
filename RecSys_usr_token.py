@@ -99,7 +99,7 @@ def get_cBoWs(dframe:pd.DataFrame):
 
 	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 
-	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (subitem and re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
+	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z-ä-ö-å]', subitem) and re.search(r"\S", subitem) and not re.search(r"\d", subitem) ) ]
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	raw_docs_list = list(set(raw_docs_list))
