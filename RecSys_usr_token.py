@@ -798,8 +798,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	device = "GPU" if torch.cuda.is_available() else "CPU"
-	QU = QU.reshape(1, -1)
-	
+	QU = QU.reshape(1, -1).astype(np.float32)
+	RF = RF.astype(np.float32)
 	print(f"<Faiss> {device} Cosine Similarity: "
 			 	f"QUERY: {QU.shape} {type(QU)} {QU.dtype}"
 				f" vs. "
@@ -811,7 +811,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	"""
 	print(f"<Faiss> normalizing RF")
 	faiss.normalize_L2(RF)
-	
+
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	st_t = time.time()
 	if torch.cuda.is_available():
