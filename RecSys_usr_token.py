@@ -710,7 +710,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 		if not np.all(userInterest==0.0):
-			print(f"topK TOKENS user[{iUser}]: {[list(BoWs.keys())[list(BoWs.values()).index( i )] for i in np.flip( np.argsort( userInterest.flatten() ) )[:10] ]}")
+			print(f"topK TOKENS     user[{iUser}]: {[list(BoWs.keys())[list(BoWs.values()).index( i )] for i in np.flip( np.argsort( userInterest.flatten() ) )[:10] ]}")
+			print(f"topK TOKENS val user[{iUser}]: {[v for v in np.flip( np.sort( userInterest.flatten() ) )[:10] ]}")
 		
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
