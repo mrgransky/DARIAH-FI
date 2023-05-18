@@ -247,31 +247,38 @@ def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, int]):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
 	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
-
-	for q_tk in dframe.qu_tokens:
+	print(f"{dframe.user_ip}: "
+				f"qu: {len(dframe.qu_tokens)}, "
+				f"snHW: {len(dframe.snippets_hw_token)}, "
+				f"sn: {len(dframe.snippets_token)}, "
+				f"cntHW: {len(dframe.nwp_content_hw_token)}, "
+				f"cntPT: {len(dframe.nwp_content_pt_token)}, "
+				f"cnt: {len(dframe.nwp_content_lemma_all)}"
+			)
+	for q_tk in dframe.qu_tokens: # [qtk1, qtk2, qtk3, ...]
 		if updated_vocab.get(q_tk) is not None:
 			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
 
 	for sn_hw_tk in dframe.snippets_hw_token:
 		if updated_vocab.get(sn_hw_tk) is not None:
 			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
-		
+
 	for sn_tk in dframe.snippets_token:
 		if updated_vocab.get(sn_tk) is not None:
 			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
-		
+
 	for c_hw_tk in dframe.nwp_content_hw_token:
 		if updated_vocab.get(c_hw_tk) is not None:
 			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
-		
+
 	for c_pt_tk in dframe.nwp_content_pt_token:
 		if updated_vocab.get(c_pt_tk) is not None:
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
-		
+
 	for c_tk in dframe.nwp_content_lemma_all:
 		if updated_vocab.get(c_tk) is not None:
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
-
+	print("*"*100)
 	return updated_vocab
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
@@ -691,7 +698,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print("#"*100)
 	st_t = time.time()
 	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
-		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
+		print(f"iUser[{iUser}]: {df_usr_tk.loc[iUser, 'user_ip']}".center(140, " "))
 		print(f"avgrec (previous): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
@@ -796,22 +803,25 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
-	sp_type = "Normalized" if norm_sp else "Original"
+	sp_type = "Normalized" if norm_sp else "Original" # unimportant!
 	device = "GPU" if torch.cuda.is_available() else "CPU"
-	QU = QU.reshape(1, -1).astype(np.float32)
-	RF = RF.astype(np.float32)
+	QU = QU.reshape(1, -1).astype(np.float32) # QU: (nItems, ) => (1, nItems)
+	RF = RF.astype(np.float32) # RF: (nUsers, nItems) 
+	
 	print(f"<Faiss> {device} Cosine Similarity: "
 			 	f"QUERY: {QU.shape} {type(QU)} {QU.dtype}"
 				f" vs. "
-				f"REFERENCE: {RF.shape} {type(RF)} {RF.dtype}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+				f"REFERENCE: {RF.shape} {type(RF)} {RF.dtype}".center(110, " ")
+			)
 	"""
 	RF = normalize(RF, norm="l2", axis=1)
 	#QU = QU / np.linalg.norm(QU)
 	QU = normalize(QU, norm="l2", axis=1)
 	"""
-	#print(f"<Faiss> normalizing RF")
 	faiss.normalize_L2(RF)
+	faiss.normalize_L2(QU)
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
+
 	st_t = time.time()
 	if torch.cuda.is_available():
 		res = faiss.StandardGpuResources() # use a single GPU
@@ -819,11 +829,9 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	else:
 		index = faiss.IndexFlatIP(RF.shape[1])
 	index.add(RF)
-	#print(f"<Faiss> normalizing QU")
-	faiss.normalize_L2(QU)
-	#print(f"<Faiss> searching for distance & indices | dim: {k}")
 	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
+
 	print(sorted_cosine_idx.flatten()[:17])
 	print(sorted_cosine.flatten()[:17])
 	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
