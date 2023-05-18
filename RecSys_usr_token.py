@@ -693,30 +693,29 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
 		print(f"iUSR: {iUser}: {df_usr_tk.loc[iUser, 'user_ip']}".center(120, " "))
 		print(f"avgrec (previous): {avgrec.shape} "
-					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
+					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		
 		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
 		
-		print(f"<> userInterest: {userInterest.shape} " 
-					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
+		print(f"<> userInterest[{iUser}]: {userInterest.shape} "
+					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
-		
+		userInterest_norm = np.linalg.norm(userInterest)
 		userInterest = normalize(userInterest, norm="l2", axis=1)
-		
-		print(f"<> userInterest(norm): {userInterest.shape} " 
-					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK: {np.argmax(userInterest)}), {userInterest.sum():.1f}) "
+		print(f"<> userInterest(norm={userInterest_norm:.3f})[{iUser}]: {userInterest.shape} " 
+					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 		
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
-		print(f"{idx_cosine} => cos[{cos_sim_idx[0, idx_cosine]}]: {cos_sim[0, idx_cosine]}")
+		print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
 		avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
 		
 		print(f"avgrec (current): {avgrec.shape} "
-					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.1f}) "
+					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*150)
@@ -725,7 +724,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
-				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK: {np.argmax(avgrec)}), {avgrec.sum():.2f})"
+				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
 			)
 	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
 	print(avgrec.flatten()[:10])
@@ -742,7 +741,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 							#alpha=alphas,
 							marker=".",
 						)
-	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK: {np.argmax(avgrec)})")
+	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
 	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
