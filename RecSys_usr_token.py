@@ -253,31 +253,50 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 				f"sn: {len(dframe.snippets_token)}, "
 				f"cntHW: {len(dframe.nwp_content_hw_token)}, "
 				f"cntPT: {len(dframe.nwp_content_pt_token)}, "
-				f"cnt: {len(dframe.nwp_content_lemma_all)}"
+				f"cnt: {len(dframe.nwp_content_lemma_all)}".center(120, " ")
 			)
 	for q_tk in dframe.qu_tokens: # [qtk1, qtk2, qtk3, ...]
 		if updated_vocab.get(q_tk) is not None:
+			print(f"<QU: {q_tk}> w: {w_qu}")
+			print(f"\tprev_vb[{q_tk}]={updated_vocab.get(q_tk)}")
 			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
-
+			print(f"\tcurr_vb[{q_tk}]={updated_vocab.get(q_tk)}")
+			
 	for sn_hw_tk in dframe.snippets_hw_token:
 		if updated_vocab.get(sn_hw_tk) is not None:
+			print(f"<snHW: {sn_hw_tk}> w: {w_hw_sn}")
+			print(f"\tprev_vb[{sn_hw_tk}]={updated_vocab.get(sn_hw_tk)}")
 			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
+			print(f"\tcurr_vb[{sn_hw_tk}]={updated_vocab.get(sn_hw_tk)}")
 
 	for sn_tk in dframe.snippets_token:
 		if updated_vocab.get(sn_tk) is not None:
+			print(f"<sn: {sn_tk}> w: {w_sn}")
+			print(f"\tprev_vb[{sn_tk}]={updated_vocab.get(sn_tk)}")
 			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
+			print(f"\tcurr_vb[{sn_tk}]={updated_vocab.get(sn_tk)}")
 
 	for c_hw_tk in dframe.nwp_content_hw_token:
 		if updated_vocab.get(c_hw_tk) is not None:
+			print(f"<cntHW: {c_hw_tk}> w: {w_hw_cnt}")
+			print(f"\tprev_vb[{c_hw_tk}]={updated_vocab.get(c_hw_tk)}")
 			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
+			print(f"\tcurr_vb[{c_hw_tk}]={updated_vocab.get(c_hw_tk)}")
 
 	for c_pt_tk in dframe.nwp_content_pt_token:
 		if updated_vocab.get(c_pt_tk) is not None:
+			print(f"<cntHW: {c_pt_tk}> w: {w_pt_cnt}")
+			print(f"\tprev_vb[{c_pt_tk}]={updated_vocab.get(c_pt_tk)}")
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
+			print(f"\tcurr_vb[{c_pt_tk}]={updated_vocab.get(c_pt_tk)}")
 
 	for c_tk in dframe.nwp_content_lemma_all:
 		if updated_vocab.get(c_tk) is not None:
+			print(f"<cnt: {c_tk}> w: {w_cnt}")
+			print(f"\tprev_vb[{c_tk}]={updated_vocab.get(c_tk)}")
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
+			print(f"\tcurr_vb[{c_tk}]={updated_vocab.get(c_tk)}")
+
 	print("*"*100)
 	return updated_vocab
 
