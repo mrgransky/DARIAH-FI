@@ -253,46 +253,46 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 				f"sn: {len(dframe.snippets_token)}, "
 				f"cntHW: {len(dframe.nwp_content_hw_token)}, "
 				f"cntPT: {len(dframe.nwp_content_pt_token)}, "
-				f"cnt: {len(dframe.nwp_content_lemma_all)}".center(120, " ")
+				f"cnt: {len(dframe.nwp_content_lemma_all)}".center(140, " ")
 			)
-	for q_tk in dframe.qu_tokens: # [qtk1, qtk2, qtk3, ...]
+	for i, q_tk in enumerate(dframe.qu_tokens): # [qtk1, qtk2, qtk3, ...]
+		print(f"<QU[{i}]: {q_tk}> w: {w_qu} | exists in vb: {updated_vocab.get(q_tk) is not None} ")
 		if updated_vocab.get(q_tk) is not None:
-			print(f"<QU: {q_tk}> w: {w_qu}")
 			print(f"\tprev_vb[{q_tk}]={updated_vocab.get(q_tk)}")
 			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
 			print(f"\tcurr_vb[{q_tk}]={updated_vocab.get(q_tk)}")
 			
-	for sn_hw_tk in dframe.snippets_hw_token:
+	for i, sn_hw_tk in enumerate(dframe.snippets_hw_token):
+		print(f"<snHW[{i}]: {sn_hw_tk}> w: {w_hw_sn} | exists in vb: {updated_vocab.get(sn_hw_tk) is not None} ")
 		if updated_vocab.get(sn_hw_tk) is not None:
-			print(f"<snHW: {sn_hw_tk}> w: {w_hw_sn}")
 			print(f"\tprev_vb[{sn_hw_tk}]={updated_vocab.get(sn_hw_tk)}")
 			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
 			print(f"\tcurr_vb[{sn_hw_tk}]={updated_vocab.get(sn_hw_tk)}")
 
-	for sn_tk in dframe.snippets_token:
+	for i, sn_tk in enumerate(dframe.snippets_token):
+		print(f"<sn[{i}]: {sn_tk}> w: {w_sn} | exists in vb: {updated_vocab.get(sn_tk) is not None} ")
 		if updated_vocab.get(sn_tk) is not None:
-			print(f"<sn: {sn_tk}> w: {w_sn}")
 			print(f"\tprev_vb[{sn_tk}]={updated_vocab.get(sn_tk)}")
 			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
 			print(f"\tcurr_vb[{sn_tk}]={updated_vocab.get(sn_tk)}")
 
-	for c_hw_tk in dframe.nwp_content_hw_token:
+	for i, c_hw_tk in enumerate(dframe.nwp_content_hw_token):
+		print(f"<cntHW[{i}]: {c_hw_tk}> w: {w_hw_cnt} | exists in vb: {updated_vocab.get(c_hw_tk) is not None} ")
 		if updated_vocab.get(c_hw_tk) is not None:
-			print(f"<cntHW: {c_hw_tk}> w: {w_hw_cnt}")
 			print(f"\tprev_vb[{c_hw_tk}]={updated_vocab.get(c_hw_tk)}")
 			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
 			print(f"\tcurr_vb[{c_hw_tk}]={updated_vocab.get(c_hw_tk)}")
 
-	for c_pt_tk in dframe.nwp_content_pt_token:
+	for i, c_pt_tk in enumerate(dframe.nwp_content_pt_token):
+		print(f"<cntPT[{i}]: {c_pt_tk}> w: {w_pt_cnt} | exists in vb: {updated_vocab.get(c_pt_tk) is not None} ")
 		if updated_vocab.get(c_pt_tk) is not None:
-			print(f"<cntHW: {c_pt_tk}> w: {w_pt_cnt}")
 			print(f"\tprev_vb[{c_pt_tk}]={updated_vocab.get(c_pt_tk)}")
 			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
 			print(f"\tcurr_vb[{c_pt_tk}]={updated_vocab.get(c_pt_tk)}")
 
-	for c_tk in dframe.nwp_content_lemma_all:
+	for i, c_tk in enumerate(dframe.nwp_content_lemma_all):
+		print(f"<cnt[{i}]: {c_tk}> w: {w_cnt} | exists in vb: {updated_vocab.get(c_tk) is not None} ")
 		if updated_vocab.get(c_tk) is not None:
-			print(f"<cnt: {c_tk}> w: {w_cnt}")
 			print(f"\tprev_vb[{c_tk}]={updated_vocab.get(c_tk)}")
 			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
 			print(f"\tcurr_vb[{c_tk}]={updated_vocab.get(c_tk)}")
