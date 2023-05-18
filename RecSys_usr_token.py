@@ -710,6 +710,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
 				)
 		if not np.all(userInterest==0.0):
+			print(f"Found {np.count_nonzero(userInterest.flatten())} non-zero userInterest element(s)")
 			print(f"topK TOKENS     user[{iUser}]: {[list(BoWs.keys())[list(BoWs.values()).index( i )] for i in np.flip( np.argsort( userInterest.flatten() ) )[:10] ]}")
 			print(f"topK TOKENS val user[{iUser}]: {[v for v in np.flip( np.sort( userInterest.flatten() ) )[:10] ]}")
 		
