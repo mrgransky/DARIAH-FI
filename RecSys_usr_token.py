@@ -809,9 +809,8 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	#QU = QU / np.linalg.norm(QU)
 	QU = normalize(QU, norm="l2", axis=1)
 	"""
-	print(f"<Faiss> normalizing RF")
+	#print(f"<Faiss> normalizing RF")
 	faiss.normalize_L2(RF)
-
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	st_t = time.time()
 	if torch.cuda.is_available():
@@ -820,11 +819,9 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	else:
 		index = faiss.IndexFlatIP(RF.shape[1])
 	index.add(RF)
-
-	print(f"<Faiss> normalizing QU")
+	#print(f"<Faiss> normalizing QU")
 	faiss.normalize_L2(QU)
-	
-	print(f"<Faiss> searching for distance & indices | dim: {k}")
+	#print(f"<Faiss> searching for distance & indices | dim: {k}")
 	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	print(sorted_cosine_idx.flatten()[:17])
