@@ -798,13 +798,16 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	device = "GPU" if torch.cuda.is_available() else "CPU"
-	print(f"Faiss {device} Cosine Similarity: "
-			 	f"QUERY: {QU.reshape(1, -1).shape} vs. REFERENCE: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
-	RF = normalize(RF, norm="l2", axis=1)
 	QU = QU.reshape(1, -1)
+	
+	print(f"Faiss {device} Cosine Similarity: "
+			 	f"QUERY: {QU.shape} vs. REFERENCE: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	"""
+	RF = normalize(RF, norm="l2", axis=1)
 	#QU = QU / np.linalg.norm(QU)
 	QU = normalize(QU, norm="l2", axis=1)
-
+	"""
+	faiss.normalize_L2(RF)
 	k=2048-1 if RF.shape[0]>2048 and device=="GPU" else RF.shape[0] # getting k nearest neighbors
 	st_t = time.time()
 	if torch.cuda.is_available():
@@ -812,7 +815,9 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 		index = faiss.GpuIndexFlatIP(res, RF.shape[1]) 
 	else:
 		index = faiss.IndexFlatIP(RF.shape[1])
-	index.add(RF)	 
+	index.add(RF)
+
+	faiss.normalize_L2(QU)
 	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	print(sorted_cosine_idx.flatten()[:17])
