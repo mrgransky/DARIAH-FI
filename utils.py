@@ -126,8 +126,8 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-#dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
-dfs_path = os.path.join( NLF_DATASET_PATH, f"temp_dataframes")
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
+#dfs_path = os.path.join( NLF_DATASET_PATH, f"temp_dataframes")
 
 def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	matrix = sp_mtrx.toarray()
