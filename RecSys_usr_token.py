@@ -1004,7 +1004,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
-										topTKs=40,
+										topTKs=35,
 										norm_sp=norm_sp,
 									)
 	print(f"DONE".center(100, "-"))
@@ -1037,7 +1037,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	for container in ax.containers:
 		ax.bar_label(	container, 
 									#rotation=45, # no rotation for barh 
-									fontsize=7.0,
+									fontsize=6.0,
 									padding=1.5,
 									fmt='%.3f', #if norm_sp else '%.2f',
 									label_type='edge',
@@ -1056,7 +1056,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 		hbar = ax.barh(	tks_name, 
 										v, 
 										color=clrs[i], 
-										height=0.5, 
+										height=0.6,
 										left=lft, 
 										edgecolor='w', 
 										lw=0.4, 
@@ -1071,13 +1071,13 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	
 	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 	ax.invert_yaxis()  # labels read top-to-botto
-	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=11)
+	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=10)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc='lower right', fontsize=(100.0/topTKs))
+	ax.legend(loc='lower right', fontsize=(135.0/topTKs))
 	
 	for bar in hbars:
-		filtered_lbls = [f"{v:.2f}" if v>=1.0 else "" for v in bar.datavalues]
+		filtered_lbls = [f"{v:.1f}" if v>=1.0 else "" for v in bar.datavalues]
 		ax.bar_label(	container=bar, 
 									labels=filtered_lbls, 
 									label_type='center', 

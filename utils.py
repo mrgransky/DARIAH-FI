@@ -67,17 +67,17 @@ pylab.rcParams.update(params)
 clrs = ["#ff2eee",
 				'#16b3fd',
 				'#0eca11',
-				"#7422",
-				"#ee0038",
 				"#ffee32",
+				"#ee0038",
+				"#7422",
 				"#4aaaa5",
 				"#742802",
 				'#0ef',
+				"#ffb563",
 				'#771',
 				'#d72448', 
 				'#7ede2333',
 				"#416",
-				"#ffb563",
 				"#031eee",
 				'#a0ee2c44',
 				'#864b',
@@ -195,7 +195,8 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 	print(f"Retrieving all {len(usrs_name)} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(120, '-'))
 	
 	usrs_value_separated = list()
-	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
+	#for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
+	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk", ]:
 		oneUSR_separated_vals = list()
 		for usr in usrs_name:
 			user_idx = int(df_usr_tk.index[df_usr_tk['user_ip'] == usr].tolist()[0])
