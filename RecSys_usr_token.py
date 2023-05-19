@@ -259,49 +259,55 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 		#print(f"<QU[{i}]: {q_tk}> w: {w_qu} | vb_exist? {updated_vocab.get(q_tk) is not None} ")
 		if updated_vocab.get(q_tk) is not None:
 			print(f"<QU[{i}]: {q_tk}> w: {w_qu}")
-			print(f"\tprev_vb[{q_tk}] = {updated_vocab.get(q_tk):.3f}")
-			updated_vocab[q_tk] = updated_vocab.get(q_tk) + w_qu
-			print(f"\tcurr_vb[{q_tk}] = {updated_vocab.get(q_tk):.3f}")
+			prev = updated_vocab.get(q_tk)
+			curr = prev + w_qu
+			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			updated_vocab[q_tk] = curr
 	print('#'*60)
 	for i, sn_hw_tk in enumerate(dframe.snippets_hw_token):
 		#print(f"<snHW[{i}]: {sn_hw_tk}> w: {w_hw_sn} | vb_exist? {updated_vocab.get(sn_hw_tk) is not None} ")
 		if updated_vocab.get(sn_hw_tk) is not None:
 			print(f"<snHW[{i}]: {sn_hw_tk}> w: {w_hw_sn}")
-			print(f"\tprev_vb[{sn_hw_tk}] = {updated_vocab.get(sn_hw_tk):.3f}")
-			updated_vocab[sn_hw_tk] = updated_vocab.get(sn_hw_tk) + w_hw_sn
-			print(f"\tcurr_vb[{sn_hw_tk}] = {updated_vocab.get(sn_hw_tk):.3f}")
+			prev = updated_vocab.get(sn_hw_tk)
+			curr = prev + w_hw_sn
+			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			updated_vocab[sn_hw_tk] = curr
 	print('#'*60)
 	for i, sn_tk in enumerate(dframe.snippets_token):
 		#print(f"<sn[{i}]: {sn_tk}> w: {w_sn} | vb_exist? {updated_vocab.get(sn_tk) is not None} ")
 		if updated_vocab.get(sn_tk) is not None:
 			print(f"<sn[{i}]: {sn_tk}> w: {w_sn}")
-			print(f"\tprev_vb[{sn_tk}] = {updated_vocab.get(sn_tk):.3f}")
-			updated_vocab[sn_tk] = updated_vocab.get(sn_tk) + w_sn
-			print(f"\tcurr_vb[{sn_tk}] = {updated_vocab.get(sn_tk):.3f}")
+			prev = updated_vocab.get(sn_tk)
+			curr = prev + w_sn
+			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			updated_vocab[sn_tk] = curr
 	print('#'*60)
 	for i, c_hw_tk in enumerate(dframe.nwp_content_hw_token):
 		#print(f"<cntHW[{i}]: {c_hw_tk}> w: {w_hw_cnt} | vb_exist? {updated_vocab.get(c_hw_tk) is not None} ")
 		if updated_vocab.get(c_hw_tk) is not None:
 			print(f"<cntHW[{i}]: {c_hw_tk}> w: {w_hw_cnt}")
-			print(f"\tprev_vb[{c_hw_tk}] = {updated_vocab.get(c_hw_tk):.3f}")
-			updated_vocab[c_hw_tk] = updated_vocab.get(c_hw_tk) + w_hw_cnt
-			print(f"\tcurr_vb[{c_hw_tk}] = {updated_vocab.get(c_hw_tk):.3f}")
+			prev = updated_vocab.get(c_hw_tk)
+			curr = prev + w_hw_cnt
+			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			updated_vocab[c_hw_tk] = curr
 	print('#'*60)
 	for i, c_pt_tk in enumerate(dframe.nwp_content_pt_token):
 		#print(f"<cntPT[{i}]: {c_pt_tk}> w: {w_pt_cnt} | vb_exist? {updated_vocab.get(c_pt_tk) is not None} ")
 		if updated_vocab.get(c_pt_tk) is not None:
 			print(f"<cntPT[{i}]: {c_pt_tk}> w: {w_pt_cnt}")
-			print(f"\tprev_vb[{c_pt_tk}] = {updated_vocab.get(c_pt_tk):.3f}")
-			updated_vocab[c_pt_tk] = updated_vocab.get(c_pt_tk) + w_pt_cnt
-			print(f"\tcurr_vb[{c_pt_tk}] = {updated_vocab.get(c_pt_tk):.3f}")
+			prev = updated_vocab.get(c_pt_tk)
+			curr = prev + w_pt_cnt
+			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			updated_vocab[c_pt_tk] = curr
 	print('#'*60)
 	for i, c_tk in enumerate(dframe.nwp_content_lemma_all):
 		#print(f"<cnt[{i}]: {c_tk}> w: {w_cnt} | vb_exist? {updated_vocab.get(c_tk) is not None} ")
 		if updated_vocab.get(c_tk) is not None:
 			print(f"<cnt[{i}]: {c_tk}> w: {w_cnt}")
-			print(f"\tprev_vb[{c_tk}] = {updated_vocab.get(c_tk):.3f}")
-			updated_vocab[c_tk] = updated_vocab.get(c_tk) + w_cnt
-			print(f"\tcurr_vb[{c_tk}] = {updated_vocab.get(c_tk):.3f}")
+			prev = updated_vocab.get(c_tk)
+			curr = prev + w_cnt
+			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			updated_vocab[c_tk] = curr
 
 	print("*"*150)
 	return updated_vocab
@@ -601,7 +607,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	except:
 		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	
-	print(df_usr_tk.info())
+	#print(df_usr_tk.info())
 	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
 	"""
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
