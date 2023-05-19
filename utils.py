@@ -69,7 +69,8 @@ clrs = ["#ff2eee",
 				'#0eca11',
 				"#ffee32",
 				"#ee0038",
-				"#7422",
+				"#a99",
+				"#742",
 				"#4aaaa5",
 				"#742802",
 				'#0ef',
@@ -81,7 +82,6 @@ clrs = ["#ff2eee",
 				"#031eee",
 				'#a0ee2c44',
 				'#864b',
-				"#a99",
 				"#a91449",
 				'#1f77b4',
 				'#e377c2',
@@ -168,9 +168,8 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 
 	tks_value_separated = list()
 	# qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
-	#for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
 	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk", ]:
-		print(col)
+		#print(col)
 		oneTK_separated_vals = list()
 		for tkn in tks_name:
 			#print(tkn)
@@ -195,7 +194,6 @@ def get_users_byTK(sp_mtrx, df_usr_tk, bow, token="häst", ):
 	print(f"Retrieving all {len(usrs_name)} Users by (Token '{token}' idx: {tkIdx}) {sp_type} Sparse Matrix".center(120, '-'))
 	
 	usrs_value_separated = list()
-	#for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk"]:
 	for col in ["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk", ]:
 		oneUSR_separated_vals = list()
 		for usr in usrs_name:

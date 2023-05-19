@@ -1052,11 +1052,11 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
 	hbars = list()
 	for i, v in enumerate( tks_value_separated ):
-		print(i, tks_name, v)
+		#print(i, tks_name, v)
 		hbar = ax.barh(	tks_name, 
 										v, 
 										color=clrs[i], 
-										height=0.6,
+										height=0.65,
 										left=lft, 
 										edgecolor='w', 
 										lw=0.4, 
@@ -1074,10 +1074,10 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	ax.set_title(f'Top-{nTokens} Tokens / |ALL_TKs = {nTokens_orig}| by User: {userIP}', fontsize=10)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc='lower right', fontsize=(135.0/topTKs))
+	ax.legend(loc='lower right', fontsize=(140.0/topTKs))
 	
 	for bar in hbars:
-		filtered_lbls = [f"{v:.1f}" if v>=1.0 else "" for v in bar.datavalues]
+		filtered_lbls = [f"{v:.1f}" if v>=5.0 else "" for v in bar.datavalues]
 		ax.bar_label(	container=bar, 
 									labels=filtered_lbls, 
 									label_type='center', 
@@ -1117,7 +1117,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	for container in ax.containers:
 		ax.bar_label(	container, 
 									rotation=0, 
-									fontsize=6.5,
+									fontsize=6.0,
 									padding=1.5,
 									fmt='%.3f',# if norm_sp else '%.2f', 
 									label_type='edge',
