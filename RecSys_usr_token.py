@@ -997,7 +997,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 	#return
 
-def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp=False):
+def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp:bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
@@ -1011,7 +1011,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 									)
 	print(f"DONE".center(100, "-"))
 
-def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp=False):
+def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp:bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	nTokens_orig = len(tks_name)
 
@@ -1093,7 +1093,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	plt.clf()
 	plt.close(f)
 
-def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs, bow, norm_sp=False):
+def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs, bow, norm_sp:bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	
 	nUsers_orig = len(usrs_name)
@@ -1160,7 +1160,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	plt.clf()
 	plt.close(f)
 
-def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
+def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp:bool=False):
 	matrix = sp_mtrx.toarray()
 	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
 	tkIdx = bow.get(token)
@@ -1245,7 +1245,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp=False):
 	plt.clf()
 	plt.close(f)
 
-def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False, ifb_log10=False):
+def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10=False):
 	name_="sparse_matrix_user_vs_token"
 	sp_type = "Normalized" if norm_sp else "Original"
 
@@ -1314,12 +1314,12 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False, ifb_log10=False)
 					)
 	plt.subplots_adjust(top=0.8, wspace=0.3)
 
-	plt.savefig(os.path.join( RES_DIR, f"heatmap_{sp_type}_log10_{len(bow)}_BoWs_{ifb_log10}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"heatmap_{sp_type}_log10_{ifb_log10}_SP_{len(bow)}_BoWs.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 	print(f"Done".center(70, "-"))
 
-def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bow, norm_sp=False, topK=5):
+def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bow, norm_sp:bool=False, topK=5):
 	sp_type = "Normalized" if norm_sp else "Original"
 
 	print(f"<> Plotting Tokens Distribution in {sp_type} Sparse Matrix (nUsers, nItems): {sparseMat.shape}")
