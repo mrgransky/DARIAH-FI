@@ -753,13 +753,12 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		#avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
 		avgrec = prev_avgrec + update_term
 		prev_avgrec = avgrec
-		"""
 		print(f"avgrec (current): {avgrec.shape} "
 					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
 					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
 				)
 		print("-"*150)
-		"""
+		
 	avgrec = avgrec / np.sum(cos_sim)
 
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
