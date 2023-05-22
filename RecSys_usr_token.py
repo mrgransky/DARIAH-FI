@@ -1027,7 +1027,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
 
 	nTokens = len(tks_name)
-	print(f"Plotting top-{nTokens} token(s) out of |ALL_TKs = {nTokens_orig} | user: {userIP}".center(110, "-"))
+	print(f"Plotting top-{nTokens} token(s) out of |ALL_UnqTKs = {nTokens_orig}| {userIP}".center(110, "-"))
 
 	f, ax = plt.subplots()
 	ax.barh(tks_name, 
@@ -1039,7 +1039,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 	ax.invert_yaxis()  # labels read top-to-botto
-	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| by User: {userIP}', fontsize=10)
+	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| {userIP}', fontsize=10)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
 	for container in ax.containers:
@@ -1085,7 +1085,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	ax.legend(loc='lower right', fontsize=(115.0/topTKs))
 	
 	for bar in hbars:
-		filtered_lbls = [f"{v:.1f}" if v>=6.0 else "" for v in bar.datavalues]
+		filtered_lbls = [f"{v:.1f}" if v>=0.2 else "" for v in bar.datavalues]
 		ax.bar_label(	container=bar, 
 									labels=filtered_lbls, 
 									label_type='center', 
