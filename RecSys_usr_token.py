@@ -1085,7 +1085,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	ax.legend(loc='lower right', fontsize=(115.0/topTKs))
 	
 	for bar in hbars:
-		filtered_lbls = [f"{v:.1f}" if v>=0.2 else "" for v in bar.datavalues]
+		filtered_lbls = [f"{v:.1f}" if v>=5.0 else "" for v in bar.datavalues]
 		ax.bar_label(	container=bar, 
 									labels=filtered_lbls, 
 									label_type='center', 
