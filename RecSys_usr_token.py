@@ -594,8 +594,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		BoWs = get_cBoWs(dframe=df_inp)
 	#return
 	"""
-	#BoWs = get_BoWs(dframe=df_inp)
-	BoWs = get_cBoWs(dframe=df_inp)
+	BoWs = get_BoWs(dframe=df_inp)
+	#BoWs = get_cBoWs(dframe=df_inp)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
