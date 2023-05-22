@@ -1010,7 +1010,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
-										topTKs=35,
+										topTKs=15,
 										bow=bow,
 										norm_sp=norm_sp,
 									)
@@ -1078,13 +1078,13 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	
 	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 	ax.invert_yaxis()  # labels read top-to-botto
-	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_Unq_TKs = {nTokens_orig}| by User: {userIP}', fontsize=10)
+	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| {userIP}', fontsize=10)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc='lower right', fontsize=(140.0/topTKs))
+	ax.legend(loc='lower right', fontsize=(180.0/topTKs))
 	
 	for bar in hbars:
-		filtered_lbls = [f"{v:.1f}" if v>=5.0 else "" for v in bar.datavalues]
+		filtered_lbls = [f"{v:.1f}" if v>=6.0 else "" for v in bar.datavalues]
 		ax.bar_label(	container=bar, 
 									labels=filtered_lbls, 
 									label_type='center', 
