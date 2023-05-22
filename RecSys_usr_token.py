@@ -1006,6 +1006,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
 										topTKs=35,
+										bow=bow,
 										norm_sp=norm_sp,
 									)
 	print(f"DONE".center(100, "-"))
