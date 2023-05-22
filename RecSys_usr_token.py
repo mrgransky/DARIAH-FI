@@ -661,7 +661,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 
 	print(f"Sparse Matrix (Users-Tokens) | {type(sp_mat_rf)} {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
-	return
+	#return
 
 	if normalize_sp_mtrx:
 		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
