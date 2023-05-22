@@ -692,7 +692,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for iTK, vTK in enumerate(query_phrase_tk):
 		if BoWs.get(vTK):
 			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
-			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=30, norm_sp=normalize_sp_mtrx )
+			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=30, bow=BoWs, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
 	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
@@ -788,7 +788,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 							marker=".",
 						)
 	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{avgrec.shape[1]}items.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}items.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -815,7 +815,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
 		
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=20, norm_sp=normalize_sp_mtrx )
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=20, bow=BoWs, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
@@ -1010,7 +1010,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 									)
 	print(f"DONE".center(100, "-"))
 
-def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=50, norm_sp=False):
+def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	nTokens_orig = len(tks_name)
 
@@ -1044,7 +1044,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 									label_type='edge',
 								)
 	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -1088,11 +1088,11 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs=
 	
 	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
 
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
-def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs=50, norm_sp=False):
+def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs, bow, norm_sp=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	
 	nUsers_orig = len(usrs_name)
@@ -1123,7 +1123,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 									fmt='%.3f',# if norm_sp else '%.2f', 
 									label_type='edge',
 									)
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -1313,7 +1313,7 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp=False, ifb_log10=False)
 					)
 	plt.subplots_adjust(top=0.8, wspace=0.3)
 
-	plt.savefig(os.path.join( RES_DIR, f"heatmap_{sp_type}_log10_{ifb_log10}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"heatmap_{sp_type}_log10_{len(bow)}_BoWs_{ifb_log10}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 	print(f"Done".center(70, "-"))
@@ -1398,7 +1398,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 						fontsize=9.0,
 					)
 
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{args.lmMethod}_top{topK}_recs_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{args.lmMethod}_top{topK}_recsys_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 
 	plt.clf()
 	plt.close(f)
