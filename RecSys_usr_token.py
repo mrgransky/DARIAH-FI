@@ -670,7 +670,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		
 	#get_user_n_maxVal_byTK(sp_mat_rf, df_usr_tk, BoWs, )
 	#return
-	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=True)
+	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 	
 	#print("#"*150)
 	print(f"".center(100,' '))
@@ -1263,8 +1263,8 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 
 	####################################################
 	if ifb_log10:
-		#mtrx = np.log10(mtrx, out=np.zeros_like(mtrx), where=(mtrx!=0))
-		mtrx = normalize(mtrx, norm="l2", axis=0) # l2 normalize by column -> items
+		mtrx = np.log10(mtrx, out=np.zeros_like(mtrx), where=(mtrx!=0))
+		#mtrx = normalize(mtrx, norm="l2", axis=0) # l2 normalize by column -> items
 	####################################################
 
 	max_pose = np.unravel_index(mtrx.argmax(), mtrx.shape)
