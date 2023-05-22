@@ -666,7 +666,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#return
 
 	if normalize_sp_mtrx:
-		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
+		#sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
+		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=1) # l2 normalize by rows -> users
 		
 	#get_user_n_maxVal_byTK(sp_mat_rf, df_usr_tk, BoWs, )
 	#return
