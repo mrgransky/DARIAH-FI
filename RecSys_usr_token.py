@@ -328,6 +328,7 @@ def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weight
 	return updated_vb
 
 def get_selected_content(cos_sim, cos_sim_idx, recommended_tokens, df_users_tokens):
+	print(f"Selected Content (using top-{len(recommended_tokens)} recommended tokens) INEFFICIENT".center(120, " "))
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, df_users_tokens, N=3)
 	df = df_users_tokens[df_users_tokens["user_ip"].isin(nUsers_with_max_cosine)]
 	print(df.shape)
@@ -800,6 +801,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 
+
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
@@ -807,14 +809,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)}: {topK_recommended_tks_weighted_user_interest}")
 	#return
-
 	"""
-	print(f"Selected Content (using top-{topK} recommended tokens) INEFFICIENT".center(120, " "))
 	st_t = time.time()
 	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_usr_tk)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
-	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	"""
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
