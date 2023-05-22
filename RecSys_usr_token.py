@@ -670,7 +670,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		
 	#get_user_n_maxVal_byTK(sp_mat_rf, df_usr_tk, BoWs, )
 	#return
-	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx)
+	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=True)
 	
 	#print("#"*150)
 	print(f"".center(100,' '))
