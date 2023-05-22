@@ -1263,7 +1263,8 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 
 	####################################################
 	if ifb_log10:
-		mtrx = np.log10(mtrx, out=np.zeros_like(mtrx), where=(mtrx!=0))
+		#mtrx = np.log10(mtrx, out=np.zeros_like(mtrx), where=(mtrx!=0))
+		mtrx = normalize(mtrx, norm="l2", axis=0) # l2 normalize by column -> items
 	####################################################
 
 	max_pose = np.unravel_index(mtrx.argmax(), mtrx.shape)
