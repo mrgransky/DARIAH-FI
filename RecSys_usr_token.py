@@ -1010,7 +1010,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 										tks_name=tokens_names, 
 										tks_value_all=tokens_values_total, 
 										tks_value_separated=tokens_values_separated, 
-										topTKs=15,
+										topTKs=20,
 										bow=bow,
 										norm_sp=norm_sp,
 									)
@@ -1081,7 +1081,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| {userIP}', fontsize=10)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc='lower right', fontsize=(150.0/topTKs))
+	ax.legend(loc='lower right', fontsize=(120.0/topTKs))
 	
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=6.0 else "" for v in bar.datavalues]
@@ -1150,7 +1150,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	ax.set_title(f'Top-{nUsers} User(s) / |ALL_USRs = {nUsers_orig}| for token: {token}', fontsize=11)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc="upper right", fontsize=(150.0/topUSRs) )
+	ax.legend(loc="upper right", fontsize=(120.0/topUSRs) )
 
 	for b in vbars:
 		filtered_lbls = [f"{v:.1f}" if v>=7.0 else "" for v in b.datavalues]
