@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 parser.add_argument('--inputDF', default=os.path.join(dataset_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qphrase', default="juha sipilä", type=str)
 parser.add_argument('--lmMethod', default="nltk", type=str)
-parser.add_argument('--normSP', default=True, type=bool)
+parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
 # how to run:
@@ -1286,7 +1286,8 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 	cax = divider.append_axes('right', size='5%', pad=0.05)
 	im = ax.imshow(mtrx, 
 								#cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
-								cmap="gist_yarg", # 0: white , max -> black
+								#cmap="gist_yarg", # 0: white , max -> black
+								cmap="afmhot",
 								#cmap="gist_gray", # 0: black , max -> white
 								)
 	cbar = ax.figure.colorbar(im,
