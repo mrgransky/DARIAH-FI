@@ -258,58 +258,52 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 	for i, q_tk in enumerate(dframe.qu_tokens): # [qtk1, qtk2, qtk3, ...]
 		#print(f"<QU[{i}]: {q_tk}>\tw: {w_qu} | vb_exist? {updated_vocab.get(q_tk) is not None} ")
 		if updated_vocab.get(q_tk) is not None:
-			print(f"<QU[{i}]: {q_tk}>\tw: {w_qu}")
 			prev = updated_vocab.get(q_tk)
 			curr = prev + w_qu
-			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"<QU[{i}]: {q_tk}>\tw: {w_qu}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[q_tk] = curr
-	print('*'*35)
+	print('*'*60)
 	for i, sn_hw_tk in enumerate(dframe.snippets_hw_token):
 		#print(f"<snHW[{i}]: {sn_hw_tk}>\tw: {w_hw_sn} | vb_exist? {updated_vocab.get(sn_hw_tk) is not None} ")
 		if updated_vocab.get(sn_hw_tk) is not None:
-			print(f"<snHW[{i}]: {sn_hw_tk}>\tw: {w_hw_sn}")
 			prev = updated_vocab.get(sn_hw_tk)
 			curr = prev + w_hw_sn
-			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"<snHW[{i}]: {sn_hw_tk}>\tw: {w_hw_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[sn_hw_tk] = curr
-	print('*'*35)
+	print('*'*60)
 	for i, sn_tk in enumerate(dframe.snippets_token):
 		#print(f"<sn[{i}]: {sn_tk}>\tw: {w_sn} | vb_exist? {updated_vocab.get(sn_tk) is not None} ")
 		if updated_vocab.get(sn_tk) is not None:
-			print(f"<sn[{i}]: {sn_tk}>\tw: {w_sn}")
 			prev = updated_vocab.get(sn_tk)
 			curr = prev + w_sn
-			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"<sn[{i}]: {sn_tk}>\tw: {w_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[sn_tk] = curr
-	print('*'*35)
+	print('*'*60)
 	for i, c_hw_tk in enumerate(dframe.nwp_content_hw_token):
 		#print(f"<cntHW[{i}]: {c_hw_tk}>\tw: {w_hw_cnt} | vb_exist? {updated_vocab.get(c_hw_tk) is not None} ")
 		if updated_vocab.get(c_hw_tk) is not None:
-			print(f"<cntHW[{i}]: {c_hw_tk}>\tw: {w_hw_cnt}")
 			prev = updated_vocab.get(c_hw_tk)
 			curr = prev + w_hw_cnt
-			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"<cntHW[{i}]: {c_hw_tk}>\tw: {w_hw_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_hw_tk] = curr
-	print('*'*35)
+	print('*'*60)
 	for i, c_pt_tk in enumerate(dframe.nwp_content_pt_token):
 		#print(f"<cntPT[{i}]: {c_pt_tk}>\tw: {w_pt_cnt} | vb_exist? {updated_vocab.get(c_pt_tk) is not None} ")
 		if updated_vocab.get(c_pt_tk) is not None:
-			print(f"<cntPT[{i}]: {c_pt_tk}>\tw: {w_pt_cnt}")
 			prev = updated_vocab.get(c_pt_tk)
 			curr = prev + w_pt_cnt
-			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"<cntPT[{i}]: {c_pt_tk}>\tw: {w_pt_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_pt_tk] = curr
-	print('*'*35)
+	print('*'*60)
 	for i, c_tk in enumerate(dframe.nwp_content_lemma_all):
 		#print(f"<cnt[{i}]: {c_tk}>\tw: {w_cnt} | vb_exist? {updated_vocab.get(c_tk) is not None} ")
 		if updated_vocab.get(c_tk) is not None:
-			print(f"<cnt[{i}]: {c_tk}>\tw: {w_cnt}")
 			prev = updated_vocab.get(c_tk)
 			curr = prev + w_cnt
-			print(f"\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"<cnt[{i}]: {c_tk}>\tw: {w_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_tk] = curr
 
-	print("*"*150)
+	print("#"*150)
 	return updated_vocab
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
@@ -599,8 +593,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		BoWs = get_cBoWs(dframe=df_inp)
 	#return
 	"""
-	BoWs = get_BoWs(dframe=df_inp)
-	#BoWs = get_cBoWs(dframe=df_inp)
+	#BoWs = get_BoWs(dframe=df_inp)
+	BoWs = get_cBoWs(dframe=df_inp)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
