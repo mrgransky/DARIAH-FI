@@ -1081,7 +1081,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| {userIP}', fontsize=10)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc='lower right', fontsize=(180.0/topTKs))
+	ax.legend(loc='lower right', fontsize=(150.0/topTKs))
 	
 	for bar in hbars:
 		filtered_lbls = [f"{v:.1f}" if v>=6.0 else "" for v in bar.datavalues]
