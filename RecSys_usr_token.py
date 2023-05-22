@@ -603,10 +603,11 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	
 	#print(df_usr_tk.info())
 	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
+
+	"""
 	with open("ip545.json", "w") as fw:
 		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip545"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
 
-	"""
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
 		print( df_usr_tk[["user_ip", "user_token_interest",]].tail(10) )
 
@@ -660,7 +661,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	except:
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 
-	print(f"Sparse Matrix (Users-Tokens) | {type(sp_mat_rf)} {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
+	print(f"{type(sp_mat_rf)} (Users-Tokens): {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
 	#return
 
 	if normalize_sp_mtrx:
@@ -787,7 +788,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 							marker=".",
 						)
 	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{avgrec.shape[1]}items.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
