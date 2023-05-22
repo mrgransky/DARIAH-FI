@@ -692,7 +692,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for iTK, vTK in enumerate(query_phrase_tk):
 		if BoWs.get(vTK):
 			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
-			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=30, bow=BoWs, norm_sp=normalize_sp_mtrx )
+			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=10, bow=BoWs, norm_sp=normalize_sp_mtrx )
 			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
 	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
@@ -819,7 +819,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
 		
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=20, bow=BoWs, norm_sp=normalize_sp_mtrx )
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=10, bow=BoWs, norm_sp=normalize_sp_mtrx )
 		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
@@ -1150,7 +1150,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	ax.set_title(f'Top-{nUsers} User(s) / |ALL_USRs = {nUsers_orig}| for token: {token}', fontsize=11)
 	ax.margins(1e-2, 5e-3)
 	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc="upper right", fontsize=(120.0/topUSRs) )
+	ax.legend(loc="upper right", fontsize=(150.0/topUSRs) )
 
 	for b in vbars:
 		filtered_lbls = [f"{v:.1f}" if v>=7.0 else "" for v in b.datavalues]
