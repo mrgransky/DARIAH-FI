@@ -792,8 +792,9 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	plt.clf()
 	plt.close(f)
 
-	print(f"idx:\n{avgrec.flatten().argsort()[-20:]}")
-	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-20:]}")
+	print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
+	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
+	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
@@ -1089,7 +1090,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	
 	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
 
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_seperated_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_separated_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -1156,7 +1157,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 									fontsize=6.0,
 								)
 	ax.set_ylim(top=ax.get_ylim()[1]+1.0, auto=True)
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_separated_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_topUSRs{nUsers}_separated_{len(bow)}BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
@@ -1241,7 +1242,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp:bool=Fal
 
 	plt.subplots_adjust(top=0.86, wspace=0.1)
 
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_usersInterest_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_tk_{token}_usersInterest_{len(bow)}BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
