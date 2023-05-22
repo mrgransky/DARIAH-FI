@@ -1285,8 +1285,8 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 	cax = divider.append_axes('right', size='5%', pad=0.05)
 	im = ax.imshow(mtrx, 
 								#cmap="viridis",#"magma", # https://matplotlib.org/stable/tutorials/colors/colormaps.html
-								#cmap="gist_yarg",
-								cmap="gist_gray",
+								cmap="gist_yarg", # 0: white , max -> black
+								#cmap="gist_gray", # 0: black , max -> white
 								)
 	cbar = ax.figure.colorbar(im,
 														ax=ax,
