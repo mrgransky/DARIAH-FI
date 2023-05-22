@@ -593,8 +593,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		BoWs = get_cBoWs(dframe=df_inp)
 	#return
 	"""
-	BoWs = get_BoWs(dframe=df_inp)
-	#BoWs = get_cBoWs(dframe=df_inp)
+	#BoWs = get_BoWs(dframe=df_inp)
+	BoWs = get_cBoWs(dframe=df_inp)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
@@ -929,14 +929,14 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 
 	plt.text(	x=0.5, 
 						y=0.94, 
-						s=f"Raw Input Query Phrase: {query_phrase}", 
+						s=f"Query Phrase: {query_phrase}", 
 						fontsize=10.0, 
 						ha="center", 
 						transform=f.transFigure,
 					)
 	plt.text(	x=0.5,
 						y=0.91,
-						s=f"Query (1 x nItems): {QU.shape} & {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} : Cosine Similarity (1 x nUsers): {cos_sim.shape}",
+						s=f"Query (1 x nItems): {QU.shape} {sp_type} Sparse Matrix (nUsers x nItems): {RF.shape} Cosine Similarity (1 x nUsers): {cos_sim.shape}",
 						fontsize=9.0, 
 						ha="center", 
 						transform=f.transFigure,
@@ -952,7 +952,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	
 	plt.subplots_adjust(top=0.86, wspace=0.1)
 
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cos_sim_{sp_type}_SP.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_cosine_{QU.shape[1]}Items_{sp_type}_SP.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
