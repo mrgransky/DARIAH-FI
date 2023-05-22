@@ -710,7 +710,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	#return
 	nUsers, nItems = sp_mat_rf.shape
-	print(f"Getting avgRecSysVec (1 x nItems) |nUsers={nUsers}|, |nItems={nItems}|".center(120, "-"))
+	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
 	#print("#"*120)
 	#cos = np.random.rand(nUsers).reshape(1, -1)
 	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
@@ -726,52 +726,55 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#print("#"*100)
 	st_t = time.time()
 	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
-		"""
-		print(f"iUser[{iUser}]: {df_usr_tk.loc[iUser, 'user_ip']}".center(140, " "))
-		print(f"avgrec (previous): {prev_avgrec.shape} "
-					f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
-					f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
-				)
-		"""
-		userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
-		"""
-		print(f"<> userInterest[{iUser}]: {userInterest.shape} "
-					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
-					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
-				)
-		"""
-		userInterest_norm = np.linalg.norm(userInterest)
-		userInterest = normalize(userInterest, norm="l2", axis=1)
-		"""
-		print(f"<> userInterest(norm={userInterest_norm:.3f})[{iUser}]: {userInterest.shape} " 
-					f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
-					f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
-				)
-		
-		if not np.all(userInterest==0.0):
-			print(f"\tFound {np.count_nonzero(userInterest.flatten())} non-zero userInterest element(s)")
-			print(f"\ttopK TOKENS     user[{iUser}]: {[list(BoWs.keys())[list(BoWs.values()).index( i )] for i in np.flip( np.argsort( userInterest.flatten() ) )[:10] ]}")
-			print(f"\ttopK TOKENS val user[{iUser}]: {[v for v in np.flip( np.sort( userInterest.flatten() ) )[:10] ]}")
-		"""
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
-		update_term = (cos_sim[0, idx_cosine] * userInterest)
-		avgrec = prev_avgrec + update_term #avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
-		prev_avgrec = avgrec
-		"""
-		print(f"avgrec (current): {avgrec.shape} "
-					f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
-					f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
-				)
-		print("-"*150)
-		"""
+		if cos_sim[0, idx_cosine] != 0.0:
+			"""
+			print(f"iUser[{iUser}]: {df_usr_tk.loc[iUser, 'user_ip']}".center(140, " "))
+			print(f"avgrec (previous): {prev_avgrec.shape} "
+						f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
+						f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
+					)
+			"""
+			userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
+			"""
+			print(f"<> userInterest[{iUser}]: {userInterest.shape} "
+						f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
+						f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
+					)
+			"""
+			userInterest_norm = np.linalg.norm(userInterest)
+			userInterest = normalize(userInterest, norm="l2", axis=1)
+			"""
+			print(f"<> userInterest(norm={userInterest_norm:.3f})[{iUser}]: {userInterest.shape} " 
+						f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
+						f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
+					)
+			
+			if not np.all(userInterest==0.0):
+				print(f"\tFound {np.count_nonzero(userInterest.flatten())} non-zero userInterest element(s)")
+				print(f"\ttopK TOKENS     user[{iUser}]: {[list(BoWs.keys())[list(BoWs.values()).index( i )] for i in np.flip( np.argsort( userInterest.flatten() ) )[:10] ]}")
+				print(f"\ttopK TOKENS val user[{iUser}]: {[v for v in np.flip( np.sort( userInterest.flatten() ) )[:10] ]}")
+			"""
+			update_term = (cos_sim[0, idx_cosine] * userInterest)
+			avgrec = prev_avgrec + update_term #avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
+			prev_avgrec = avgrec
+			"""
+			print(f"avgrec (current): {avgrec.shape} "
+						f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
+						f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
+					)
+			print("-"*150)
+			"""
 	avgrec = avgrec / np.sum(cos_sim)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}"
 				f"@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
 			)
+
 	"""
 	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
 	print(avgrec.flatten()[:10])
@@ -797,13 +800,12 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 
-	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-50:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
 	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)}: {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
 	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)}: {topK_recommended_tks_weighted_user_interest}")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	#return
 
 	"""
@@ -866,8 +868,9 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	sorted_cosine, sorted_cosine_idx = index.search(QU, k=k)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 
-	print(sorted_cosine_idx.flatten()[:17])
-	print(sorted_cosine.flatten()[:17])
+	#print(sorted_cosine_idx.flatten()[:17])
+	#print(sorted_cosine.flatten()[:17])
+	
 	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
@@ -972,7 +975,7 @@ def get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df:pd.DataFrame, N:in
 	print(nUsers_with_max_cosine, topN_max_cosine)
 	return nUsers_with_max_cosine
 
-def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp:bool=False):
+def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp: bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	print(f"top-{len(recommended_tokens)} recommeded token(s): {recommended_tokens}")
 	for recTK_idx, recTK in enumerate(recommended_tokens):
@@ -999,7 +1002,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 	#return
 
-def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp:bool=False):
+def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp: bool=False):
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
@@ -1013,7 +1016,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm
 									)
 	print(f"DONE".center(100, "-"))
 
-def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp:bool=False):
+def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp: bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	nTokens_orig = len(tks_name)
 
@@ -1095,7 +1098,7 @@ def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs,
 	plt.clf()
 	plt.close(f)
 
-def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs, bow, norm_sp:bool=False):
+def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs, bow, norm_sp: bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	
 	nUsers_orig = len(usrs_name)
@@ -1162,7 +1165,7 @@ def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSR
 	plt.clf()
 	plt.close(f)
 
-def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp:bool=False):
+def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp: bool=False):
 	matrix = sp_mtrx.toarray()
 	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
 	tkIdx = bow.get(token)
@@ -1247,7 +1250,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp:bool=Fal
 	plt.clf()
 	plt.close(f)
 
-def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10=False):
+def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: bool=False):
 	name_="sparse_matrix_user_vs_token"
 	sp_type = "Normalized" if norm_sp else "Original"
 
@@ -1321,10 +1324,10 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10=F
 	plt.close(f)
 	print(f"Done".center(70, "-"))
 
-def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bow, norm_sp:bool=False, topK=5):
+def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bow, norm_sp: bool=False, topK: int=5):
 	sp_type = "Normalized" if norm_sp else "Original"
 
-	print(f"<> Plotting Tokens Distribution in {sp_type} Sparse Matrix (nUsers, nItems): {sparseMat.shape}")
+	print(f"\nPlotting Tokens Distribution in {sp_type} Sparse Matrix (nUsers, nItems): {sparseMat.shape}")
 	sparse_df = pd.DataFrame(sparseMat.toarray(), index=users_tokens_df["user_ip"])
 	#sparse_df.columns = sparse_df.columns.map(str) # convert int col -> str col
 	sparse_df = sparse_df.replace(0.0, np.nan) # 0.0 -> None: Matplotlib won't plot NaN values.
