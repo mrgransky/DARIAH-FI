@@ -561,8 +561,8 @@ def get_sparse_matrix(df):
 	#print(list(df.columns))
 	#print(df.dtypes)
 
-	#print( df['user_token_interest'].apply(pd.Series).head(15) )
-	#print(">"*100)
+	print( df['user_token_interest'].apply(pd.Series).head(15) )
+	print(">"*100)
 	df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
 	#print(df_new.head(15))
@@ -603,6 +603,9 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	
 	#print(df_usr_tk.info())
 	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
+	with open("ip545.json", "w") as fw:
+		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip545"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
+
 	"""
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
 		print( df_usr_tk[["user_ip", "user_token_interest",]].tail(10) )
@@ -658,6 +661,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 
 	print(f"Sparse Matrix (Users-Tokens) | {type(sp_mat_rf)} {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
+	return
 
 	if normalize_sp_mtrx:
 		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
