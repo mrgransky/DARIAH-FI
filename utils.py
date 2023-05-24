@@ -33,7 +33,6 @@ from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 
-#import spacy
 from colorama import Fore, Style, Back
 import seaborn as sns
 
@@ -733,7 +732,7 @@ def just_test_for_expected_results(df):
 		print(len(one_result.get(k).get("newspaper_content_ocr_highlighted_words")), one_result.get(k).get("newspaper_content_ocr_highlighted_words"))
 		print("-"*100)
 
-def get_concat_df(dir_path: str=dfs_path):
+def get_concat_df(dir_path: str=dataset_path):
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	for files in glob.glob(os.path.join(dir_path, "*.dump")):
