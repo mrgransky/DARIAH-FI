@@ -2,7 +2,7 @@
 
 #SBATCH --account=project_2004072
 #SBATCH -J dfQ_
-#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/q%a_%x_%N_%j.out
+#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/q%a_%x_%N_%j%A.out
 #SBATCH --partition=small
 #SBATCH --mem-per-cpu=16G
 #SBATCH --time=2-23:59:59
@@ -24,8 +24,7 @@ echo "CPUS_ON_NODE: $SLURM_CPUS_ON_NODE, CPUS/TASK: $SLURM_CPUS_PER_TASK, MEM/CP
 echo "${stars// /*}"
 
 user="`whoami`"
-cluster="$SLURM_CLUSTER_NAME"
-echo "Cluster: $cluster Current User: $user"
+echo "Cluster: $SLURM_CLUSTER_NAME | User: $user | Array: $SLURM_ARRAY_TASK_ID"
 
 if [ $user == 'alijani' ]; then
 	source activate py3_gpu
