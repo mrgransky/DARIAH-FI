@@ -323,6 +323,7 @@ def print_df_detail(df, fname="unkonwn"):
 
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
 		print(df[["user_ip",
+							#"",
 							"search_query_phrase", 
 							"search_results",
 							"search_referer",
