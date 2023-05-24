@@ -328,9 +328,21 @@ def print_df_detail(df, fname="unkonwn"):
 							#"search_results",
 							#"search_referer",
 						]
-					].head(20)
+					].head(50)
 				)
+	print("#"*100)
+	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+		print(df[["user_ip",
+							"timestamp",
+							#"search_query_phrase", 
+							#"search_results",
+							#"search_referer",
+						]
+					].tail(50)
+				)
+	print("#"*100)
 	return
+
 	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
 				f"{list(df.loc[1, 'search_results'][0].keys())}", 
 			)
