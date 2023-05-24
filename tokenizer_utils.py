@@ -60,15 +60,6 @@ UNIQUE_STOPWORDS = list(set(STOPWORDS))
 #print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ"]
 
-class HiddenPrints:
-	def __enter__(self):
-		self._original_stdout = sys.stdout
-		sys.stdout = open(os.devnull, 'w')
-
-	def __exit__(self, exc_type, exc_val, exc_tb):
-		sys.stdout.close()
-		sys.stdout = self._original_stdout
-
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
 	sentences = re.sub(r'[~|^|*][\d]+', '', sentences)
