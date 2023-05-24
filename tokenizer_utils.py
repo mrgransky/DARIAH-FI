@@ -1,19 +1,20 @@
 from utils import *
-import nltk
-nltk_modules = ['punkt', 
-							 'averaged_perceptron_tagger', 
-							 'stopwords',
-							 'wordnet',
-							 'omw-1.4',
-							 ]
-nltk.download(#'all',
-							nltk_modules,
-							quiet=True, 
-							raise_on_error=True,
-							)
 
 #with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
+	import nltk
+	nltk_modules = ['punkt', 
+								'averaged_perceptron_tagger', 
+								'stopwords',
+								'wordnet',
+								'omw-1.4',
+								]
+	nltk.download(#'all',
+								nltk_modules,
+								quiet=True, 
+								raise_on_error=True,
+								)
+
 	import trankit
 	p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 	p.add('swedish')
