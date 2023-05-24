@@ -743,12 +743,14 @@ def just_test_for_expected_results(df):
 		print(len(one_result.get(k).get("newspaper_content_ocr_highlighted_words")), one_result.get(k).get("newspaper_content_ocr_highlighted_words"))
 		print("-"*100)
 
-def get_concat_df_by(dir_path: str=dfs_path):
+def get_concat_df(dir_path: str=dfs_path):
 	print(f">> Concatinating files.dump located at: {dir_path}", end=" ")
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
+	for files in glob.glob(dir_path):
+		print(files, files.endswith(".dump"))
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, '*.dump')) ]
+		dfs = [load_pickle(f) for f in glob.glob(dir_path) ]
 	print(len(dfs))
 	"""
 	df_concat=pd.concat(dfs,
