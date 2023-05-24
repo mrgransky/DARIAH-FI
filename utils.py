@@ -1,5 +1,6 @@
 import os
 import sys
+import contextlib
 import torch
 import faiss
 import subprocess
@@ -128,6 +129,16 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
 #dfs_path = os.path.join( NLF_DATASET_PATH, f"temp_dataframes")
+
+class HiddenPrints:
+	def __enter__(self):
+		self._original_stdout = sys.stdout
+		sys.stdout = open(os.devnull, 'w')
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		sys.stdout.close()
+		sys.stdout = self._original_stdout
+
 
 def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	matrix = sp_mtrx.toarray()
@@ -346,8 +357,6 @@ def print_df_detail(df, fname="unkonwn"):
 		"""
 		print(df.user_ip.value_counts().sort_values())
 
-
-	
 	return
 
 	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
@@ -733,3 +742,17 @@ def just_test_for_expected_results(df):
 		print(one_result.get(k).get("newspaper_content_ocr"))
 		print(len(one_result.get(k).get("newspaper_content_ocr_highlighted_words")), one_result.get(k).get("newspaper_content_ocr_highlighted_words"))
 		print("-"*100)
+
+def get_concat_df_by(dir_path: str=dfs_path):
+	print(f">> Concatinating files.dump located at: {dir_path}", end=" ")
+	# loop over all files.dump located at:
+	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
+	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, '*.dump')) ]
+	print(len(dfs))
+	"""
+	df_concat=pd.concat(dfs,
+										 #ignore_index=True,
+										 ).sort_values("timestamp", ignore_index=True)
+	return df_concat
+	"""
