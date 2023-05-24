@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																)
 
 parser.add_argument('--inputDF', default=os.path.join(dataset_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
+parser.add_argument('--dsPath', default=dataset_path, type=str) # smallest
 parser.add_argument('--qphrase', default="juha sipilä", type=str)
 parser.add_argument('--lmMethod', default="nltk", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -1415,10 +1416,12 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	df_raw = load_pickle(fpath=args.inputDF)
-	#df_raw = get_concat_df()
+	#df_raw = load_pickle(fpath=args.inputDF) # new approach to load df as pickle from dill
+	
+	df_raw = get_concat_df()
 	#print_df_detail(df=df_raw, fname=__file__)
-	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	
+	#run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5
