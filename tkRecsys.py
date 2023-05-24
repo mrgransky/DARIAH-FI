@@ -21,9 +21,8 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"stanza": stanza_lemmatizer,
 											}
 
-fprefix = "df_concat"#get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+fprefix = "df_concat"
 RES_DIR = make_result_dir(infile=fprefix)
-
 make_folder(folder_name=dfs_path)
 MODULE=60
 
