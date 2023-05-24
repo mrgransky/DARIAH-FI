@@ -227,8 +227,6 @@ def plot_heatmap(mtrx, name_="user-based", RES_DIR=""):
 	print(f"{hm_title.center(70,'-')}")
 
 	print(type(mtrx), mtrx.shape, mtrx.nbytes)
-	#RES_DIR = make_result_dir(infile=args.inputDF)
-
 	f, ax = plt.subplots()
 
 	divider = make_axes_locatable(ax)
@@ -685,7 +683,7 @@ def save_pickle(pkl, fname:str=""):
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"<Elapsed_t: {time.time()-st_t:.3f} s> | {fsize_dump:.2f} MB".center(110, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_pickle(fpath:str):
 	print(f"\nfile: {fpath} exists, loading...")
@@ -694,7 +692,7 @@ def load_pickle(fpath:str):
 		#pkl = joblib.load(f)
 		pkl = dill.load(f)
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):

@@ -6,7 +6,6 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('--inputDF', default=os.path.join(dataset_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--dsPath', default=dataset_path, type=str) # smallest
 parser.add_argument('--qphrase', default="juha sipilä", type=str)
 parser.add_argument('--lmMethod', default="nltk", type=str)
@@ -22,7 +21,9 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"stanza": stanza_lemmatizer,
 											}
 
-RES_DIR = make_result_dir(infile=args.inputDF)
+RES_DIR = rpath
+fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+
 make_folder(folder_name=dfs_path)
 MODULE=60
 
@@ -106,7 +107,6 @@ def get_cBoWs(dframe:pd.DataFrame):
 	raw_docs_list = list(set(raw_docs_list))
 	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.lz4")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.lz4")
 
@@ -190,7 +190,6 @@ def get_BoWs(dframe,):
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
 	"""
-	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.lz4")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.lz4")
 
@@ -398,7 +397,6 @@ def tokenize_query_phrase(qu_list):
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
 def get_users_tokens_df(dframe: pd.DataFrame, bow):
-	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
 	print(f"\n>> Getting {df_preprocessed_fname} ...")
 	
@@ -579,7 +577,7 @@ def get_sparse_matrix(df):
 	#print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
 	#print("#"*110)
 	##########################Sparse Matrix info##########################
-	fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+	
 	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.lz4")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
@@ -1416,8 +1414,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	#df_raw = load_pickle(fpath=args.inputDF) # new approach to load df as pickle from dill
-	
+	# inputDF does not exist anymore	
 	df_raw = get_concat_df()
 	#print_df_detail(df=df_raw, fname=__file__)
 	
