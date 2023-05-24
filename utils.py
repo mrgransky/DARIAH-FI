@@ -114,7 +114,7 @@ clrs = ["#ff2eee",
 				"#102d",
 			]
 
-usr_ = {'alijani': '/lustre/sgn-data/vision', 
+usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
 				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
 				}
