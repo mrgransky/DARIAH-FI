@@ -42,7 +42,8 @@ elif [ $user == 'alijanif' ]; then
 	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
 fi
 
-python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza' --qphrase 'Stockholms universitet'
+#python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza' --qphrase 'Stockholms universitet'
+python -u tkRecSys.py --dsPath $dfs_dir --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

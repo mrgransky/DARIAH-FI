@@ -749,13 +749,13 @@ def get_concat_df(dir_path: str):
 	df_concat=pd.concat(dfs,
 										 #ignore_index=True,
 										 ).sort_values("timestamp", ignore_index=True)
-	#df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
-	
+	#df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
 	#print(df_concat.info(verbose=True, memory_usage="deep"))
 	#print(df_concat[["user_ip", "timestamp"]].head(20))
 	#print("#"*100)
 	#print(df_concat[["user_ip", "timestamp"]].tail(20))
-	print(df_concat.user_ip.nunique()) #Count Unique Values in Each Column
+	#print(df_concat.user_ip.nunique()) #Count Unique Values in Column
+	#print(len(df_concat.user_ip.value_counts()))
 	return df_concat
 	
