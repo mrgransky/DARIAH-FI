@@ -119,15 +119,11 @@ def single_query(file_="", ts=None, browser_show=False):
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
 def all_queries(file_="", ts=None):
-	print(f">> Analyzing queries of {file_}")
+	print(f">> Analyzing {file_}")
 	st_t = time.time()
 	#df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
-
-	elapsed_t = time.time() - st_t
-	print(f">> Elapsed_t: {elapsed_t:.2f} s\tINITIAL df: {df.shape}\tavg search/s: {df.shape[0]/(24*60*60):.3f}")
-	print("-"*110)
-
+	print(f"\tElapsed_t: {time.time()-st_t:.3f} s | INITIAL df: {df.shape} | avg search/s: {df.shape[0]/(24*60*60):.3f}")
 	print(f"{f'Page Analysis'.center(100, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "

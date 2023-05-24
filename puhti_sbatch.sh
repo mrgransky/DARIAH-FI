@@ -2,14 +2,14 @@
 
 #SBATCH --account=project_2004072
 #SBATCH -J dfQ_
-#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/q%a_%x_%N_%j%A.out
+#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=large
 #SBATCH --mem-per-cpu=16G
 #SBATCH --time=2-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=2
-#SBATCH --array=0-199
+#SBATCH --array=0-399
 # # # # array: 0-1096
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
