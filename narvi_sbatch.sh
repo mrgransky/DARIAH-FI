@@ -1,9 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J dfQ
-#SBATCH -o /lustre/sgn-data/vision/trash_log/NLF_logs/%x_%a_%N_%j_%A.out
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=5
+#SBATCH -o /lustre/sgn-data/trash/NLF_logs/%x_%a_%N_%j_%A.out
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=6G
 #SBATCH --time=6-23:59:59
 #SBATCH --partition=normal
