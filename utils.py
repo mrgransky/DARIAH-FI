@@ -754,5 +754,7 @@ def get_concat_df(dir_path: str=dataset_path):
 	print(f"<Elapsed_t: {time.time()-st_t:.3f} s> | {df_concat.shape}".center(110, " "))
 	print(df_concat.info())
 	print(df_concat[["user_ip", "timestamp"]].head(50))
+	print("#"*100)
+	print(df_concat[["user_ip", "timestamp"]].tail(50))
 	return df_concat
 	
