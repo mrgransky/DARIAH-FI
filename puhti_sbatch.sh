@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J df_rest_api_updated_saveDF
+#SBATCH -J dfQ_
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/q%a_%x_%N_%j.out
 #SBATCH --partition=small
 #SBATCH --mem-per-cpu=16G
