@@ -685,7 +685,7 @@ def save_pickle(pkl, fname:str=""):
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"<Elapsed_t: {time.time()-st_t:.3f}> | {fsize_dump:.2f} MB".center(110, " "))
+	print(f"<Elapsed_t: {time.time()-st_t:.3f} s> | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_pickle(fpath:str):
 	print(f"\nfile: {fpath} exists, loading...")
@@ -751,7 +751,8 @@ def get_concat_df(dir_path: str=dataset_path):
 	df_concat=pd.concat(dfs,
 										 #ignore_index=True,
 										 ).sort_values("timestamp", ignore_index=True)
-	print(f"<Elapsed_t: {time.time()-st_t:.3f}> | {df_concat.shape}".center(110, " "))
+	print(f"<Elapsed_t: {time.time()-st_t:.3f} s> | {df_concat.shape}".center(110, " "))
 	print(df_concat.info())
+	print(df_concat[["user_ip", "timestamp"]].head(50))
 	return df_concat
 	
