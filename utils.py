@@ -330,7 +330,7 @@ def print_df_detail(df, fname="unkonwn"):
 						]
 					].head(50)
 				)
-	print("#"*100)
+	print("#"*80)
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
 		print(df[["user_ip",
 							"timestamp",
@@ -340,7 +340,9 @@ def print_df_detail(df, fname="unkonwn"):
 						]
 					].tail(50)
 				)
-	print("#"*100)
+	print("#"*800)
+	print(df.timestamp.value_counts())
+	
 	return
 
 	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
