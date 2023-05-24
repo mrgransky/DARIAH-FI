@@ -740,10 +740,12 @@ def get_concat_df(dir_path: str=dataset_path):
 	print(f">> Concatinating files.dump located at: {dir_path}", end=" ")
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) ]
-	print(len(dfs))
-	"""
+	print(f"Found: {len(dfs)}")
+	st_t = time.time()
 	df_concat=pd.concat(dfs,
 										 #ignore_index=True,
 										 ).sort_values("timestamp", ignore_index=True)
+	print(f"<Elapsed_t: {time.time()-st_t:.3f}> | {df_concat.shape}".center(110, " "))
+	print(df_concat.info())
 	return df_concat
-	"""
+	

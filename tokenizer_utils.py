@@ -12,7 +12,8 @@ nltk.download(#'all',
 							raise_on_error=True,
 							)
 
-with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+#with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+with HiddenPrints():
 	import trankit
 	p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 	p.add('swedish')
@@ -58,6 +59,15 @@ STOPWORDS.extend(my_custom_stopwords)
 UNIQUE_STOPWORDS = list(set(STOPWORDS))
 #print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ"]
+
+class HiddenPrints:
+	def __enter__(self):
+		self._original_stdout = sys.stdout
+		sys.stdout = open(os.devnull, 'w')
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		sys.stdout.close()
+		sys.stdout = self._original_stdout
 
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
