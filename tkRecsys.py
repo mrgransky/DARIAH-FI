@@ -1453,7 +1453,7 @@ def practice(topK=5):
 	print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 
 if __name__ == '__main__':
-	#os.system("clear")
+	os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
 	main()	
 	#practice()
