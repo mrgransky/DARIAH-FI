@@ -321,7 +321,8 @@ def print_df_detail(df, fname="unkonwn"):
 	"""
 	#print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
-	with pd.option_context('display.max_rows', 1800, 'display.max_colwidth', 1500):
+	with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
+		"""
 		print(df[["user_ip",
 							"timestamp",
 							#"search_query_phrase", 
@@ -339,10 +340,11 @@ def print_df_detail(df, fname="unkonwn"):
 						]
 					].tail(50)
 				)
+		#print("#"*80)
+		#print(df.timestamp.value_counts()) # find duplicates of time
 		print("#"*80)
-		print(df.timestamp.value_counts())
-		print("#"*80)
-		print(df.user_ip.value_counts())
+		"""
+		print(df.user_ip.value_counts().sort_values())
 
 
 	
