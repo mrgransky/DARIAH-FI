@@ -1,9 +1,14 @@
 #!/bin/bash
 
-#SBATCH --time=01:00:00
-#SBATCH --mem=2G
-#SBATCH --job-name=pi-array-grouped
-#SBATCH --output=pi-array-grouped_%a.out
+#SBATCH --account=project_2004072
+#SBATCH -J dfQ
+#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
+#SBATCH --partition=interactive
+#SBATCH --mem-per-cpu=1G
+#SBATCH --time=2-23:59:59
+#SBATCH --mail-user=farid.alijani@gmail.com
+#SBATCH --mail-type=ALL
+#SBATCH --cpus-per-task=1
 #SBATCH --array=0-4
 
 # Lets create a new folder for our output files
