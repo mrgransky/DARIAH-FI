@@ -312,7 +312,7 @@ def get_sparse_mtx(df):
 	return sparse_mtx
 
 def print_df_detail(df, fname="unkonwn"):
-	print(f"Printing detail: {f'{fname} | DF: {df.shape}'.center(150, ' ')}")
+	print(f"{fname} | DF: {df.shape}".center(150, ' '))
 
 	print(df.info(verbose=True, memory_usage="deep"))
 	"""
@@ -323,14 +323,14 @@ def print_df_detail(df, fname="unkonwn"):
 
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
 		print(df[["user_ip",
-							#"",
-							"search_query_phrase", 
-							"search_results",
-							"search_referer",
+							"timestamp",
+							#"search_query_phrase", 
+							#"search_results",
+							#"search_referer",
 						]
 					].head(20)
 				)
-	
+	return
 	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
 				f"{list(df.loc[1, 'search_results'][0].keys())}", 
 			)
