@@ -752,10 +752,9 @@ def get_concat_df(dir_path: str):
 	#df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
 	
-	#print()
-	print(df_concat.info(verbose=True, memory_usage="deep"))
-	print(df_concat[["user_ip", "timestamp"]].head(20))
-	print("#"*100)
-	print(df_concat[["user_ip", "timestamp"]].tail(20))
+	#print(df_concat.info(verbose=True, memory_usage="deep"))
+	#print(df_concat[["user_ip", "timestamp"]].head(20))
+	#print("#"*100)
+	#print(df_concat[["user_ip", "timestamp"]].tail(20))
 	return df_concat
 	
