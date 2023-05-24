@@ -21,8 +21,8 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"stanza": stanza_lemmatizer,
 											}
 
-RES_DIR = rpath
-fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+fprefix = "df_concat"#get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+RES_DIR = make_result_dir(infile=fprefix)
 
 make_folder(folder_name=dfs_path)
 MODULE=60
@@ -597,7 +597,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	BoWs = get_cBoWs(dframe=df_inp)
 	
 	try:
-		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
+		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
 	except:
 		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	
@@ -657,7 +657,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	"""
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{get_filename_prefix(dfname=args.inputDF)}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
 	except:
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 
@@ -1415,7 +1415,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	# inputDF does not exist anymore	
-	df_raw = get_concat_df()
+	df_raw = get_concat_df(dir_path=args.dsPath)
 	#print_df_detail(df=df_raw, fname=__file__)
 	
 	#run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
