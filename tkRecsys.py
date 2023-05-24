@@ -1,5 +1,5 @@
 from utils import *
-from tokenizer_utils import *
+from tokenizers import *
 
 parser = argparse.ArgumentParser(	description='User-Item Recommendation system developed based on National Library of Finland (NLF) dataset', 
 																	prog='RecSys USER-TOKEN', 
