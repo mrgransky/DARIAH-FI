@@ -7,7 +7,6 @@ from utils import *
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('--query', default=0, type=int) # smallest
 parser.add_argument('--saveDF', default=False, type=bool, help='Save DataFrame in directory | Def: False')
-
 args = parser.parse_args()
 
 def single_query(file_="", ts=None, browser_show=False):
@@ -120,7 +119,7 @@ def single_query(file_="", ts=None, browser_show=False):
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
 def all_queries(file_="", ts=None):
-	print(f">> Analyzing queries of {file_} ...")
+	print(f">> Analyzing queries of {file_}")
 	st_t = time.time()
 	#df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
@@ -203,32 +202,18 @@ def all_queries(file_="", ts=None):
 	if args.saveDF:
 		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
 
-def get_query_log(QUERY=0):
-	#print(f"\nGiven log file index: {QUERY}")
-	log_files_dir = natsorted( glob.glob( os.path.join(dpath, "*.log") ) )
-	#print(log_files_dir)
-
-	#log_files_date = [lf[ lf.rfind(".2")+1: lf.rfind(".") ] for lf in log_files_dir]
-	#print(len(log_files_date), log_files_date)
-	
-	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in log_files_dir]
-	#print(all_log_files)
-	query_log_file = all_log_files[QUERY] 
-	print(f"\nQ: {QUERY}\t{query_log_file}")
-
-	return query_log_file
-
 def run():
 	make_folder(folder_name=dataset_path)
+	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
 	"""	
 	# run single log file	
-	single_query(file_=get_query_log(QUERY=args.query), 
+	single_query(file_=all_log_files[args.query],
 							#browser_show=True, 
 							#ts=["23:52:00", "23:59:59"],
 							)
 	"""
-	# run all log files using array in batch	
-	all_queries(file_=get_query_log(QUERY=args.query),
+	# run all log files using array in batch
+	all_queries(file_=all_log_files[args.query],
 							#ts=["14:30:00", "14:56:59"],
 							)
 
