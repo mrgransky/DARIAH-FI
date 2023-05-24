@@ -686,13 +686,13 @@ def save_pickle(pkl, fname:str=""):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_pickle(fpath:str):
-	print(f"\nfile: {fpath} exists, loading...")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
-		#pkl = joblib.load(f)
 		pkl = dill.load(f)
+	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
+	print(f"Loading: {fpath}")
+	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
