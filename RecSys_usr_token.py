@@ -1461,6 +1461,6 @@ def practice(topK=5):
 if __name__ == '__main__':
 	#os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
-	#main()	
+	main()	
 	#practice()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
