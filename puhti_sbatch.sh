@@ -8,7 +8,7 @@
 #SBATCH --time=2-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --array=0-999
 # # # # array: 0-1096
 stars=$(printf '%*s' 90 '')
