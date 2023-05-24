@@ -736,11 +736,11 @@ def just_test_for_expected_results(df):
 def get_concat_df(dir_path: str=dfs_path):
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
-	for files in glob.glob(dir_path+"*.dump"):
+	for files in glob.glob(os.path.join(dir_path, "*.dump")):
 		print(files, files.endswith(".dump"))
 	print(f">> Concatinating files.dump located at: {dir_path}", end=" ")
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		dfs = [load_pickle(f) for f in glob.glob(dir_path+"*.dump") ]
+		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) ]
 	print(len(dfs))
 	"""
 	df_concat=pd.concat(dfs,

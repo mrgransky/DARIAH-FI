@@ -14,8 +14,7 @@ nltk.download(#'all',
 
 with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 	import trankit
-	from trankit import Pipeline
-	p = Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
+	p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 	p.add('swedish')
 	p.add('russian')
 	#p.add('english')
