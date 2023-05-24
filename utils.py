@@ -130,16 +130,6 @@ rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
 #dfs_path = os.path.join( NLF_DATASET_PATH, f"temp_dataframes")
 
-class HiddenPrints:
-	def __enter__(self):
-		self._original_stdout = sys.stdout
-		sys.stdout = open(os.devnull, 'w')
-
-	def __exit__(self, exc_type, exc_val, exc_tb):
-		sys.stdout.close()
-		sys.stdout = self._original_stdout
-
-
 def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	matrix = sp_mtrx.toarray()
 	sp_type = "Normalized" if matrix.max() == 1.0 else "Original" 
@@ -744,13 +734,13 @@ def just_test_for_expected_results(df):
 		print("-"*100)
 
 def get_concat_df(dir_path: str=dfs_path):
-	print(f">> Concatinating files.dump located at: {dir_path}", end=" ")
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
-	for files in glob.glob(dir_path):
+	for files in glob.glob(dir_path+"*.dump"):
 		print(files, files.endswith(".dump"))
+	print(f">> Concatinating files.dump located at: {dir_path}", end=" ")
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		dfs = [load_pickle(f) for f in glob.glob(dir_path) ]
+		dfs = [load_pickle(f) for f in glob.glob(dir_path+"*.dump") ]
 	print(len(dfs))
 	"""
 	df_concat=pd.concat(dfs,

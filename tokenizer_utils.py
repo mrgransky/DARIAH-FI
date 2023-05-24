@@ -35,7 +35,7 @@ with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 															"package": 		'ftb',
 														},
 								}
-stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
+	stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
 																							use_gpu=True,
 																							lang_configs=lang_configs,
 																							download_method=DownloadMethod.REUSE_RESOURCES,
