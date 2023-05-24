@@ -1419,7 +1419,7 @@ def main():
 	#df_raw = load_pickle(fpath=args.inputDF) # new approach to load df as pickle from dill
 	
 	df_raw = get_concat_df()
-	print_df_detail(df=df_raw, fname=__file__)
+	#print_df_detail(df=df_raw, fname=__file__)
 	
 	#run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
