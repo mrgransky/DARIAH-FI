@@ -9,7 +9,7 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
-#SBATCH --array=1000-1094
+#SBATCH --array=0-199
 # # # # array: 0-1096
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
