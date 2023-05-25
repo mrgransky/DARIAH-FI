@@ -645,7 +645,7 @@ def checking_(url):
 		return r
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		#print(url)
-		print(f"\t{ehttp}\t{ehttp.response.status_code}")
+		print(f"Request: {ehttp:<40}{ehttp.response.status_code}")
 		return
 		#pass
 	except (requests.exceptions.Timeout,
