@@ -9,8 +9,11 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
-#SBATCH --array=200-399
+#SBATCH --array=0-10
+
+
 # # # # array: 0-1096
+# # # # array: 730-1096 -> useless no information
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
 ch="#"
@@ -33,7 +36,7 @@ elif [ $user == 'alijanif' ]; then
 	#source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
 fi
 
-python -u nationalbiblioteket_logs.py --saveDF True --query $SLURM_ARRAY_TASK_ID
+python -u information_retrieval.py --saveDF True --query $SLURM_ARRAY_TASK_ID
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

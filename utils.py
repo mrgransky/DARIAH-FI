@@ -645,7 +645,7 @@ def checking_(url):
 		return r
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		#print(url)
-		print(f"Request: {ehttp} {ehttp.response.status_code}")
+		print(f"Request {ehttp} {ehttp.response.status_code}")
 		return
 		#pass
 	except (requests.exceptions.Timeout,
@@ -743,7 +743,7 @@ def get_concat_df(dir_path: str):
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) ]
+		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 	print(f"Found: {len(dfs)}")
 	st_t = time.time()
 	df_concat=pd.concat(dfs,

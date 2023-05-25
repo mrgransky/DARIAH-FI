@@ -395,7 +395,7 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	print(f"<Scraping> {URL}")
+	print(f"URL: {URL}".center(150, " "))
 	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
 
@@ -422,7 +422,7 @@ def scrap_newspaper_content_page(URL):
 	except (json.JSONDecodeError, 
 					json.decoder.JSONDecodeError,
 				) as jve:
-		print(f"JSON empty response:\n{jve}")
+		print(f"JSON empty content:\n{jve}")
 		hgltd_wrds = []
 
 	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
