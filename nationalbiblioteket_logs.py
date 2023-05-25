@@ -119,7 +119,7 @@ def single_query(file_="", ts=None, browser_show=False):
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
 def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
-	print(f">> Analyzing Q: {nQ}: {file_}")
+	print(f">> Analyzing Q[{nQ}]: {file_}")
 	st_t = time.time()
 	#df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
