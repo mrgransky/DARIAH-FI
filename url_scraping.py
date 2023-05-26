@@ -340,7 +340,7 @@ def scrap_search_page(URL):
 					RuntimeError,
 					json.JSONDecodeError,
 					) as e:
-		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
 		return
 
 	#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
