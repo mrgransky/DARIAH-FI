@@ -3,7 +3,7 @@
 #SBATCH -J dfQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=8G
+#SBATCH --mem=6G
 #SBATCH --time=6-23:59:59
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
