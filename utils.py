@@ -638,7 +638,7 @@ def checking_(url):
 	#print(f"\t\tValidation & Update")
 	try:
 		r = requests.get(url)
-		r.raise_for_status()
+		r.raise_for_status() # raise exception if NOT >>>>>>> 200 <<<<<<<<!
 		#print(f">> HTTP family: {r.status_code} => Exists: {r.ok}")
 		#print(r.headers)
 		#print()
@@ -653,7 +653,6 @@ def checking_(url):
 					requests.exceptions.RequestException, 
 					requests.exceptions.TooManyRedirects,
 					requests.exceptions.InvalidSchema,
-					Exception, 
 					ValueError, 
 					TypeError, 
 					EOFError, 

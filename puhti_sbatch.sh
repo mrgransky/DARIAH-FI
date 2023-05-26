@@ -9,8 +9,7 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --cpus-per-task=1
-#SBATCH --array=0-29
-
+#SBATCH --array=0-9
 
 # # # # array: 0-1096
 # # # # array: 730-1096 -> useless no information
