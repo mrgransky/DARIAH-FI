@@ -54,7 +54,7 @@ def get_snippet_raw_text(search_results_list):
 	return ' '.join(snippets_list)
 
 def get_cBoWs(dframe:pd.DataFrame):
-	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
+	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
 
 	print(f"{f'Extracting texts search query phrases':<50}", end="")
 	st_t = time.time()
@@ -81,9 +81,9 @@ def get_cBoWs(dframe:pd.DataFrame):
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_snippet_raw_text, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-	# print(dframe.info())
-	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
-	# print(f"<>"*120)
+	print(dframe.info())
+	print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
+	print(f"<>"*120)
 	# return
 
 	users_list = list()
@@ -146,7 +146,7 @@ def get_cBoWs(dframe:pd.DataFrame):
 	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)}")
 	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
 	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
-	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
+	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
 	return BOWs
 
 def get_BoWs(dframe: pd.DataFrame,):
@@ -406,22 +406,22 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.lz4")
 	df_preprocessed = dframe.copy()
 
-	print(f"\n>> Getting {sqFile} ...")	
+	print(f"\n>> Getting {sqFile}")	
 	try:
 		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile)
 	except:
-		print(f"<!> Search query phrases [tokenization + lemmatization]...")
+		print(f"\t<!> Search query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
 		sq_list = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
 		df_preprocessed["search_query_phrase_tklm"] = sq_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=sq_list, fname=sqFile)
 
-	print(f"\n>> Getting {snHWFile} ...")	
+	print(f"\n>> Getting {snHWFile}")	
 	try:
 		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile)
 	except:
-		print(f"<!> Snippet Highlighted Words [tokenization + lemmatization]...")
+		print(f"\t<!> Snippet Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_search_results_hw_snippets, na_action='ignore')
 		snHW_list = df_preprocessed["search_results_hw_snippets"].map(tokenize_hw_snippets, na_action='ignore')
@@ -429,11 +429,11 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=snHW_list, fname=snHWFile)
 
-	print(f"\n>> Getting {cntHWFile} ...")	
+	print(f"\n>> Getting {cntHWFile}")	
 	try:
 		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
 	except:
-		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
+		print(f"\t<!> Content Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_hw, na_action='ignore')
 		cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(tokenize_hw_nwp_content, na_action='ignore')
@@ -441,11 +441,11 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cntHW_list, fname=cntHWFile)
 
-	print(f"\n>> Getting {cntPTFile} ...")	
+	print(f"\n>> Getting {cntPTFile}")	
 	try:
 		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
 	except:
-		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
+		print(f"\t<!> Content Parsed Terms [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_pt, na_action='ignore')
 		cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
@@ -453,11 +453,11 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
-	print(f"\n>> Getting {cntFile} ...")	
+	print(f"\n>> Getting {cntFile}")	
 	try:
 		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
 	except:
-		print(f"<!> Contents [tokenization + lemmatization]...")
+		print(f"\t<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
 		cnt_list = df_preprocessed["nwp_content_ocr_text"].map(lemmatize_nwp_content, na_action='ignore') # inp: "my car is black." => out ["car", "black"]
@@ -465,7 +465,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cnt_list, fname=cntFile)
 
-	print(f"\n>> Getting {snFile} ...")	
+	print(f"\n>> Getting {snFile}")	
 	try:
 		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
 	except:
