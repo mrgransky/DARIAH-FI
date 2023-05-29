@@ -396,13 +396,13 @@ def tokenize_query_phrase(qu_list):
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
-def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
-	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.lz4")
-	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.lz4")
-	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.lz4")
-	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.lz4")
-	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.lz4")
-	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.lz4")
+def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str=""):
+	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_search_queries.lz4")
+	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_snippets_hw.lz4")
+	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_snippets.lz4")
+	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_contents_hw.lz4")
+	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_content_pt.lz4")
+	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_contents.lz4")
 	df_preprocessed = dframe.copy()
 
 	print(f"\n>> Getting {sqFile}")	
@@ -528,7 +528,6 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
-	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
@@ -541,6 +540,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	nwp_content_raw_texts_list = list()
 	nwp_content_lemmas_separated_list = list()
 	
+	st_t = time.time()
 	for n, g in df_preprocessed.groupby("user_ip"):
 		#print(n)
 		users_list.append(n)
@@ -628,15 +628,17 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#print("#"*100)
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
 	
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
-	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
+	################## redundant ##################
+	#df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.lz4")
+	#save_pickle(pkl=df_user_token, fname=df_user_token_fname)
+	################## redundant ##################
 
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
 	return df_user_token
 
 
 """
-def get_users_tokens_df(dframe: pd.DataFrame, bow):
+def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
 	print(f"\n>> Getting {df_preprocessed_fname} ...")
 	
@@ -790,7 +792,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow):
 	#print("#"*100)
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
 	
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
+	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.lz4")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
@@ -836,11 +838,8 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	"""
 	#BoWs = get_BoWs(dframe=df_inp)
 	BoWs = get_cBoWs(dframe=df_inp)
-	
-	try:
-		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
-	except:
-		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
+
+	df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	
 	#print(df_usr_tk.info())
 	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
