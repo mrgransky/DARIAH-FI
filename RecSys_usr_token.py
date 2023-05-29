@@ -396,7 +396,6 @@ def tokenize_query_phrase(qu_list):
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
-
 def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.lz4")
 	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.lz4")
