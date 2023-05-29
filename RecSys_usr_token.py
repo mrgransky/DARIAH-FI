@@ -56,30 +56,30 @@ def get_snippet_raw_text(search_results_list):
 def get_cBoWs(dframe:pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 
-	print(f"Extracting texts search query phrases", end="")
+	print(f"{f'Extracting texts search query phrases':<50}", end="")
 	st_t = time.time()
 	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"{time.time()-st_t:>{60}.{3}f} s")
+	print(f"{time.time()-st_t:.3f} s")
 	
-	print(f"Extracting texts collection query phrases", end="")
+	print(f"{f'Extracting texts collection query phrases':<50}", end="")
 	st_t = time.time()
 	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"{time.time()-st_t:>{60}.{3}f} s")
+	print(f"{time.time()-st_t:.3f} s")
 
-	print(f"Extracting texts clipping query phrases", end="")
+	print(f"{f'Extracting texts clipping query phrases':<50}", end="")
 	st_t = time.time()
 	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"{time.time()-st_t:>{60}.{3}f} s")
+	print(f"{time.time()-st_t:.3f} s")
 
-	print(f"Extracting texts newspaper content", end="")
+	print(f"{f'Extracting texts newspaper content':<50}", end="")
 	st_t = time.time()
 	dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
-	print(f"{time.time()-st_t:>{60}.{3}f} s")
+	print(f"{time.time()-st_t:.3f} s")
 	
-	print(f"Extracting texts snippets", end="")
+	print(f"{f'Extracting texts snippets':<50}", end="")
 	st_t = time.time()
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_snippet_raw_text, na_action='ignore')
-	print(f"{time.time()-st_t:>{60}.{3}f} s")
+	print(f"{time.time()-st_t:.3f} s")
 
 	# print(dframe.info())
 	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
