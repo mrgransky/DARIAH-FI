@@ -59,12 +59,12 @@ def get_cBoWs(dframe:pd.DataFrame):
 	print(f"Extracting texts from query phrases...", end="\t")
 	st_t = time.time()
 	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"{:<50}Elapsed_t: {time.time()-st_t:.2f} s")
 	
 	print(f"Extracting texts from collection query phrases...", end="\t")
 	st_t = time.time()
 	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+	print(f"{:<50}Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(f"Extracting texts from clipping query phrases...", end="\t")
 	st_t = time.time()
