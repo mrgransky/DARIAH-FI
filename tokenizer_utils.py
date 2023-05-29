@@ -90,6 +90,7 @@ def stanza_lemmatizer(docs):
 	#print("<>"*70)
 	return lm
 
+
 def trankit_lemmatizer(docs):
 	print(f'Raw: (len: {len(docs)}) >>{docs}<<', end='\t')
 	if not docs:
