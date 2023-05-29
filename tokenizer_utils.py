@@ -97,7 +97,7 @@ def trankit_lemmatizer(docs):
 		return
 
 	# treat all as document
-docs = re.sub(r'\"|<[^>]+>|[~*^][\d]+', '', docs)
+	docs = re.sub(r'\"|<[^>]+>|[~*^][\d]+', '', docs)
 	docs = re.sub(r'[%,+;,=&\'*"°^~?!—.•()“”:/‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
 		
 	print(f'preprocessed: (len: {len(docs)}) >>{docs}<<', end='\t')
