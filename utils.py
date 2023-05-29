@@ -634,10 +634,10 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	return df
 
-def checking_(url):
+def checking_(url, prms=None):
 	#print(f"\t\tValidation & Update")
 	try:
-		r = requests.get(url)
+		r = requests.get(url, params=prms,)
 		r.raise_for_status() # raise exception if NOT >>>>>>> 200 <<<<<<<<!
 		#print(f">> HTTP family: {r.status_code} => Exists: {r.ok}")
 		#print(r.headers)
@@ -645,7 +645,7 @@ def checking_(url):
 		return r
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		#print(url)
-		print(f"Request {ehttp} {ehttp.response.status_code}")
+		print(f"Req {ehttp} {ehttp.response.status_code}")
 		return
 		#pass
 	except (requests.exceptions.Timeout,
