@@ -9,7 +9,7 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 # # # # # # SBATCH --gres=gpu:teslav100:1
-#SBATCH --array=0-9
+#SBATCH --array=10-19
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
