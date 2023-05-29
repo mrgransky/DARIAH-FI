@@ -52,7 +52,7 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_cBoWs(dframe:pd.DataFrame):
+def get_cBoWs(dframe: pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 
 	print(f">> Extracting texts from query phrases...")
@@ -148,7 +148,7 @@ def get_cBoWs(dframe:pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs
 
-def get_BoWs(dframe,):
+def get_BoWs(dframe: pd.DataFrame,):
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 
 	print(f">> Extracting texts from query phrases...")
@@ -395,56 +395,134 @@ def tokenize_query_phrase(qu_list):
 	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
-def get_users_tokens_df(dframe: pd.DataFrame, bow):
-	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
-	print(f"\n>> Getting {df_preprocessed_fname} ...")
-	
+def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
+	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.lz4")
+	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.lz4")
+	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.lz4")
+	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.lz4")
+	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.lz4")
+	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.lz4")
+	df_preprocessed = dframe.copy()
+
+	print(f"\n>> Getting {sqFile} ...")	
 	try:
-		df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
-		#print(f"\tLoaded from {df_preprocessed_fname} successfully!")
+		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile)
 	except:
-		print(f"Updating Original DF: {dframe.shape} with Tokenized texts".center(110, "-"))
-		df_preprocessed = dframe.copy()
-
-		print(f">> Analyzing query phrases [tokenization + lemmatization]...")
+		print(f"<!> Search query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
-		df_preprocessed["search_query_phrase_tklm"] = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
+		sq_list = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
+		df_preprocessed["search_query_phrase_tklm"] = sq_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		save_pickle(pkl=sq_list, fname=sqFile)
 
-		print(f">> Analyzing highlighted words in snippets [tokenization + lemmatization]...")
+	print(f"\n>> Getting {snHWFile} ...")	
+	try:
+		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile)
+	except:
+		print(f"<!> Snippet Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_search_results_hw_snippets, na_action='ignore')
-		df_preprocessed['search_results_hw_snippets_tklm'] = df_preprocessed["search_results_hw_snippets"].map(tokenize_hw_snippets, na_action='ignore')
+		snHW_list = df_preprocessed["search_results_hw_snippets"].map(tokenize_hw_snippets, na_action='ignore')
+		df_preprocessed['search_results_hw_snippets_tklm'] = snHW_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		save_pickle(pkl=snHW_list, fname=snHWFile)
 
-		print(f">> Analyzing highlighted words in newspaper content [tokenization + lemmatization]...")
+	print(f"\n>> Getting {cntHWFile} ...")	
+	try:
+		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
+	except:
+		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_hw, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_hw_tklm'] = df_preprocessed["nwp_content_ocr_text_hw"].map(tokenize_hw_nwp_content, na_action='ignore')
+		cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(tokenize_hw_nwp_content, na_action='ignore')
+		df_preprocessed['nwp_content_ocr_text_hw_tklm'] = cntHW_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		save_pickle(pkl=cntHW_list, fname=cntHWFile)
 
-		print(f">> Analyzing parsed terms in newspaper content [tokenization + lemmatization]...")
+	print(f"\n>> Getting {cntPTFile} ...")	
+	try:
+		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
+	except:
+		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_pt, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = df_preprocessed["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
+		cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
+		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = cntPT_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		
-		#####################################################
-		# comment for speedup:
-		print(f">> Analyzing newspaper content [tokenization + lemmatization]...")
+		save_pickle(pkl=cntPT_list, fname=cntPTFile)
+
+	print(f"\n>> Getting {cntFile} ...")	
+	try:
+		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
+	except:
+		print(f"<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_tklm'] = df_preprocessed["nwp_content_ocr_text"].map(lemmatize_nwp_content, na_action='ignore') # inp: "my car is black." => out ["car", "black"]
+		cnt_list = df_preprocessed["nwp_content_ocr_text"].map(lemmatize_nwp_content, na_action='ignore') # inp: "my car is black." => out ["car", "black"]
+		df_preprocessed['nwp_content_ocr_text_tklm'] = cnt_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		
-		print(f">> Analyzing snippets [tokenization + lemmatization]...")
+		save_pickle(pkl=cnt_list, fname=cntFile)
+
+	print(f"\n>> Getting {snFile} ...")	
+	try:
+		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
+	except:
+		print(f"<!> Snippets [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_search_results_snippet_text, na_action='ignore')
+		sn_list = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
 		df_preprocessed['search_results_snippets_tklm'] = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		#####################################################
+		save_pickle(pkl=sn_list, fname=snFile)
+
+	# df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
+	# print(f"\n>> Getting {df_preprocessed_fname} ...")	
+	# try:
+	# 	df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
+	# 	#print(f"\tLoaded from {df_preprocessed_fname} successfully!")
+	# except:
+	# 	print(f"Updating Original DF: {dframe.shape} with Tokenized texts".center(110, "-"))
+	# 	df_preprocessed = dframe.copy()
+
+	# 	print(f">> Analyzing query phrases [tokenization + lemmatization]...")
+	# 	st_t = time.time()
+	# 	df_preprocessed["search_query_phrase_tklm"] = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
+	# 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+
+	# 	print(f">> Analyzing highlighted words in snippets [tokenization + lemmatization]...")
+	# 	st_t = time.time()
+	# 	df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_search_results_hw_snippets, na_action='ignore')
+	# 	df_preprocessed['search_results_hw_snippets_tklm'] = df_preprocessed["search_results_hw_snippets"].map(tokenize_hw_snippets, na_action='ignore')
+	# 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+
+	# 	print(f">> Analyzing highlighted words in newspaper content [tokenization + lemmatization]...")
+	# 	st_t = time.time()
+	# 	df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_hw, na_action='ignore')
+	# 	df_preprocessed['nwp_content_ocr_text_hw_tklm'] = df_preprocessed["nwp_content_ocr_text_hw"].map(tokenize_hw_nwp_content, na_action='ignore')
+	# 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+
+	# 	print(f">> Analyzing parsed terms in newspaper content [tokenization + lemmatization]...")
+	# 	st_t = time.time()
+	# 	df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_pt, na_action='ignore')
+	# 	df_preprocessed['nwp_content_ocr_text_pt_tklm'] = df_preprocessed["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
+	# 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		
-		save_pickle(pkl=df_preprocessed, fname=df_preprocessed_fname)
+	# 	#####################################################
+	# 	# comment for speedup:
+	# 	print(f">> Analyzing newspaper content [tokenization + lemmatization]...")
+	# 	st_t = time.time()
+	# 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
+	# 	df_preprocessed['nwp_content_ocr_text_tklm'] = df_preprocessed["nwp_content_ocr_text"].map(lemmatize_nwp_content, na_action='ignore') # inp: "my car is black." => out ["car", "black"]
+	# 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		
+	# 	print(f">> Analyzing snippets [tokenization + lemmatization]...")
+	# 	st_t = time.time()
+	# 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_search_results_snippet_text, na_action='ignore')
+	# 	df_preprocessed['search_results_snippets_tklm'] = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
+	# 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+	# 	#####################################################
+		
+	# 	save_pickle(pkl=df_preprocessed, fname=df_preprocessed_fname)
 	
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 
