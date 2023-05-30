@@ -7,45 +7,82 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"stanza": stanza_lemmatizer,
 											}
 
-def get_qu_phrase_raw_text(phrase_list):
+def get_raw_sqp(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
 	phrase = phrase_list[0]
 	return phrase
 
-def get_snippet_raw_text(search_results_list):
-	#snippets_list = [sn.get("textHighlights").get("text") for sn in search_results_list if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
-	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
+def get_lemmatized_sqp(qu_list, lm: str="stanza"):
+	# qu_list = ['some word in this format with always length 1']
+	#print(len(qu_list), qu_list)
+	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
+	return lemmatizer_methods.get(lm)(qu_list[0])
+
+def get_raw_snHWs(search_results_list):
+	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
+	hw_snippets = [w for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 ) for w in sn.get("terms")] # ["A", "B", "C"]
+	return hw_snippets
+
+def get_lemmatized_snHWs(results, lm: str="stanza"):
+	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+
+def get_raw_cntHWs(cnt_dict):
+	return cnt_dict.get("highlighted_term")
+
+def get_lemmatized_cntHWs(results, lm: str="stanza"):
+	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+
+def get_raw_cntPTs(cnt_dict):
+	return cnt_dict.get("parsed_term")
+
+def get_lemmatized_cntPTs(results, lm: str="stanza"):
+	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+
+def get_raw_sn(results):
+	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
+	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
+	return snippets_list
+
+def get_lemmatized_sn(results, lm: str="stanza"):
+	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+
+def get_raw_snTEXTs(results):
+	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
+	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_nwp_content_raw_text(cnt_dict):
+def get_raw_cnt(cnt_dict):
 	return cnt_dict.get("text")
+
+def get_lemmatized_cnt(sentences: str, lm: str="stanza"):
+	return lemmatizer_methods.get(lm)(sentences)
 
 def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
 
 	print(f"{f'Extracting texts search query phrases':<50}", end="")
 	st_t = time.time()
-	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 	
 	print(f"{f'Extracting texts collection query phrases':<50}", end="")
 	st_t = time.time()
-	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(f"{f'Extracting texts clipping query phrases':<50}", end="")
 	st_t = time.time()
-	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(f"{f'Extracting texts newspaper content':<50}", end="")
 	st_t = time.time()
-	dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
+	dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 	
-	print(f"{f'Extracting texts snippets':<50}", end="")
+	print(f"{f'Extracting raw texts snippets':<50}", end="")
 	st_t = time.time()
-	dframe['snippet_raw_text'] = dframe["search_results"].map(get_snippet_raw_text, na_action='ignore')
+	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_snTEXTs, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	# print(dframe.info())
@@ -121,17 +158,17 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	print(f">> Extracting texts from query phrases...")
 	st_t = time.time()
-	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
 	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
 
 	print(f">> Extracting texts from collection query phrases...")
 	st_t = time.time()
-	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
 	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
 
 	print(f">> Extracting texts from clipping query phrases...")
 	st_t = time.time()
-	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
+	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
 	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
 
 	users_list = list()

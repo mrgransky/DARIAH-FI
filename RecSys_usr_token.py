@@ -472,7 +472,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str="
 		st_t = time.time()
 		df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_search_results_snippet_text, na_action='ignore')
 		sn_list = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
-		df_preprocessed['search_results_snippets_tklm'] = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
+		df_preprocessed['search_results_snippets_tklm'] = sn_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=sn_list, fname=snFile)
 
