@@ -53,7 +53,7 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_cBoWs(dframe:pd.DataFrame):
+def get_cBoWs(dframe: pd.DataFrame):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
 
 	print(f"{f'Extracting texts search query phrases':<50}", end="")
@@ -81,9 +81,9 @@ def get_cBoWs(dframe:pd.DataFrame):
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_snippet_raw_text, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-	print(dframe.info())
-	print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
-	print(f"<>"*120)
+	# print(dframe.info())
+	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
+	# print(f"<>"*120)
 	# return
 
 	users_list = list()
