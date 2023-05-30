@@ -471,13 +471,13 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	"""
 	if userName.endswith("xenial"):
-		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix)
+		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	else:
-		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix)
+		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	#return
 	"""
-	#BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix)
-	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix)
+	#BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
+	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	
 	try:
 		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))

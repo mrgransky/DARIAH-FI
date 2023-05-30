@@ -13,7 +13,7 @@ def get_snippet_raw_text(search_results_list):
 def get_nwp_content_raw_text(cnt_dict):
 	return cnt_dict.get("text")
 
-def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
+def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
 
 	print(f"{f'Extracting texts search query phrases':<50}", end="")
@@ -67,8 +67,8 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 	raw_docs_list = list(set(raw_docs_list))
 	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.lz4")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
@@ -77,7 +77,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 		# Fit TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(#min_df=5,
 															#ngram_range=(1, 2),
-															tokenizer=lemmatizer_methods.get(args.lmMethod),
+															tokenizer=lemmatizer_methods.get(lm),
 															#stop_words=UNIQUE_STOPWORDS,
 															)
 
@@ -87,7 +87,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
-								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
+								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 							)
 
 		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
@@ -109,7 +109,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs
 
-def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
+def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 
 	print(f">> Extracting texts from query phrases...")
@@ -150,8 +150,8 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
 	"""
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer.lz4")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF.lz4")
 
 	if not os.path.exists(tfidf_vec_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases, might take a while...".center(110, " "))
@@ -160,7 +160,7 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 		# Fit TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(#min_df=5,
 															#ngram_range=(1, 2),
-															tokenizer=lemmatizer_methods.get(args.lmMethod),
+															tokenizer=lemmatizer_methods.get(lm),
 															#stop_words=UNIQUE_STOPWORDS,
 															)
 
@@ -170,7 +170,7 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
-								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
+								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 							)
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 	else:
@@ -194,4 +194,3 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat"):
 	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
 	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
 	return BOWs
-
