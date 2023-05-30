@@ -12,7 +12,7 @@
 # # # # SBATCH --partition=small
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=32G
+#SBATCH --mem=48G
 
 # # # # # # SBATCH --array=0-69
 # # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
