@@ -1,5 +1,11 @@
 from utils import *
 
+lemmatizer_methods = {"nltk": nltk_lemmatizer,
+											"spacy": spacy_tokenizer,
+											"trankit": trankit_lemmatizer,
+											"stanza": stanza_lemmatizer,
+											}
+
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
 	phrase = phrase_list[0]
