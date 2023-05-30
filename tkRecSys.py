@@ -16,11 +16,6 @@ args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-lemmatizer_methods = {"nltk": nltk_lemmatizer,
-											"spacy": spacy_tokenizer,
-											"trankit": trankit_lemmatizer,
-											"stanza": stanza_lemmatizer,
-											}
 
 fprefix = "df_concat"
 RES_DIR = make_result_dir(infile=fprefix)

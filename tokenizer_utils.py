@@ -61,6 +61,12 @@ UNIQUE_STOPWORDS = list(set(STOPWORDS))
 #print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ"]
 
+lemmatizer_methods = {"nltk": nltk_lemmatizer,
+											"spacy": spacy_tokenizer,
+											"trankit": trankit_lemmatizer,
+											"stanza": stanza_lemmatizer,
+											}
+
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
 	sentences = re.sub(r'[~|^|*][\d]+', '', sentences)
@@ -89,7 +95,6 @@ def stanza_lemmatizer(docs):
 	#print( lm )
 	#print("<>"*70)
 	return lm
-
 
 def trankit_lemmatizer(docs):
 	print(f'Raw: (len: {len(docs)}) >>{docs}<<', end='\t')
