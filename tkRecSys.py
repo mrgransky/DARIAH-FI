@@ -1205,7 +1205,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	df_raw = get_concat_df(dir_path=args.dsPath)
-	#print_df_detail(df=df_raw, fname=__file__)	
+	#analyze_df(df=df_raw, fname=__file__)	
 	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):

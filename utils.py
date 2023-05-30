@@ -317,7 +317,7 @@ def get_sparse_mtx(df):
 	##########################Sparse Matrix info##########################
 	return sparse_mtx
 
-def print_df_detail(df, fname="unkonwn"):
+def analyze_df(df: pd:DataFrame, fname: str="unkonwn"):
 	print(f"{fname} | DF: {df.shape}".center(150, ' '))
 
 	print(df.info(verbose=True, memory_usage="deep"))
