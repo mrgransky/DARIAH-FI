@@ -1,4 +1,5 @@
 from utils import *
+from tokenizer_utils import *
 
 lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"spacy": spacy_tokenizer,
