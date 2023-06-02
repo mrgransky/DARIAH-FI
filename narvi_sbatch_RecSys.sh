@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --account=project_2004072
+# # # # # SBATCH --account=project_2004072
 #SBATCH -J df_concat_stanzaTK_cBoW_su
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
