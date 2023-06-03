@@ -743,7 +743,8 @@ def get_concat_df(dir_path: str):
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
-	print(f"Found: {len(dfs)}")
+	ndfs = len(dfs)
+	print(f"Found: {ndfs}")
 	st_t = time.time()
 	df_concat=pd.concat(dfs,
 										#  ignore_index=True,
@@ -756,5 +757,5 @@ def get_concat_df(dir_path: str):
 	# print(df_concat[["user_ip", "timestamp"]].tail(20))
 	# print(df_concat.user_ip.nunique()) #Count Unique Values in Column
 	# print(len(df_concat.user_ip.value_counts()))
-	return df_concat
+	return df_concat, ndfs
 	
