@@ -379,7 +379,7 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	print("DONE".center(80, "-"))
 
 def make_result_dir(infile=""):
-	if infile.startwith("nike_"):
+	if infile.startswith("nike_"):
 		f = get_filename_prefix(dfname=infile) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 	else:
 		f = infile
