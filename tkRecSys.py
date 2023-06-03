@@ -1205,8 +1205,9 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	df_raw, ndfs = get_concat_df(dir_path=args.dsPath)
-	global fprefix = f"{ndfs}_concatinated_dfs_{df_raw.shape[0]}"
-	global RES_DIR = make_result_dir(infile=fprefix)
+	global fprefix, RES_DIR 
+	fprefix = f"{ndfs}_concatinated_dfs_{df_raw.shape[0]}"
+	RES_DIR = make_result_dir(infile=fprefix)
 	analyze_df(df=df_raw, fname=__file__)
 	print(fprefix, RES_DIR)
 	#run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
