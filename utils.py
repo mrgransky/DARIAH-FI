@@ -379,7 +379,10 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	print("DONE".center(80, "-"))
 
 def make_result_dir(infile=""):
-	f = get_filename_prefix(dfname=infile) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+	if infile.startwith("nike_"):
+		f = get_filename_prefix(dfname=infile) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+	else:
+		f = infile
 	res_dir = os.path.join(rpath, f)
 	make_folder(folder_name=res_dir)
 	return res_dir
