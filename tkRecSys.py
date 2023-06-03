@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 
 fprefix = "df_concat"
-RES_DIR = make_result_dir(infile=fprefix)
+#RES_DIR = make_result_dir(infile=fprefix)
 make_folder(folder_name=dfs_path)
 MODULE=60
 
@@ -1206,7 +1206,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def main():
 	df_raw, ndfs = get_concat_df(dir_path=args.dsPath)
 	global fprefix, RES_DIR 
-	fprefix = f"{ndfs}_concatinated_dfs_{df_raw.shape[0]}"
+	fprefix = f"{ndfs}_dfs_concat_{df_raw.shape[0]}"
 	RES_DIR = make_result_dir(infile=fprefix)
 	analyze_df(df=df_raw, fname=__file__)
 	print(fprefix, RES_DIR)
