@@ -327,32 +327,32 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	"""
 	#print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
-	with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
-		"""
-		print(df[["user_ip",
-							"timestamp",
-							#"search_query_phrase", 
-							#"search_results",
-							#"search_referer",
-						]
-					].head(50)
-				)
-		print("#"*80)
-		print(df[["user_ip",
-							"timestamp",
-							#"search_query_phrase", 
-							#"search_results",
-							#"search_referer",
-						]
-					].tail(50)
-				)
-		#print("#"*80)
-		#print(df.timestamp.value_counts()) # find duplicates of time
-		print("#"*80)
-		"""
-		print(df.user_ip.value_counts().sort_values())
+	# with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
+		
+	# 	print(df[["user_ip",
+	# 						"timestamp",
+	# 						#"search_query_phrase", 
+	# 						#"search_results",
+	# 						#"search_referer",
+	# 					]
+	# 				].head(50)
+	# 			)
+	# 	print("#"*80)
+	# 	print(df[["user_ip",
+	# 						"timestamp",
+	# 						#"search_query_phrase", 
+	# 						#"search_results",
+	# 						#"search_referer",
+	# 					]
+	# 				].tail(50)
+	# 			)
+	# 	#print("#"*80)
+	# 	#print(df.timestamp.value_counts()) # find duplicates of time
+	# 	print("#"*80)
+		
+	# 	print(df.user_ip.value_counts().sort_values())
 
-	return
+	# return
 
 	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
 				f"{list(df.loc[1, 'search_results'][0].keys())}", 
