@@ -554,9 +554,9 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 		for line in f:
 			#print(line)
 			matched_line = re.match(ACCESS_LOG_PATTERN, line)
-			#print (matched_line)
+			print (f">> matched line: {matched_line}")
 			l = matched_line.groups()
-			#print(l)
+			print(f"line: {l}")
 			
 			cleaned_lines.append({
 				"user_ip": 							l[0],

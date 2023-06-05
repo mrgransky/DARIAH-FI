@@ -419,7 +419,7 @@ def scrap_newspaper_content_page(URL):
 	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	try:
 		rs = checking_(url=api_url, prms=parameters)
-		hgltd_wrds = [d.get("text") for d in requests.get(api_url, params=parameters).json()]
+		hgltd_wrds = [d.get("text") for d in rs.json()]
 		# if rs:
 		# 	hgltd_wrds = [d.get("text") for d in rs.json()]
 	except (json.JSONDecodeError, 
