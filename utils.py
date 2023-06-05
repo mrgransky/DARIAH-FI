@@ -552,12 +552,12 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	with open(file_path, mode="r") as f:
 		for line in f:
-			#print(line)
+			print(line)
 			matched_line = re.match(ACCESS_LOG_PATTERN, line)
 			print (f">> matched line: {matched_line}")
 			l = matched_line.groups()
 			print(f"line: {l}")
-			
+			print("<>"*80)
 			cleaned_lines.append({
 				"user_ip": 							l[0],
 				"timestamp": 						l[1].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
