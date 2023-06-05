@@ -1209,7 +1209,7 @@ def main():
 	RES_DIR = make_result_dir(infile=fprefix)
 	# analyze_df(df=df_raw, fname=__file__)
 	print(fprefix, RES_DIR)
-	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	# run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5
