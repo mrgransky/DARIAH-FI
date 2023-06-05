@@ -488,7 +488,6 @@ def scrap_newspaper_content_page(URL):
 
 	#return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 	print(f"\tElapsed_t: {time.time()-st_t:.3f} sec")
-
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':
