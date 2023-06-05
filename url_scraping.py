@@ -419,14 +419,14 @@ def scrap_newspaper_content_page(URL):
 	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	try:
 		rs = checking_(url=api_url, prms=parameters)
-		#hgltd_wrds = [d.get("text") for d in requests.get(api_url, params=parameters).json()]
-		if rs:
-			hgltd_wrds = [d.get("text") for d in rs.json()]
+		hgltd_wrds = [d.get("text") for d in requests.get(api_url, params=parameters).json()]
+		# if rs:
+		# 	hgltd_wrds = [d.get("text") for d in rs.json()]
 	except (json.JSONDecodeError, 
 					json.decoder.JSONDecodeError,
 					Exception,
 				) as e:
-		print(f"{e}")
+		print(f"<!> {e}")
 		hgltd_wrds = []
 
 	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
