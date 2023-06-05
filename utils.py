@@ -547,49 +547,52 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 
 def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
-	ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
+	#ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
+	ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\d{3}) (.*?) "([^"]*)" "(.*?)" (.*)' # optimized by chatGPT
+
 	cleaned_lines = []
 
 	with open(file_path, mode="r") as f:
 		for line in f:
-			print(line)
+			# print(line)
 			matched_line = re.match(ACCESS_LOG_PATTERN, line)
-			print (f">> matched line: {matched_line}")
-			l = matched_line.groups()
-			print(f"line: {l}")
-			print("<>"*80)
-			cleaned_lines.append({
-				"user_ip": 							l[0],
-				"timestamp": 						l[1].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
-				"client_request_line": 	l[2],
-				"status": 							l[3],
-				"bytes_sent": 					l[4],
-				"referer": 							l[5],
-				"user_agent": 					l[6],
-				"session_id": 					l[7],
-				#"query_word":										np.nan,
-				#"term":													np.nan,
-				#"page_ocr":													np.nan,
-				#"fuzzy":												np.nan,
-				#"has_metadata":									np.nan,
-				#"has_illustration":							np.nan,
-				#"show_unauthorized_results":		np.nan,
-				#"pages":												np.nan,
-				#"import_time":									np.nan,
-				#"collection":										np.nan,
-				#"author":												np.nan,
-				#"keyword":											np.nan,
-				#"publication_place":						np.nan,
-				#"language":											np.nan,
-				#"document_type":								np.nan,
-				#"show_last_page":								np.nan,
-				#"order_by":											np.nan,
-				#"publisher":										np.nan,
-				#"start_date":										np.nan,
-				#"end_date":											np.nan,
-				#"require_all_keywords":					np.nan,
-				#"result_type":									np.nan,
-				})
+			# print (f">> matched line: {matched_line}")
+			if matched_line:
+				l = matched_line.groups()
+				# print(f"line: {l}")
+				# print("<>"*80)
+				cleaned_lines.append({
+					"user_ip": 							l[0],
+					"timestamp": 						l[1].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
+					"client_request_line": 	l[2],
+					"status": 							l[3],
+					"bytes_sent": 					l[4],
+					"referer": 							l[5],
+					"user_agent": 					l[6],
+					"session_id": 					l[7],
+					#"query_word":										np.nan,
+					#"term":													np.nan,
+					#"page_ocr":													np.nan,
+					#"fuzzy":												np.nan,
+					#"has_metadata":									np.nan,
+					#"has_illustration":							np.nan,
+					#"show_unauthorized_results":		np.nan,
+					#"pages":												np.nan,
+					#"import_time":									np.nan,
+					#"collection":										np.nan,
+					#"author":												np.nan,
+					#"keyword":											np.nan,
+					#"publication_place":						np.nan,
+					#"language":											np.nan,
+					#"document_type":								np.nan,
+					#"show_last_page":								np.nan,
+					#"order_by":											np.nan,
+					#"publisher":										np.nan,
+					#"start_date":										np.nan,
+					#"end_date":											np.nan,
+					#"require_all_keywords":					np.nan,
+					#"result_type":									np.nan,
+					})
 	
 	df = pd.DataFrame.from_dict(cleaned_lines)
 
