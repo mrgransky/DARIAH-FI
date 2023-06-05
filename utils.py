@@ -321,14 +321,13 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	print(f"{fname} | DF: {df.shape}".center(150, ' '))
 
 	print(df.info(verbose=True, memory_usage="deep"))
-	"""
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 50):
-		print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
-	"""
-	#print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
+	
+	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 50):
+	# 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
+	
+	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
 	# with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
-		
 	# 	print(df[["user_ip",
 	# 						"timestamp",
 	# 						#"search_query_phrase", 

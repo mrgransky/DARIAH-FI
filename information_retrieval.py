@@ -191,9 +191,6 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print("*"*150)
 	
 	print(df.info(verbose=True, memory_usage="deep"))
-	print("<>"*80)
-
-	print(df.shape, list(df.columns))
 	
 	if args.saveDF:
 		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
