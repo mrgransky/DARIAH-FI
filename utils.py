@@ -548,7 +548,8 @@ def get_df_no_ip_logs(infile="", TIMESTAMP=None):
 def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
 	#ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
-	ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\d{3}) (.*?) "([^"]*)" "(.*?)" (.*)' # optimized by chatGPT
+	#ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\d{3}) (.*?) "([^"]*)" "(.*?)" (.*)' # optimized by chatGPT
+	ACCESS_LOG_PATTERN = r'^(\w+) - - \[(.*?)\] "(.*?)" (\d+) (\d+) "(.*?)" "(.*?)" (\d+)$' # suggested by chatGPT
 
 	cleaned_lines = []
 

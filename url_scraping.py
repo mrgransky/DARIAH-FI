@@ -417,9 +417,10 @@ def scrap_newspaper_content_page(URL):
 		NWP_CONTENT_RESULTS["text"] = text_response.text
 
 	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
+	rs_api_url = checking_(url=api_url, prms=parameters)
+	
 	try:
-		rs = checking_(url=api_url, prms=parameters)
-		hgltd_wrds = [d.get("text") for d in rs.json()]
+		hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
 		# if rs:
 		# 	hgltd_wrds = [d.get("text") for d in rs.json()]
 	except (json.JSONDecodeError, 
