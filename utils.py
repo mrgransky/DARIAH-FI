@@ -629,6 +629,11 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	print(df.info())
 	print("<>"*50)
 	print(df.dtypes)
+	print("<>"*50)
+	print(df.head(50))
+	print("<>"*50)
+	print(df.tail(50))
+	print("<>"*50)
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	print(th, type(th))
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
