@@ -560,7 +560,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 			# print (f">> matched line: {matched_line}")
 			if matched_line:
 				l = matched_line.groups()
-				print(f'ts: {l[1]} => {l[1].replace(":", " ", 1)}')
+				print(f"ts: {l[1]} => {l[1].replace(':', ' ', 1)} | {re.match(r'\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2} \+\d{4}', l[1])}")
 				#print("<>"*40)
 				cleaned_lines.append({
 					"user_ip": 							l[0],
@@ -596,13 +596,12 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 					})
 	
 	df = pd.DataFrame.from_dict(cleaned_lines)
-
 	# with pandas:
 	df.timestamp = pd.to_datetime(df.timestamp)
-	print(df.info())
-	print("<>"*50)
-	print(df.dtypes)
-	print("<>"*50)
+	# print(df.info())
+	# print("<>"*50)
+	# print(df.dtypes)
+	# print("<>"*50)
 		
 	#print(f">> Raw DF: {df.shape}")
 	#print(df.isna().sum())
@@ -615,11 +614,6 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	#df = df.replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
 	df["referer"] = df["referer"].replace(r'-|^\s*$|http://[0-9]+|https://[0-9]+', np.nan, regex=True)
 
-	# check nan:
-	#print(f">> Secondary checcking for None/Null values: {df.shape}")
-	#print(df.isna().sum())
-	#print("-"*50)
-
 	#print(f">> Dropping None for referer & user_ip:")
 	df = df.dropna(subset=['user_ip', 'referer'])
 	#print(f">> After droping None of user_ip & referer: {df.shape}")
@@ -629,21 +623,20 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
 	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
 	"""
-	print("#"*100)
 	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
-	print(df.info())
-	print("<>"*50)
-	print(df.dtypes)
-	print("<>"*50)
-	print(df[["user_ip", "timestamp", "prev_time"]].head(50))
-	print("<>"*50)
-	print(df[["user_ip", "timestamp", "prev_time"]].tail(50))
-	print("<>"*50)
+	# print("#"*100)
+	# print(df.info())
+	# print("<>"*50)
+	# print(df.dtypes)
+	# print("<>"*50)
+	# print(df[["user_ip", "timestamp", "prev_time"]].head(50))
+	# print("<>"*50)
+	# print(df[["user_ip", "timestamp", "prev_time"]].tail(50))
+	# print("<>"*50)
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
-	print(th, type(th))
+	# print(th, type(th))
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
 	df = df.drop(['prev_time'], axis=1)
-
 	df = df.reset_index(drop=True)
 
 	if TIMESTAMP:
