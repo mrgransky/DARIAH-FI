@@ -560,8 +560,8 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 			# print (f">> matched line: {matched_line}")
 			if matched_line:
 				l = matched_line.groups()
-				# print(f"line: {l}")
-				# print("<>"*80)
+				print(f"ts: {l[1]}")
+				print("<>"*80)
 				cleaned_lines.append({
 					"user_ip": 							l[0],
 					"timestamp": 						l[1].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
