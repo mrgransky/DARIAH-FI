@@ -562,7 +562,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 				l = matched_line.groups()
 				pattern = r'\d{2}/\w{3}/\d{4} \d{2}:\d{2}:\d{2} \+\d{4}'
 				match = re.match(pattern, l[1].replace(":", " ", 1))
-				print(f"ts: {l[1]} => {l[1].replace(":", " ", 1)} match: {f'YES' if match else 'NO'}")
+				print(f"ts: {l[1]} => {l[1].replace(':', ' ', 1)} match: {f'YES' if match else 'NO'}")
 				#print("<>"*40)
 				cleaned_lines.append({
 					"user_ip": 							l[0],
