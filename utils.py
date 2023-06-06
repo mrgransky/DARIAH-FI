@@ -599,6 +599,10 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	# with pandas:
 	df.timestamp = pd.to_datetime(df.timestamp)
+	print(df.info())
+	print("<>"*50)
+	print(df.dtypes)
+	print("<>"*50)
 		
 	#print(f">> Raw DF: {df.shape}")
 	#print(df.isna().sum())
@@ -625,6 +629,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	print(f"\tuser & timestamps dups: {df[df.duplicated(subset=['user_ip', 'timestamp'])].shape[0]}")
 	print(f"\tuser & referer & timestamps dups: {df[df.duplicated(subset=['user_ip', 'referer', 'timestamp'])].shape[0]}")
 	"""
+	print("#"*100)
 	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
 	print(df.info())
 	print("<>"*50)
