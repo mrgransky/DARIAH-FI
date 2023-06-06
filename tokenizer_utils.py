@@ -82,7 +82,7 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'[%,+;,=&\'*"°^~?!—.•()“”:/‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
 	
 	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
-	print(f"f{'preprocessed doc (exncluding punctionations) contain { len( docs.split() ) } words':<110}", end="\t")
+	print(f"{f'preprocessed doc (exncluding punctionations) contain { len( docs.split() ) } words':<80}", end="\t")
 	if ( not docs or len(docs)==0 ):
 		return
 
