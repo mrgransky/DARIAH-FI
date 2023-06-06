@@ -71,7 +71,7 @@ def spacy_tokenizer(sentence):
 
 def stanza_lemmatizer(docs):
 	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')
-	print(f'Raw inp words: { len( docs.split() ) }', end=" ")
+	#print(f'Raw inp words: { len( docs.split() ) }', end=" ")
 	st_t = time.time()
 	if not docs:
 		return
@@ -82,7 +82,7 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'[%,+;,=&\'*"°^~?!—.•()“”:/‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
 	
 	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
-	print(f'preprocessed (exncluding unnecessary punctionations) words: { len( docs.split() ) }', end=" ")
+	print(f'preprocessed (exncluding unnecessary punctionations) words: { len( docs.split() ) }', end="\t")
 	if ( not docs or len(docs)==0 ):
 		return
 
