@@ -58,7 +58,7 @@ def get_lemmatized_cnt(sentences: str, lm: str="stanza"):
 	return lemmatizer_methods.get(lm)(sentences)
 
 def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
-	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
+	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 
 	print(f"{f'Extracting texts search query phrases':<50}", end="")
 	st_t = time.time()
