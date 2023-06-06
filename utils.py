@@ -560,7 +560,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 			# print (f">> matched line: {matched_line}")
 			if matched_line:
 				l = matched_line.groups()
-				print(f"ts: {l[1]}")
+				print(f'ts: {l[1]} => {l[1].replace(":", " ", 1)}')
 				print("<>"*80)
 				cleaned_lines.append({
 					"user_ip": 							l[0],
@@ -635,9 +635,9 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	print("<>"*50)
 	print(df.dtypes)
 	print("<>"*50)
-	print(df.head(50))
+	print(df[["user_ip", "timestamp", "prev_time"]].head(50))
 	print("<>"*50)
-	print(df.tail(50))
+	print(df[["user_ip", "timestamp", "prev_time"]].tail(50))
 	print("<>"*50)
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	print(th, type(th))
