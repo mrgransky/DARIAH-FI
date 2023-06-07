@@ -1,21 +1,14 @@
 #!/bin/bash
 
-# # # # # SBATCH --account=project_2004072
 #SBATCH -J df_concat_stanzaTK_cBoW_su
-#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
+#SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --time=02-23:59:59
-# # # # SBATCH --partition=small
+#SBATCH --time=06-23:59:59
 #SBATCH --partition=gpu
-#SBATCH --gres=gpu:v100:1
-#SBATCH --mem=96G
-
+#SBATCH --gres=gpu:rtx100:1
+#SBATCH --mem=32G
 # # # # # # SBATCH --array=0-69
-# # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
