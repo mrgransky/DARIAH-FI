@@ -604,10 +604,10 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print("<>"*50)
 	# print(df.dtypes)
 	# print("<>"*50)
-		
+	# assert df.timestamp.dtypes == 
 	#print(f">> Raw DF: {df.shape}")
-	#print(df.isna().sum())
-	#print("-"*50)
+	print(df.isna().sum())
+	print("-"*50)
 
 	#print(f">> Replacing space + bad urls + empty fields with np.nan :")
 	# with numpy:
@@ -627,9 +627,9 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	"""
 	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
 	# print("#"*100)
-	# print(df.info())
-	# print("<>"*50)
-	# print(df.dtypes)
+	print(df.info())
+	print("<>"*50)
+	print(df.timestamp.dtypes, df.prev_time.dtypes)
 	# print("<>"*50)
 	# print(df[["user_ip", "timestamp", "prev_time"]].head(50))
 	# print("<>"*50)
