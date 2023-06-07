@@ -43,6 +43,7 @@ from utils import *
 # 																							download_method=DownloadMethod.REUSE_RESOURCES,
 # 																					)
 
+print(f">> loading & importing nltk")
 import nltk
 nltk_modules = ['punkt', 
 								'averaged_perceptron_tagger', 
@@ -55,6 +56,7 @@ nltk.download('all',
 							quiet=True, 
 							raise_on_error=True,
 						)
+print(f">> loading & importing trankit")
 import trankit
 p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 p.add('swedish')
@@ -63,6 +65,7 @@ p.add('russian')
 #p.add('estonian')
 p.set_auto(True)
 
+print(f">> loading & importing stanza")
 # load stanza imports
 import stanza
 from stanza.pipeline.multilingual import MultilingualPipeline
