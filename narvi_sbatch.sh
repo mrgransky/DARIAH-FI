@@ -10,7 +10,7 @@
 #SBATCH --mail-type=ALL
 # # # # # # SBATCH --gres=gpu:teslav100:1
 # # # # # # SBATCH --array=86
-#SBATCH --array=90-99
+#SBATCH --array=100-109
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
 ch="#"
