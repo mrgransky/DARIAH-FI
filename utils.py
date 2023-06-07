@@ -24,6 +24,7 @@ import logging
 
 import numpy as np
 import pandas as pd
+import pandas.api.types as ptypes
 from natsort import natsorted
 from collections import Counter
 from typing import List, Set, Dict, Tuple
@@ -604,7 +605,6 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print("<>"*50)
 	# print(df.dtypes)
 	# print("<>"*50)
-	# assert df.timestamp.dtypes == 
 	#print(f">> Raw DF: {df.shape}")
 	print(df.isna().sum())
 	print("-"*50)
@@ -630,6 +630,9 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	print(df.info())
 	print("<>"*50)
 	print(df.timestamp.dtypes, df.prev_time.dtypes)
+	assert ptypes.is_datetime64_any_dtype(df['timestamp'])
+	assert ptypes.is_datetime64_any_dtype(df['prev_time'])
+	
 	# print("<>"*50)
 	# print(df[["user_ip", "timestamp", "prev_time"]].head(50))
 	# print("<>"*50)
