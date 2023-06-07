@@ -58,7 +58,7 @@ nltk.download('all',
 						)
 print(f">> loading & importing trankit")
 import trankit
-p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
+p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', gpu=True, cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
 p.add('swedish')
 p.add('russian')
 #p.add('english')
