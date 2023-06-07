@@ -139,23 +139,25 @@ def stanza_lemmatizer(docs):
 	return lm
 
 def trankit_lemmatizer(docs):
-	print(f'Raw: (len: {len(docs)}) >>{docs}<<', end='\t')
+	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')
+	# print(f'Raw inp words: { len( docs.split() ) }', end=" ")
+	st_t = time.time()
 	if not docs:
 		return
 
 	# treat all as document
 	docs = re.sub(r'\"|<[^>]+>|[~*^][\d]+', '', docs)
 	docs = re.sub(r'[%,+;,=&\'*"°^~?!—.•()“”:/‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
-		
-	print(f'preprocessed: (len: {len(docs)}) >>{docs}<<', end='\t')
+	
+	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
+	print(f"{f'preprocessed doc contains { len( docs.split() ) } words':<50}{str(docs.split()[:3]):<60}", end=" ")
 	if ( not docs or len(docs)==0 ):
 		return
 
 	all_dict = p(docs)
 	#lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ] 
-	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Za-z](\.| |:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ] 
-
-	print( lm )
+	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Za-z](\.| |:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ]
+	# print( lm )
 	return lm
 
 def nltk_lemmatizer(sentence):	
