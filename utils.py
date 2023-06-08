@@ -769,7 +769,7 @@ def get_concat_df(dir_path: str):
 	df_concat=pd.concat(dfs,
 										#  ignore_index=True,
 										).sort_values("timestamp", ignore_index=True)
-	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_concat_{df_concat.shape[0]}_samples.lz4")
+	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.lz4")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
 	save_pickle(pkl=df_concat, 
 							fname=df_concat_fname,

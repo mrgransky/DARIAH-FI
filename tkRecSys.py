@@ -1204,7 +1204,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	try:
-		df_concat_fname = [f for f in os.listdir(dfs_path) if re.match(r"concat.lz4", f)][0]
+		df_concat_fname = [f for f in os.listdir(dfs_path) if re.match(r"_concat.lz4", f)][0]
 		df_raw = load_pickle(fpath=df_concat_fname)
 		ndfs = int(df_concat_fname[:df_concat_fname.find("_")])
 	except:
