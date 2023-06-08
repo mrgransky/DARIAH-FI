@@ -320,12 +320,14 @@ def get_sparse_mtx(df):
 	return sparse_mtx
 
 def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
-	print(f"{fname} | DF: {df.shape}".center(150, ' '))
+	print(f"Analyzing {fname} | DF: {df.shape}")
 	print(df.info(verbose=True, memory_usage="deep"))
-	print("<>"*50)
+	print("<>"*40)
+	print(f"Memory consumption of all {len(list(df.columns))} column(s)")
 	print( df.memory_usage(index=False, deep=True) )
 	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 50):
 	# 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
+	print("<>"*40)
 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
 	# with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
@@ -361,19 +363,19 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 
 	# print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
 	# print(json.dumps(df.loc[1, "search_results"][0], indent=2, ensure_ascii=False))
-	print("#"*150)
+	# print("#"*150)
 
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
-		print(df[[#nwp_content_results", 
-							"nwp_content_referer",
-							]
-						].head(10))
+	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+	# 	print(df[[#nwp_content_results", 
+	# 						"nwp_content_referer",
+	# 						]
+	# 					].head(10))
 
-	print("<>"*100)
-	print(list(df["nwp_content_results"][4].keys()))
+	# print("<>"*100)
+	# print(list(df["nwp_content_results"][4].keys()))
 	
-	print("#"*150)
-	print(json.dumps(df["nwp_content_results"][4], indent=2, ensure_ascii=False))
+	# print("#"*150)
+	# print(json.dumps(df["nwp_content_results"][4], indent=2, ensure_ascii=False))
 	
 	print("DONE".center(80, "-"))
 
