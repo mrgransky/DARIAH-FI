@@ -756,14 +756,14 @@ def just_test_for_expected_results(df):
 
 def get_concat_df(dir_path: str):
 	dump_files = glob.glob(os.path.join(dir_path, "*.dump")) # list
-	print(f">> Loading all {len(dump_files)} files.dump located at: {dir_path}", end="\t")
+	print(f">> Loading all {len(dump_files)} files.dump located at: {dir_path}", end=" | ")
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 	ndfs = len(dfs)
-	print(f"<> Loaded in: {time.time()-st_t:.3f} sec for {ndfs} DFs")
+	print(f"took {time.time()-st_t:.3f} sec. for {ndfs} DFs")
 	print(f">> Concatinating {ndfs} DF(s) into a single DF...")
 	st_t = time.time()
 	df_concat=pd.concat(dfs,
