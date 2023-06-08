@@ -701,7 +701,7 @@ def save_pickle(pkl, fname:str=""):
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
-def load_pickle(fpath:str):
+def load_pickle(fpath:str="unknown"):
 	st_t = time.time()
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
@@ -769,8 +769,11 @@ def get_concat_df(dir_path: str):
 	df_concat=pd.concat(dfs,
 										#  ignore_index=True,
 										).sort_values("timestamp", ignore_index=True)
+	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_concat_{df_concat.shape[0]}_samples.lz4")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
-	save_pickle(pkl=df_concat, fname=f"")
+	save_pickle(pkl=df_concat, 
+							fname=df_concat_fname,
+						)
 	# df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
 	# print(df_concat.info(verbose=True, memory_usage="deep"))
 	# print(df_concat[["user_ip", "timestamp"]].head(20))
