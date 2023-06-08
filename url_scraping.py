@@ -1,77 +1,69 @@
-import os
-import sys
-import requests
-import json
-import logging
-import pandas as pd
-import numpy as np
 from utils import *
 
-import time
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common import exceptions
+# from bs4 import BeautifulSoup
+# from selenium import webdriver
+# from webdriver_manager.chrome import ChromeDriverManager
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.common import exceptions
 
-def get_all_search_details(URL):
-	st_t = time.time()
+# def get_all_search_details(URL):
+# 	st_t = time.time()
 
-	SEARCH_RESULTS = {}
+# 	SEARCH_RESULTS = {}
 	
-	options = Options()
-	options.headless = True
+# 	options = Options()
+# 	options.headless = True
 
-	#options.add_argument("--remote-debugging-port=9230") # alternative: 9222
-	options.add_argument("--remote-debugging-port=9222")
-	options.add_argument("--no-sandbox")
-	options.add_argument("--disable-gpu")
-	options.add_argument("--disable-dev-shm-usage")
-	options.add_argument("--disable-extensions")
-	options.add_experimental_option("excludeSwitches", ["enable-automation"])
-	options.add_experimental_option('useAutomationExtension', False)
+# 	#options.add_argument("--remote-debugging-port=9230") # alternative: 9222
+# 	options.add_argument("--remote-debugging-port=9222")
+# 	options.add_argument("--no-sandbox")
+# 	options.add_argument("--disable-gpu")
+# 	options.add_argument("--disable-dev-shm-usage")
+# 	options.add_argument("--disable-extensions")
+# 	options.add_experimental_option("excludeSwitches", ["enable-automation"])
+# 	options.add_experimental_option('useAutomationExtension', False)
 	
-	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+# 	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 	
-	driver.get(URL)
-	print(f"Scraping {driver.current_url}")
-	try:
-		medias = WebDriverWait(driver, 
-													timeout=10,
-													).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'result-row'))) # alternative for 'result-row': 'media'
-		for media_idx, media_elem in enumerate(medias):
-			#print(f">> Result: {media_idx}")
-			outer_html = media_elem.get_attribute('outerHTML')
+# 	driver.get(URL)
+# 	print(f"Scraping {driver.current_url}")
+# 	try:
+# 		medias = WebDriverWait(driver, 
+# 													timeout=10,
+# 													).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'result-row'))) # alternative for 'result-row': 'media'
+# 		for media_idx, media_elem in enumerate(medias):
+# 			#print(f">> Result: {media_idx}")
+# 			outer_html = media_elem.get_attribute('outerHTML')
 			
-			#print(media_elem.text)
-			#print()
-			result = scrap_newspaper(outer_html)
-			SEARCH_RESULTS[f"result_{media_idx}"] = result
-			#print("-"*120)
-	except (exceptions.StaleElementReferenceException,
-					exceptions.NoSuchElementException,
-					exceptions.TimeoutException,
-					exceptions.WebDriverException,
-					exceptions.SessionNotCreatedException,
-					exceptions.InvalidArgumentException,
-					exceptions.InvalidSessionIdException,
-					exceptions.InsecureCertificateException,
-					ValueError,
-					TypeError,
-					EOFError,
-					AttributeError,
-					RuntimeError,
-					Exception,
-					) as e:
-		print(f"\t<!> Selenium: {type(e).__name__} line {e.__traceback__.tb_lineno} of {__file__}: {e.args}")
-		return
-	print(f"\t\t\tFound {len(medias)} media(s) => {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
-	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
-	return SEARCH_RESULTS
+# 			#print(media_elem.text)
+# 			#print()
+# 			result = scrap_newspaper(outer_html)
+# 			SEARCH_RESULTS[f"result_{media_idx}"] = result
+# 			#print("-"*120)
+# 	except (exceptions.StaleElementReferenceException,
+# 					exceptions.NoSuchElementException,
+# 					exceptions.TimeoutException,
+# 					exceptions.WebDriverException,
+# 					exceptions.SessionNotCreatedException,
+# 					exceptions.InvalidArgumentException,
+# 					exceptions.InvalidSessionIdException,
+# 					exceptions.InsecureCertificateException,
+# 					ValueError,
+# 					TypeError,
+# 					EOFError,
+# 					AttributeError,
+# 					RuntimeError,
+# 					Exception,
+# 					) as e:
+# 		print(f"\t<!> Selenium: {type(e).__name__} line {e.__traceback__.tb_lineno} of {__file__}: {e.args}")
+# 		return
+# 	print(f"\t\t\tFound {len(medias)} media(s) => {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+# 	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
+# 	return SEARCH_RESULTS
 
 def scrap_newspaper(HTML):
 	query_newspaper = dict.fromkeys([
@@ -147,7 +139,6 @@ def get_np_info(INP_SOUP):
 
 def scrap_clipping_page(URL):
 	#print(f"Scraping clipping page: {URL}")
-	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	#print(f"Parameters:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	#print()
@@ -155,7 +146,6 @@ def scrap_clipping_page(URL):
 
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
 	clipping_pg_api = f"https://digi.kansalliskirjasto.fi/rest/article-search/search-by-type?offset={offset_pg}&count=20"
-
 	payload = {	"categoryIds": parameters.get('categoryId') if parameters.get('categoryId') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
 							"endDate": parameters.get('endDate')[0] if parameters.get('endDate') else None,
@@ -174,9 +164,6 @@ def scrap_clipping_page(URL):
 							"subjectIds": parameters.get('subjectId') if parameters.get('subjectId') else [],
 							"titles": parameters.get('title') if parameters.get('title') else [],
 							}
-	
-	#print(json.dumps(payload, indent=2, ensure_ascii=False))
-
 	headers = {	'Content-type': 'application/json',
 							'Accept': 'application/json; text/plain; */*', 
 							'Cache-Control': 'no-cache',
@@ -184,21 +171,32 @@ def scrap_clipping_page(URL):
 							'Pragma': 'no-cache',
 							}
 
-	r = requests.post(url=clipping_pg_api, 
-										json=payload, 
-										headers=headers,
-										)
-
-	#print(r.headers)
-	#print(r.status_code)
-
-	res = r.json()
-	#print(res.keys())
-	CLIPPING_RESULTS = res.get("rows")
-
-	#print(f"\t\tFound {len(CLIPPING_RESULTS)} clipping result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
-
-	#print(json.dumps(CLIPPING_RESULTS, indent=2, ensure_ascii=False))
+	try:
+		st_t = time.time()
+		r = requests.post(url=clipping_pg_api, 
+											json=payload, 
+											headers=headers,
+											)
+		res = r.json()
+		#print(res.keys())
+		CLIPPING_RESULTS = res.get("rows")
+		#print(f"\t\tFound {len(CLIPPING_RESULTS)} clipping result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+		#print(json.dumps(CLIPPING_RESULTS, indent=2, ensure_ascii=False))
+	except (requests.exceptions.Timeout,
+					requests.exceptions.ConnectionError, 
+					requests.exceptions.RequestException, 
+					requests.exceptions.TooManyRedirects,
+					requests.exceptions.InvalidSchema,
+					ValueError, 
+					TypeError, 
+					EOFError, 
+					RuntimeError,
+					json.JSONDecodeError,
+					json.decoder.JSONDecodeError,
+					Exception, 
+				) as e:
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+		return
 	return CLIPPING_RESULTS
 
 def scrap_collection_page(URL):
@@ -207,15 +205,11 @@ def scrap_collection_page(URL):
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	#print()
-
 	#print(f"parsed_url : {parsed_url}")
 
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
-	
 	collection_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=200"
-	
 	#print(collection_pg_api)
-	
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
 							"districts": [], # TODO: must be investigated!!
@@ -242,7 +236,6 @@ def scrap_collection_page(URL):
 							"startDate": parameters.get('startDate')[0] if parameters.get('startDate') else None,
 							"tags": parameters.get('tag') if parameters.get('tag') else [],
 							}
-	
 	headers = {	'Content-type': 'application/json',
 							'Accept': 'application/json; text/plain; */*', 
 							'Cache-Control': 'no-cache',
@@ -250,21 +243,31 @@ def scrap_collection_page(URL):
 							'Pragma': 'no-cache',
 							}
 
-	r = requests.post(url=collection_pg_api, 
-										json=payload, 
-										headers=headers,
-										)
-
-	#print(r.headers)
-	#print(r.status_code)
-
-	res = r.json()
-	#print(res.keys())
-	COLLECTION_RESULTS = res.get("rows")
-
-	#print(f"\t\tFound {len(COLLECTION_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
-
-	#print(json.dumps(COLLECTION_RESULTS, indent=2, ensure_ascii=False))
+	try:
+		r = requests.post(url=collection_pg_api, 
+											json=payload, 
+											headers=headers,
+											)
+		res = r.json()
+		#print(res.keys())
+		COLLECTION_RESULTS = res.get("rows")
+		#print(f"\t\tFound {len(COLLECTION_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+		#print(json.dumps(COLLECTION_RESULTS, indent=2, ensure_ascii=False))
+	except (requests.exceptions.Timeout,
+					requests.exceptions.ConnectionError, 
+					requests.exceptions.RequestException, 
+					requests.exceptions.TooManyRedirects,
+					requests.exceptions.InvalidSchema,
+					ValueError, 
+					TypeError, 
+					EOFError, 
+					RuntimeError,
+					json.JSONDecodeError,
+					json.decoder.JSONDecodeError,
+					Exception, 
+					) as e:
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+		return
 	return COLLECTION_RESULTS
 
 def scrap_search_page(URL):
@@ -328,23 +331,23 @@ def scrap_search_page(URL):
 		# a list of up to 20 results, each of which contains: 
 		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']
 		SEARCH_RESULTS = res.get("rows") 
+		#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+		#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	except (requests.exceptions.Timeout,
 					requests.exceptions.ConnectionError, 
 					requests.exceptions.RequestException, 
 					requests.exceptions.TooManyRedirects,
 					requests.exceptions.InvalidSchema,
-					Exception, 
 					ValueError, 
 					TypeError, 
 					EOFError, 
 					RuntimeError,
 					json.JSONDecodeError,
+					json.decoder.JSONDecodeError,
+					Exception, 
 					) as e:
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
 		return
-
-	#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
-	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	return SEARCH_RESULTS
 
 def scrap_ocr_page_content(URL):
@@ -423,7 +426,7 @@ def scrap_newspaper_content_page(URL):
 		hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
 		# if rs:
 		# 	hgltd_wrds = [d.get("text") for d in rs.json()]
-	except (json.JSONDecodeError, 
+	except (json.JSONDecodeError,
 					json.decoder.JSONDecodeError,
 					Exception,
 				) as e:

@@ -19,6 +19,7 @@ import webbrowser
 import string
 import time
 import logging
+
 #import warnings
 #warnings.filterwarnings('ignore')
 
@@ -694,7 +695,7 @@ def save_vocab(vb, fname:str=""):
 
 def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname
-	print(f"<<<=!=>>> Saving {type(pkl)} might take a while...\n{dump_file_name}")
+	print(f"<<<=!=>>> Saving {type(pkl)} might take a while\n{dump_file_name}")
 	st_t = time.time()
 	with open(dump_file_name , "wb" ) as f:
 		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!

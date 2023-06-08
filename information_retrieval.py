@@ -123,8 +123,9 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	st_t = time.time()
 	#df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
-	print(f"\tElapsed_t: {time.time()-st_t:.3f} s | INITIAL df: {df.shape} | avg search/s: {df.shape[0]/(24*60*60):.3f}")
-	print(f"{f'Page Analysis'.center(100, ' ')}\n"
+	print(f"Loaded in: {time.time()-st_t:.3f} s | INITIAL df: {df.shape} | avg search/s: {df.shape[0]/(24*60*60):.3f}")
+
+	print(f"{f'Page Analysis'.center(120, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "
 				f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "
@@ -135,36 +136,30 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 				)
 	print("*"*150)
 
-	def analyze_(df):
-		raw_url = df.referer
-		print(f"RAW URL: {raw_url}")
-		r = checking_(raw_url)
-		if r is None:
-			return df
+	# def analyze_(df):
+	# 	raw_url = df.referer
+	# 	print(f"RAW URL: {raw_url}")
+	# 	r = checking_(raw_url)
+	# 	if r is None:
+	# 		return df
 
-		in_url = r.url
-		print(f"\tUpdated: {in_url}")
-		parsed_url, parameters = get_parsed_url_parameters(in_url)
-		print(f"Parsed: {parsed_url}")
-		print(f"Parameters:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
+	# 	in_url = r.url
+	# 	print(f"\tUpdated: {in_url}")
+	# 	parsed_url, parameters = get_parsed_url_parameters(in_url)
+	# 	print(f"Parsed: {parsed_url}")
+	# 	print(f"Parameters:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	
-		# clippings:
-		if '/clippings' in in_url:
-			df["clipping_query_phrase"] = parameters.get("query") 
-			df["clipping_results"] = scrap_clipping_page(URL=in_url)
+	# 	# clippings:
+	# 	if '/clippings' in in_url:
+	# 		df["clipping_query_phrase"] = parameters.get("query") 
+	# 		df["clipping_results"] = scrap_clipping_page(URL=in_url)
 
-		print("#"*100)
-		return df
+	# 	print("#"*100)
+	# 	return df
 	
-	parsing_t = time.time()
-	check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
-	#df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
-
-	print(f">> Scraping Newspaper Content Pages...")
-	st_nwp_content_t = time.time()
-	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
-	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
-	print(f"{f'Total Elapsed_t [Newspaper Content Pages]: {time.time()-st_nwp_content_t:.2f} s'.center(120, ' ')}")
+	# parsing_t = time.time()
+	# check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
+	# #df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
 
 	print(f">> Scraping Collection Pages...")
 	st_collection_t = time.time()
@@ -180,6 +175,12 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	df["clipping_results"] = df["clipping_referer"].map(scrap_clipping_page, na_action='ignore')
 	print(f"{f'Total Elapsed_t [Clipping Pages]: {time.time()-st_clipping_t:.2f} s'.center(120, ' ')}")
 
+	print(f">> Scraping Newspaper Content Pages...")
+	st_nwp_content_t = time.time()
+	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
+	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
+	print(f"{f'Total Elapsed_t [Newspaper Content Pages]: {time.time()-st_nwp_content_t:.2f} s'.center(120, ' ')}")
+
 	print(f">> Scraping Query Search Pages...")
 	st_search_t = time.time()
 	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
@@ -188,9 +189,10 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print(f"{f'Total Elapsed_t [Query Search Pages]: {time.time()-st_search_t:.2f} s'.center(120, ' ')}")
 
 	print(f"Parsing Completed!\tTotal Elapsed_t: {time.time()-parsing_t:.2f} s>\tFINAL df: {df.shape}")
-	print("*"*150)
-	
-	print(df.info(verbose=True, memory_usage="deep"))
+	print("<>"*50)
+	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
+	print("-"*80)
+	print(df.memory_usage(deep=True, index=False, ))
 	
 	if args.saveDF:
 		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
