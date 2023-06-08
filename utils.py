@@ -713,6 +713,8 @@ def load_pickle(fpath:str="unknown"):
 	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
+def save_par
+
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
 	

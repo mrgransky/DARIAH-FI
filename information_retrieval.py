@@ -188,8 +188,8 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	df["search_results"] = df["search_referer"].map(scrap_search_page, na_action='ignore')
 	print(f"{f'Total Elapsed_t [Query Search Pages]: {time.time()-st_search_t:.2f} s'.center(120, ' ')}")
 
-	print(f"Parsing Completed!\tTotal Elapsed_t: {time.time()-parsing_t:.2f} s>\tFINAL df: {df.shape}")
-	print("<>"*50)
+	print(f"Total Parsing Elapsed_t: {time.time()-parsing_t:.2f} s | DF: {df.shape}")
+	print("<>"*40)
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
 	print("-"*80)
 	print(df.memory_usage(deep=True, index=False, ))
