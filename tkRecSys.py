@@ -1203,10 +1203,12 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	#fname = [filename for filename in os.listdir() if filename.endswith("concat.lz4")][0]
-	fnames = [filename for filename in os.listdir(dfs_path) if re.match(r"concat.lz4", filename)]
-	print(fnames)
-	print(fnames[0])
+	try:
+		fnames = [filename for filename in os.listdir(dfs_path) if re.match(r"concat.lz4", filename)]
+		print(fnames)
+		print(fnames[0])
+	except:
+		print(f"<!> ERROR: |fnames| = {len(fnames)}")
 	# df_raw, ndfs = get_concat_df(dir_path=args.dsPath)
 	# try:
 	# 	# load df_
