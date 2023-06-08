@@ -321,12 +321,11 @@ def get_sparse_mtx(df):
 
 def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	print(f"{fname} | DF: {df.shape}".center(150, ' '))
-
 	print(df.info(verbose=True, memory_usage="deep"))
-	
+	print("<>"*50)
+	print( df.memory_usage(index=False, deep=True) )
 	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 50):
 	# 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
-	
 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
 	# with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
@@ -355,14 +354,13 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 
 	# return
 
-	print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
-				f"{list(df.loc[1, 'search_results'][0].keys())}", 
-			)
-	print("<>"*120)
+	# print(f"|search results| = {len(list(df.loc[1, 'search_results'][0].keys()))}\t",
+	# 			f"{list(df.loc[1, 'search_results'][0].keys())}", 
+	# 		)
+	# print("<>"*120)
 
-	#print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
-	print(json.dumps(df.loc[1, "search_results"][0], indent=2, ensure_ascii=False))
-
+	# print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
+	# print(json.dumps(df.loc[1, "search_results"][0], indent=2, ensure_ascii=False))
 	print("#"*150)
 
 	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
@@ -758,20 +756,21 @@ def just_test_for_expected_results(df):
 
 def get_concat_df(dir_path: str):
 	dump_files = glob.glob(os.path.join(dir_path, "*.dump")) # list
-	print(f">> Loading all {len(dump_files)} files.dump located at: {dir_path}", end=" ")
+	print(f">> Loading all {len(dump_files)} files.dump located at: {dir_path}", end="\t")
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 	ndfs = len(dfs)
-	print(f"Loaded in: {time.time()-st_t:.3f} sec for {ndfs} DFs")
-	print(f">> Concatinating {ndfs} into a single DF...")
+	print(f"<> Loaded in: {time.time()-st_t:.3f} sec for {ndfs} DFs")
+	print(f">> Concatinating {ndfs} DF(s) into a single DF...")
 	st_t = time.time()
 	df_concat=pd.concat(dfs,
 										#  ignore_index=True,
 										).sort_values("timestamp", ignore_index=True)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
+	save_pickle(pkl=df_concat, fname=f"")
 	# df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
 	# print(df_concat.info(verbose=True, memory_usage="deep"))
 	# print(df_concat[["user_ip", "timestamp"]].head(20))
