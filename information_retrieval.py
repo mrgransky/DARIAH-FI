@@ -157,7 +157,7 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	# 	print("#"*100)
 	# 	return df
 	
-	# parsing_t = time.time()
+	parsing_t = time.time()
 	# check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
 	# #df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
 
