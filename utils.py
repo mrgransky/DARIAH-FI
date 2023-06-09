@@ -689,7 +689,7 @@ def just_test_for_expected_results(df):
 def get_concat_df(dir_path: str):
 	dump_files = glob.glob(os.path.join(dir_path, "*.dump")) # list
 	# print(f">> Loading all {len(dump_files)} files.dump located at: {dir_path}", end=" | ")
-	print(f">> Loading all {len(dump_files)} files.dump located at: {dir_path}")
+	print(f">> Getting all {len(dump_files)} files.dump located at: {dir_path}")
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	st_t = time.time()
@@ -703,7 +703,7 @@ def get_concat_df(dir_path: str):
 
 	ndfs = len(dfs)
 	print(f"took {time.time()-st_t:.3f} sec. for {ndfs} DFs")
-	print(f">> Concatinating {ndfs} DF(s) into a single DF...")
+	print(f">> Concatinating {ndfs} DF(s) into a single DF", end=" | ")
 	st_t = time.time()
 	df_concat=pd.concat(dfs,
 										#  ignore_index=True,
