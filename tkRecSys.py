@@ -1205,9 +1205,9 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def main():
 	try:
 		df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
-		#print(df_concat_fname)
+		print(df_concat_fname)
 		df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
-		#print(df_concat_fpath)
+		print(df_concat_fpath)
 		#df_raw = load_pickle(fpath=df_concat_fpath)
 		df_raw = load_df_pkl(fpath=df_concat_fpath)
 		#print(df_raw.shape)
