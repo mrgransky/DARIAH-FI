@@ -713,7 +713,7 @@ def load_pickle(fpath:str="unknown"):
 	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
-def load_df_pkl(fpath:str="unknown")
+def load_df_pkl(fpath:str="unknown"):
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
 	elpt = time.time()-st_t
