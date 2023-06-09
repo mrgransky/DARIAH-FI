@@ -705,8 +705,10 @@ def save_pickle(pkl, fname:str=""):
 
 def load_pickle(fpath:str="unknown"):
 	st_t = time.time()
+
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
+
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading: {fpath}")
@@ -777,8 +779,8 @@ def get_concat_df(dir_path: str):
 	# 	dfs_pkl = [load_df_pkl(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_df_pkl(f).shape[0]>0 ]
 	# 	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 
-	dfs_pkl = [load_df_pkl(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_df_pkl(f).shape[0]>0 ]
-	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
+	dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
+	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) (df:=load_df_pkl(f)).shape[0]>0 ]
 
 	ndfs = len(dfs)
 	print(f"took {time.time()-st_t:.3f} sec. for {ndfs} DFs")
