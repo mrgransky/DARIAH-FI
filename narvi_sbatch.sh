@@ -10,8 +10,9 @@
 #SBATCH --mail-type=ALL
 # # # # # # SBATCH --gres=gpu:teslav100:1
 # # # # # # SBATCH --array=86
-#SBATCH --array=110-119
-stars=$(printf '%*s' 90 '')
+#SBATCH --array=120-129
+
+stars=$(printf '%*s' 110 '')
 txt="SLURM JOB STARTED AT: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
@@ -37,4 +38,4 @@ python -u information_retrieval.py --saveDF True --query $SLURM_ARRAY_TASK_ID
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
-echo "${stars// /*}"
+# echo "${stars// /*}"
