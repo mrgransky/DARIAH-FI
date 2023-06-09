@@ -27,7 +27,7 @@ cluster="$SLURM_CLUSTER_NAME"
 echo "Cluster: $cluster Current User: $user"
 
 if [ $user == 'alijani' ]; then
-	source activate py3_gpu
+	source activate py39
 	echo ">> Using Narvi conda env from Anaconda..."
 	dfs_dir="/lustre/sgn-data/Nationalbiblioteket/datasets"
 elif [ $user == 'alijanif' ]; then

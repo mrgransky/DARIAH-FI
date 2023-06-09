@@ -27,6 +27,7 @@ user="`whoami`"
 echo "Cluster: $SLURM_CLUSTER_NAME | $user | arrayTaskID: $SLURM_ARRAY_TASK_ID | arrayJobID: $SLURM_ARRAY_JOB_ID"
 
 if [ $user == 'alijani' ]; then
+	echo ">> Using Narvi conda env from Anaconda..."
 	source activate py39
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
