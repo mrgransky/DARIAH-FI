@@ -706,7 +706,7 @@ def get_concat_df(dir_path: str):
 	gc.collect()
 
 	df_t = time.time()
-	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
+	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_pickle(f)).shape[0]>0 ]
 	print(f"Elapsed_t: {time.time()-df_t:.3f} s".center(110, " "))
 
 	ndfs = len(dfs)
