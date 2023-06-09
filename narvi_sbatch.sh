@@ -27,10 +27,9 @@ user="`whoami`"
 echo "Cluster: $SLURM_CLUSTER_NAME | $user | arrayTaskID: $SLURM_ARRAY_TASK_ID | arrayJobID: $SLURM_ARRAY_JOB_ID"
 
 if [ $user == 'alijani' ]; then
-	source activate py3_gpu
+	source activate py39
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
-	#source /projappl/project_2004072/miniconda3/bin/activate py3_gpu
 fi
 
 python -u information_retrieval.py --saveDF True --query $SLURM_ARRAY_TASK_ID
