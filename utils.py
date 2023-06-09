@@ -636,7 +636,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 def load_df_pkl(fpath:str="unknown"):
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
-	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore's)
+	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading df_pkl: {fpath}")
