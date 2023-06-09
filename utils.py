@@ -621,15 +621,15 @@ def save_pickle(pkl, fname:str=""):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_pickle(fpath:str="unknown", dftype=None):
+	print(f"Loading: {fpath}")
 	st_t = time.time()
-
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
 	if isinstance(pkl, pd.DataFrame):
 		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
+		print(f">> {pkl.shape}")
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loading: {fpath}")
 	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
@@ -640,7 +640,7 @@ def load_df_pkl(fpath:str="unknown"):
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading df_pkl: {fpath}")
-	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {fsize:.2f} MB".center(110, " "))
+	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {df.shape} | {fsize:.2f} MB".center(110, " "))
 	return df
 
 def get_parsed_url_parameters(inp_url):
@@ -698,8 +698,12 @@ def get_concat_df(dir_path: str):
 	# 	dfs_pkl = [load_df_pkl(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_df_pkl(f).shape[0]>0 ]
 	# 	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 
+	dfpkl_t = time.time()
 	dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
+	print(f"Elapsed_t: {time.time()-dfpkl_t:.3f} s".center(110, " "))
+	df_t = time.time()
 	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
+	print(f"Elapsed_t: {time.time()-df_t:.3f} s".center(110, " "))
 
 	ndfs = len(dfs)
 	print(f"took {time.time()-st_t:.3f} sec. for {ndfs} DFs")
