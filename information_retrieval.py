@@ -172,8 +172,8 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print("-"*90)
 	
 	if args.saveDF:
-		#save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
-		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.gz')) #TODO: check with nikeX and nikeY
+		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
+		# save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.gz')) #TODO: check with nikeX and nikeY
 
 def run():
 	make_folder(folder_name=dataset_path)
