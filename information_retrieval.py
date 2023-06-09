@@ -107,11 +107,11 @@ def single_query(file_="", ts=None, browser_show=False):
 	
 	print(f"\n\n>> Parsing Completed!\tElapsed time: {time.time()-s:.2f} s\tFINAL df: {df.shape}")
 	print(list(df.columns))
-	print("-"*150)
-
+	print("-"*80)
 	print(df.isna().sum())
-	print("-"*150)
-	print(df.info(verbose=True, memory_usage="deep"))
+	print("-"*80)
+	print(f"Memory usage of each column in bytes (total column(s)={len(list(df.columns))})")
+	print(df.memory_usage(deep=True, index=False, ))
 
 	#print(df.head(30))
 	#print("-"*150)
@@ -191,11 +191,14 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print(f"Total Parsing Elapsed_t: {time.time()-parsing_t:.2f} s | DF: {df.shape}")
 	print("<>"*40)
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
-	print("-"*80)
+	print("-"*90)
+	print(f"Memory usage of each column in bytes (total column(s)={len(list(df.columns))})")
 	print(df.memory_usage(deep=True, index=False, ))
+	print("-"*90)
 	
 	if args.saveDF:
 		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
+		#save_par
 
 def run():
 	make_folder(folder_name=dataset_path)

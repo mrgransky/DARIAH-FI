@@ -713,7 +713,14 @@ def load_pickle(fpath:str="unknown"):
 	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
-def save_par
+def load_df_pkl(fpath:str="unknown")
+	st_t = time.time()
+	df = pd.read_pickle(fpath)
+	elpt = time.time()-st_t
+	fsize = os.stat( fpath ).st_size / 1e6
+	print(f"Loading: {fpath}")
+	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {fsize:.2f} MB".center(110, " "))
+	return df
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
@@ -764,8 +771,14 @@ def get_concat_df(dir_path: str):
 	# loop over all files.dump located at:
 	# dir_path: /scratch/project_2004072/Nationalbiblioteket/datasets/
 	st_t = time.time()
-	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
+
+	# with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+	# 	dfs_pkl = [load_df_pkl(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_df_pkl(f).shape[0]>0 ]
+	# 	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
+
+	dfs_pkl = [load_df_pkl(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_df_pkl(f).shape[0]>0 ]
+	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
+
 	ndfs = len(dfs)
 	print(f"took {time.time()-st_t:.3f} sec. for {ndfs} DFs")
 	print(f">> Concatinating {ndfs} DF(s) into a single DF...")
