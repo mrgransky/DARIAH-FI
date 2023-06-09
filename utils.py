@@ -718,7 +718,7 @@ def load_df_pkl(fpath:str="unknown"):
 	df = pd.read_pickle(fpath)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loading: {fpath}")
+	print(f"Loading df_pkl: {fpath}")
 	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {fsize:.2f} MB".center(110, " "))
 	return df
 
