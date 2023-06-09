@@ -780,7 +780,7 @@ def get_concat_df(dir_path: str):
 	# 	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 
 	dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
-	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) (df:=load_df_pkl(f)).shape[0]>0 ]
+	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
 
 	ndfs = len(dfs)
 	print(f"took {time.time()-st_t:.3f} sec. for {ndfs} DFs")
