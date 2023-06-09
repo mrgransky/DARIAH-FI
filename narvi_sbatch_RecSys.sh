@@ -5,9 +5,9 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=06-23:59:59
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=364G
+#SBATCH --partition=grid
+# # # # # # SBATCH --gres=gpu:teslav100:1
+#SBATCH --mem=288G
 # # # # # # SBATCH --array=0-69
 
 stars=$(printf '%*s' 90 '')
