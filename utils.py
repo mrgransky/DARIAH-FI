@@ -699,10 +699,10 @@ def save_pickle(pkl, fname:str=""):
 	st_t = time.time()
 
 	if isinstance(pkl, pd.DataFrame):
-		print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
+		# print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
 		pkl.to_pickle(fname)
 	else:
-		print(f">> saving {type(pkl)}")
+		# print(f">> saving {type(pkl)}")
 		with open(dump_file_name , "wb" ) as f:
 			dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
 

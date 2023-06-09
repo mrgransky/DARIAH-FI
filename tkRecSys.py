@@ -1209,6 +1209,8 @@ def main():
 		#df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
 		print(df_concat_fpath)
 		df_raw = load_pickle(fpath=df_concat_fpath)
+		df_raw_pkl = load_df_pkl(fpath=df_concat_fpath)
+		
 		#print(df_raw.shape)
 		ndfs = int(df_concat_fname[:df_concat_fname.find("_")])
 		#print(ndfs)
