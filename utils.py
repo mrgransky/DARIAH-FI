@@ -1,5 +1,6 @@
 import os
 import sys
+import gc
 import contextlib
 # import torch
 # import faiss
@@ -701,6 +702,9 @@ def get_concat_df(dir_path: str):
 	dfpkl_t = time.time()
 	dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
 	print(f"Elapsed_t: {time.time()-dfpkl_t:.3f} s".center(110, " "))
+	del dfs_pkl
+	gc.collect()
+
 	df_t = time.time()
 	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
 	print(f"Elapsed_t: {time.time()-df_t:.3f} s".center(110, " "))
@@ -712,6 +716,10 @@ def get_concat_df(dir_path: str):
 	df_concat=pd.concat(dfs,
 										#  ignore_index=True,
 										).sort_values("timestamp", ignore_index=True)
+
+	del dfs
+	gc.collect()
+
 	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.lz4")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
 	save_pickle(pkl=df_concat, 
@@ -725,4 +733,3 @@ def get_concat_df(dir_path: str):
 	# print(df_concat.user_ip.nunique()) #Count Unique Values in Column
 	# print(len(df_concat.user_ip.value_counts()))
 	return df_concat, ndfs
-	
