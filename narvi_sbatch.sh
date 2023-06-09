@@ -8,9 +8,8 @@
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-# # # # # # SBATCH --gres=gpu:teslav100:1
-# # # # # # SBATCH --array=86
-#SBATCH --array=120-129
+#SBATCH --array=123
+# # # # # # #SBATCH --array=120-129
 
 stars=$(printf '%*s' 110 '')
 txt="SLURM JOB STARTED AT: `date`"

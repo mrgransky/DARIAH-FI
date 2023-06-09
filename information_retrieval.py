@@ -136,6 +136,13 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print("*"*150)
 	
 	parsing_t = time.time()
+	print(f">> Scraping Query Search Pages...")
+	st_search_t = time.time()
+	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
+	df["search_query_phrase"] = df["search_referer"].map(get_query_phrase, na_action='ignore')
+	df["search_results"] = df["search_referer"].map(scrap_search_page, na_action='ignore')
+	print(f"{f'Total Elapsed_t [Query Search Pages]: {time.time()-st_search_t:.2f} s'.center(120, ' ')}")
+
 	print(f">> Scraping Collection Pages...")
 	st_collection_t = time.time()
 	df["collection_referer"] = df[df.referer.str.contains('/collections')]["referer"]
@@ -155,13 +162,6 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
 	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
 	print(f"{f'Total Elapsed_t [Newspaper Content Pages]: {time.time()-st_nwp_content_t:.2f} s'.center(120, ' ')}")
-
-	print(f">> Scraping Query Search Pages...")
-	st_search_t = time.time()
-	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
-	df["search_query_phrase"] = df["search_referer"].map(get_query_phrase, na_action='ignore')
-	df["search_results"] = df["search_referer"].map(scrap_search_page, na_action='ignore')
-	print(f"{f'Total Elapsed_t [Query Search Pages]: {time.time()-st_search_t:.2f} s'.center(120, ' ')}")
 
 	print(f"Total Parsing Elapsed_t: {time.time()-parsing_t:.2f} s | DF: {df.shape}")
 	print("<>"*40)

@@ -282,7 +282,7 @@ def scrap_search_page(URL):
 					Exception, 
 					) as e:
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
-		return
+		#return
 	return SEARCH_RESULTS
 
 def scrap_ocr_page_content(URL):
