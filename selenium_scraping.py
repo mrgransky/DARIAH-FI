@@ -1,5 +1,70 @@
 from utils import *
 
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common import exceptions
+
+def get_all_search_details(URL):
+	st_t = time.time()
+
+	SEARCH_RESULTS = {}
+	
+	options = Options()
+	options.headless = True
+
+	#options.add_argument("--remote-debugging-port=9230") # alternative: 9222
+	options.add_argument("--remote-debugging-port=9222")
+	options.add_argument("--no-sandbox")
+	options.add_argument("--disable-gpu")
+	options.add_argument("--disable-dev-shm-usage")
+	options.add_argument("--disable-extensions")
+	options.add_experimental_option("excludeSwitches", ["enable-automation"])
+	options.add_experimental_option('useAutomationExtension', False)
+	
+	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+	
+	driver.get(URL)
+	print(f"Scraping {driver.current_url}")
+	try:
+		medias = WebDriverWait(driver, 
+													timeout=10,
+													).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'result-row'))) # alternative for 'result-row': 'media'
+		for media_idx, media_elem in enumerate(medias):
+			#print(f">> Result: {media_idx}")
+			outer_html = media_elem.get_attribute('outerHTML')
+			
+			#print(media_elem.text)
+			#print()
+			result = scrap_newspaper(outer_html)
+			SEARCH_RESULTS[f"result_{media_idx}"] = result
+			#print("-"*120)
+	except (exceptions.StaleElementReferenceException,
+					exceptions.NoSuchElementException,
+					exceptions.TimeoutException,
+					exceptions.WebDriverException,
+					exceptions.SessionNotCreatedException,
+					exceptions.InvalidArgumentException,
+					exceptions.InvalidSessionIdException,
+					exceptions.InsecureCertificateException,
+					ValueError,
+					TypeError,
+					EOFError,
+					AttributeError,
+					RuntimeError,
+					Exception,
+					) as e:
+		print(f"\t<!> Selenium: {type(e).__name__} line {e.__traceback__.tb_lineno} of {__file__}: {e.args}")
+		return
+	print(f"\t\t\tFound {len(medias)} media(s) => {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+	#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
+	return SEARCH_RESULTS
+
 def scrap_newspaper(HTML):
 	query_newspaper = dict.fromkeys([
 		"newspaper_title",
@@ -350,28 +415,13 @@ def scrap_newspaper_content_page(URL):
 	ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"	
 	#print(f"<> ocr_api_url: {ocr_api_url}")
-	rsp_txt = checking_(txt_pg_url)
-	# if rsp_txt: # 200
-	# 	NWP_CONTENT_RESULTS["text"] = rsp_txt.text
-	try:
-		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
-	except(requests.exceptions.Timeout,
-					requests.exceptions.ConnectionError, 
-					requests.exceptions.RequestException, 
-					requests.exceptions.TooManyRedirects,
-					requests.exceptions.InvalidSchema,
-					json.decoder.JSONDecodeError,
-					json.JSONDecodeError,
-					ValueError, 
-					TypeError, 
-					EOFError, 
-					RuntimeError,
-					Exception, 
-			) as e:
-		print(f"<!> {e}")
+	text_response = checking_(txt_pg_url)
+	if text_response: # 200
+		NWP_CONTENT_RESULTS["text"] = text_response.text
 
 	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	rs_api_url = checking_(url=api_url, prms=parameters)
+	
 	try:
 		hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
 		# if rs:
@@ -384,33 +434,37 @@ def scrap_newspaper_content_page(URL):
 		hgltd_wrds = []
 
 	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
-	rsp_api_nwp = checking_(url=api_nwp, prms=None)
 	try:
-		nwp_info = rsp_api_nwp.json()
-		#print(list(nwp_info.get("bindingInformation").keys()))
-		#print(list(nwp_info.get("bindingInformation").get("citationInfo").keys()))
-		#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage"))
-		#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksOutputLanguage")) # English (30)
-		#print()
-		"""
-		title = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
-		doc_type = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
-		issue = nwp_info.get("bindingInformation").get("issue") # 63
-		publisher = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
-		pub_date = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
-		pub_place = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
-		lang = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
-		"""
-		NWP_CONTENT_RESULTS["title"] = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
-		NWP_CONTENT_RESULTS["document_type"] = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
-		NWP_CONTENT_RESULTS["issue"] = nwp_info.get("bindingInformation").get("issue") # 63
-		NWP_CONTENT_RESULTS["publisher"] = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
-		NWP_CONTENT_RESULTS["publication_date"] = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
-		NWP_CONTENT_RESULTS["publication_place"] = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
-		NWP_CONTENT_RESULTS["language"] = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
-		NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
-		NWP_CONTENT_RESULTS["highlighted_term"] = hgltd_wrds
-		NWP_CONTENT_RESULTS["page"] = parameters.get("page")
+		#nwp_info = requests.get(api_nwp).json() # check 
+		r = checking_(url=api_nwp, prms=None)
+		if r: # 200
+			nwp_info = r.json()
+		
+			#print(list(nwp_info.get("bindingInformation").keys()))
+			#print(list(nwp_info.get("bindingInformation").get("citationInfo").keys()))
+			#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage"))
+			#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksOutputLanguage")) # English (30)
+			#print()
+			"""
+			title = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
+			doc_type = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
+			issue = nwp_info.get("bindingInformation").get("issue") # 63
+			publisher = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
+			pub_date = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
+			pub_place = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
+			lang = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
+			"""
+
+			NWP_CONTENT_RESULTS["title"] = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
+			NWP_CONTENT_RESULTS["document_type"] = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
+			NWP_CONTENT_RESULTS["issue"] = nwp_info.get("bindingInformation").get("issue") # 63
+			NWP_CONTENT_RESULTS["publisher"] = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
+			NWP_CONTENT_RESULTS["publication_date"] = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
+			NWP_CONTENT_RESULTS["publication_place"] = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
+			NWP_CONTENT_RESULTS["language"] = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
+			NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
+			NWP_CONTENT_RESULTS["highlighted_term"] = hgltd_wrds
+			NWP_CONTENT_RESULTS["page"] = parameters.get("page")
 	except (requests.exceptions.Timeout,
 					requests.exceptions.ConnectionError, 
 					requests.exceptions.RequestException, 
@@ -418,13 +472,13 @@ def scrap_newspaper_content_page(URL):
 					requests.exceptions.InvalidSchema,
 					json.decoder.JSONDecodeError,
 					json.JSONDecodeError,
+					Exception, 
 					ValueError, 
 					TypeError, 
 					EOFError, 
 					RuntimeError,
-					Exception, 
-				) as e:
-		print(f"<!> {type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+	) as e:
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}\n{up_url}")
 		return
 		"""
 		title = None

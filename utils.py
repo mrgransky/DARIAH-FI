@@ -699,14 +699,14 @@ def get_concat_df(dir_path: str):
 	# 	dfs_pkl = [load_df_pkl(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_df_pkl(f).shape[0]>0 ]
 	# 	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 
-	dfpkl_t = time.time()
-	dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
-	print(f"Elapsed_t: {time.time()-dfpkl_t:.3f} s".center(110, " "))
-	del dfs_pkl
-	gc.collect()
+	# dfpkl_t = time.time()
+	# dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
+	# print(f"Elapsed_t: {time.time()-dfpkl_t:.3f} s".center(110, " "))
+	# del dfs_pkl
+	# gc.collect()
 
 	df_t = time.time()
-	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_pickle(f)).shape[0]>0 ]
+	dfs = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
 	print(f"Elapsed_t: {time.time()-df_t:.3f} s".center(110, " "))
 
 	ndfs = len(dfs)
@@ -721,7 +721,7 @@ def get_concat_df(dir_path: str):
 	gc.collect()
 
 	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.lz4")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}".center(110, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}")
 	save_pickle(pkl=df_concat, 
 							fname=df_concat_fname,
 						)
