@@ -697,9 +697,15 @@ def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname
 	print(f"<<<=!=>>> Saving {type(pkl)} might take a while\n{dump_file_name}")
 	st_t = time.time()
-	with open(dump_file_name , "wb" ) as f:
-		#joblib.dump(pkl, f, compress='lz4', protocol=pickle.HIGHEST_PROTOCOL) # df_preprocessed.lz4 must be rmoved and saved again with this package!
-		dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+
+	if isinstance(pkl, pd.DataFrame):
+		print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
+		pkl.to_pickle(fname)
+	else:
+		print(f">> saving {type(pkl)}")
+		with open(dump_file_name , "wb" ) as f:
+			dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
