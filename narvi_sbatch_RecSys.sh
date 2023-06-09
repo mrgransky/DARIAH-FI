@@ -7,7 +7,7 @@
 #SBATCH --time=06-23:59:59
 #SBATCH --partition=grid
 # # # # # # SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=369G
+#SBATCH --mem=371G
 # # # # # # SBATCH --array=0-69
 
 stars=$(printf '%*s' 90 '')
