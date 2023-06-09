@@ -107,8 +107,8 @@ def get_cBoWs(dframe: pd.DataFrame):
 	raw_docs_list = list(set(raw_docs_list))
 	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
@@ -190,8 +190,8 @@ def get_BoWs(dframe: pd.DataFrame,):
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
 	"""
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.gz")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.gz")
 
 	if not os.path.exists(tfidf_vec_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases, might take a while...".center(110, " "))
@@ -397,12 +397,12 @@ def tokenize_query_phrase(qu_list):
 	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
 
 def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str=""):
-	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_search_queries.lz4")
-	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_snippets_hw.lz4")
-	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_snippets.lz4")
-	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_contents_hw.lz4")
-	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_content_pt.lz4")
-	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_contents.lz4")
+	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_search_queries.gz")
+	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_snippets_hw.gz")
+	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_snippets.gz")
+	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_contents_hw.gz")
+	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_content_pt.gz")
+	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_dfRAW_{dframe.shape[0]}x{dframe.shape[1]}_contents.gz")
 	df_preprocessed = dframe.copy()
 
 	print(f"\n>> Getting {sqFile}")	
@@ -476,7 +476,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str="
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=sn_list, fname=snFile)
 
-	# df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
+	# df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.gz")
 	# print(f"\n>> Getting {df_preprocessed_fname} ...")	
 	# try:
 	# 	df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
@@ -629,7 +629,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str="
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
 	
 	################## redundant ##################
-	#df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.lz4")
+	#df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.gz")
 	#save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 	################## redundant ##################
 
@@ -639,7 +639,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str="
 
 """
 def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
-	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.lz4")
+	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.gz")
 	print(f"\n>> Getting {df_preprocessed_fname} ...")
 	
 	try:
@@ -792,7 +792,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#print("#"*100)
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
 	
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.lz4")
+	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
@@ -821,7 +821,7 @@ def get_sparse_matrix(df):
 	#print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
 	#print("#"*110)
 	##########################Sparse Matrix info##########################
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.lz4")
+	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 
@@ -897,7 +897,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	"""
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 

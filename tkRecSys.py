@@ -157,12 +157,12 @@ def get_selected_content(cos_sim, cos_sim_idx, recommended_tokens, df_users_toke
 		print("+"*180)
 
 def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
-	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.lz4")
-	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.lz4")
-	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.lz4")
-	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.lz4")
-	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.lz4")
-	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.lz4")
+	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
+	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
+	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.gz")
+	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.gz")
+	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.gz")
+	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.gz")
 	df_preprocessed = dframe.copy()
 
 	print(f"\n>> Getting {cntFile} ...")	
@@ -339,7 +339,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#print("#"*100)
 	#print(df_user_token[["user_ip", "user_token_interest"]].head())
 	
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.lz4")
+	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
@@ -367,7 +367,7 @@ def get_sparse_matrix(df):
 	#print("#"*110)
 	##########################Sparse Matrix info##########################
 	
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.lz4")
+	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 
@@ -386,7 +386,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	
 	try:
-		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.lz4"))
+		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.gz"))
 	except:
 		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	
@@ -446,7 +446,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	"""
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.lz4"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
 		sp_mat_rf = get_sparse_matrix(df_usr_tk)
 
@@ -1204,7 +1204,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	try:
-		df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.lz4")][0]
+		df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
 		#print(df_concat_fname)
 		df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
 		#print(df_concat_fpath)

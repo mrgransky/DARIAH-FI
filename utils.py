@@ -612,11 +612,11 @@ def save_pickle(pkl, fname:str=""):
 	if isinstance(pkl, pd.DataFrame):
 		# print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
 		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
-		pkl.to_pickle(fname)
+		pkl.to_pickle(path=fname)
 	else:
 		# print(f">> saving {type(pkl)}")
 		with open(dump_file_name , "wb" ) as f:
-			dill.dump(pkl, f) # df_preprocessed.lz4 must be rmoved and saved again with this package!
+			dill.dump(pkl, f)
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
@@ -720,7 +720,7 @@ def get_concat_df(dir_path: str):
 	del dfs
 	gc.collect()
 
-	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.lz4")
+	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.gz")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}")
 	save_pickle(pkl=df_concat, 
 							fname=df_concat_fname,

@@ -111,8 +111,8 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	raw_docs_list = list(set(raw_docs_list))
 	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
 
 	if not os.path.exists(tfidf_rf_matrix_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
@@ -194,8 +194,8 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	with open("raw_list_words.json", "w") as fw:
 		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
 	"""
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer.lz4")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF.lz4")
+	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer.gz")
+	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF.gz")
 
 	if not os.path.exists(tfidf_vec_fpath):
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases, might take a while...".center(110, " "))
