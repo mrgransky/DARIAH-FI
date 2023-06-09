@@ -552,7 +552,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	# print(th, type(th))
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
-	df = df.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
+	df = df.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df = df.reset_index(drop=True)
 
 	if TIMESTAMP:
@@ -610,7 +610,7 @@ def save_pickle(pkl, fname:str=""):
 
 	if isinstance(pkl, pd.DataFrame):
 		# print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
-		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
+		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 		pkl.to_pickle(fname)
 	else:
 		# print(f">> saving {type(pkl)}")
@@ -626,7 +626,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
 	if isinstance(pkl, pd.DataFrame):
-		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
+		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading: {fpath}")
@@ -636,7 +636,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 def load_df_pkl(fpath:str="unknown"):
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
-	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
+	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore's)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading df_pkl: {fpath}")
