@@ -121,11 +121,10 @@ def single_query(file_="", ts=None, browser_show=False):
 def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print(f">> Analyzing Q[{nQ}]: {file_}")
 	st_t = time.time()
-	#df = get_df_no_ip_logs(infile=file_, TIMESTAMP=ts)
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
-	print(f"Loaded in: {time.time()-st_t:.3f} s | INITIAL df: {df.shape} | avg search/s: {df.shape[0]/(24*60*60):.3f}")
+	print(f"INITIAL df Loaded in: {time.time()-st_t:.3f} sec | {df.shape}")
 
-	print(f"{f'Page Analysis'.center(120, ' ')}\n"
+	print(f"{f'Page Analysis'.center(140, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "
 				f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "
@@ -135,32 +134,8 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 				#f"unknown pages: {df.referer.str.count('/collections').sum()}."
 				)
 	print("*"*150)
-
-	# def analyze_(df):
-	# 	raw_url = df.referer
-	# 	print(f"RAW URL: {raw_url}")
-	# 	r = checking_(raw_url)
-	# 	if r is None:
-	# 		return df
-
-	# 	in_url = r.url
-	# 	print(f"\tUpdated: {in_url}")
-	# 	parsed_url, parameters = get_parsed_url_parameters(in_url)
-	# 	print(f"Parsed: {parsed_url}")
-	# 	print(f"Parameters:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
-	
-	# 	# clippings:
-	# 	if '/clippings' in in_url:
-	# 		df["clipping_query_phrase"] = parameters.get("query") 
-	# 		df["clipping_results"] = scrap_clipping_page(URL=in_url)
-
-	# 	print("#"*100)
-	# 	return df
 	
 	parsing_t = time.time()
-	# check_urls = lambda INPUT_DF: analyze_(INPUT_DF)
-	# #df = pd.DataFrame( df.apply( check_urls, axis=1, ) )
-
 	print(f">> Scraping Collection Pages...")
 	st_collection_t = time.time()
 	df["collection_referer"] = df[df.referer.str.contains('/collections')]["referer"]

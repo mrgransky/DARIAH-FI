@@ -388,28 +388,7 @@ def make_result_dir(infile=""):
 	make_folder(folder_name=res_dir)
 	return res_dir
 
-def rest_api_sof(params={}):	
-	params = {'query': 						["Rusanen"], 
-						'publicationPlace': ["Iisalmi", "Kuopio"], 
-						'lang': 						["FIN"], 
-						'orderBy': 					["DATE_DESC"], 
-						'formats': 					["NEWSPAPER"], 
-						}
-
-	print(f"REST API: {params}")
-
-	subprocess.call(['bash',
-									'sof.sh',
-									f'myFORMATS={params.get("formats", "")}',
-									f'myQUERY={",".join(params.get("query"))}',
-									f'myORDERBY={",".join(params.get("orderBy", ""))}',
-									f'myLANG={params.get("lang", "")}',
-									f'myPubPlace={params.get("publicationPlace", "")}',
-									]
-								)
-
-def rest_api(params={}):
-	
+def rest_api(params={}):	
 	# TODO: url must be provided!
 	params = {'query': ["Rusanen"], 
 						'publicationPlace': ["Iisalmi", "Kuopio"], 
@@ -477,75 +456,6 @@ def rest_api(params={}):
 	os.remove(json_file)
 	
 	return SEARCH_RESULTS
-
-def get_df_no_ip_logs(infile="", TIMESTAMP=None):
-	file_path = os.path.join(dpath, infile)
-
-	#print(f">> Reading {file_path} ...")
-	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (?P<status>\d{3}) (.*) "([^"]*)" "(.*?)" (.*)' # original working!
-	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^"]+)" "(.*?)" (.*)' # original working!
-	ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
-	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:-|.*(http://\D.*))" "(.*?)" (.*)'
-	#ACCESS_LOG_PATTERN = '- - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "(?:|-|.*(://\D.*))" "(.*?)" (.*)'
-	cleaned_lines = []
-
-	with open(file_path, mode="r") as f:
-		for line in f:
-			##print(line)
-			matched_line = re.match(ACCESS_LOG_PATTERN, line)
-			#print (matched_line)
-			l = matched_line.groups()
-			#print(l)
-			cleaned_lines.append({
-				"timestamp": 										l[0].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
-				"client_request_line": 					l[1],
-				"status": 											l[2],
-				"bytes_sent": 									l[3],
-				"referer": 											l[4],
-				"user_agent": 									l[5],
-				"session_id": 									l[6],
-				#"query_word":										np.nan,
-				#"term":													np.nan,
-				#"page_ocr":													np.nan,
-				#"fuzzy":												np.nan,
-				#"has_metadata":									np.nan,
-				#"has_illustration":							np.nan,
-				#"show_unauthorized_results":		np.nan,
-				#"pages":												np.nan,
-				#"import_time":									np.nan,
-				#"collection":										np.nan,
-				#"author":												np.nan,
-				#"keyword":											np.nan,
-				#"publication_place":						np.nan,
-				#"language":											np.nan,
-				#"document_type":								np.nan,
-				#"show_last_page":								np.nan,
-				#"order_by":											np.nan,
-				#"publisher":										np.nan,
-				#"start_date":										np.nan,
-				#"end_date":											np.nan,
-				#"require_all_keywords":					np.nan,
-				#"result_type":									np.nan,
-				})
-	
-	df = pd.DataFrame.from_dict(cleaned_lines)
-
-	# with pandas:
-	df.timestamp = pd.to_datetime(df.timestamp)
-	#df = df.replace("null", "-", regex=True).replace("-", pd.NA, regex=True).replace(r'^\s*$', pd.NA, regex=True)
-	
-	# with numpy:
-	df = df.replace("-", np.nan, regex=True).replace(r'^\s*$', np.nan, regex=True)
-	df = df.dropna(axis=0)
-	df = df.reset_index(drop=True)
-	
-	if TIMESTAMP:
-		print(f"\t\t\twithin timeframe: {TIMESTAMP[0]} - {TIMESTAMP[1]}")
-		df_ts = df[ df.timestamp.dt.strftime('%H:%M:%S').between(TIMESTAMP[0], TIMESTAMP[1]) ]		
-		df_ts = df_ts.reset_index(drop=True)
-		return df_ts
-
-	return df
 
 def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	file_path = os.path.join(dpath, infile)
@@ -642,7 +552,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	# print(th, type(th))
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
-	df = df.drop(['prev_time'], axis=1)
+	df = df.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
 	df = df.reset_index(drop=True)
 
 	if TIMESTAMP:
@@ -700,6 +610,7 @@ def save_pickle(pkl, fname:str=""):
 
 	if isinstance(pkl, pd.DataFrame):
 		# print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
+		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
 		pkl.to_pickle(fname)
 	else:
 		# print(f">> saving {type(pkl)}")
@@ -709,12 +620,13 @@ def save_pickle(pkl, fname:str=""):
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
-def load_pickle(fpath:str="unknown"):
+def load_pickle(fpath:str="unknown", dftype=None):
 	st_t = time.time()
 
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
-
+	if isinstance(pkl, pd.DataFrame):
+		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading: {fpath}")
@@ -724,6 +636,7 @@ def load_pickle(fpath:str="unknown"):
 def load_df_pkl(fpath:str="unknown"):
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
+	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loading df_pkl: {fpath}")
