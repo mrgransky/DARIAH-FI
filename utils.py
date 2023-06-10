@@ -723,12 +723,12 @@ def get_concat_df(dir_path: str):
 
 	del dfs
 	gc.collect()
-
-	df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.gz")
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}")
-	save_pickle(pkl=df_concat, 
-							fname=df_concat_fname,
-						)
+	# df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.gz")
+	# save_pickle(pkl=df_concat, 
+	# 						fname=df_concat_fname,
+	# 					)
+
 	# df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
 	# print(df_concat.info(verbose=True, memory_usage="deep"))
 	# print(df_concat[["user_ip", "timestamp"]].head(20))

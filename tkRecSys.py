@@ -1205,9 +1205,9 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def main():
 	try:
 		df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
-		print(df_concat_fname)
+		# print(df_concat_fname)
 		df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
-		print(df_concat_fpath)
+		# print(df_concat_fpath)
 		#df_raw = load_pickle(fpath=df_concat_fpath)
 		df_raw = load_df_pkl(fpath=df_concat_fpath)
 		#print(df_raw.shape)
@@ -1220,8 +1220,8 @@ def main():
 	fprefix = f"{ndfs}_dfs_concat_{df_raw.shape[0]}_samples"
 	RES_DIR = make_result_dir(infile=fprefix)
 	analyze_df(df=df_raw, fname=__file__)
-	print(fprefix, RES_DIR)
-	# run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	# print(fprefix, RES_DIR)
+	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5
