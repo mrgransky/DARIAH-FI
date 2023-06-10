@@ -206,13 +206,13 @@ def scrap_collection_page(URL):
 	return COLLECTION_RESULTS
 
 def scrap_search_page(URL):
-	#print(f"Scraping: {URL}")
+	print(f"Scraping: {URL}")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	#print()
 
-	#print(f"parsed_url : {parsed_url}")
+	print(f"parsed_url : {parsed_url}")
 
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
 	

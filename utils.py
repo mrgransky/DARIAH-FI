@@ -322,11 +322,14 @@ def get_sparse_mtx(df):
 	return sparse_mtx
 
 def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
-	print(f"Analyzing {fname} | DF: {df.shape}")
+	print(f"Analyzing DF: {df.shape}")
 	print(df.info(verbose=True, memory_usage="deep"))
 	print("<>"*40)
-	print(f"Memory consumption of all {len(list(df.columns))} column(s)")
-	print( df.memory_usage(index=False, deep=True) )
+	print(df.isna().sum())
+	print("-"*80)
+	print(f"Memory usage of each column in bytes (total column(s)={len(list(df.columns))})")
+	print(df.memory_usage(deep=True, index=False, ))
+
 	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 50):
 	# 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 	print("<>"*40)
@@ -636,12 +639,12 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	return pkl
 
 def load_df_pkl(fpath:str="unknown"):
+	print(f"Loading df_pkl: {fpath}")
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
 	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loading df_pkl: {fpath}")
 	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {df.shape} | {fsize:.2f} MB".center(110, " "))
 	return df
 
