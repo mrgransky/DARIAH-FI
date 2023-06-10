@@ -215,7 +215,7 @@ def scrap_search_page(URL):
 	print(f"parsed_url : {parsed_url}")
 
 	# offset_pg=(int(parameters.get('page')[0])-1)*20 if ("page=" in URL and re.match(r'page=\d+', URL)) else 0
-	offset_pg=( int( m.group(1) )-1)*20 if m:=re.match(r'page=(\d+)', URL) else 0
+	offset_pg=( int( re.match(r'page=(\d+)', URL).group(1) )-1)*20 if re.match(r'page=(\d+)', URL) else 0
 	
 	search_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=20"
 	print(search_pg_api)
