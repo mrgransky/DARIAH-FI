@@ -206,7 +206,7 @@ def scrap_collection_page(URL):
 	return COLLECTION_RESULTS
 
 def scrap_search_page(URL):
-	print(f"Scraping: {URL}")
+	print(f"<> Scraping: {URL}")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
@@ -216,9 +216,9 @@ def scrap_search_page(URL):
 
 	# offset_pg=(int(parameters.get('page')[0])-1)*20 if ("page=" in URL and re.match(r'page=\d+', URL)) else 0
 	offset_pg=( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
-	print(offset_pg)
+	# print(offset_pg)
 	search_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=20"
-	print(search_pg_api)
+	# print(search_pg_api)
 	
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
