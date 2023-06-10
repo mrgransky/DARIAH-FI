@@ -1,89 +1,89 @@
 from utils import *
 
 
-# with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-# with HiddenPrints():
-# 	import nltk
-# 	nltk_modules = ['punkt', 
-# 								'averaged_perceptron_tagger', 
-# 								'stopwords',
-# 								'wordnet',
-# 								'omw-1.4',
-# 								]
-# 	nltk.download(#'all',
-# 								nltk_modules,
-# 								quiet=True, 
-# 								raise_on_error=True,
-# 								)
-
-# 	import trankit
-# 	p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
-# 	p.add('swedish')
-# 	p.add('russian')
-# 	#p.add('english')
-# 	#p.add('estonian')
-# 	p.set_auto(True)
-
-# 	# load stanza imports
-# 	import stanza
-# 	from stanza.pipeline.multilingual import MultilingualPipeline
-# 	from stanza.pipeline.core import DownloadMethod
-
-# 	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
-# 	lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
-# 											"ru": {"processors": "tokenize,lemma,pos,depparse"},
-# 											"sv": {"processors": "tokenize,lemma,pos,depparse"},
-# 											"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
-# 															"package": 		'ftb',
-# 														},
-# 								}
-# 	stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
-# 																							use_gpu=True,
-# 																							lang_configs=lang_configs,
-# 																							download_method=DownloadMethod.REUSE_RESOURCES,
-# 																					)
-
-print(f">> loading & importing nltk")
-import nltk
-nltk_modules = ['punkt', 
+with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+with HiddenPrints():
+	import nltk
+	nltk_modules = ['punkt', 
 								'averaged_perceptron_tagger', 
 								'stopwords',
 								'wordnet',
 								'omw-1.4',
-							]
-nltk.download('all',
-							# nltk_modules,
-							quiet=True, 
-							raise_on_error=True,
-						)
-print(f">> loading & importing trankit")
-import trankit
-p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', gpu=True, cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
-p.add('swedish')
-p.add('russian')
-#p.add('english')
-#p.add('estonian')
-p.set_auto(True)
+								]
+	nltk.download(#'all',
+								nltk_modules,
+								quiet=True, 
+								raise_on_error=True,
+								)
 
-print(f">> loading & importing stanza")
-# load stanza imports
-import stanza
-from stanza.pipeline.multilingual import MultilingualPipeline
-from stanza.pipeline.core import DownloadMethod
+	import trankit
+	p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
+	p.add('swedish')
+	p.add('russian')
+	#p.add('english')
+	#p.add('estonian')
+	p.set_auto(True)
 
-lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
-lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
-								"ru": {"processors": "tokenize,lemma,pos,depparse"},
-								"sv": {"processors": "tokenize,lemma,pos,depparse"},
-								"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
-												"package": 		'ftb',
-											},
-							}
-stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
+	# load stanza imports
+	import stanza
+	from stanza.pipeline.multilingual import MultilingualPipeline
+	from stanza.pipeline.core import DownloadMethod
+
+	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
+	lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
+											"ru": {"processors": "tokenize,lemma,pos,depparse"},
+											"sv": {"processors": "tokenize,lemma,pos,depparse"},
+											"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
+															"package": 		'ftb',
+														},
+								}
+	stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
 																							use_gpu=True,
 																							lang_configs=lang_configs,
 																							download_method=DownloadMethod.REUSE_RESOURCES,
-																			)
+																					)
+
+# print(f">> loading & importing nltk")
+# import nltk
+# nltk_modules = ['punkt', 
+# 								'averaged_perceptron_tagger', 
+# 								'stopwords',
+# 								'wordnet',
+# 								'omw-1.4',
+# 							]
+# nltk.download('all',
+# 							# nltk_modules,
+# 							quiet=True, 
+# 							raise_on_error=True,
+# 						)
+# print(f">> loading & importing trankit")
+# import trankit
+# p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', gpu=True, cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
+# p.add('swedish')
+# p.add('russian')
+# #p.add('english')
+# #p.add('estonian')
+# p.set_auto(True)
+
+# print(f">> loading & importing stanza")
+# # load stanza imports
+# import stanza
+# from stanza.pipeline.multilingual import MultilingualPipeline
+# from stanza.pipeline.core import DownloadMethod
+
+# lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
+# lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
+# 								"ru": {"processors": "tokenize,lemma,pos,depparse"},
+# 								"sv": {"processors": "tokenize,lemma,pos,depparse"},
+# 								"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
+# 												"package": 		'ftb',
+# 											},
+# 							}
+# stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
+# 																							use_gpu=True,
+# 																							lang_configs=lang_configs,
+# 																							download_method=DownloadMethod.REUSE_RESOURCES,
+# 																			)
 
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
