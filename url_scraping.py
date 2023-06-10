@@ -209,15 +209,16 @@ def scrap_search_page(URL):
 	print(f"Scraping: {URL}")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
-	print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
+	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
 	#print()
 
 	print(f"parsed_url : {parsed_url}")
 
-	offset_pg=(int(parameters.get('page')[0])-1)*20 if ("page=" in URL and re.match(r'page=\d+', URL)) else 0
+	# offset_pg=(int(parameters.get('page')[0])-1)*20 if ("page=" in URL and re.match(r'page=\d+', URL)) else 0
+	offset_pg=( int( m.group(1) )-1)*20 if m:=re.match(r'page=(\d+)', URL) else 0
 	
 	search_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=20"
-	#print(search_pg_api)
+	print(search_pg_api)
 	
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
