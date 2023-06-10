@@ -604,9 +604,13 @@ def make_folder(folder_name="MUST_BE_RENAMED"):
 		os.makedirs( folder_name )
 
 def save_vocab(vb, fname:str=""):
-	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname} ...")
+	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
+	st_t = time.time()
 	with open(fname, "w") as fw:
 		json.dump(vb, fw, indent=4, ensure_ascii=False)
+
+	fsize_dump = os.stat( fname ).st_size / 1e6
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname
@@ -626,7 +630,7 @@ def save_pickle(pkl, fname:str=""):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_pickle(fpath:str="unknown", dftype=None):
-	print(f"Loading: {fpath}")
+	print(f"Trying to Load: {fpath}")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
