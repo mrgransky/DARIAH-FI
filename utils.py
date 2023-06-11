@@ -516,7 +516,8 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	
 	df = pd.DataFrame.from_dict(cleaned_lines)
 	# with pandas:
-	df.timestamp = pd.to_datetime(df.timestamp)
+	df.timestamp = pd.to_datetime(df.timestamp, format='%d/%B/%Y %H:%M:%S %z', errors='coerce')
+	df = df.dropna(subset=['timestamp'])
 	# print(df.info())
 	# print("<>"*50)
 	# print(df.dtypes)
