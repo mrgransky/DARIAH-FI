@@ -8,8 +8,8 @@
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-# # # SBATCH --array=123
-#SBATCH --array=150-159
+#SBATCH --array=150
+# # # # # SBATCH --array=150-159
 
 stars=$(printf '%*s' 110 '')
 txt="SLURM JOB STARTED AT: `date`"
