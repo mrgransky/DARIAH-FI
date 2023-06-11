@@ -516,7 +516,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	
 	df = pd.DataFrame.from_dict(cleaned_lines)
 	# with pandas:
-	df.timestamp = pd.to_datetime(df.timestamp, format='%d/%B/%Y %H:%M:%S %z', errors='coerce')
+	df.timestamp = pd.to_datetime(df.timestamp, format='%d/%b/%Y %H:%M:%S %z', errors='coerce')
 	df = df.dropna(subset=['timestamp'])
 	# print(df.info())
 	# print("<>"*50)
@@ -555,7 +555,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print("<>"*50)
 	# print(df[["user_ip", "timestamp", "prev_time"]].tail(50))
 	# print("<>"*50)
-	th = datetime.timedelta(days=0, seconds=0, minutes=1)
+	th = datetime.timedelta(days=0, seconds=0, minutes=5)
 	# print(th, type(th))
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
 	df = df.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
