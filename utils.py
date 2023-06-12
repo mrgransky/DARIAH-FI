@@ -516,9 +516,19 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	
 	df = pd.DataFrame.from_dict(cleaned_lines)
 	# with pandas:
-	df = df.dropna(subset=['timestamp'])
-	df.timestamp = pd.to_datetime(df.timestamp, format='%d/%b/%Y %H:%M:%S %z', errors='coerce')
-	df = df.dropna(subset=['timestamp'])
+	print(df.isna().sum())
+	print("-"*50)
+	# df = df.dropna(subset=['timestamp'])
+	# df.timestamp = pd.to_datetime(df.timestamp, format='%d/%b/%Y %H:%M:%S %z', errors='coerce')
+	# df = df.dropna(subset=['timestamp'])
+
+	try:
+		df['timestamp'] = pd.to_datetime(df['timestamp'], format='%d/%b/%Y %H:%M:%S %z', errors='coerce')#.dt.tz_convert('Etc/GMT+2').dt.tz_localize(None)
+	except pd.errors.ParserError as e:
+		print("Invalid timestamp values detected. Dropping rows")
+		logging.exception(e)	
+		df.dropna(subset=['timestamp'], inplace=True)
+
 	# print(df.info())
 	# print("<>"*50)
 	# print(df.dtypes)
