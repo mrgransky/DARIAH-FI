@@ -546,7 +546,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print("#"*100)
 	print(df.info())
 	print("<>"*50)
-	print(df.timestamp.dtypes, df.prev_time.dtypes)
+	print(df.timestamp.dtypes, df.prev_time.dtypes, pd.Timestamp(0).tzinfo, df.timestamp.dt.tzinfo)
 	assert pdtypes.is_datetime64_any_dtype(df['prev_time']), f"prev_time dtype: {df.prev_time.dtypes}"
 	assert pdtypes.is_datetime64_any_dtype(df['timestamp']), f"timestamp dtype: {df.timestamp.dtypes}"
 	
