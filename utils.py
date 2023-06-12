@@ -522,13 +522,15 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# df.timestamp = pd.to_datetime(df.timestamp, format='%d/%b/%Y %H:%M:%S %z', errors='coerce')
 	# df = df.dropna(subset=['timestamp'])
 
-	try:
-		df['timestamp'] = pd.to_datetime(df['timestamp'])#.dt.tz_convert('Etc/GMT+2').dt.tz_localize(None)
-	except pd.errors.ParserError as e:
-		print("Invalid timestamp values detected. Dropping rows")
-		logging.exception(e)	
-		df.dropna(subset=['timestamp'], inplace=True)
-
+	# Convert 'timestamp' column to datetime format
+	df['timestamp'] = pd.to_datetime(df['timestamp'], 
+																	errors='coerce'
+																	)
+	df['timestamp'] = pd.to_datetime(df['timestamp'], 
+																	errors='coerce',
+																	utc=True,
+																	).dt.tz_convert('Europe/Helsinki')
+	df = df.dropna(subset=['timestamp'])
 	# print(df.info())
 	# print("<>"*50)
 	# print(df.dtypes)
@@ -558,7 +560,6 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	print(df.info())
 	print("<>"*50)
 	print(df.timestamp.dtypes, df.prev_time.dtypes, pd.Timestamp(0).tzinfo)
-	print(df.timestamp.dt.tzinfo)
 
 	assert pdtypes.is_datetime64_any_dtype(df['prev_time']), f"prev_time dtype: {df.prev_time.dtypes}"
 	assert pdtypes.is_datetime64_any_dtype(df['timestamp']), f"timestamp dtype: {df.timestamp.dtypes}"
