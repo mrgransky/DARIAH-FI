@@ -87,7 +87,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	print(dframe.info())
 	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
-	print(f"<>"*120)
+	print(f"<>"*50)
 	# return
 
 	users_list = list()
