@@ -375,13 +375,6 @@ def get_sparse_matrix(df):
 
 def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	"""
-	if userName.endswith("xenial"):
-		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
-	else:
-		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
-	#return
-	"""
 	#BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	
@@ -390,61 +383,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	except:
 		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	
-	#print(df_usr_tk.info())
-	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
-
-	"""
-	with open("ip545.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip545"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
-		print( df_usr_tk[["user_ip", "user_token_interest",]].tail(10) )
-
-	#print(df_usr_tk.info())
-
-	print("#"*150)
-
-	print(json.dumps(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], indent=2, ensure_ascii=False))
-	print("#"*150)
-
-	with open("ip6840.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip6840"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with open("ip3665.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip3665"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with open("ip6020.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip6020"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-	
-	with open("ip6840_qu.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_sn.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_sn_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_sn_hw.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_sn_hw_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_cnt_hw.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_hw_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_cnt_pt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_pt_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip1715_sel_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1715"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip1038_sel_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1038"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip1516_sel_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1516"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
-	#return
-	"""
-
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
@@ -1219,7 +1157,7 @@ def main():
 	global fprefix, RES_DIR
 	fprefix = f"{ndfs}_dfs_concat_{df_raw.shape[0]}_samples"
 	RES_DIR = make_result_dir(infile=fprefix)
-	analyze_df(df=df_raw, fname=__file__)
+	# analyze_df(df=df_raw, fname=__file__)
 	# print(fprefix, RES_DIR)
 	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
