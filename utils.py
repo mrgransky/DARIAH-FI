@@ -483,7 +483,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 				# print("<>"*40)
 				cleaned_lines.append({
 					"user_ip": 							l[0],
-					"timestamp": 						l[1].replace(":", " ", 1), # original: 01/Feb/2017:12:34:51 +0200
+					"timestamp": 						l[1].replace(":", " ", 1) if re.match(r'^\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2} [+-]\d{4}$', l[1]) else np.nan, # original: 01/Feb/2017:12:34:51 +0200
 					"client_request_line": 	l[2],
 					"status": 							l[3],
 					"bytes_sent": 					l[4],
