@@ -257,7 +257,7 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	print(f"URL: {URL:<150}", end="")
+	print(f"URL: {URL:<150}")
 	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
 	up_url = URL if re.search(r'&page=(\d+)', URL) else f"{URL}&page=1"
