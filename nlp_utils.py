@@ -103,9 +103,15 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 		ltot = lq + lcol + lclp + ls + lc
 		raw_texts_list.append( ltot )
 
+	del dframe
+	gc.collect()
+
 	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 
 	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and not re.search(r"\d", subitem) ) ]
+	del raw_texts_list
+	gc.collect()
+
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	raw_docs_list = list(set(raw_docs_list))
@@ -127,19 +133,19 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
 		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
+		del raw_docs_list
+		gc.collect()
 
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
 								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 							)
-
-		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 	else:
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
 		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
-	#return
-
+	
 	feat_names = tfidf_vec.get_feature_names_out()
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	# example:
