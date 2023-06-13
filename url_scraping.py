@@ -1,77 +1,5 @@
 from utils import *
 
-def scrap_newspaper(HTML):
-	query_newspaper = dict.fromkeys([
-		"newspaper_title",
-		"newspaper_issue", 
-		"newspaper_date", 
-		"newspaper_publisher", 
-		"newspaper_publication_place", 
-		"newspaper_page", 
-		"newspaper_import_date",
-		"newspaper_thumbnail",
-		"newspaper_snippet",
-		"newspaper_snippet_highlighted_words",
-		"newspaper_content_ocr",
-		"newspaper_content_ocr_highlighted_words",
-		"newspaper_link",
-		"newspaper_document_type",
-		])
-
-	my_parser = "lxml"
-	#my_parser = "html.parser"
-	soup = BeautifulSoup(HTML, my_parser)
-	#print(soup.prettify())
-	#return None
-
-	all_newspaper_info = get_np_info(INP_SOUP=soup)
-	#print(len(all_newspaper_info), all_newspaper_info)
-
-	np_title = soup.find("div", class_="main-link-title link-colors")
-	np_issue_date = soup.find("span", class_="font-weight-bold")
-
-	pg_snippet = soup.find("div", class_="search-highlight-fragment ng-star-inserted")	
-	pg_imported_date = soup.find("div", class_="import-date ng-star-inserted")
-	thumbnail = soup.find("img")
-	pg_link = soup.find("a")
-	
-	if thumbnail: query_newspaper["newspaper_thumbnail"] = "https://digi.kansalliskirjasto.fi" + thumbnail.get("src")
-	if pg_link: query_newspaper["newspaper_link"] = "https://digi.kansalliskirjasto.fi" + pg_link.get("href")
-	if np_title: query_newspaper["newspaper_title"] = np_title.text
-	if pg_imported_date: query_newspaper["newspaper_import_date"] = pg_imported_date.text
-	if pg_snippet:
-		query_newspaper["newspaper_snippet"] = pg_snippet.text
-		query_newspaper["newspaper_snippet_highlighted_words"] = [tag.text for tag in pg_snippet.findChildren('em' , recursive=False)]
-	
-	if all_newspaper_info[-1]: query_newspaper["newspaper_page"] = all_newspaper_info[-1].split()[1] # remove sivu, sida page: ex) sivu 128 => 128
-	#if all_newspaper_info[1]: query_newspaper["newspaper_issue"] = all_newspaper_info[1]
-	#if all_newspaper_info[2]: query_newspaper["newspaper_date"] = all_newspaper_info[2]
-	if all_newspaper_info[3]: query_newspaper["newspaper_publisher"] = all_newspaper_info[3]
-	if all_newspaper_info[4]: query_newspaper["newspaper_publication_place"] = all_newspaper_info[4]
-	
-	# OCR Content:
-	if pg_link: 
-		ttl, dtyp, issue, publisher, pub_date, pub_place, lang, trm, hw, pg, txt = scrap_ocr_page_content(query_newspaper["newspaper_link"])
-		query_newspaper["newspaper_content_ocr"] = txt
-		query_newspaper["newspaper_content_ocr_highlighted_words"] = hw
-		query_newspaper["newspaper_issue"] = issue
-		query_newspaper["newspaper_date"] = pub_date
-		query_newspaper["newspaper_document_type"] = dtyp
-		query_newspaper["newspaper_language"] = lang
-	return query_newspaper
-
-def get_np_info(INP_SOUP):	
-	selectors = [
-		'span.badge.badge-secondary.ng-star-inserted',                                             #badge 
-		'span.font-weight-bold span.ng-star-inserted:has(span[translate])',                        #issue 
-		'span.font-weight-bold span.ng-star-inserted:last-child',                                  #date 
-		'span.font-weight-bold ~ span.ng-star-inserted:-soup-contains(", ")',                      #publisher 
-		'span.font-weight-bold ~ span.ng-star-inserted:-soup-contains(", ") + span.ng-star-inserted:-soup-contains(", ")', #city 
-		'span.font-weight-bold ~ span.ng-star-inserted:-soup-contains(":")',                       #page 
-	]
-	desired_list = [ None if s[0] is None else ( s[0].get_text(' ', strip=True)[2:] if '-soup-contains' in s[1] else s[0].get_text(' ', strip=True)) for s in [ ( INP_SOUP.select_one(sel), sel) for sel in selectors] ]
-	return desired_list
-
 def scrap_clipping_page(URL):
 	#print(f"Scraping clipping page: {URL}")
 	parsed_url, parameters = get_parsed_url_parameters(URL)
@@ -318,8 +246,8 @@ def scrap_ocr_page_content(URL):
 	lang = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
 
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
-	#print(f">> ocr_api_url: {ocr_api_url}")
+	# ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
+	# print(f">> ocr_api_url: {ocr_api_url}")
 	text_response = checking_(txt_pg_url)
 	if text_response: # 200
 		txt = text_response.text
@@ -332,20 +260,19 @@ def scrap_newspaper_content_page(URL):
 	print(f"URL: {URL:<150}", end="")
 	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
-
-	if "&page=" in URL:
-		up_url = URL
-	else:
-		up_url = f"{URL}&page=1"
-
-	#print(f"\t\tUpdated: {up_url}")
+	up_url = URL if re.search(r'&page=(\d+)', URL) else f"{URL}&page=1"
+	# if "&page=" in URL:
+	# 	up_url = URL
+	# else:
+	# 	up_url = f"{URL}&page=1"
+	print(f"\t\tUpdated: {up_url}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	print(f"parsed_url : {parsed_url}")
-	
-	ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
+	print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"	
-	print(f"<> ocr_api_url: {ocr_api_url}")
+	# ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
+	# print(f"<> ocr_api_url: {ocr_api_url}")
+	print(f"<> page-X.txt: {txt_pg_url}")
 	rsp_txt = checking_(txt_pg_url)
 	try:
 		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
@@ -425,19 +352,6 @@ def scrap_newspaper_content_page(URL):
 
 if __name__ == '__main__':
 	os.system("clear")
-	#url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=NEWSPAPER&formats=JOURNAL&formats=PRINTING&formats=BOOK&formats=MANUSCRIPT&formats=MAP&formats=MUSIC_NOTATION&formats=PICTURE&formats=CARD_INDEX&orderBy=RELEVANCE'
-	#url = 'https://digi.kansalliskirjasto.fi/search?page=36&query=kantasonni&formats=NEWSPAPER&orderBy=RELEVANCE'
-
 	# clippings:
 	url = 'https://digi.kansalliskirjasto.fi/clippings?query=economic%20crisis&fuzzy=true&formats=NEWSPAPER&formats=JOURNAL&startDate=2023-02-21&endDate=2023-02-28&categoryId=7&categoryId=6&subjectId=6&subjectId=9&subjectId=11&title=fk20100613&title=fk20100478&keyword=%20%20%20%20turvattomuus&keyword=%20Alma%20Josefina%20Jakovaara&collection=24&collection=475&collection=477&orderBy=RELEVANCE&includeCollected=true&resultMode=THUMB'
-	#url = 'https://digi.kansalliskirjasto.fi/clippings?query=sj%C3%A4lvstandighetsdag&orderBy=RELEVANCE&resultMode=THUMB'
-	#url = 'https://digi.kansalliskirjasto.fi/clippings?orderBy=RELEVANCE&resultMode=THUMB'
-	
-	#url = "https://digi.kansalliskirjasto.fi/search?fuzzy=true&qOcr=false&qMeta=true&hasIllustrations=true&showUnauthorizedResults=true&pages=1-15&query=sj%C3%A4lvstandighetsdag&importTime=CUSTOM&startDate=1918-12-12&endDate=1918-12-26&importStartDate=2023-02-14&collection=24&collection=681&author=-i.%20-n&author=-a%20-g%201807-1879.&author=-HM&tag=udk:012:929Tiilil%C3%A4,Osmo&tag=udk:001.891&publisher=10.%20Pr.&publisher=13.%20Prikaati&publicationPlace=Alavojakkala&publicationPlace=Alavus&publicationPlace=Amsterdam&title=fd2015-pp00007208&title=fd2020-00026250&lang=CZE&lang=CHU&formats=PRINTING&formats=BOOK&formats=CARD_INDEX&orderBy=RELEVANCE"
-	#url = 'https://digi.kansalliskirjasto.fi/search?query=economic%20crisis&orderBy=RELEVANCE'
-	#url = 'https://digi.kansalliskirjasto.fi/search?query=sj%C3%A4lvst%C3%A4ndighetsdag&formats=JOURNAL&orderBy=RELEVANCE' # <6 : 4
-	#url = 'https://digi.kansalliskirjasto.fi/search?page=62&query=Katri%20ikonen%20&orderBy=DATE'
-	#url = 'https://digi.kansalliskirjasto.fi/search?query=%22TAAVI%20ELIAKSENPOIKA%22%20AND%20%22SIPPOLA%22&formats=NEWSPAPER&orderBy=RELEVANCE' # no result is returned! => timeout!
-	#scrap_search_page(URL=url)
-	#scrap_ocr_page_content(URL='https://digi.kansalliskirjasto.fi/sanomalehti/binding/2247833?term=självständighetsdagen&term=Självständighetsdagen')
 	scrap_clipping_page(URL=url)
