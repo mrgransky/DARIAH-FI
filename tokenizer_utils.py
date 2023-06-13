@@ -113,7 +113,7 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):
-	print(f'Raw: (len: {len(docs)}) >>{docs}<<')
+	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')
 	# print(f'Raw inp words: { len( docs.split() ) }', end=" ")
 	st_t = time.time()
 	if not docs:
@@ -122,7 +122,7 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'\"|<[^>]+>|[~*^][\d]+', '', docs)
 	docs = re.sub(r'[@®%,+;,=&\'*"°^~?!—.•()“”:/‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
 	
-	print(f'preprocessed: len: {len(docs)}:\n{docs}')
+	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
 	# print(f"{f'preprocessed doc contains { len( docs.split() ) } words':<50}{str(docs.split()[:3]):<60}", end=" ")
 	if ( not docs or len(docs)==0 ):
 		return
@@ -131,9 +131,9 @@ def stanza_lemmatizer(docs):
 	all_ = stanza_multi_pipeline(docs)
 	lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', word.lemma ) ) > 2 and word.upos not in useless_upos_tags and word.lemma.lower() not in UNIQUE_STOPWORDS ) ]
 
-	print( lm )
-	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
-	print("<>"*70)
+	# print( lm )
+	# print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
+	# print("<>"*70)
 	return lm
 
 def trankit_lemmatizer(docs):
