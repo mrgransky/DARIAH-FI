@@ -340,15 +340,13 @@ def scrap_newspaper_content_page(URL):
 
 	#print(f"\t\tUpdated: {up_url}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	#print(json.dumps(parameters, indent=2, ensure_ascii=False))
-	#print(f"parsed_url : {parsed_url}")
+	print(json.dumps(parameters, indent=2, ensure_ascii=False))
+	print(f"parsed_url : {parsed_url}")
 	
 	ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"	
-	#print(f"<> ocr_api_url: {ocr_api_url}")
+	print(f"<> ocr_api_url: {ocr_api_url}")
 	rsp_txt = checking_(txt_pg_url)
-	# if rsp_txt: # 200
-	# 	NWP_CONTENT_RESULTS["text"] = rsp_txt.text
 	try:
 		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
 	except(requests.exceptions.Timeout,
