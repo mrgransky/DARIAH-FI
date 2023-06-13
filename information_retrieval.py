@@ -136,6 +136,12 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print("*"*150)
 	
 	parsing_t = time.time()
+	print(f">> Scraping Newspaper Content Pages...")
+	st_nwp_content_t = time.time()
+	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
+	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
+	print(f"{f'Total Elapsed_t [Newspaper Content Pages]: {time.time()-st_nwp_content_t:.2f} s'.center(120, ' ')}")
+
 	print(f">> Scraping Query Search Pages...")
 	st_search_t = time.time()
 	df["search_referer"] = df[df.referer.str.contains('/search')]["referer"]
@@ -157,14 +163,9 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	df["clipping_results"] = df["clipping_referer"].map(scrap_clipping_page, na_action='ignore')
 	print(f"{f'Total Elapsed_t [Clipping Pages]: {time.time()-st_clipping_t:.2f} s'.center(120, ' ')}")
 
-	print(f">> Scraping Newspaper Content Pages...")
-	st_nwp_content_t = time.time()
-	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
-	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
-	print(f"{f'Total Elapsed_t [Newspaper Content Pages]: {time.time()-st_nwp_content_t:.2f} s'.center(120, ' ')}")
-
+	print("#"*100)
 	print(f"Total Parsing Elapsed_t: {time.time()-parsing_t:.2f} s | DF: {df.shape}")
-	print("<>"*40)
+	print("<>"*50)
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
 	print("-"*90)
 	print(f"Memory usage of each column in bytes (total column(s)={len(list(df.columns))})")
