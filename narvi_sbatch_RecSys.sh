@@ -6,8 +6,8 @@
 #SBATCH --mail-type=ALL
 #SBATCH --time=06-23:59:59
 #SBATCH --partition=gpu
-#SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=385G
+#SBATCH --gres=gpu:teslap100:1
+#SBATCH --mem=253G
 # # # # # # SBATCH --array=0-69
 
 stars=$(printf '%*s' 90 '')

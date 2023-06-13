@@ -120,32 +120,50 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
 
-	if not os.path.exists(tfidf_rf_matrix_fpath):
+
+	# if not os.path.exists(tfidf_rf_matrix_fpath):
+	# 	print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
+	# 	st_t = time.time()
+	# 	# Fit TFIDF # not time consuming...
+	# 	tfidf_vec = TfidfVectorizer(#min_df=5,
+	# 														#ngram_range=(1, 2),
+	# 														tokenizer=lemmatizer_methods.get(lm),
+	# 														#stop_words=UNIQUE_STOPWORDS,
+	# 														)
+	# 	tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
+	# 	#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
+	# 	del raw_docs_list
+	# 	gc.collect()
+	# 	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
+	# 	save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
+	# 	save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
+	# 							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
+	# 						)
+	# 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
+	# else:
+	# 	tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
+	# 	tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
+	
+	try:
+		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
+		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
+	except:
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		st_t = time.time()
-
-		# Fit TFIDF # not time consuming...
-		tfidf_vec = TfidfVectorizer(#min_df=5,
-															#ngram_range=(1, 2),
-															tokenizer=lemmatizer_methods.get(lm),
-															#stop_words=UNIQUE_STOPWORDS,
-															)
-
+		# Initialize TFIDF # not time consuming...
+		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
+		# Fit TFIDF # TIME CONSUMING:
 		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
 		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
 		del raw_docs_list
 		gc.collect()
-
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
 								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 							)
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
-	else:
-		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
-	
+
 	feat_names = tfidf_vec.get_feature_names_out()
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	# example:
