@@ -260,12 +260,12 @@ def scrap_newspaper_content_page(URL):
 	print(f"URL: {URL:<150}")
 	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
-	up_url = URL if re.search(r'&page=(\d+)', URL) else f"{URL}&page=1"
+	up_url = URL if re.search(r'page=(\d+)', URL) else f"{URL}&page=1"
 	# if "&page=" in URL:
 	# 	up_url = URL
 	# else:
 	# 	up_url = f"{URL}&page=1"
-	print(f"\t\tUpdated: {up_url}")
+	print(f">> Updated: {up_url}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
 	print(f"parsed_url : {parsed_url}")
 	print(json.dumps(parameters, indent=2, ensure_ascii=False))

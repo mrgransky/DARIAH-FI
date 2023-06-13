@@ -1,5 +1,6 @@
 from utils import *
-from tokenizer_utils import *
+# from tokenizer_utils import *
+from nlp_utils import *
 
 parser = argparse.ArgumentParser(	description='User-Item Recommendation system developed based on National Library of Finland (NLF) dataset', 
 																	prog='RecSys USER-TOKEN', 
@@ -15,11 +16,11 @@ args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-lemmatizer_methods = {"nltk": nltk_lemmatizer,
-											"spacy": spacy_tokenizer,
-											"trankit": trankit_lemmatizer,
-											"stanza": stanza_lemmatizer,
-											}
+# lemmatizer_methods = {"nltk": nltk_lemmatizer,
+# 											"spacy": spacy_tokenizer,
+# 											"trankit": trankit_lemmatizer,
+# 											"stanza": stanza_lemmatizer,
+# 											}
 
 RES_DIR = make_result_dir(infile=args.inputDF)
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
@@ -52,188 +53,6 @@ def get_snippet_raw_text(search_results_list):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in search_results_list if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
-
-def get_cBoWs(dframe: pd.DataFrame):
-	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
-
-	print(f"{f'Extracting texts search query phrases':<50}", end="")
-	st_t = time.time()
-	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-	
-	print(f"{f'Extracting texts collection query phrases':<50}", end="")
-	st_t = time.time()
-	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	print(f"{f'Extracting texts clipping query phrases':<50}", end="")
-	st_t = time.time()
-	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	print(f"{f'Extracting texts newspaper content':<50}", end="")
-	st_t = time.time()
-	dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-	
-	print(f"{f'Extracting texts snippets':<50}", end="")
-	st_t = time.time()
-	dframe['snippet_raw_text'] = dframe["search_results"].map(get_snippet_raw_text, na_action='ignore')
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	# print(dframe.info())
-	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
-	# print(f"<>"*120)
-	# return
-
-	users_list = list()
-	raw_texts_list = list()
-	
-	for n, g in dframe.groupby("user_ip"):
-		users_list.append(n)
-		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ]
-		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		ls = [ sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ]
-		lc = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ]
-		ltot = lq + lcol + lclp + ls + lc
-		raw_texts_list.append( ltot )
-
-	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
-
-	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z-ä-ö-å]', subitem) and re.search(r"\S", subitem) and not re.search(r"\d", subitem) ) ]
-	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
-
-	raw_docs_list = list(set(raw_docs_list))
-	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
-
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz")
-
-	if not os.path.exists(tfidf_rf_matrix_fpath):
-		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
-		st_t = time.time()
-
-		# Fit TFIDF # not time consuming...
-		tfidf_vec = TfidfVectorizer(#min_df=5,
-															#ngram_range=(1, 2),
-															tokenizer=lemmatizer_methods.get(args.lmMethod),
-															#stop_words=UNIQUE_STOPWORDS,
-															)
-
-		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
-		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
-
-		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
-		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
-								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
-							)
-
-		print(f"\t\tElapsed_t: {time.time()-st_t:.2f} s")
-	else:
-		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
-	#return
-
-	feat_names = tfidf_vec.get_feature_names_out()
-	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
-	# example:
-	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
-	#	   		example   is         simple     this	
-	# 0  		0.377964  0.377964   0.377964   0.377964
-
-	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)}")
-	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
-	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
-	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(150, '-')}")
-	return BOWs
-
-def get_BoWs(dframe: pd.DataFrame,):
-	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
-
-	print(f"Extracting texts from query phrases...", end="\t")
-	st_t = time.time()
-	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	print(f"Extracting texts from collection query phrases...", end="\t")
-	st_t = time.time()
-	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	print(f"Extracting texts from clipping query phrases...", end="\t")
-	st_t = time.time()
-	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_qu_phrase_raw_text, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	users_list = list()
-	raw_texts_list = list()
-	
-	for n, g in dframe.groupby("user_ip"):
-		users_list.append(n)
-		lq = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		ltot = lq + lcol + lclp
-		#print(n, ltot)
-		raw_texts_list.append( ltot )
-
-	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
-
-	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if (re.search(r"\S", subitem) and not re.search(r"\d", subitem)) ]
-	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
-
-	print(f"<<!>> unique phrases: {len(list(set(raw_docs_list)))}")
-	raw_docs_list = list(set(raw_docs_list))
-	"""
-	with open("raw_list_words.json", "w") as fw:
-		json.dump(Counter(raw_docs_list), fw, indent=4, ensure_ascii=False)
-	"""
-	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer.gz")
-	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF.gz")
-
-	if not os.path.exists(tfidf_vec_fpath):
-		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases, might take a while...".center(110, " "))
-		st_t = time.time()
-
-		# Fit TFIDF # not time consuming...
-		tfidf_vec = TfidfVectorizer(#min_df=5,
-															#ngram_range=(1, 2),
-															tokenizer=lemmatizer_methods.get(args.lmMethod),
-															#stop_words=UNIQUE_STOPWORDS,
-															)
-
-		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
-		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
-
-		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
-		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
-								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
-							)
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
-	else:
-		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
-	#return
-
-	feat_names = tfidf_vec.get_feature_names_out()
-	#print(f"1st 100 features:\n{feat_names[:60]}\n")
-	
-	# dictionary mapping from words to their indices in vocabulary:
-	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
-
-	# example:
-	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
-	#	   		example   is         simple     this	
-	# 0  		0.377964  0.377964   0.377964   0.377964
-
-	print(f"Features: {feat_names.shape} | {type(feat_names)} | BOWs: {len(BOWs)} | {type(BOWs)}")
-	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
-	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
-	print(f"{f'Bag-of-Words [{userName}]'.center(110, '-')}")
-	return BOWs
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
@@ -636,170 +455,6 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int], dfname: str="
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
 	return df_user_token
 
-
-"""
-def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
-	df_preprocessed_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_df_preprocessed.gz")
-	print(f"\n>> Getting {df_preprocessed_fname} ...")
-	
-	try:
-		df_preprocessed = load_pickle(fpath=df_preprocessed_fname)
-		#print(f"\tLoaded from {df_preprocessed_fname} successfully!")
-	except:
-		print(f"Updating Original DF: {dframe.shape} with Tokenized texts".center(110, "-"))
-		df_preprocessed = dframe.copy()
-
-		print(f">> Analyzing query phrases [tokenization + lemmatization]...")
-		st_t = time.time()
-		df_preprocessed["search_query_phrase_tklm"] = df_preprocessed["search_query_phrase"].map(tokenize_query_phrase , na_action="ignore")
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-
-		print(f">> Analyzing highlighted words in snippets [tokenization + lemmatization]...")
-		st_t = time.time()
-		df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_search_results_hw_snippets, na_action='ignore')
-		df_preprocessed['search_results_hw_snippets_tklm'] = df_preprocessed["search_results_hw_snippets"].map(tokenize_hw_snippets, na_action='ignore')
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-
-		print(f">> Analyzing highlighted words in newspaper content [tokenization + lemmatization]...")
-		st_t = time.time()
-		df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_hw, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_hw_tklm'] = df_preprocessed["nwp_content_ocr_text_hw"].map(tokenize_hw_nwp_content, na_action='ignore')
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-
-		print(f">> Analyzing parsed terms in newspaper content [tokenization + lemmatization]...")
-		st_t = time.time()
-		df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_pt, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = df_preprocessed["nwp_content_ocr_text_pt"].map(tokenize_pt_nwp_content, na_action='ignore')
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		
-		#####################################################
-		# comment for speedup:
-		print(f">> Analyzing newspaper content [tokenization + lemmatization]...")
-		st_t = time.time()
-		df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_nwp_content_raw_text, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_tklm'] = df_preprocessed["nwp_content_ocr_text"].map(lemmatize_nwp_content, na_action='ignore') # inp: "my car is black." => out ["car", "black"]
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		
-		print(f">> Analyzing snippets [tokenization + lemmatization]...")
-		st_t = time.time()
-		df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_search_results_snippet_text, na_action='ignore')
-		df_preprocessed['search_results_snippets_tklm'] = df_preprocessed["search_results_snippets"].map(tokenize_snippets, na_action='ignore')
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		#####################################################
-		
-		save_pickle(pkl=df_preprocessed, fname=df_preprocessed_fname)
-	
-	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
-
-	print(f"USERs-TOKENs DataFrame".center(120, " "))
-	st_t = time.time()
-	users_list = list()
-	search_query_phrase_tokens_list = list()
-	search_results_hw_snippets_tokens_list = list()
-	search_results_snippets_tokens_list = list()
-	search_results_snippets_raw_texts_list = list()
-
-	nwp_content_pt_tokens_list = list()
-	nwp_content_hw_tokens_list = list()
-	nwp_content_lemmas_all_list = list()
-	nwp_content_raw_texts_list = list()
-	nwp_content_lemmas_separated_list = list()
-	
-	for n, g in df_preprocessed.groupby("user_ip"):
-		#print(n)
-		users_list.append(n)
-
-		search_query_phrase_tokens_list.append( [tk for tokens in g[g["search_query_phrase_tklm"].notnull()]["search_query_phrase_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		search_results_hw_snippets_tokens_list.append( [tk for tokens in g[g["search_results_hw_snippets_tklm"].notnull()]["search_results_hw_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		nwp_content_hw_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_hw_tklm"].notnull()]["nwp_content_ocr_text_hw_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		
-		# comment for speedup:
-		search_results_snippets_tokens_list.append( [ tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		search_results_snippets_raw_texts_list.append( [ sent for sentences in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if sentences for sent in sentences if sent ] )
-	
-		#print( len( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() ) )
-		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
-		nwp_content_lemmas_all_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
-		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
-		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
-
-		#print("#"*150)
-
-	# uncomment for speedup:
-	#nwp_content_lemmas_all_list = [f"nwp_content_{i}" for i in range(len(users_list))]
-	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
-
-	print(len(users_list), 
-				len(search_query_phrase_tokens_list),
-				len(search_results_hw_snippets_tokens_list),
-				len(search_results_snippets_tokens_list),
-				len(nwp_content_lemmas_all_list),
-				len(nwp_content_lemmas_separated_list),
-				len(nwp_content_pt_tokens_list),
-				len(nwp_content_hw_tokens_list),
-				len(nwp_content_raw_texts_list),
-				len(search_results_snippets_raw_texts_list),
-				)
-	#return
-
-	df_user_token = pd.DataFrame(list(zip(users_list, 
-																				search_query_phrase_tokens_list, 
-																				search_results_hw_snippets_tokens_list, 
-																				search_results_snippets_tokens_list, 
-																				nwp_content_lemmas_all_list, 
-																				nwp_content_lemmas_separated_list,
-																				nwp_content_pt_tokens_list, 
-																				nwp_content_hw_tokens_list,
-																				nwp_content_raw_texts_list,
-																				search_results_snippets_raw_texts_list,
-																			)
-																	),
-																columns =['user_ip',
-																					'qu_tokens',
-																					'snippets_hw_token', 
-																					'snippets_token',
-																					'nwp_content_lemma_all',
-																					'nwp_content_lemma_separated',
-																					'nwp_content_pt_token',
-																					'nwp_content_hw_token',
-																					'nwp_content_raw_text',
-																					'snippets_raw_text',
-																				]
-															)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {df_user_token.shape}".center(120, " "))
-
-	print(f"Implicit Feedback".center(100, "-"))
-	st_t = time.time()
-	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
-	df_user_token["usrInt_qu_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_sn_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
-	df_user_token["selected_content"] = df_user_token["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
-	
-	print(f"<Elapsed_t: {time.time()-st_t:.2f} s> | {df_user_token.shape}".center(120, " "))
-
-	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
-	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
-	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
-	#print(df_user_token.shape, list(df_user_token.columns))
-	
-	#print(df_user_token.info())	
-	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
-	#print("#"*100)
-	#print(df_user_token[["user_ip", "user_token_interest"]].head())
-	
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{df_user_token.shape[0]}_users_x_{df_user_token.shape[1]}_tokens_df_{len(bow)}_BoWs.gz")
-	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
-
-	print(f"USERs-TOKENs DataFrame".center(120, " "))
-	return df_user_token
-"""
-
-
 def get_sparse_matrix(df):
 	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	#print(list(df.columns))
@@ -829,72 +484,15 @@ def get_sparse_matrix(df):
 
 def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	"""
-	if userName.endswith("xenial"):
-		BoWs = get_BoWs(dframe=df_inp)
-	else:
-		BoWs = get_cBoWs(dframe=df_inp)
-	#return
-	"""
-	#BoWs = get_BoWs(dframe=df_inp)
-	BoWs = get_cBoWs(dframe=df_inp)
-
+	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
+	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
+	
 	df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
-	
-	#print(df_usr_tk.info())
-	#print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
+	del df_inp
+	gc.collect()
 
-	"""
-	with open("ip545.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip545"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 800):
-		print( df_usr_tk[["user_ip", "user_token_interest",]].tail(10) )
-
-	#print(df_usr_tk.info())
-
-	print("#"*150)
-
-	print(json.dumps(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], indent=2, ensure_ascii=False))
-	print("#"*150)
-
-	with open("ip6840.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip6840"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with open("ip3665.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip3665"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-
-	with open("ip6020.json", "w") as fw:
-		json.dump(df_usr_tk[df_usr_tk["user_ip"]=="ip6020"]["user_token_interest"].tolist(), fw, indent=4, ensure_ascii=False)
-	
-	with open("ip6840_qu.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_qu_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_sn.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_sn_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_sn_hw.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_sn_hw_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_cnt_hw.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_hw_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip6840_cnt_pt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip6840"].tolist()[0]), "usrInt_cnt_pt_tk"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip1715_sel_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1715"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip1038_sel_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1038"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
-
-	with open("ip1516_sel_cnt.json", "w") as fw:
-		json.dump(df_usr_tk.loc[int(df_usr_tk.index[df_usr_tk['user_ip'] == "ip1516"].tolist()[0]), "selected_content"], fw, indent=4, ensure_ascii=False)
-	#return
-	"""
+	# print(df_usr_tk.info())
+	# print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))

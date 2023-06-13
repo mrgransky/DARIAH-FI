@@ -378,11 +378,7 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	#BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	
-	try:
-		df_usr_tk = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(BoWs)}_BoWs.gz"))
-	except:
-		df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
-
+	df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	del df_inp
 	gc.collect()
 
