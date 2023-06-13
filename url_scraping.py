@@ -370,8 +370,6 @@ def scrap_newspaper_content_page(URL):
 	rs_api_url = checking_(url=api_url, prms=parameters)
 	try:
 		hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
-		# if rs:
-		# 	hgltd_wrds = [d.get("text") for d in rs.json()]
 	except (json.JSONDecodeError,
 					json.decoder.JSONDecodeError,
 					Exception,
@@ -421,16 +419,7 @@ def scrap_newspaper_content_page(URL):
 					Exception, 
 				) as e:
 		print(f"<!> {type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
-		return
-		"""
-		title = None
-		doc_type = None
-		issue = None
-		publisher = None
-		pub_date = None
-		pub_place = None
-		lang = None
-		"""
+		# return
 
 	#return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 	print(f"\tElapsed_t: {time.time()-st_t:.3f} sec")
