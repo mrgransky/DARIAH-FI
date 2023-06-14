@@ -257,20 +257,20 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	print(f"URL: {URL:<150}")
+	print(f"URL: {URL:<150}", end="")
 	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
 	up_url = URL if re.search(r'page=(\d+)', URL) else f"{URL}&page=1"
-	print(f">> Updated: {up_url}")
+	# print(f">> Updated: {up_url}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	if checking_(up_url) is None or not parameters:
+	if (checking_(up_url) is None or not parameters):
 		return
-	print(f"parsed_url : {parsed_url}")
+	# print(f"parsed_url : {parsed_url}")
 	print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 	# ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
 	# print(f"<> ocr_api_url: {ocr_api_url}")
-	print(f"<> page-X.txt: {txt_pg_url}")
+	# print(f"<> page-X.txt: {txt_pg_url}")
 	rsp_txt = checking_(txt_pg_url)
 	try:
 		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
