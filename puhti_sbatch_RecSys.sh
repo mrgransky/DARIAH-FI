@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeX_stanzaTK_cBoW_su
+#SBATCH -J nikeY_stanzaTK_cBoW_su
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -40,7 +40,7 @@ elif [ $user == 'alijanif' ]; then
 	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
 fi
 
-python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza' --qphrase 'Stockholms universitet'
+python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 # python -u tkRecSys.py --dsPath $dfs_dir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
 done_txt="SLURM JOB ENDED AT: `date`"
