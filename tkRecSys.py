@@ -237,8 +237,8 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
-
 	print(f"USERs-TOKENs DataFrame".center(120, " "))
+	
 	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
@@ -377,7 +377,6 @@ def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	#BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
-	
 	df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
 	del df_inp
 	gc.collect()
