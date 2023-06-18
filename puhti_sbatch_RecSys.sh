@@ -8,7 +8,7 @@
 #SBATCH --time=02-23:59:59
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=64G
+#SBATCH --mem=43G
 # # # # SBATCH --partition=hugemem_longrun
 # # # # SBATCH --nodes=1
 # # # # SBATCH --ntasks=1
