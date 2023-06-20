@@ -1143,7 +1143,7 @@ def main():
 
 	print(len(usr_tk_dfs))
 
-	print(usr_tk_dfs[0].info(deep=True))
+	print(usr_tk_dfs[0].info(verbose=True, memory_usage="deep"))
 	# try:
 	# 	df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
 	# 	# print(df_concat_fname)
