@@ -373,7 +373,7 @@ def get_sparse_matrix(df):
 
 	return sparse_matrix
 
-def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
+def run(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	#BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
@@ -1139,25 +1139,30 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	try:
-		df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
-		# print(df_concat_fname)
-		df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
-		# print(df_concat_fpath)
-		#df_raw = load_pickle(fpath=df_concat_fpath)
-		df_raw = load_df_pkl(fpath=df_concat_fpath)
-		#print(df_raw.shape)
-		ndfs = int(df_concat_fname[:df_concat_fname.find("_")])
-		#print(ndfs)
-	except:
-		df_raw, ndfs = get_concat_df(dir_path=args.dsPath)
+	#usr_tk_dfs = [df[["user_ip", "user_token_interest"]] for f in glob.glob(os.path.join(dir_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(f)).shape[0]>0 ) ]
+	usr_tk_dfs = [df[["user_ip", "user_token_interest"]] for f in glob.glob(os.path.join(dir_path, r'*_user_tokens_df_(\d+)_BoWs.gz')) if (df:=load_df_pkl(f)).shape[0]>0 ]
 
-	global fprefix, RES_DIR
-	fprefix = f"{ndfs}_dfs_concat_{df_raw.shape[0]}_samples"
-	RES_DIR = make_result_dir(infile=fprefix)
-	# analyze_df(df=df_raw, fname=__file__)
-	# print(fprefix, RES_DIR)
-	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	print(len(usr_tk_dfs))
+
+	# try:
+	# 	df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
+	# 	# print(df_concat_fname)
+	# 	df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
+	# 	# print(df_concat_fpath)
+	# 	#df_raw = load_pickle(fpath=df_concat_fpath)
+	# 	df_raw = load_df_pkl(fpath=df_concat_fpath)
+	# 	#print(df_raw.shape)
+	# 	ndfs = int(df_concat_fname[:df_concat_fname.find("_")])
+	# 	#print(ndfs)
+	# except:
+	# 	df_raw, ndfs = get_concat_df(dir_path=args.dsPath)
+
+	# global fprefix, RES_DIR
+	# fprefix = f"{ndfs}_dfs_concat_{df_raw.shape[0]}_samples"
+	# RES_DIR = make_result_dir(infile=fprefix)
+	# # analyze_df(df=df_raw, fname=__file__)
+	# # print(fprefix, RES_DIR)
+	# run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5

@@ -296,7 +296,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
-	print(f"USERs-TOKENs DataFrame".center(120, " "))
+	print(f"USERs-TOKENs DataFrame".center(120, "-"))
 	
 	st_t = time.time()
 	users_list = list()
@@ -401,16 +401,17 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
 
-	print(f"USERs-TOKENs DataFrame".center(120, " "))
+	print(f"USERs-TOKENs DataFrame".center(120, "-"))
 	return df_user_token
 
-def get_sparse_matrix(df):
+def get_sparse_matrix(df: pd.DataFrame):
 	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	#print(list(df.columns))
 	#print(df.dtypes)
 
-	print( df['user_token_interest'].apply(pd.Series).head(15) )
-	print(">"*100)
+	# print( df['user_token_interest'].apply(pd.Series).head(15) )
+	# print(">"*100)
+
 	df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
 	#print(df_new.head(15))
@@ -431,11 +432,12 @@ def get_sparse_matrix(df):
 
 	return sparse_matrix
 
-def run_RecSys(df_inp, qu_phrase, topK=5, normalize_sp_mtrx=False, ):
+def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
+
 	del df_inp
 	gc.collect()
 
@@ -1202,7 +1204,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def main():
 	df_raw = load_pickle(fpath=args.inputDF)
 	#analyze_df(df=df_raw, fname=__file__)
-	run_RecSys(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5
