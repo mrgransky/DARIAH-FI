@@ -1140,7 +1140,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def main():
 	#usr_tk_dfs = [df[["user_ip", "user_token_interest"]] for f in glob.glob(os.path.join(dir_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(f)).shape[0]>0 ) ]
-	print(glob.glob(os.path.join(dir_path, r'*_user_tokens_df_(\d+)_BoWs.gz')))
+	print(glob.glob(os.path.join(dfs_path, r'*_user_tokens_df_(\d+)_BoWs.gz')))
 	print()
 	usr_tk_dfs = [df[["user_ip", "user_token_interest"]] for f in glob.glob(os.path.join(dfs_path, r'*_user_tokens_df_(\d+)_BoWs.gz')) if (df:=load_df_pkl(f)).shape[0]>0 ]
 
