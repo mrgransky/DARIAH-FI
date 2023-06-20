@@ -37,7 +37,7 @@ elif [ $user == 'alijanif' ]; then
 fi
 
 echo "<> Loading Q: $SLURM_ARRAY_TASK_ID :"
-echo ${files[$SLURM_ARRAY_TASK_ID]}
+# echo ${files[$SLURM_ARRAY_TASK_ID]}
 
 python -u RecSys_usr_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 #python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
