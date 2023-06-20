@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J dfQ
+#SBATCH -J sc_dfQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=6G

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J Q_
+#SBATCH -J nike_Q
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
@@ -33,7 +33,8 @@ cluster="$SLURM_CLUSTER_NAME"
 echo "Cluster: $cluster Current User: $user"
 
 if [ $user == 'alijani' ]; then
-	source activate py3_gpu
+	echo ">> Using Narvi conda env from Anaconda..."
+	source activate py39
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
