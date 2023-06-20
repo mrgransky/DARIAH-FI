@@ -656,11 +656,15 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
-def load_df_pkl(fpath:str="unknown"):
+def load_df_pkl(fpath:str="unknown", cols=None):
 	print(f"Loading df_pkl: {fpath}")
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
-	df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
+	if cols:
+		df = df[ cols ]
+	else:
+		df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
+	
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {df.shape} | {fsize:.2f} MB".center(110, " "))
@@ -722,7 +726,7 @@ def get_concat_df(dir_path: str):
 	# 	dfs = [load_pickle(f) for f in glob.glob(os.path.join(dir_path, "*.dump")) if load_pickle(f).shape[0]>0 ]
 
 	# dfpkl_t = time.time()
-	# dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(f)).shape[0]>0 ]
+	# dfs_pkl = [df for f in glob.glob(os.path.join(dir_path, "*.dump")) if (df:=load_df_pkl(fpath=f)).shape[0]>0 ]
 	# print(f"Elapsed_t: {time.time()-dfpkl_t:.3f} s".center(110, " "))
 	# del dfs_pkl
 	# gc.collect()
