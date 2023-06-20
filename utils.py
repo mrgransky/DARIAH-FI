@@ -131,7 +131,6 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
-#dfs_path = os.path.join( NLF_DATASET_PATH, f"temp_dataframes")
 
 class HiddenPrints:
 	def __enter__(self):
