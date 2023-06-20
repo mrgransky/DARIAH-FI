@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#SBATCH -J df_concat_stanzaTK_cBoW_su
-#SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
+#SBATCH -J Q_
+#SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=06-23:59:59
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:rtx100:1
 #SBATCH --mem=471G
-# # # # # # SBATCH --array=0-69
+#SBATCH --array=0-259
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
@@ -27,14 +27,18 @@ cluster="$SLURM_CLUSTER_NAME"
 echo "Cluster: $cluster Current User: $user"
 
 if [ $user == 'alijani' ]; then
-	source activate py39
-	echo ">> Using Narvi conda env from Anaconda..."
-	dfs_dir="/lustre/sgn-data/Nationalbiblioteket/datasets"
+	source activate py3_gpu
+	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
 	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
+	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
+echo "<> Loading Q: $SLURM_ARRAY_TASK_ID :"
+echo ${files[$SLURM_ARRAY_TASK_ID]}
+
+python -u RecSys_usr_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 #python -u RecSys_usr_token.py --inputDF $dfs_dir/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 python -u tkRecSys.py --dsPath $dfs_dir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
