@@ -1175,7 +1175,7 @@ def main():
 	# 	# print(f"\t\tElapsed_t: {time.time()-st_t_f:.2f} s")
 	# 	# print("#"*100)
 	# user_token_df = pd.DataFrame.from_dict(d, orient="index").astype("float16")
-	user_token_df = usr_tk_dfs.groupby("user_ip").sum()
+	user_token_df = usr_tk_dfs.groupby("user_ip").sum().astype("float16")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 
 	# print("#"*100)

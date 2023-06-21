@@ -119,10 +119,10 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 		if updated_vocab.get(c_tk) is not None:
 			prev = updated_vocab.get(c_tk)
 			curr = prev + w_cnt
-			print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			# print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_tk] = curr
 
-	print("#"*150)
+	# print("#"*150)
 	return updated_vocab
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
