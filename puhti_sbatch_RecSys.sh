@@ -5,11 +5,11 @@
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --time=02-23:59:59
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:v100:1
-#SBATCH --mem=64G
-# # # # SBATCH --partition=hugemem_longrun
+#SBATCH --time=12-23:59:59
+# # # # SBATCH --partition=gpu
+# # # # SBATCH --gres=gpu:v100:1
+#SBATCH --mem=564G
+#SBATCH --partition=hugemem_longrun
 # # # # SBATCH --nodes=1
 # # # # SBATCH --ntasks=1
 # # # # SBATCH --cpus-per-task=1
