@@ -1168,7 +1168,7 @@ def main():
 		# print(g)
 		# print()
 		print(g.loc[:, g.columns!="user_ip"].sum().values, end="\t")
-		print(f"|non_zeros|: { ( g.loc[:, g.columns!='user_ip'].sum() > 0.0).sum() } / {len(g.loc[:, g.columns!="user_ip"].sum().values)}", end=" ")
+		print(f"|non_zeros|: { ( g.loc[:, g.columns!='user_ip'].sum() > 0.0).sum() } / {len(g.loc[:, g.columns!='user_ip'].sum().values)}", end=" ")
 		# d[n] = g.loc[:, g.columns.difference(['user_ip'])].sum()
 		d[n] = g.loc[:, g.columns!="user_ip"].sum()
 		print(f"\t\tElapsed_t: {time.time()-st_t_f:.2f} s")
