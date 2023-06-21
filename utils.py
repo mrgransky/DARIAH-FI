@@ -656,12 +656,12 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
-def load_df_pkl(fpath:str="unknown", cols=None):
+def load_df_pkl(fpath:str="unknown", ccols=None): # ccols: custom_columns
 	print(f"Loading df_pkl: {fpath}")
 	st_t = time.time()
 	df = pd.read_pickle(fpath)
-	if cols:
-		df = df[ cols ]
+	if ccols:
+		df = df[ ccols ]
 	else:
 		df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	
