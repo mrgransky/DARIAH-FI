@@ -1154,7 +1154,7 @@ def main():
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		usr_tk_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
-	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+	print(f"\tElapsed_t: {time.time()-st_t:.2f} s | DF: {usr_tk_dfs.shape}")
 
 	print(f">> groupby...")
 	d = dict()
