@@ -36,7 +36,7 @@ elif [ $user == 'alijanif' ]; then
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
-echo "<> Loading Q: $SLURM_ARRAY_TASK_ID :"
+echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
 # echo ${files[$SLURM_ARRAY_TASK_ID]}
 
 python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'

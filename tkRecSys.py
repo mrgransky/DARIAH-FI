@@ -1139,17 +1139,43 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	usr_tk_dfs = [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ]
-
+	# usr_tk_dfs = [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ]
 	# print(len(usr_tk_dfs))
+
 	# print(usr_tk_dfs[0].info(verbose=True, memory_usage="deep"))
-	print(usr_tk_dfs[0].memory_usage(deep=True, index=False, ))
+	# print(f"Memory usage of each column in bytes (total column(s)={len(list(usr_tk_dfs.columns))})")
+	# print(usr_tk_dfs[0].memory_usage(deep=True, index=False, ))
+	# print("#"*100)
+	# print(usr_tk_dfs[0].head(10))
+	# print("#"*100)
+	# print(usr_tk_dfs[0].tail(10))
+	# print("#"*100)
+	print(f">> concat...")
+	st_t = time.time()
+	usr_tk_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
+	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+
+	print(f">> groupby...")
+	d = dict()
+	for n, g in usr_tk_dfs.groupby("user_ip"):
+		# print(n)
+		# print(g)
+		# print()
+		# print(g["tkA"].sum())
+		# print(g.loc[:, g.columns!="user_ip"].sum().values)
+		d[n] = g.loc[:, g.columns.difference(['user_ip'])].sum()
+		# print("#"*100)
+	user_token_df = pd.DataFrame.from_dict(d, orient="index")
+	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+
 	print("#"*100)
-	print(usr_tk_dfs[0].head(10))
+	print(user_token_df.info(verbose=True, memory_usage="deep"))
+	print(f"Memory usage of each column in bytes (total column(s)={len(list(user_token_df.columns))})")
+	print(user_token_df.memory_usage(deep=True, index=False, ))
 	print("#"*100)
-	print(usr_tk_dfs[0].tail(10))
+	print(user_token_df.head(10))
 	print("#"*100)
-	
+
 	# try:
 	# 	df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
 	# 	# print(df_concat_fname)
