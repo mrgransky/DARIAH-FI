@@ -8,13 +8,13 @@
 #SBATCH --time=02-23:59:59
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
-#SBATCH --mem=43G
+#SBATCH --mem=64G
 # # # # SBATCH --partition=hugemem_longrun
 # # # # SBATCH --nodes=1
 # # # # SBATCH --ntasks=1
 # # # # SBATCH --cpus-per-task=1
-#SBATCH --array=0-1
-# # # # # # SBATCH -o NLF_logs/q%a_%x_%N_%j.out
+
+# # # # SBATCH --array=0-1
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
@@ -42,10 +42,10 @@ elif [ $user == 'alijanif' ]; then
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
-# echo ${files[$SLURM_ARRAY_TASK_ID]}
 
-python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
+# python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 # python -u tkRecSys.py --dsPath $dfs_dir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
+python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
