@@ -1156,9 +1156,8 @@ def main():
 		usr_tk_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
 				f"DF: {usr_tk_dfs.shape} | " 
-				f"unq_users: {usr_tk_dfs.user_ip.value_counts()} |" 
-				f"all_tokens: {len(list(usr_tk_dfs.columns.difference(['user_ip'])))}"
-				f"unq_tokens: {len(list( set( list( usr_tk_dfs.columns.difference(['user_ip']) ) ) ) )}"
+				f"unq_users: {len( usr_tk_dfs.user_ip.value_counts() )} |" 
+				f"unq_tokens: {len( list( usr_tk_dfs.columns.difference(['user_ip'])))}"
 			)
 
 	print(f">> groupby...")
