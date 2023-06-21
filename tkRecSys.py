@@ -1158,13 +1158,12 @@ def main():
 	print(f">> groupby...")
 	d = dict()
 	for n, g in usr_tk_dfs.groupby("user_ip"):
-		# print(n)
+		print(n)
 		# print(g)
-		# print()
-		# print(g["tkA"].sum())
-		# print(g.loc[:, g.columns!="user_ip"].sum().values)
+		print()
+		print(g.loc[:, g.columns!="user_ip"].sum().values)
 		d[n] = g.loc[:, g.columns.difference(['user_ip'])].sum()
-		# print("#"*100)
+		print("#"*100)
 	user_token_df = pd.DataFrame.from_dict(d, orient="index")
 	print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 
