@@ -1161,6 +1161,7 @@ def main():
 			)
 
 	print(f">> groupby...")
+	st_t = time.time()
 	# d = dict()
 	# for n, g in usr_tk_dfs.groupby("user_ip"):
 	# 	# st_t_f = time.time()
@@ -1175,7 +1176,7 @@ def main():
 	# 	# print("#"*100)
 	# user_token_df = pd.DataFrame.from_dict(d, orient="index").astype("float16")
 	user_token_df = usr_tk_dfs.groupby("user_ip").sum()
-	print(f"\ttot_Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 
 	# print("#"*100)
 	# print(user_token_df.info(verbose=True, memory_usage="deep"))
