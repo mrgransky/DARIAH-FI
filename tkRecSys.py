@@ -1177,11 +1177,11 @@ def main():
 	user_token_df = usr_tk_dfs.groupby("user_ip").sum()
 	print(f"\ttot_Elapsed_t: {time.time()-st_t:.2f} s")
 
-	print("#"*100)
-	print(user_token_df.info(verbose=True, memory_usage="deep"))
-	print(f"Memory usage of each column in bytes (total column(s)={len(list(user_token_df.columns))})")
-	print(user_token_df.memory_usage(deep=True, index=False, ))
-	print("#"*100)
+	# print("#"*100)
+	# print(user_token_df.info(verbose=True, memory_usage="deep"))
+	# print(f"Memory usage of each column in bytes (total column(s)={len(list(user_token_df.columns))})")
+	# print(user_token_df.memory_usage(deep=True, index=False, ))
+	# print("#"*100)
 	print(user_token_df.head(10))
 	print("#"*100)
 
