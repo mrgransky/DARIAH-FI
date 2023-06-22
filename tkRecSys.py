@@ -806,10 +806,9 @@ def main():
 	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 
 	try:
-		# load
-		user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(BoWs)}_BoWs.gz"))
+		# user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(BoWs)}_BoWs.gz"))
+		user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"fr"nUSRs_(\d+)_nTKs_(\d+).gz"))
 	except:
-		# 
 		user_token_df = get_users_tokens_df()
 
 	print(user_token_df.head(10))
