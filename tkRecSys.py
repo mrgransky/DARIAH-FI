@@ -777,6 +777,7 @@ def main():
 	fprefix = f"dfs_concat"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
+	normalize_sp_mtrx = False
 
 	try:
 		# user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(BoWs)}_BoWs.gz"))
@@ -794,7 +795,7 @@ def main():
 	except:
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
-	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=False, ifb_log10=False)
+	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
@@ -926,7 +927,6 @@ def main():
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 
-
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
@@ -941,12 +941,11 @@ def main():
 	"""
 	# get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, user_token_df, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
 
-	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
-	for ix, tkv in enumerate(topK_recommended_tokens):
-		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=tkv)
-		
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	# print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
+	# for ix, tkv in enumerate(topK_recommended_tokens):
+	# 	users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=tkv)
+	# 	plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
+	# 	plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
 	print()
