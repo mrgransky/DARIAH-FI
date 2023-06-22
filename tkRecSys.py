@@ -350,15 +350,16 @@ def get_sparse_matrix(df):
 	#print(list(df.columns))
 	#print(df.dtypes)
 
-	print( df['user_token_interest'].apply(pd.Series).head(15) )
-	print(">"*100)
-	df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
+	# print( df['user_token_interest'].apply(pd.Series).head(15) )
+	# print(">"*100)
+	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
-	#print(df_new.head(15))
-	#print("<"*100)
+	# #print(df_new.head(15))
+	# #print("<"*100)
 
-	##########################Sparse Matrix info##########################
-	sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
+	# ##########################Sparse Matrix info##########################
+	# sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
+	sparse_matrix = csr_matrix(df.values, dtype=np.float32) # (n_usr x n_vb)
 	#print("#"*110)
 	#print(f"{type(sparse_matrix)} {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
 	#print(f"<> Non-zeros vals: {sparse_matrix.data}")# Viewing stored data (not the zero items)
@@ -1147,29 +1148,16 @@ def main():
 	print(f">> concat...")
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		usr_tk_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
+		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
-				f"DF: {usr_tk_dfs.shape} | "
-				f"unq_users: {len( usr_tk_dfs.user_ip.value_counts() )} | "
-				f"unq_tokens: {len( list( usr_tk_dfs.columns.difference(['user_ip'])))}"
+				f"DF: {usr_tk_raw_dfs.shape} | "
+				f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
+				f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}"
 			)
 
 	print(f">> groupby...")
 	st_t = time.time()
-	# d = dict()
-	# for n, g in usr_tk_dfs.groupby("user_ip"):
-	# 	# st_t_f = time.time()
-	# 	# print(n, end="\t")
-	# 	# print(g)
-	# 	# print()
-	# 	# print(g.loc[:, g.columns!="user_ip"].sum().values, end="\t")
-	# 	# print(f"|non_zeros|: { ( g.loc[:, g.columns!='user_ip'].sum() > 0.0).sum() } / {len(g.loc[:, g.columns!='user_ip'].sum().values)}", end=" ")
-	# 	# d[n] = g.loc[:, g.columns.difference(['user_ip'])].sum()
-	# 	d[n] = g.loc[:, g.columns!="user_ip"].sum()
-	# 	# print(f"\t\tElapsed_t: {time.time()-st_t_f:.2f} s")
-	# 	# print("#"*100)
-	# user_token_df = pd.DataFrame.from_dict(d, orient="index").astype("float16")
-	user_token_df = usr_tk_dfs.groupby("user_ip").sum().astype("float16")
+	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float16")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 
 	# print("#"*100)
@@ -1190,8 +1178,7 @@ def main():
 	print(f"{type(sp_mat_rf)} (Users-Tokens): {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
 	#return
 
-
-	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=False, ifb_log10=False)
 
 
 	#print("#"*150)
