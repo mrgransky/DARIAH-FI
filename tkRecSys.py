@@ -807,7 +807,7 @@ def main():
 
 	try:
 		# user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(BoWs)}_BoWs.gz"))
-		user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"fr"nUSRs_(\d+)_nTKs_(\d+).gz"))
+		user_token_df = load_pickle(fpath=os.path.join(dfs_path, f'{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_'fr'(nUSRs_(\d+)_nTKs_(\d+).gz)'))
 	except:
 		user_token_df = get_users_tokens_df()
 
@@ -828,7 +828,8 @@ def main():
 
 	#print("#"*150)
 	print(f"".center(100,' '))
-	query_phrase_tk = tokenize_query_phrase(qu_list=[qu_phrase])
+	qu_phrase = args.qphrase
+	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
