@@ -773,8 +773,12 @@ def get_users_tokens_df():
 	st_t = time.time()
 	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float16")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(user_token_df.columns)}_BoWs.gz")
-	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
+	# df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(user_token_df.columns)}_BoWs.gz")
+	user_token_df_fname = os.path.join(dfs_path,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
+																							f"nUSRs_{len( usr_tk_raw_dfs.user_ip.value_counts() )}"
+																							f"_nTKs_{len(user_token_df.columns)}_BoWs.gz"
+																		)
+	save_pickle(pkl=user_token_df, fname=user_token_df_fname)
 	save_vocab(	vb={c: i for i, c in enumerate(user_token_df.columns)}, 
 							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(BoWs)}_vocabs.json"),
 						)
