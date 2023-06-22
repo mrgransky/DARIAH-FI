@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 
 parser.add_argument('--dsPath', default=dataset_path, type=str) # smallest
 parser.add_argument('--qphrase', default="juha sipilä", type=str)
-parser.add_argument('--lmMethod', default="nltk", type=str)
+parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
@@ -170,6 +170,9 @@ def get_sparse_matrix(df):
 
 	# ##########################Sparse Matrix info##########################
 	# sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
+	print(f">> df index: {df.index.inferred_type}")
+	if df.index.inferred_type != 'string':
+		df = df.set_index('user_ip')
 	sparse_matrix = csr_matrix(df.values, dtype=np.float32) # (n_usr x n_vb)
 	#print("#"*110)
 	#print(f"{type(sparse_matrix)} {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
@@ -782,6 +785,7 @@ def get_users_tokens_df():
 	save_vocab(	vb={c: i for i, c in enumerate(user_token_df.columns)}, 
 							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
 						)
+	user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
 	return user_token_df
 
 def main():
@@ -789,21 +793,6 @@ def main():
 	fprefix = f"dfs_concat"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
-
-	# print(f">> concat...")
-	# st_t = time.time()
-	# with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-	# 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
-	# 			f"DF: {usr_tk_raw_dfs.shape} | "
-	# 			f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
-	# 			f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}"
-	# 		)
-
-	# print(f">> groupby...")
-	# st_t = time.time()
-	# user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float16")
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 
 	try:
 		# user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(BoWs)}_BoWs.gz"))
@@ -822,12 +811,9 @@ def main():
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
 	print(f"{type(sp_mat_rf)} (Users-Tokens): {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
-	#return
 
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=False, ifb_log10=False)
 
-	#print("#"*150)
-	print(f"".center(100,' '))
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
@@ -837,8 +823,10 @@ def main():
 		if BoWs.get(qutk):
 			query_vector[BoWs.get(qutk)] += 1.0
 
-	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)}\t"
-				f"( |NonZeros|: {np.count_nonzero(query_vector)} @ idx(s): {np.nonzero(query_vector)[0]} )")
+	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
+				f"( |NonZeros|: {np.count_nonzero(query_vector)}"
+				f"@ idx(s): {np.nonzero(query_vector)[0]} )"
+			)
 
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
