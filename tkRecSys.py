@@ -803,7 +803,7 @@ def main():
 	print(user_token_df.head(10))
 	print("#"*100)
 
-	BoWs = {c: i for i, c in enumerate(user_token_df.columns)}
+	BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
 	
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
@@ -835,12 +835,12 @@ def main():
 	print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
 	for iTK, vTK in enumerate(query_phrase_tk):
 		if BoWs.get(vTK):
-			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
+			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)} "
@@ -851,7 +851,7 @@ def main():
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	#return
 	nUsers, nItems = sp_mat_rf.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
@@ -869,12 +869,12 @@ def main():
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 	st_t = time.time()
-	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
+	for iUser, vUser in enumerate(user_token_df['user_ip'].values.tolist()):
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
 		if cos_sim[0, idx_cosine] != 0.0:
 			
-			print(f"iUser[{iUser}]: {df_usr_tk.loc[iUser, 'user_ip']}".center(140, " "))
+			print(f"iUser[{iUser}]: {user_token_df.loc[iUser, 'user_ip']}".center(140, " "))
 			print(f"avgrec (previous): {prev_avgrec.shape} "
 						f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
 						f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
@@ -954,17 +954,17 @@ def main():
 	#return
 	"""
 	st_t = time.time()
-	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_usr_tk)
+	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, user_token_df)
 	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	"""
-	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, user_token_df, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
-		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
+		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=tkv)
 		
 		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
 	print()
@@ -980,7 +980,7 @@ def main():
 	print()
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
-	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
+	plot_tokens_distribution(sp_mat_rf, user_token_df, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
 
 
