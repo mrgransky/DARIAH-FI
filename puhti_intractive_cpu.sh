@@ -6,7 +6,7 @@
 # $ source puhti_intractive_cpu.sh
 
 # Image_Retrieval_TUNI
-srun -J cpu_hm --account=project_2004072 --partition=small --time=02-23:59:00 --mem=64G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
+srun -J cpu_hm --account=project_2004072 --partition=small --time=02-23:59:00 --mem=128G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
 #Esrun -J intrtv_cpu --account=project_2004072 --partition=small --time=2-23:59:00 --mem=64G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
 
 # APP_CSC

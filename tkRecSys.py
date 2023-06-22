@@ -1154,7 +1154,6 @@ def main():
 				f"unq_tokens: {len( list( usr_tk_dfs.columns.difference(['user_ip'])))}"
 			)
 
-
 	print(f">> groupby...")
 	st_t = time.time()
 	# d = dict()
@@ -1180,6 +1179,8 @@ def main():
 	# print("#"*100)
 	print(user_token_df.head(10))
 	print("#"*100)
+
+	BoWs = {c: i for i, c in enumerate(user_token_df.columns)}
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
