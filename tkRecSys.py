@@ -1139,17 +1139,11 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	# usr_tk_dfs = [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ]
-	# print(len(usr_tk_dfs))
+	global fprefix, RES_DIR
+	fprefix = f"dfs_concat"
+	RES_DIR = make_result_dir(infile=fprefix)
+	print(fprefix, RES_DIR)
 
-	# print(usr_tk_dfs[0].info(verbose=True, memory_usage="deep"))
-	# print(f"Memory usage of each column in bytes (total column(s)={len(list(usr_tk_dfs.columns))})")
-	# print(usr_tk_dfs[0].memory_usage(deep=True, index=False, ))
-	# print("#"*100)
-	# print(usr_tk_dfs[0].head(10))
-	# print("#"*100)
-	# print(usr_tk_dfs[0].tail(10))
-	# print("#"*100)
 	print(f">> concat...")
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
@@ -1159,6 +1153,7 @@ def main():
 				f"unq_users: {len( usr_tk_dfs.user_ip.value_counts() )} | "
 				f"unq_tokens: {len( list( usr_tk_dfs.columns.difference(['user_ip'])))}"
 			)
+
 
 	print(f">> groupby...")
 	st_t = time.time()
@@ -1185,8 +1180,6 @@ def main():
 	# print("#"*100)
 	print(user_token_df.head(10))
 	print("#"*100)
-
-
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
