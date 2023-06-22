@@ -157,35 +157,18 @@ def get_selected_content(cos_sim, cos_sim_idx, recommended_tokens, df_users_toke
 		print("+"*180)
 
 def get_sparse_matrix(df):
-	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
-	#print(list(df.columns))
-	#print(df.dtypes)
-
-	# print( df['user_token_interest'].apply(pd.Series).head(15) )
-	# print(">"*100)
-	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
-
-	# #print(df_new.head(15))
-	# #print("<"*100)
-
-	# ##########################Sparse Matrix info##########################
-	# sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
-	print(f">> df index: {df.index.inferred_type}")
+	print(f"Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	if df.index.inferred_type != 'string':
 		df = df.set_index('user_ip')
 	sparse_matrix = csr_matrix(df.values, dtype=np.float32) # (n_usr x n_vb)
-	#print("#"*110)
-	#print(f"{type(sparse_matrix)} {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
-	#print(f"<> Non-zeros vals: {sparse_matrix.data}")# Viewing stored data (not the zero items)
-	#print(sparse_matrix.toarray()[:25, :18])
-	#print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
-	#print("#"*110)
-	##########################Sparse Matrix info##########################
-	
+	print(f"{type(sparse_matrix)} (Users-Tokens): {sparse_matrix.shape} | "
+				f"{sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype} "
+				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} "
+				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
+			)
+	print("-"*110)
 	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
-
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
-
 	return sparse_matrix
 
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
@@ -766,7 +749,8 @@ def get_users_tokens_df():
 	print(f">> concat...")
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
+		# usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
+		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=None)).shape[0]>0 ) ] )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
 				f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
@@ -810,13 +794,11 @@ def main():
 	except:
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
-	print(f"{type(sp_mat_rf)} (Users-Tokens): {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
-
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=False, ifb_log10=False)
 
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
+	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
 		#print(qutk, BoWs.get(qutk))
@@ -824,7 +806,7 @@ def main():
 			query_vector[BoWs.get(qutk)] += 1.0
 
 	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
-				f"( |NonZeros|: {np.count_nonzero(query_vector)}"
+				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.nonzero(query_vector)[0]} )"
 			)
 
