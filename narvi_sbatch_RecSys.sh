@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J nike_Q
+#SBATCH -J nikeQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
