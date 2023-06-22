@@ -209,13 +209,7 @@ def tokenize_hw_nwp_content(results_list):
 def tokenize_pt_nwp_content(results_list):
 	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
-def tokenize_query_phrase(qu_list):
-	# qu_list = ['some word in this format with always length 1']
-	#print(len(qu_list), qu_list)
-	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
-	return lemmatizer_methods.get(args.lmMethod)(qu_list[0])
-
-def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
+def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
 	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
 	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.gz")
@@ -296,8 +290,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
-	print(f"USERs-TOKENs DataFrame".center(120, "-"))
-	
+	print(f"USERs DataFrame".center(120, "-"))
 	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
@@ -349,7 +342,7 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 				)
 	#return
 
-	df_user_token = pd.DataFrame(list(zip(users_list, 
+	user_df = pd.DataFrame(list(zip(users_list, 
 																				search_query_phrase_tokens_list, 
 																				search_results_hw_snippets_tokens_list, 
 																				search_results_snippets_tokens_list, 
@@ -373,36 +366,35 @@ def get_users_tokens_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																					'snippets_raw_text',
 																				]
 															)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {df_user_token.shape}".center(120, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(120, " "))
 
 	print(f"Implicit Feedback".center(100, "-"))
 	st_t = time.time()
-	df_user_token["user_token_interest"] = df_user_token.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
-	df_user_token["usrInt_qu_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_sn_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_sn_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_hw_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_pt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
-	df_user_token["usrInt_cnt_tk"] = df_user_token.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
-	df_user_token["selected_content"] = df_user_token["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
+	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
+	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
+	user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
+	user_df["usrInt_sn_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
+	user_df["usrInt_cnt_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
+	user_df["usrInt_cnt_pt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
+	user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
+	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	
-	print(f"<Elapsed_t: {time.time()-st_t:.2f} s> | {df_user_token.shape}".center(120, " "))
+	print(f"<Elapsed_t: {time.time()-st_t:.2f} s> | {user_df.shape}".center(120, " "))
 
-	#print(type( df_user_token["user_token_interest"].values.tolist()[0] ), type( df_user_token["usrInt_qu_tk"].values.tolist()[0] ))
-	#print( len(df_user_token["user_token_interest"].values.tolist()), df_user_token["user_token_interest"].values.tolist() )
-	#print( len(df_user_token["usrInt_qu_tk"].values.tolist()), df_user_token["usrInt_qu_tk"].values.tolist() )
-	#print(df_user_token.shape, list(df_user_token.columns))
+	#print(type( user_df["user_token_interest"].values.tolist()[0] ), type( user_df["usrInt_qu_tk"].values.tolist()[0] ))
+	#print( len(user_df["user_token_interest"].values.tolist()), user_df["user_token_interest"].values.tolist() )
+	#print( len(user_df["usrInt_qu_tk"].values.tolist()), user_df["usrInt_qu_tk"].values.tolist() )
+	#print(user_df.shape, list(user_df.columns))
 	
-	#print(df_user_token.info())	
-	#print(df_user_token[["user_ip", "usrInt_qu_tk"]].head())
+	#print(user_df.info())	
+	#print(user_df[["user_ip", "usrInt_qu_tk"]].head())
 	#print("#"*100)
-	#print(df_user_token[["user_ip", "user_token_interest"]].head())
-	
-	df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_df_{len(bow)}_BoWs.gz")
-	save_pickle(pkl=df_user_token, fname=df_user_token_fname)
+	#print(user_df[["user_ip", "user_token_interest"]].head())
 
-	print(f"USERs-TOKENs DataFrame".center(120, "-"))
-	return df_user_token
+	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
+	save_pickle(pkl=user_df, fname=user_df_fname)
+	print(f"USERs DataFrame".center(120, "-"))
+	return user_df
 
 def get_sparse_matrix(df: pd.DataFrame):
 	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
@@ -426,7 +418,7 @@ def get_sparse_matrix(df: pd.DataFrame):
 	#print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
 	#print("#"*110)
 	##########################Sparse Matrix info##########################
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
+	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 
@@ -436,33 +428,33 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
-	df_usr_tk = get_users_tokens_df(dframe=df_inp, bow=BoWs)
+	df_user = get_user_df(dframe=df_inp, bow=BoWs)
 
 	del df_inp
 	gc.collect()
 
-	# print(df_usr_tk.info())
-	# print(f"Users-Tokens DF {df_usr_tk.shape} {list(df_usr_tk.columns)}")
+	# print(df_user.info())
+	# print(f"Users-Tokens DF {df_user.shape} {list(df_user.columns)}")
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
-		sp_mat_rf = get_sparse_matrix(df_usr_tk)
+		usr_tk_spm = get_sparse_matrix(df_user)
 
-	print(f"{type(sp_mat_rf)} (Users-Tokens): {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
+	print(f"{type(usr_tk_spm)} (Users-Tokens): {usr_tk_spm.shape} | {usr_tk_spm.toarray().nbytes} | {usr_tk_spm.toarray().dtype}")
 	#return
 
 	if normalize_sp_mtrx:
-		#sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=0) # l2 normalize by column -> items
-		sp_mat_rf = normalize(sp_mat_rf, norm="l2", axis=1) # l2 normalize by rows -> users
+		#usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=0) # l2 normalize by column -> items
+		usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=1) # l2 normalize by rows -> users
 		
-	#get_user_n_maxVal_byTK(sp_mat_rf, df_usr_tk, BoWs, )
+	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	#return
-	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 	
 	#print("#"*150)
 	print(f"".center(100,' '))
-	query_phrase_tk = tokenize_query_phrase(qu_list=[qu_phrase])
+	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
@@ -480,12 +472,12 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
 	for iTK, vTK in enumerate(query_phrase_tk):
 		if BoWs.get(vTK):
-			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
+			users_names, users_values_total, users_values_separated = get_users_byTK(usr_tk_spm, df_user, BoWs, token=vTK)
 			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+			plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)} "
@@ -496,9 +488,9 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	#return
-	nUsers, nItems = sp_mat_rf.shape
+	nUsers, nItems = usr_tk_spm.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
 	#print("#"*120)
 	#cos = np.random.rand(nUsers).reshape(1, -1)
@@ -514,18 +506,18 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 	st_t = time.time()
-	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
+	for iUser, vUser in enumerate(df_user['user_ip'].values.tolist()):
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
 		if cos_sim[0, idx_cosine] != 0.0:
 			
-			print(f"iUser[{iUser}]: {df_usr_tk.loc[iUser, 'user_ip']}".center(140, " "))
+			print(f"iUser[{iUser}]: {df_user.loc[iUser, 'user_ip']}".center(140, " "))
 			print(f"avgrec (previous): {prev_avgrec.shape} "
 						f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
 						f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
 					)
 			
-			userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
+			userInterest = usr_tk_spm.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
 			
 			print(f"<> userInterest[{iUser}]: {userInterest.shape} "
 						f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
@@ -599,17 +591,17 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	#return
 	"""
 	st_t = time.time()
-	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_usr_tk)
+	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_user)
 	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	"""
-	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, usr_tk_spm, df_user, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
-		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
+		users_names, users_values_total, users_values_separated = get_users_byTK(usr_tk_spm, df_user, BoWs, token=tkv)
 		
 		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+		plot_usersInterest_by(token=tkv, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	
 	print(f"DONE".center(100, "-"))
 	print()
@@ -625,7 +617,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print()
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
-	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
+	plot_tokens_distribution(usr_tk_spm, df_user, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original" # unimportant!
@@ -1039,7 +1031,7 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp: bool=Fa
 	plt.clf()
 	plt.close(f)
 
-def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: bool=False):
+def plot_heatmap_sparse(sp_mtrx, df_user, bow, norm_sp:bool=False, ifb_log10: bool=False):
 	name_="sparse_matrix_user_vs_token"
 	sp_type = "Normalized" if norm_sp else "Original"
 
@@ -1059,7 +1051,7 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 	print(mtrx.max(), 
 				max_pose,
 				mtrx[max_pose],
-				df_usr_tk['user_ip'].iloc[max_pose[0]],
+				df_user['user_ip'].iloc[max_pose[0]],
 				[k for k, v in bow.items() if v==max_pose[1]],
 
 				#np.argmax(mtrx, axis=0).shape, 
@@ -1091,7 +1083,7 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 								)
 	ax.set_xlabel(f"Token Indices", fontsize=10.0)
 	ax.set_ylabel(f"{'user indeces'.capitalize()}\n"
-								f"{df_usr_tk['user_ip'].iloc[-1]}$\longleftarrow${df_usr_tk['user_ip'].iloc[0]}", fontsize=10.0)
+								f"{df_user['user_ip'].iloc[-1]}$\longleftarrow${df_user['user_ip'].iloc[0]}", fontsize=10.0)
 
 	#ax.set_yticks([])
 	#ax.set_xticks([])
@@ -1103,7 +1095,7 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 	plt.text(	x=0.5, 
 						y=0.88, 
 						s=f"|non-zeros|: {sp_mtrx.count_nonzero()} / |tot_elem|: {sp_mtrx.shape[0]*sp_mtrx.shape[1]}\n"
-							f"max: {mtrx.max():{2}.{1}f}@{max_pose}: (User: {df_usr_tk['user_ip'].iloc[max_pose[0]]}, Token: {[k for k, v in bow.items() if v==max_pose[1]]})", 
+							f"max: {mtrx.max():{2}.{1}f}@{max_pose}: (User: {df_user['user_ip'].iloc[max_pose[0]]}, Token: {[k for k, v in bow.items() if v==max_pose[1]]})", 
 						fontsize=9.0, 
 						ha="center", 
 						transform=f.transFigure,
