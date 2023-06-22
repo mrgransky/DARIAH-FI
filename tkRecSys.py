@@ -775,12 +775,12 @@ def get_users_tokens_df():
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 	# df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(user_token_df.columns)}_BoWs.gz")
 	user_token_df_fname = os.path.join(dfs_path,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
-																							f"nUSRs_{len( usr_tk_raw_dfs.user_ip.value_counts() )}"
-																							f"_nTKs_{len(user_token_df.columns)}_BoWs.gz"
+																							f"nUSRs_{len( usr_tk_raw_dfs.user_ip.value_counts() )}_"
+																							f"nTKs_{len(user_token_df.columns)}.gz"
 																		)
 	save_pickle(pkl=user_token_df, fname=user_token_df_fname)
 	save_vocab(	vb={c: i for i, c in enumerate(user_token_df.columns)}, 
-							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(BoWs)}_vocabs.json"),
+							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
 						)
 	return user_token_df
 
@@ -818,7 +818,7 @@ def main():
 	BoWs = {c: i for i, c in enumerate(user_token_df.columns)}
 	
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
