@@ -814,12 +814,12 @@ def main():
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
-	print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
-	for iTK, vTK in enumerate(query_phrase_tk):
-		if BoWs.get(vTK):
-			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
-			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	# print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
+	# for iTK, vTK in enumerate(query_phrase_tk):
+	# 	if BoWs.get(vTK):
+	# 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
+	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
+	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
 	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
@@ -939,7 +939,7 @@ def main():
 	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, user_token_df)
 	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	"""
-	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, user_token_df, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+	# get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, user_token_df, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
@@ -963,10 +963,6 @@ def main():
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
 	plot_tokens_distribution(sp_mat_rf, user_token_df, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
-
-
-
-
 
 	# try:
 	# 	df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
