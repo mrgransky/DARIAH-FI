@@ -1186,6 +1186,191 @@ def main():
 	print(user_token_df.head(10))
 	print("#"*100)
 
+
+
+	try:
+		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+	except:
+		sp_mat_rf = get_sparse_matrix(user_token_df)
+
+	print(f"{type(sp_mat_rf)} (Users-Tokens): {sp_mat_rf.shape} | {sp_mat_rf.toarray().nbytes} | {sp_mat_rf.toarray().dtype}")
+	#return
+
+
+	plot_heatmap_sparse(sp_mat_rf, df_usr_tk, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+
+
+	#print("#"*150)
+	print(f"".center(100,' '))
+	query_phrase_tk = tokenize_query_phrase(qu_list=[qu_phrase])
+	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
+	query_vector = np.zeros(len(BoWs))
+	for qutk in query_phrase_tk:
+		#print(qutk, BoWs.get(qutk))
+		if BoWs.get(qutk):
+			query_vector[BoWs.get(qutk)] += 1.0
+
+	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)}\t"
+				f"( |NonZeros|: {np.count_nonzero(query_vector)} @ idx(s): {np.nonzero(query_vector)[0]} )")
+
+	if np.all( query_vector==0.0 ):
+		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		return
+
+	print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
+	for iTK, vTK in enumerate(query_phrase_tk):
+		if BoWs.get(vTK):
+			users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=vTK)
+			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
+			plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+
+	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, df_usr_tk, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+
+	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
+				f"Allzero: {np.all(cos_sim.flatten()==0.0)} "
+				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
+			)
+	
+	if np.all(cos_sim.flatten()==0.0):
+		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
+		return
+
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	#return
+	nUsers, nItems = sp_mat_rf.shape
+	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
+	#print("#"*120)
+	#cos = np.random.rand(nUsers).reshape(1, -1)
+	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
+	#avgrec = np.zeros((1, nItems))
+	prev_avgrec = np.zeros((1, nItems))
+	#print(f"> avgrec{avgrec.shape}:\n{avgrec}")
+	#print()
+	
+	#print(f"> cos{cos.shape}:\n{cos}")
+	#print()
+
+	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
+	#print("#"*100)
+	st_t = time.time()
+	for iUser, vUser in enumerate(df_usr_tk['user_ip'].values.tolist()):
+		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
+		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
+		if cos_sim[0, idx_cosine] != 0.0:
+			
+			print(f"iUser[{iUser}]: {df_usr_tk.loc[iUser, 'user_ip']}".center(140, " "))
+			print(f"avgrec (previous): {prev_avgrec.shape} "
+						f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
+						f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
+					)
+			
+			userInterest = sp_mat_rf.toarray()[iUser, :].reshape(1, -1) # 1 x nItems
+			
+			print(f"<> userInterest[{iUser}]: {userInterest.shape} "
+						f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
+						f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
+					)
+			
+			userInterest_norm = np.linalg.norm(userInterest)
+			userInterest = normalize(userInterest, norm="l2", axis=1)
+			
+			print(f"<> userInterest(norm={userInterest_norm:.3f})[{iUser}]: {userInterest.shape} " 
+						f"(min, max_@(iTK), sum): ({userInterest.min()}, {userInterest.max():.5f}_@(iTK[{np.argmax(userInterest)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(userInterest) )]}), {userInterest.sum():.1f}) "
+						f"{userInterest} | Allzero: {np.all(userInterest==0.0)}"
+					)
+			
+			if not np.all(userInterest==0.0):
+				print(f"\tFound {np.count_nonzero(userInterest.flatten())} non-zero userInterest element(s)")
+				print(f"\ttopK TOKENS     user[{iUser}]: {[list(BoWs.keys())[list(BoWs.values()).index( i )] for i in np.flip( np.argsort( userInterest.flatten() ) )[:10] ]}")
+				print(f"\ttopK TOKENS val user[{iUser}]: {[v for v in np.flip( np.sort( userInterest.flatten() ) )[:10] ]}")
+			
+			update_term = (cos_sim[0, idx_cosine] * userInterest)
+			avgrec = prev_avgrec + update_term #avgrec = avgrec + (cos_sim[0, idx_cosine] * userInterest)
+			prev_avgrec = avgrec
+			
+			print(f"avgrec (current): {avgrec.shape} "
+						f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}_@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.1f}) "
+						f"{avgrec} | Allzero: {np.all(avgrec==0.0)}"
+					)
+			print("-"*150)
+			
+	avgrec = avgrec / np.sum(cos_sim)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
+
+	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
+				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
+				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}"
+				f"@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
+			)
+
+	"""
+	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
+	print(avgrec.flatten()[:10])
+	print("#"*100)
+	print(avgrec.flatten()[-10:])
+	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
+	"""
+	f, ax = plt.subplots()
+	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
+							y=avgrec.flatten(), 
+							facecolor="k",
+							#s=scales,
+							edgecolors='w',
+							#alpha=alphas,
+							marker=".",
+						)
+	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}items.png" ), bbox_inches='tight')
+	plt.clf()
+	plt.close(f)
+
+	print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
+	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
+	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
+
+
+	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
+	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
+	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)}: {topK_recommended_tokens}")
+	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
+	print(f"top-{topK} recommended Tokens weighted user interests: {len(topK_recommended_tks_weighted_user_interest)}: {topK_recommended_tks_weighted_user_interest}")
+	#return
+	"""
+	st_t = time.time()
+	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_usr_tk)
+	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
+	"""
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mat_rf, df_usr_tk, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+
+	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
+	for ix, tkv in enumerate(topK_recommended_tokens):
+		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, df_usr_tk, BoWs, token=tkv)
+		
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
+		plot_usersInterest_by(token=tkv, sp_mtrx=sp_mat_rf, users_tokens_df=df_usr_tk, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	
+	print(f"DONE".center(100, "-"))
+	print()
+	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
+	print(f"Since you searched for query phrase(s)\t{Fore.BLUE+Back.YELLOW}{args.qphrase}{Style.RESET_ALL}"
+				f"\tTokenized + Lemmatized: {query_phrase_tk}\n"
+				f"you might also be interested in Phrases:\n{Fore.GREEN}{topK_recommended_tokens[::-1]}{Style.RESET_ALL}")
+	print()
+	print(f"{f'Top-{topK+0} Tokens':<20}{f'Weighted userInterest {avgrec.shape} (min, max, sum): ({avgrec.min()}, {avgrec.max():.2f}, {avgrec.sum():.2f})':<80}")
+	#for tk, weighted_usrInterest in zip(topK_recommended_tokens[::-1], topk_matches_avgRecSys[::-1]):
+	for tk, weighted_usrInterest in zip(topK_recommended_tokens[::-1], topK_recommended_tks_weighted_user_interest[::-1]):
+		print(f"{tk:<20}{weighted_usrInterest:^{60}.{3}f}")
+	print()
+	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
+
+	plot_tokens_distribution(sp_mat_rf, df_usr_tk, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
+
+
+
+
+
 	# try:
 	# 	df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
 	# 	# print(df_concat_fname)
