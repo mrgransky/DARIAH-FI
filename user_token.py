@@ -236,7 +236,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	except:
 		print(f"<!> Search query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
-		sq_list = df_preprocessed["search_query_phrase"].map(lambda lst: get_lemmatized_sqp(lst, lm=args.lmMethod), na_action="ignore")
+		sq_list = df_preprocessed["search_query_phrase"].map(lambda lst: get_lemmatized_sqp(lst, lm=args.lmMethod) if lst else np.nan, na_action="ignore")
 		df_preprocessed["search_query_phrase_tklm"] = sq_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=sq_list, fname=sqFile)
@@ -248,7 +248,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"<!> Snippet Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_raw_snHWs, na_action='ignore')
-		snHW_list = df_preprocessed["search_results_hw_snippets"].map(lambda lst: get_lemmatized_snHWs(lst, lm=args.lmMethod), na_action='ignore')
+		snHW_list = df_preprocessed["search_results_hw_snippets"].map(lambda lst: get_lemmatized_snHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['search_results_hw_snippets_tklm'] = snHW_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=snHW_list, fname=snHWFile)
@@ -260,7 +260,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"<!> Snippets [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
-		sn_list = df_preprocessed["search_results_snippets"].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod), na_action='ignore')
+		sn_list = df_preprocessed["search_results_snippets"].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['search_results_snippets_tklm'] = sn_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=sn_list, fname=snFile)
@@ -272,7 +272,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
-		cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod), na_action='ignore')
+		cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['nwp_content_ocr_text_hw_tklm'] = cntHW_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cntHW_list, fname=cntHWFile)
@@ -284,7 +284,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
 		st_t = time.time()
 		df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
-		cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod), na_action='ignore')
+		cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = cntPT_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
@@ -449,11 +449,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=1) # l2 normalize by rows -> users
 		
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
-	#return
 	plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 	
-	#print("#"*150)
-	print(f"".center(100,' '))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
