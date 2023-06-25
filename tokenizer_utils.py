@@ -76,7 +76,7 @@ def stanza_lemmatizer(docs):
 	if not docs:
 		return
 	# treat all as document
-	docs = re.sub(r'\"|<[^>]+>|[~*^][\d]+', '', docs)
+	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', '', docs)
 	docs = re.sub(r'[\{\}@®©%,+;,=&\'€*"°^~?!—.•()˶“”„:/|‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
 	
 	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
