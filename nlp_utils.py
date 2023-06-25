@@ -30,23 +30,19 @@ def get_raw_cntHWs(cnt_dict):
 	return cnt_dict.get("highlighted_term")
 
 def get_lemmatized_cntHWs(results, lm: str="stanza"):
-	print(results)
-	print([tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)])
-	print( [ lemmatizer_methods.get(lm)(el) for el in results if el ] )
-	print()
-	if results:
-		return [tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)]
+	# print(results)
+	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
+	# if results:
+	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_raw_cntPTs(cnt_dict):
 	return cnt_dict.get("parsed_term")
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
-	print(results)
-	print([tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)])
-	print( [ lemmatizer_methods.get(lm)(el) for el in results if el ] )
-	print()
-	if results:
-		return [tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)]
+	# print(results)
+	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
+	# if results:
+	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_raw_sn(results):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
