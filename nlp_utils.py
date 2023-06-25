@@ -24,7 +24,7 @@ def get_raw_snHWs(search_results_list):
 	return hw_snippets
 
 def get_lemmatized_snHWs(results, lm: str="stanza"):
-	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_raw_cntHWs(cnt_dict):
 	return cnt_dict.get("highlighted_term")
@@ -50,7 +50,7 @@ def get_raw_sn(results):
 	return snippets_list
 
 def get_lemmatized_sn(results, lm: str="stanza"):
-	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_raw_snTEXTs(results):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
