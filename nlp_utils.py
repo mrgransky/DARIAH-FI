@@ -38,7 +38,9 @@ def get_raw_cntPTs(cnt_dict):
 	return cnt_dict.get("parsed_term")
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
-	return [tklm for el in results for tklm in lemmatizer_methods.get(lm)(el)]
+	print(results)
+	if results:
+		return [tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)]
 
 def get_raw_sn(results):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
