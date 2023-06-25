@@ -31,6 +31,8 @@ def get_raw_cntHWs(cnt_dict):
 
 def get_lemmatized_cntHWs(results, lm: str="stanza"):
 	print(results)
+	print([tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)])
+	print()
 	if results:
 		return [tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)]
 
@@ -39,6 +41,8 @@ def get_raw_cntPTs(cnt_dict):
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	print(results)
+	print([tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)])
+	print()
 	if results:
 		return [tklm for el in results if el for tklm in lemmatizer_methods.get(lm)(el)]
 
