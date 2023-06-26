@@ -270,68 +270,65 @@ def scrap_newspaper_content_page(URL):
 	# print(f"parsed_url : {parsed_url}")
 	# print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	# ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
-	# print(f"<> ocr_api_url: {ocr_api_url}")
 	# print(f"<> page-X.txt: {txt_pg_url}")
 	rsp_txt = checking_(txt_pg_url)
-
-	try:
-		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
-	except(requests.exceptions.Timeout,
-					requests.exceptions.ConnectionError, 
-					requests.exceptions.RequestException, 
-					requests.exceptions.TooManyRedirects,
-					requests.exceptions.InvalidSchema,
-					json.decoder.JSONDecodeError,
-					json.JSONDecodeError,
-					ValueError, 
-					TypeError, 
-					EOFError, 
-					RuntimeError,
-					Exception, 
-			) as e:
-		print(f"<!> {e}")
+	if rsp_txt:
+		try:
+			NWP_CONTENT_RESULTS["text"] = rsp_txt.text
+		except(requests.exceptions.Timeout,
+						requests.exceptions.ConnectionError, 
+						requests.exceptions.RequestException, 
+						requests.exceptions.TooManyRedirects,
+						requests.exceptions.InvalidSchema,
+						json.decoder.JSONDecodeError,
+						json.JSONDecodeError,
+						ValueError, 
+						TypeError, 
+						EOFError, 
+						RuntimeError,
+						Exception, 
+				) as e:
+			print(f"<!> {e}")
 
 	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	rs_api_url = checking_(url=api_url, prms=parameters)
-	try:
-		# hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
-		NWP_CONTENT_RESULTS["highlighted_term"] = [d.get("text") for d in rs_api_url.json()]
-	except (json.JSONDecodeError,
-					json.decoder.JSONDecodeError,
-					Exception,
-				) as e:
-		print(f"<!ERR!> HWs: {e}")
-		# hgltd_wrds = []
+	if rs_api_url:
+		try:
+			# hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
+			NWP_CONTENT_RESULTS["highlighted_term"] = [d.get("text") for d in rs_api_url.json()]
+		except (json.JSONDecodeError,
+						json.decoder.JSONDecodeError,
+						Exception,
+					) as e:
+			print(f"<!ERR!> HWs: {e}")
+			# hgltd_wrds = []
 
 	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
 	rsp_api_nwp = checking_(url=api_nwp, prms=None)
-	try:
-		nwp_info = rsp_api_nwp.json()
-		NWP_CONTENT_RESULTS["title"] = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
-		NWP_CONTENT_RESULTS["document_type"] = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
-		NWP_CONTENT_RESULTS["issue"] = nwp_info.get("bindingInformation").get("issue") # 63
-		NWP_CONTENT_RESULTS["publisher"] = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
-		NWP_CONTENT_RESULTS["publication_date"] = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
-		NWP_CONTENT_RESULTS["publication_place"] = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
-		NWP_CONTENT_RESULTS["language"] = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
-	except (requests.exceptions.Timeout,
-					requests.exceptions.ConnectionError, 
-					requests.exceptions.RequestException, 
-					requests.exceptions.TooManyRedirects,
-					requests.exceptions.InvalidSchema,
-					json.decoder.JSONDecodeError,
-					json.JSONDecodeError,
-					ValueError, 
-					TypeError, 
-					EOFError, 
-					RuntimeError,
-					Exception, 
-				) as e:
-		print(f"<!> {type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
-		# return
-
-	#return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
+	if rsp_api_nwp:
+		try:
+			nwp_info = rsp_api_nwp.json()
+			NWP_CONTENT_RESULTS["title"] = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
+			NWP_CONTENT_RESULTS["document_type"] = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
+			NWP_CONTENT_RESULTS["issue"] = nwp_info.get("bindingInformation").get("issue") # 63
+			NWP_CONTENT_RESULTS["publisher"] = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
+			NWP_CONTENT_RESULTS["publication_date"] = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
+			NWP_CONTENT_RESULTS["publication_place"] = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
+			NWP_CONTENT_RESULTS["language"] = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
+		except (requests.exceptions.Timeout,
+						requests.exceptions.ConnectionError, 
+						requests.exceptions.RequestException, 
+						requests.exceptions.TooManyRedirects,
+						requests.exceptions.InvalidSchema,
+						json.decoder.JSONDecodeError,
+						json.JSONDecodeError,
+						ValueError, 
+						TypeError, 
+						EOFError, 
+						RuntimeError,
+						Exception, 
+					) as e:
+			print(f"<!> {type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
 	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
 	return NWP_CONTENT_RESULTS
 
