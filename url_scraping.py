@@ -257,11 +257,12 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	print(f"URL: {URL:<150}", end="")
+	# print(f"URL: {URL:<150}", end="")
+	up_url = re.sub(r'amp;', '', up_url)
 	up_url = URL if re.search(r'page=(\d+)', URL) else f"{URL}&page=1"
 	if checking_(up_url) is None:
 		return
-	# print(f">> Updated: {up_url}")
+	print(f"upd_URL: {up_url:<150}", end=" ")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
 	if not parameters:
 		return
@@ -269,8 +270,8 @@ def scrap_newspaper_content_page(URL):
 	st_t = time.time()
 	NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
 	NWP_CONTENT_RESULTS["page"] = parameters.get("page")
-	# print(f"parsed_url : {parsed_url}")
-	# print(json.dumps(parameters, indent=2, ensure_ascii=False))
+	print(f"parsed_url : {parsed_url}")
+	print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 	# print(f"<> page-X.txt: {txt_pg_url}")
 	rsp_txt = checking_(txt_pg_url)
@@ -331,7 +332,7 @@ def scrap_newspaper_content_page(URL):
 						Exception, 
 					) as e:
 			print(f"<!> {type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
-	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
+	print(f"\tElapsed: {time.time()-st_t:.3f} s")
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':
