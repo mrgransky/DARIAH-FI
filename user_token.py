@@ -290,6 +290,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
+	print( df_preprocessed.info( verbose=True, memory_usage="deep") )
+
 	print(f"USERs DataFrame".center(120, "-"))
 	st_t = time.time()
 	users_list = list()
