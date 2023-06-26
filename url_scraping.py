@@ -258,8 +258,8 @@ def scrap_ocr_page_content(URL):
 
 def scrap_newspaper_content_page(URL):
 	# print(f"URL: {URL:<150}", end="")
-	up_url = re.sub(r'amp;', '', up_url)
-	up_url = URL if re.search(r'page=(\d+)', URL) else f"{URL}&page=1"
+	up_url = re.sub(r'amp;', '', URL)
+	up_url = up_url if re.search(r'page=(\d+)', up_url) else f"{up_url}&page=1"
 	if checking_(up_url) is None:
 		return
 	print(f"upd_URL: {up_url:<150}", end=" ")
