@@ -258,13 +258,15 @@ def scrap_ocr_page_content(URL):
 
 def scrap_newspaper_content_page(URL):
 	print(f"URL: {URL:<150}", end="")
-	NWP_CONTENT_RESULTS = {}
 	up_url = URL if re.search(r'page=(\d+)', URL) else f"{URL}&page=1"
-	# print(f">> Updated: {up_url}")
-	st_t = time.time()
-	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	if (checking_(up_url) is None or not parameters):
+	if checking_(up_url) is None:
 		return
+	# print(f">> Updated: {up_url}")
+	parsed_url, parameters = get_parsed_url_parameters(up_url)
+	if not parameters:
+		return
+	NWP_CONTENT_RESULTS = {}
+	st_t = time.time()
 	NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
 	NWP_CONTENT_RESULTS["page"] = parameters.get("page")
 	# print(f"parsed_url : {parsed_url}")
