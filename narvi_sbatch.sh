@@ -1,15 +1,15 @@
 #!/bin/bash
 
-#SBATCH -J sc_dfQ
+#SBATCH -J dfQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=6G
-#SBATCH --time=1-23:59:59
+#SBATCH --time=0-23:59:59
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 # # # # # SBATCH --array=75
-#SBATCH --array=260-269
+#SBATCH --array=260-264
 
 stars=$(printf '%*s' 110 '')
 txt="SLURM JOB STARTED AT: `date`"

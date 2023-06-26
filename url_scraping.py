@@ -258,13 +258,15 @@ def scrap_ocr_page_content(URL):
 
 def scrap_newspaper_content_page(URL):
 	print(f"URL: {URL:<150}", end="")
-	st_t = time.time()
 	NWP_CONTENT_RESULTS = {}
 	up_url = URL if re.search(r'page=(\d+)', URL) else f"{URL}&page=1"
 	# print(f">> Updated: {up_url}")
+	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
 	if (checking_(up_url) is None or not parameters):
 		return
+	NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
+	NWP_CONTENT_RESULTS["page"] = parameters.get("page")
 	# print(f"parsed_url : {parsed_url}")
 	# print(json.dumps(parameters, indent=2, ensure_ascii=False))
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
@@ -272,6 +274,7 @@ def scrap_newspaper_content_page(URL):
 	# print(f"<> ocr_api_url: {ocr_api_url}")
 	# print(f"<> page-X.txt: {txt_pg_url}")
 	rsp_txt = checking_(txt_pg_url)
+
 	try:
 		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
 	except(requests.exceptions.Timeout,
@@ -292,32 +295,19 @@ def scrap_newspaper_content_page(URL):
 	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	rs_api_url = checking_(url=api_url, prms=parameters)
 	try:
-		hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
+		# hgltd_wrds = [d.get("text") for d in rs_api_url.json()]
+		NWP_CONTENT_RESULTS["highlighted_term"] = [d.get("text") for d in rs_api_url.json()]
 	except (json.JSONDecodeError,
 					json.decoder.JSONDecodeError,
 					Exception,
 				) as e:
-		print(f"<!> {e}")
-		hgltd_wrds = []
+		print(f"<!ERR!> HWs: {e}")
+		# hgltd_wrds = []
 
 	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
 	rsp_api_nwp = checking_(url=api_nwp, prms=None)
 	try:
 		nwp_info = rsp_api_nwp.json()
-		#print(list(nwp_info.get("bindingInformation").keys()))
-		#print(list(nwp_info.get("bindingInformation").get("citationInfo").keys()))
-		#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage"))
-		#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksOutputLanguage")) # English (30)
-		#print()
-		"""
-		title = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
-		doc_type = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
-		issue = nwp_info.get("bindingInformation").get("issue") # 63
-		publisher = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
-		pub_date = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
-		pub_place = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
-		lang = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
-		"""
 		NWP_CONTENT_RESULTS["title"] = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
 		NWP_CONTENT_RESULTS["document_type"] = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
 		NWP_CONTENT_RESULTS["issue"] = nwp_info.get("bindingInformation").get("issue") # 63
@@ -325,9 +315,6 @@ def scrap_newspaper_content_page(URL):
 		NWP_CONTENT_RESULTS["publication_date"] = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
 		NWP_CONTENT_RESULTS["publication_place"] = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
 		NWP_CONTENT_RESULTS["language"] = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
-		NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
-		NWP_CONTENT_RESULTS["highlighted_term"] = hgltd_wrds
-		NWP_CONTENT_RESULTS["page"] = parameters.get("page")
 	except (requests.exceptions.Timeout,
 					requests.exceptions.ConnectionError, 
 					requests.exceptions.RequestException, 
@@ -345,7 +332,7 @@ def scrap_newspaper_content_page(URL):
 		# return
 
 	#return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
-	print(f"\tElapsed_t: {time.time()-st_t:.3f} sec")
+	print(f"\tElapsed_t: {time.time()-st_t:.3f} s")
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':
