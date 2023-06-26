@@ -270,8 +270,10 @@ def scrap_newspaper_content_page(URL):
 	st_t = time.time()
 	NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
 	NWP_CONTENT_RESULTS["page"] = parameters.get("page")
+
 	print(f"parsed_url : {parsed_url}")
 	print(json.dumps(parameters, indent=2, ensure_ascii=False))
+
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 	# print(f"<> page-X.txt: {txt_pg_url}")
 	rsp_txt = checking_(txt_pg_url)
