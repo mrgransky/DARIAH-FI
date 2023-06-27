@@ -788,6 +788,9 @@ def main():
 	print( glob.glob( dfs_path+'/'+'*nUSRs_*_nTKs_*.gz' ) )
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_nUSRs_*_nTKs_*.gz' )[0] )
+	except (IndexError, ValueError) as er:
+		print(er)
+		return
 	except Exception as e:
 		logging.exception(e)
 		user_token_df = get_users_tokens_df()
