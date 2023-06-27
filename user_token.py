@@ -382,7 +382,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																				]
 															)
 
-	print(f"Adding Implicit Feedback to Users DataFrame".center(110, "-"))
+	print(f"Adding Implicit Feedback to Users DataFrame {type(user_df)} | {user_df.shape}".center(150, "-"))
 	st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
