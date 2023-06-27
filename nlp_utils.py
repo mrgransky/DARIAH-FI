@@ -151,8 +151,9 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	try:
 		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-	except Exception as e:
-		logging.exception(e)
+	# except Exception as e:
+	# 	logging.exception(e)
+	except:
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		st_t = time.time()
 		# Initialize TFIDF # not time consuming...
