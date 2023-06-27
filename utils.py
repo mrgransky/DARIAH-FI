@@ -651,12 +651,12 @@ def load_pickle(fpath:str="unknown", dftype=None):
 		# print()
 		with open(fpath, 'rb') as f:
 			pkl = dill.load(f)
-	except:
-		# use pd.read_pkl
-		pkl = pd.read_pickle(fpath)
 	except FileNotFoundError:
 		print(f"{fpath} Not Found!")
 		return
+	except:
+		# use pd.read_pkl
+		pkl = pd.read_pickle(fpath)
 
 	# if dftype:
 	# 	pkl = pd.read_pickle(fpath)
