@@ -210,6 +210,9 @@ def tokenize_pt_nwp_content(results_list):
 	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
 def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
+	print(f"Getting USERs DataFrame from Input DF: {dframe.shape}".center(150, "-"))
+	print(dframe.info(verbose=True, memory_usage="deep"))
+	print("<>"*60)
 	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
 	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
 	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.gz")
@@ -218,6 +221,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.gz")
 	dframe = dframe.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df_preprocessed = dframe.copy()
+	print(f">> Preparing df_preprocessed [initial]: {df_preprocessed.shape}")
 
 	print(f"\n>> Getting {cntFile} ...")	
 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
@@ -302,10 +306,10 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
-	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
+	print(f"Input_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 	print( df_preprocessed.info( verbose=True, memory_usage="deep") )
-
-	print(f"USERs DataFrame".center(150, "-"))
+	print("<>"*50)
+	print(f">> Preparing USERs DF...")
 	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
@@ -384,7 +388,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																				]
 															)
 
-	print(f"Adding Implicit Feedback to Users DataFrame {type(user_df)} | {user_df.shape}".center(150, "-"))
+	print(f"Adding Implicit Feedback to USERs {type(user_df)} | {user_df.shape}".center(150, "-"))
 	# st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
@@ -395,10 +399,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
 	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 
-	print(f"USERs DataFrame Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, " "))
+	print(f"USERs {type(user_df)} | Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, "-"))
 
 	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
+	
 	return user_df
 
 def get_sparse_matrix(df: pd.DataFrame):
