@@ -632,11 +632,11 @@ def save_pickle(pkl, fname:str=""):
 	st_t = time.time()
 
 	if isinstance(pkl, pd.DataFrame):
-		# print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
+		print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
 		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 		pkl.to_pickle(path=dump_file_name)
 	else:
-		# print(f">> saving {type(pkl)}")
+		print(f">> saving {type(pkl)}")
 		with open(dump_file_name , "wb" ) as f:
 			dill.dump(pkl, f)
 

@@ -783,7 +783,6 @@ def main():
 
 	print( glob.glob( dfs_path+'/'+'*nUSRs_*_nTKs_*.gz' ) )
 	try:
-		# user_token_df = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(BoWs)}_BoWs.gz"))
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_nUSRs_*_nTKs_*.gz' )[0] )
 	except Exception as e:
 		logging.exception(e)
