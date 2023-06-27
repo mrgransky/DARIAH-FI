@@ -79,41 +79,41 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 		if updated_vocab.get(q_tk) is not None:
 			prev = updated_vocab.get(q_tk)
 			curr = prev + w_qu
-			print(f"QU[{i}]: {q_tk:<25}w: {w_qu}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			# print(f"QU[{i}]: {q_tk:<25}w: {w_qu}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[q_tk] = curr
-	print('*'*60)
+	# print('*'*60)
 	for i, sn_hw_tk in enumerate(dframe.snippets_hw_token):
 		#print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn} | vb_exist? {updated_vocab.get(sn_hw_tk) is not None} ")
 		if updated_vocab.get(sn_hw_tk) is not None:
 			prev = updated_vocab.get(sn_hw_tk)
 			curr = prev + w_hw_sn
-			print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			# print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[sn_hw_tk] = curr
-	print('*'*60)
+	# print('*'*60)
 	for i, sn_tk in enumerate(dframe.snippets_token):
 		#print(f"sn[{i}]: {sn_tk:<25}w: {w_sn} | vb_exist? {updated_vocab.get(sn_tk) is not None} ")
 		if updated_vocab.get(sn_tk) is not None:
 			prev = updated_vocab.get(sn_tk)
 			curr = prev + w_sn
-			print(f"sn[{i}]: {sn_tk:<25}w: {w_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			# print(f"sn[{i}]: {sn_tk:<25}w: {w_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[sn_tk] = curr
-	print('*'*60)
+	# print('*'*60)
 	for i, c_hw_tk in enumerate(dframe.nwp_content_hw_token):
 		#print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt} | vb_exist? {updated_vocab.get(c_hw_tk) is not None} ")
 		if updated_vocab.get(c_hw_tk) is not None:
 			prev = updated_vocab.get(c_hw_tk)
 			curr = prev + w_hw_cnt
-			print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			# print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_hw_tk] = curr
-	print('*'*60)
+	# print('*'*60)
 	for i, c_pt_tk in enumerate(dframe.nwp_content_pt_token):
 		#print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt} | vb_exist? {updated_vocab.get(c_pt_tk) is not None} ")
 		if updated_vocab.get(c_pt_tk) is not None:
 			prev = updated_vocab.get(c_pt_tk)
 			curr = prev + w_pt_cnt
-			print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			# print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_pt_tk] = curr
-	print('*'*60)
+	# print('*'*60)
 	for i, c_tk in enumerate(dframe.nwp_content_lemma_all):
 		#print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt} | vb_exist? {updated_vocab.get(c_tk) is not None} ")
 		if updated_vocab.get(c_tk) is not None:
@@ -222,7 +222,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
 		cnt_list = df_preprocessed["nwp_content_ocr_text"].map(lambda snt: get_lemmatized_cnt(snt, lm=args.lmMethod), na_action='ignore') # inp: "my car is black." => out ["car", "black"]
@@ -233,7 +234,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {sqFile} ...")	
 	try:
 		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"<!> Search query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
 		sq_list = df_preprocessed["search_query_phrase"].map(lambda lst: get_lemmatized_sqp(lst, lm=args.lmMethod) if lst else np.nan, na_action="ignore")
@@ -245,7 +247,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_raw_snHWs, na_action='ignore')
 	try:
 		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"<!> Snippet Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		snHW_list = df_preprocessed["search_results_hw_snippets"].map(lambda lst: get_lemmatized_snHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
@@ -257,7 +260,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
 	try:
 		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"<!> Snippets [tokenization + lemmatization]...")
 		st_t = time.time()
 		sn_list = df_preprocessed["search_results_snippets"].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
@@ -269,7 +273,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
 		cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
@@ -281,7 +286,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
 		st_t = time.time()
 		cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
@@ -430,7 +436,13 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
-	df_user = get_user_df(dframe=df_inp, bow=BoWs)
+	try:
+		# load
+		# /scratch/project_2004072/Nationalbiblioteket/dataframes/nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021_lemmaMethod_stanza_user_df_26042_BoWs.gz
+		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
+	except Exception as e:
+		logging.exception(e)
+		df_user = get_user_df(dframe=df_inp, bow=BoWs)
 
 	del df_inp
 	gc.collect()
@@ -440,7 +452,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
-	except:
+	except Exception as e:
+		logging.exception(e)
 		usr_tk_spm = get_sparse_matrix(df_user)
 
 	print(f"{type(usr_tk_spm)} (Users-Tokens): {usr_tk_spm.shape} | {usr_tk_spm.toarray().nbytes} | {usr_tk_spm.toarray().dtype}")
