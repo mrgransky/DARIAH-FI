@@ -644,7 +644,7 @@ def save_pickle(pkl, fname:str=""):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_pickle(fpath:str="unknown", dftype=None):
-	print(f"Trying to Load: {fpath}")
+	print(f"Checking for existence? {fpath}")
 	st_t = time.time()
 	with open(fpath, "rb") as f:
 		pkl = dill.load(f)
@@ -653,7 +653,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 		print(f">> {pkl.shape}")
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Elapsed_t: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
+	print(f"Successfully loaded in: {elpt:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
 
 def load_df_pkl(fpath:str="unknown", ccols=None): # ccols: custom_columns
