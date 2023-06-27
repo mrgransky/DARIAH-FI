@@ -647,13 +647,11 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	st_t = time.time()
 
 	try:
-		# use with
-		# print()
 		with open(fpath, 'rb') as f:
 			pkl = dill.load(f)
-	except FileNotFoundError:
-		print(f"{fpath} Not Found!")
-		return
+	# except FileNotFoundError:
+	# 	print(f"<!> ERROR: {fpath} Not Found!")
+	# 	return
 	except:
 		# use pd.read_pkl
 		pkl = pd.read_pickle(fpath)
