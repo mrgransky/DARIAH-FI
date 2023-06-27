@@ -400,7 +400,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#print(user_df[["user_ip", "user_token_interest"]].head())
 
 	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
-	save_pickle(pkl=user_df, fname=user_df_fname)
+	# save_pickle(pkl=user_df, fname=user_df_fname)
 	print(f"USERs DataFrame".center(120, "-"))
 	return user_df
 

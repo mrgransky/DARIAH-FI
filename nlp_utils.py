@@ -91,9 +91,9 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_snTEXTs, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-	print(dframe.info())
+	# print(dframe.info())
 	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
-	print(f"<>"*50)
+	# print(f"<>"*50)
 	# return
 
 	users_list = list()
@@ -125,7 +125,6 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
 
-
 	# if not os.path.exists(tfidf_rf_matrix_fpath):
 	# 	print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
 	# 	st_t = time.time()
@@ -152,7 +151,8 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	try:
 		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-	except:
+	except Exception as e:
+		logging.exception(e)
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		st_t = time.time()
 		# Initialize TFIDF # not time consuming...
