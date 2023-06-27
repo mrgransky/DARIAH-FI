@@ -645,32 +645,31 @@ def save_pickle(pkl, fname:str=""):
 def load_pickle(fpath:str="unknown", dftype=None):
 	print(f"Checking for existence? {fpath}")
 	st_t = time.time()
-	if dftype:
-		pkl = pd.read_pickle(fpath)
-		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
-		print(f">> {pkl.shape}")
-	else:
-		with open(fpath, "rb") as f:
+
+	try:
+		# use with
+		# print()
+		with open(fpath, 'rb') as f:
 			pkl = dill.load(f)
-	print(type(pkl))
+	except:
+		# use pd.read_pkl
+		pkl = pd.read_pickle(fpath)
+	except FileNotFoundError:
+		print(f"{fpath} Not Found!")
+		return
+
+	# if dftype:
+	# 	pkl = pd.read_pickle(fpath)
+	# 	pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
+	# 	print(f">> {pkl.shape}")
+	# else:
+	# 	with open(fpath, "rb") as f:
+	# 		pkl = dill.load(f)
+
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Successfully loaded in: {elpt:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
 	return pkl
-
-# def load_df_pkl(fpath:str="unknown", ccols=None): # ccols: custom_columns
-# 	print(f"Loading df_pkl: {fpath}")
-# 	st_t = time.time()
-# 	df = pd.read_pickle(fpath)
-# 	if ccols:
-# 		df = df[ ccols ]
-# 	else:
-# 		df = df.drop(['client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
-	
-# 	elpt = time.time()-st_t
-# 	fsize = os.stat( fpath ).st_size / 1e6
-# 	print(f"Elapsed_t: {elpt:.3f} s | {type(df)} | {df.shape} | {fsize:.2f} MB".center(110, " "))
-# 	return df
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
