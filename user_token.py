@@ -216,6 +216,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.gz")
 	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.gz")
 	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.gz")
+	dframe = dframe.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df_preprocessed = dframe.copy()
 
 	print(f"\n>> Getting {cntFile} ...")	
@@ -380,9 +381,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																					'snippets_raw_text',
 																				]
 															)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(120, " "))
 
-	print(f"Implicit Feedback".center(100, "-"))
+	print(f"Adding Implicit Feedback to Users DataFrame".center(110, "-"))
 	st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
@@ -393,17 +393,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
 	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	
-	print(f"<Elapsed_t: {time.time()-st_t:.2f} s> | {user_df.shape}".center(120, " "))
-
-	#print(type( user_df["user_token_interest"].values.tolist()[0] ), type( user_df["usrInt_qu_tk"].values.tolist()[0] ))
-	#print( len(user_df["user_token_interest"].values.tolist()), user_df["user_token_interest"].values.tolist() )
-	#print( len(user_df["usrInt_qu_tk"].values.tolist()), user_df["usrInt_qu_tk"].values.tolist() )
-	#print(user_df.shape, list(user_df.columns))
-	
-	#print(user_df.info())	
-	#print(user_df[["user_ip", "usrInt_qu_tk"]].head())
-	#print("#"*100)
-	#print(user_df[["user_ip", "user_token_interest"]].head())
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(110, " "))
 
 	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
@@ -435,7 +425,8 @@ def get_sparse_matrix(df: pd.DataFrame):
 	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
-
+	print(f"{type(sparse_matrix)} (Users, Tokens): {sparse_matrix.shape} | {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
+	print("-"*110)
 	return sparse_matrix
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
@@ -450,13 +441,10 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# 	logging.exception(e)
 	except:
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
-
-	print(f"User DF: {df_user.shape}".center(110, ' '))
-	print(df_user.info())
+	print(df_user.info(verbose=True, memory_usage="deep"))
 
 	del df_inp
 	gc.collect()
-
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
@@ -465,15 +453,12 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	except:
 		usr_tk_spm = get_sparse_matrix(df_user)
 
-	print(f"{type(usr_tk_spm)} (Users-Tokens): {usr_tk_spm.shape} | {usr_tk_spm.toarray().nbytes} | {usr_tk_spm.toarray().dtype}")
-	#return
-
 	if normalize_sp_mtrx:
 		#usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=0) # l2 normalize by column -> items
 		usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=1) # l2 normalize by rows -> users
 		
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
-	plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 	
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
