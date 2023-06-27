@@ -305,7 +305,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Original_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 	print( df_preprocessed.info( verbose=True, memory_usage="deep") )
 
-	print(f"USERs DataFrame".center(120, "-"))
+	print(f"USERs DataFrame".center(150, "-"))
 	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
@@ -344,6 +344,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#nwp_content_lemmas_all_list = [f"nwp_content_{i}" for i in range(len(users_list))]
 	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
+	del df_preprocessed, dframe
+	gc.collect()
+
 	print(len(users_list), 
 				len(search_query_phrase_tokens_list),
 				len(search_results_hw_snippets_tokens_list),
@@ -355,7 +358,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 				len(nwp_content_raw_texts_list),
 				len(search_results_snippets_raw_texts_list),
 				)
-	#return
 
 	user_df = pd.DataFrame(list(zip(users_list, 
 																				search_query_phrase_tokens_list, 
@@ -383,7 +385,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 															)
 
 	print(f"Adding Implicit Feedback to Users DataFrame {type(user_df)} | {user_df.shape}".center(150, "-"))
-	st_t = time.time()
+	# st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
 	user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
@@ -392,12 +394,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	user_df["usrInt_cnt_pt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
 	user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
 	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
-	
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(110, " "))
+
+	print(f"USERs DataFrame Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, " "))
 
 	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
-	print(f"USERs DataFrame".center(120, "-"))
 	return user_df
 
 def get_sparse_matrix(df: pd.DataFrame):
@@ -434,7 +435,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 
-	print(f"User DF".center(100, ' '))
+	# print(f"USERs DF".center(100, ' '))
 	try:
 		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"), dftype=True)
 	# except Exception as e:
