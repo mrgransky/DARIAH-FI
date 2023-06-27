@@ -221,7 +221,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {cntFile} ...")	
 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
+		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile, dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		print(f"<!> Contents [tokenization + lemmatization]...")
@@ -233,7 +233,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	print(f"\n>> Getting {sqFile} ...")	
 	try:
-		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile)
+		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile, dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		print(f"<!> Search query phrases [tokenization + lemmatization]...")
@@ -246,7 +246,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {snHWFile} ...")	
 	df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_raw_snHWs, na_action='ignore')
 	try:
-		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile)
+		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile, dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		print(f"<!> Snippet Highlighted Words [tokenization + lemmatization]...")
@@ -259,7 +259,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {snFile} ...")	
 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
 	try:
-		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
+		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile, dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		print(f"<!> Snippets [tokenization + lemmatization]...")
@@ -272,7 +272,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {cntHWFile} ...")	
 	df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
+		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile, dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
@@ -285,7 +285,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {cntPTFile} ...")	
 	df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
+		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile, dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
@@ -439,7 +439,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	try:
 		# load
 		# /scratch/project_2004072/Nationalbiblioteket/dataframes/nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021_lemmaMethod_stanza_user_df_26042_BoWs.gz
-		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
+		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"), dftype=True)
 	except Exception as e:
 		logging.exception(e)
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
@@ -1206,9 +1206,9 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	df_raw = load_pickle(fpath=args.inputDF)
-	#analyze_df(df=df_raw, fname=__file__)
-	run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
+	df_raw = load_pickle(fpath=args.inputDF, dftype=True)
+	analyze_df(df=df_raw, fname=__file__)
+	# run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5

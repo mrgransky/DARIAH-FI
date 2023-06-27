@@ -749,9 +749,7 @@ def get_users_tokens_df():
 	print(f">> concatinating: ", glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ))
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		# usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f ivn glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_tokens_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=["user_ip", "user_token_interest"])).shape[0]>0 ) ] )
-		# usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob(os.path.join(dfs_path, "*.gz")) if ( re.search(r'_user_df_(\d+)_BoWs.gz', f) and (df:=load_df_pkl(fpath=f, ccols=None)).shape[0]>0 ) ] )
-		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_df_pkl(fpath=f, ccols=None) ).shape[0]>0  ] )
+		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f, dftype=True) ).shape[0]>0  ] )
 		
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
@@ -965,26 +963,6 @@ def main():
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
 	plot_tokens_distribution(sp_mat_rf, user_token_df, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
-
-	# try:
-	# 	df_concat_fname = [f for f in os.listdir(dfs_path) if f.endswith("_concat.gz")][0]
-	# 	# print(df_concat_fname)
-	# 	df_concat_fpath = os.path.join(dfs_path, df_concat_fname)
-	# 	# print(df_concat_fpath)
-	# 	#df_raw = load_pickle(fpath=df_concat_fpath)
-	# 	df_raw = load_df_pkl(fpath=df_concat_fpath)
-	# 	#print(df_raw.shape)
-	# 	ndfs = int(df_concat_fname[:df_concat_fname.find("_")])
-	# 	#print(ndfs)
-	# except:
-	# 	df_raw, ndfs = get_concat_df(dir_path=args.dsPath)
-
-	# global fprefix, RES_DIR
-	# fprefix = f"{ndfs}_dfs_concat_{df_raw.shape[0]}_samples"
-	# RES_DIR = make_result_dir(infile=fprefix)
-	# # analyze_df(df=df_raw, fname=__file__)
-	# # print(fprefix, RES_DIR)
-	# run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
 def practice(topK=5):
 	nUsers = 5
