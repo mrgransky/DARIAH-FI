@@ -406,7 +406,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#print(user_df[["user_ip", "user_token_interest"]].head())
 
 	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
-	# save_pickle(pkl=user_df, fname=user_df_fname)
+	save_pickle(pkl=user_df, fname=user_df_fname)
 	print(f"USERs DataFrame".center(120, "-"))
 	return user_df
 
@@ -443,8 +443,6 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	try:
-		# load
-		# /scratch/project_2004072/Nationalbiblioteket/dataframes/nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021_lemmaMethod_stanza_user_df_26042_BoWs.gz
 		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"), dftype=True)
 	# except Exception as e:
 	# 	logging.exception(e)
