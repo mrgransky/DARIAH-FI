@@ -789,7 +789,7 @@ def main():
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_nUSRs_*_nTKs_*.gz' )[0] )
 	except (IndexError, ValueError) as er:
-		print(er)
+		print(f"<!>ERROR: {er} => EXIT!")
 		return
 	except Exception as e:
 		logging.exception(e)

@@ -631,9 +631,9 @@ def save_pickle(pkl, fname:str=""):
 	print(f"<<<=!=>>> Saving {type(pkl)} might take a while\n{dump_file_name}")
 	st_t = time.time()
 	if isinstance(pkl, pd.DataFrame) or isinstance(pkl, pd.Series):
-		print(f">> saving DF: {type(pkl)} FASTERRRRR!!!")
-		pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
+		print(f">> saving pandas DF: {type(pkl)} FASTERRRRR!!!")
 		pkl.to_pickle(path=dump_file_name)
+		# pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	else:
 		print(f">> saving {type(pkl)}")
 		with open(dump_file_name , "wb" ) as f:

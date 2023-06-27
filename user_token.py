@@ -442,6 +442,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
+
+	print(f"User DF".center(100, ' '))
 	try:
 		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"), dftype=True)
 	# except Exception as e:
@@ -449,11 +451,12 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	except:
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
 
+	print(f"User DF: {df_user.shape}".center(110, ' '))
+	print(df_user.info())
+
 	del df_inp
 	gc.collect()
 
-	# print(df_user.info())
-	# print(f"Users-Tokens DF {df_user.shape} {list(df_user.columns)}")
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
