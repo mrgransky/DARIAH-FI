@@ -461,6 +461,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		usr_tk_spm = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	# except Exception as e:
 	# 	logging.exception(e)
+	except:
 		usr_tk_spm = get_sparse_matrix(df_user)
 
 	print(f"{type(usr_tk_spm)} (Users-Tokens): {usr_tk_spm.shape} | {usr_tk_spm.toarray().nbytes} | {usr_tk_spm.toarray().dtype}")
