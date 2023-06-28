@@ -779,14 +779,16 @@ def main():
 	print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
 
-	print( glob.glob( dfs_path+'/'+'*nUSRs_*_nTKs_*.gz' ) )
+	# print( glob.glob( dfs_path+'/'+'*nUSRs_*_nTKs_*.gz' ) )
+
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_*_nUSRs_x_*_nTKs.gz' )[0] )
 	# except (IndexError, ValueError) as er:
 	# 	print(f"<!> ERROR: {er} => EXIT!")
 	# 	return
-	except Exception as e:
-		logging.exception(e)
+	# except Exception as e:
+	# 	logging.exception(e)
+	except:
 		user_token_df = get_users_tokens_df()
 
 	print(user_token_df.head(10))
