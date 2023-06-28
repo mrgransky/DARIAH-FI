@@ -824,7 +824,7 @@ def main():
 	print(f"<> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
-				f"TK(s): {[list(bow.keys())[list(bow.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
+				f"TK(s): {[list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
 				# f"TK(s): {[k for idx in np.nonzero(query_vector)[0] for k, v in bow.items() if v==idx]}"
 			)
 
