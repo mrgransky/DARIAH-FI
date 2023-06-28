@@ -224,6 +224,11 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Lemma(s) : {query_token}")	
+	print(f"B4 reindex: ")
+	print(users_tokens_df.info(verbose=True, memory_usage="deep"))
+	print("¤"*100)
+	print(users_tokens_df.head(10))
+	print("-"*150)
 	
 	if users_tokens_df.index.inferred_type == 'string':
 		users_tokens_df = users_tokens_df.reset_index().rename(columns = {'index':'user_ip'})
