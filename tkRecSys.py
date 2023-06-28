@@ -705,7 +705,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 										marker="H",
 										s=260,
 										facecolor="none", 
-										edgecolors=clrs[::-1][i for i,_ in enumerate(qu_indices)],
+										edgecolors=clrs[-len(qu_indices):]
 									)
 
 	# plt.rcParams["figure.subplot.right"] = 0.8
