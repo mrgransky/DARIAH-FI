@@ -260,7 +260,7 @@ def scrap_newspaper_content_page(URL):
 	# print(f"URL: {URL:<150}", end="")
 	# up_url = re.sub(r'amp;', '', URL)
 	# up_url = re.sub(r'\?page=(\d+)', r'&page=(\d+)', up_url)
-	upd_url = re.sub(r'\?page=', '&page=', re.sub(r'amp;', '', URL))
+	up_url = re.sub(r'\?page=', '&page=', re.sub(r'amp;', '', URL))
 
 	up_url = up_url if re.search(r'page=(\d+)', up_url) else f"{up_url}&page=1"
 	if checking_(up_url) is None:
