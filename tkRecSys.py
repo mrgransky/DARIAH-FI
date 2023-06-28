@@ -670,9 +670,10 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 
 def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bow, norm_sp: bool=False, topK: int=5):
 	sp_type = "Normalized" if norm_sp else "Original"
-
 	print(f"\nPlotting Tokens Distribution in {sp_type} Sparse Matrix (nUsers, nItems): {sparseMat.shape}")
-	sparse_df = pd.DataFrame(sparseMat.toarray(), index=users_tokens_df["user_ip"])
+	# sparse_df = pd.DataFrame(sparseMat.toarray(), index=users_tokens_df["user_ip"])
+	sparse_df = users_tokens_df
+
 	#sparse_df.columns = sparse_df.columns.map(str) # convert int col -> str col
 	sparse_df = sparse_df.replace(0.0, np.nan) # 0.0 -> None: Matplotlib won't plot NaN values.
 	#print(f">> queryVec: {queryVec.shape} | recSysVec: {recSysVec.shape}")
@@ -733,10 +734,10 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	
 	ax.spines[['top', 'right']].set_visible(False)
 	ax.margins(1e-3, 5e-2)
-	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0], 
-							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0],
+	plt.xticks(	[i for i,_ in enumerate( users_tokens_df.index.values.tolist() ) if i%MODULE==0 ], 
+							[f"{v}" for i, v in enumerate( users_tokens_df.index.values.tolist() ) if i%MODULE==0 ],
 							rotation=90,
-							fontsize=10.0,
+							fontsize=9.0,
 							)
 
 	plt.yticks(fontsize=10.0)
@@ -861,11 +862,9 @@ def main():
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 
-	# if user_token_df.index.inferred_type == 'string':
-	# 	user_token_df = user_token_df.reset_index()#.rename(columns = {'index':'user_ip'})
+	assert len(user_token_df.index.values.tolist()) == nUsers, f"df_idx: {len(user_token_df.index.values.tolist())} != nUsers: {nUsers}"
 
 	st_t = time.time()
-	# for iUser, vUser in enumerate(user_token_df['user_ip'].values.tolist()):
 	for iUser in range(nUsers):
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")

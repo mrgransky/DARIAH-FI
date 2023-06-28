@@ -179,7 +179,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)}")
 	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
-	assert len(BOWs) == tfidf_matrix_rf.shape[1] # to ensure size of vocabs are not different in saved files
+	assert len(BOWs) == tfidf_matrix_rf.shape[1], f"size of vocabs: {len(BoWs)} != tfidf_matrix_rf: {tfidf_matrix_rf.shape[1]}"
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs
 
