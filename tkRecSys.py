@@ -698,30 +698,32 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	recSysVec_indices = np.array([bow.get(vTKs) for iTKs, vTKs in enumerate(topK_recommended_tokens)])
 	print(topK_recommended_tokens)
 	print(recSysVec_indices)
-	f, ax = plt.subplots()	
-	sc1 = ax.scatter(	x=[list(sparse_df.index) for i,_ in enumerate(qu_indices)],
-										# x=[sparse_df.index for i,_ in enumerate(qu_indices)],
-										y=sparse_df.iloc[:, qu_indices], 
-										label=list(sparse_df.iloc[:, qu_indices].columns),#f"{[k for k, v in bow.items() if v==col]} | {col}",
-										marker="H",
-										s=260,
-										facecolor="none", 
-										edgecolors=clrs[-len(qu_indices):]
-									)
 
-	# plt.rcParams["figure.subplot.right"] = 0.8
-	# quTksLegends = []
-	# for ix, col in np.ndenumerate(qu_indices):
-	# 	print(ix, col)
-	# 	sc1 = ax.scatter(	x=sparse_df.index, 
-	# 										y=sparse_df[col], 
-	# 										label=f"{[k for k, v in bow.items() if v==col]} | {col}",
-	# 										marker="H",
-	# 										s=260,
-	# 										facecolor="none", 
-	# 										edgecolors=clrs[::-1][int(ix[0])],
-	# 									)
-	# 	quTksLegends.append(sc1)
+	plt.rcParams["figure.subplot.right"] = 0.8
+	quTksLegends = []
+	f, ax = plt.subplots()	
+
+	# sc1 = ax.scatter(	x=[list(sparse_df.index) for i,_ in enumerate(qu_indices)],
+	# 									# x=[sparse_df.index for i,_ in enumerate(qu_indices)],
+	# 									y=sparse_df.iloc[:, qu_indices],
+	# 									label=list(sparse_df.iloc[:, qu_indices].columns),#f"{[k for k, v in bow.items() if v==col]} | {col}",
+	# 									marker="H",
+	# 									s=260,
+	# 									facecolor="none", 
+	# 									edgecolors=clrs[-len(qu_indices):]
+	# 								)
+
+	for ix, col in np.ndenumerate(qu_indices):
+		print(ix, col)
+		sc1 = ax.scatter(	x=sparse_df.index, 
+											y=sparse_df.iloc[:, col],
+											label=f"{[k for k, v in bow.items() if v==col]} | {col}",
+											marker="H",
+											s=260,
+											facecolor="none", 
+											edgecolors=clrs[::-1][int(ix[0])],
+										)
+		quTksLegends.append(sc1)
 
 	# recLegends = []
 	# for ix, col in np.ndenumerate(np.flip(recSysVec_indices)):
