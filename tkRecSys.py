@@ -259,6 +259,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	
 	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values.tolist()
 	print(cos_sim_idx.flatten()[:N])
+	print(users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'])
 	print(users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values)
 	print(nUsers_with_max_cosine)
 	######################################################################3
