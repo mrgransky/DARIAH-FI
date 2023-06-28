@@ -262,9 +262,8 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
-	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values.tolist()
+	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values#.tolist()
 	print(cos_sim_idx.flatten()[:N])
-	print(users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'])
 	print(users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values)
 	print(nUsers_with_max_cosine)
 	######################################################################3
@@ -355,7 +354,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp: bool=False):
 	if users_tokens_df.index.inferred_type == 'string':
-		users_tokens_df = users_tokens_df.reset_index().rename(columns = {'index':'user_ip'})
+		users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
 
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
@@ -611,7 +610,7 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 	print(f"<> Non-zeros vals: {sp_mtrx.data}")# Viewing stored data (not the zero items)
 	print(f"<> |Non-zero cells|: {sp_mtrx.count_nonzero()}") # Counting nonzeros
 	if df_usr_tk.index.inferred_type == 'string':
-		df_usr_tk = df_usr_tk.reset_index().rename(columns = {'index':'user_ip'})
+		df_usr_tk = df_usr_tk.reset_index()#.rename(columns = {'index':'user_ip'})
 
 	mtrx = sp_mtrx.toarray() # to numpy array
 
