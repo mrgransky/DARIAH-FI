@@ -228,6 +228,11 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if users_tokens_df.index.inferred_type == 'string':
 		users_tokens_df = users_tokens_df.reset_index().rename(columns = {'index':'user_ip'})
 
+	print(users_tokens_df.head(10))
+	print("<>"*50)
+	print(users_tokens_df.head(10))
+	print("#"*50)
+
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
 	for i, v in np.ndenumerate(cos_sim.flatten()):
