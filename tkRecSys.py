@@ -228,7 +228,6 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if users_tokens_df.index.inferred_type == 'string':
 		users_tokens_df = users_tokens_df.reset_index().rename(columns = {'index':'user_ip'})
 
-
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
 	for i, v in np.ndenumerate(cos_sim.flatten()):
@@ -341,6 +340,9 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 	#return
 
 def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp: bool=False):
+	if users_tokens_df.index.inferred_type == 'string':
+		users_tokens_df = users_tokens_df.reset_index().rename(columns = {'index':'user_ip'})
+
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
@@ -591,11 +593,12 @@ def plot_usersInterest_by(token, sp_mtrx, users_tokens_df, bow, norm_sp: bool=Fa
 def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: bool=False):
 	name_="sparse_matrix_user_vs_token"
 	sp_type = "Normalized" if norm_sp else "Original"
-
 	print(f"{f'{sp_type} Sparse Matrix {sp_mtrx.shape}'.center(100,'-')}")
-
 	print(f"<> Non-zeros vals: {sp_mtrx.data}")# Viewing stored data (not the zero items)
 	print(f"<> |Non-zero cells|: {sp_mtrx.count_nonzero()}") # Counting nonzeros
+	if df_usr_tk.index.inferred_type == 'string':
+		df_usr_tk = df_usr_tk.reset_index().rename(columns = {'index':'user_ip'})
+
 	mtrx = sp_mtrx.toarray() # to numpy array
 
 	####################################################
@@ -800,7 +803,7 @@ def main():
 	except:
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
-	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
