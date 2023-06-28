@@ -788,7 +788,8 @@ def main():
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
-
+	topK=args.topTKs
+	
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_*_nUSRs_x_*_nTKs.gz' )[0] )
 	except:
@@ -859,16 +860,19 @@ def main():
 
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
-	if user_token_df.index.inferred_type == 'string':
-		user_token_df = user_token_df.reset_index()#.rename(columns = {'index':'user_ip'})
+
+	# if user_token_df.index.inferred_type == 'string':
+	# 	user_token_df = user_token_df.reset_index()#.rename(columns = {'index':'user_ip'})
 
 	st_t = time.time()
-	for iUser, vUser in enumerate(user_token_df['user_ip'].values.tolist()):
+	# for iUser, vUser in enumerate(user_token_df['user_ip'].values.tolist()):
+	for iUser in range(nUsers):
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
 		if cos_sim[0, idx_cosine] != 0.0:
 			
-			print(f"iUser[{iUser}]: {user_token_df.loc[iUser, 'user_ip']} | {vUser}".center(140, " "))
+			# print(f"iUser[{iUser}]: {user_token_df.loc[iUser, 'user_ip']}".center(120, " "))
+			print(f"iUser[{iUser}]: {user_token_df.index.values.tolist()[iUser]}".center(120, " "))
 			print(f"avgrec (previous): {prev_avgrec.shape} "
 						f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
 						f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
@@ -930,7 +934,7 @@ def main():
 							marker=".",
 						)
 	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}items.png" ), bbox_inches='tight')
+	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}_nitems.png" ), bbox_inches='tight')
 	plt.clf()
 	plt.close(f)
 
