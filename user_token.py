@@ -308,8 +308,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	print(f"Input_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 	print( df_preprocessed.info( verbose=True, memory_usage="deep") )
-	print("<>"*50)
-	print(f">> Preparing USERs DF...")
+	print("<>"*40)
+	print(f">> Getting USERs DF from DF_preprocessed: {df_preprocessed.shape}...")
 	st_t = time.time()
 	users_list = list()
 	search_query_phrase_tokens_list = list()
@@ -388,7 +388,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																				]
 															)
 
-	print(f"Adding Implicit Feedback to USERs {type(user_df)} | {user_df.shape}".center(150, "-"))
+	print(f"<> Adding Implicit Feedback to USERs {type(user_df)} | {user_df.shape}")
 	# st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)

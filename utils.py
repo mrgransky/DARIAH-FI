@@ -655,17 +655,9 @@ def load_pickle(fpath:str="unknown", dftype=None):
 		with open(fpath, 'rb') as f:
 			pkl = dill.load(f)
 
-	# if dftype:
-	# 	pkl = pd.read_pickle(fpath)
-	# 	pkl = pkl.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
-	# 	print(f">> {pkl.shape}")
-	# else:
-	# 	with open(fpath, "rb") as f:
-	# 		pkl = dill.load(f)
-
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Successfully loaded in: {elpt:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(110, " "))
+	print(f"Successfully loaded in: {elpt:.3f} sec. | {type(pkl)} | {fsize:.2f} MB".center(150, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
