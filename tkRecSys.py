@@ -698,6 +698,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	recSysVec_indices = np.array([bow.get(vTKs) for iTKs, vTKs in enumerate(topK_recommended_tokens)])
 	print(topK_recommended_tokens)
 	print(recSysVec_indices)
+	f, ax = plt.subplots()	
 	sc1 = ax.scatter(	x=sparse_df.index, 
 										y=sparse_df.iloc[:, qu_indices], 
 										label=f"{[k for k, v in bow.items() if v==col]} | {col}",
@@ -709,7 +710,6 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 	# plt.rcParams["figure.subplot.right"] = 0.8
 	# quTksLegends = []
-	# f, ax = plt.subplots()	
 	# for ix, col in np.ndenumerate(qu_indices):
 	# 	print(ix, col)
 	# 	sc1 = ax.scatter(	x=sparse_df.index, 
@@ -744,9 +744,9 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	# leg2 = plt.legend(handles=recLegends, loc=(1.03, 0.0), fontsize=8.0, title=f"Top-{topK} Recommended Results\nToken | vbIdx | wightedUserInterest", fancybox=True, shadow=True,)
 	# plt.setp(leg2.get_title(), multialignment='center', fontsize=9.0)
 	
-	# ax.spines[['top', 'right']].set_visible(False)
-	# ax.margins(1e-3, 5e-2)
 
+	ax.spines[['top', 'right']].set_visible(False)
+	ax.margins(1e-3, 5e-2)
 	plt.xticks(	[i for i,_ in enumerate( users_tokens_df.index.values.tolist() ) if i%MODULE==0 ], 
 							[f"{v}" for i, v in enumerate( users_tokens_df.index.values.tolist() ) if i%MODULE==0 ],
 							rotation=90,
