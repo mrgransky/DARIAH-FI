@@ -859,13 +859,16 @@ def main():
 
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
+	if user_token_df.index.inferred_type == 'string':
+		user_token_df = user_token_df.reset_index()#.rename(columns = {'index':'user_ip'})
+
 	st_t = time.time()
 	for iUser, vUser in enumerate(user_token_df['user_ip'].values.tolist()):
 		idx_cosine = np.where(cos_sim_idx.flatten()==iUser)[0][0]
 		#print(f"argmax(cosine_sim): {idx_cosine} => cos[uIDX: {iUser}] = {cos_sim[0, idx_cosine]}")
 		if cos_sim[0, idx_cosine] != 0.0:
 			
-			print(f"iUser[{iUser}]: {user_token_df.loc[iUser, 'user_ip']}".center(140, " "))
+			print(f"iUser[{iUser}]: {user_token_df.loc[iUser, 'user_ip']} | {vUser}".center(140, " "))
 			print(f"avgrec (previous): {prev_avgrec.shape} "
 						f"(min, max_@(iTK), sum): ({prev_avgrec.min()}, {prev_avgrec.max():.5f}_@(iTK[{np.argmax(prev_avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(prev_avgrec) )]}), {prev_avgrec.sum():.1f}) "
 						f"{prev_avgrec} | Allzero: {np.all(prev_avgrec==0.0)}"
