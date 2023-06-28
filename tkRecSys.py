@@ -230,7 +230,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 
 	print(users_tokens_df.head(10))
 	print("<>"*50)
-	print(users_tokens_df.head(10))
+	print(users_tokens_df.tail(10))
 	print("#"*50)
 
 	alphas = np.ones_like(cos_sim.flatten())
