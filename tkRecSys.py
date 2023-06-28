@@ -823,7 +823,9 @@ def main():
 
 	print(f"<> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
-				f"@ idx(s): {np.nonzero(query_vector)[0]} )"
+				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
+				f"TK(s): {[list(bow.keys())[list(bow.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
+				# f"TK(s): {[k for idx in np.nonzero(query_vector)[0] for k, v in bow.items() if v==idx]}"
 			)
 
 	if np.all( query_vector==0.0 ):
@@ -940,6 +942,7 @@ def main():
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 
 	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
 	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)}: {topK_recommended_tokens}")
