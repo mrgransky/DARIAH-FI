@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																)
 
 parser.add_argument('--dsPath', default=dataset_path, type=str) # smallest
-parser.add_argument('--qphrase', default="juha sipilä", type=str)
+parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
@@ -224,19 +224,9 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Lemma(s) : {query_token}")	
-	print(f"B4 reindex: ")
-	print(users_tokens_df.info(verbose=True, memory_usage="deep"))
-	print("¤"*100)
-	print(users_tokens_df.head(10))
-	print("-"*150)
 	
 	if users_tokens_df.index.inferred_type == 'string':
 		users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
-
-	print(users_tokens_df.head(10))
-	print("<>"*50)
-	print(users_tokens_df.tail(10))
-	print("#"*50)
 
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
@@ -262,10 +252,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
-	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values#.tolist()
-	print(cos_sim_idx.flatten()[:N])
-	print(users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values)
-	print(nUsers_with_max_cosine)
+	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
 	######################################################################3
 
 	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
@@ -856,8 +843,7 @@ def main():
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
-	#return
+	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	nUsers, nItems = sp_mat_rf.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
 	#print("#"*120)
