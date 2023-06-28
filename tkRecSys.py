@@ -699,7 +699,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(topK_recommended_tokens)
 	print(recSysVec_indices)
 	f, ax = plt.subplots()	
-	sc1 = ax.scatter(	x=[list(sparse_df.index) for i,_ in enumerate(qu_indices)]
+	sc1 = ax.scatter(	x=[list(sparse_df.index) for i,_ in enumerate(qu_indices)],
 										# x=[sparse_df.index for i,_ in enumerate(qu_indices)],
 										y=sparse_df.iloc[:, qu_indices], 
 										label=list(sparse_df.iloc[:, qu_indices].columns),#f"{[k for k, v in bow.items() if v==col]} | {col}",
