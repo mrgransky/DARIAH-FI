@@ -180,7 +180,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	print(f"<Faiss> {device} Cosine Similarity: "
 			 	f"QUERY: {QU.shape} {type(QU)} {QU.dtype}"
 				f" vs. "
-				f"REFERENCE: {RF.shape} {type(RF)} {RF.dtype}".center(110, " ")
+				f"REFERENCE: {RF.shape} {type(RF)} {RF.dtype}".center(160, " ")
 			)
 	"""
 	RF = normalize(RF, norm="l2", axis=1)
@@ -799,14 +799,14 @@ def main():
 
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
+	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
 		#print(qutk, BoWs.get(qutk))
 		if BoWs.get(qutk):
 			query_vector[BoWs.get(qutk)] += 1.0
 
-	print(f">> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
+	print(f"<> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.nonzero(query_vector)[0]} )"
 			)
