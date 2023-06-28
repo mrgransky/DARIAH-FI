@@ -167,7 +167,7 @@ def get_sparse_matrix(df):
 				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
 			)
 	print("-"*110)
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_tokens_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
+	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 	return sparse_matrix
 
@@ -746,15 +746,16 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df():
-	print(f">> concatinating: ", glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ))
+	user_df_files = glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' )
+	print(f">> concatinating {len(user_df_files)} user_df files:\n{user_df_files}")
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
 	
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
 				f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
-				f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}"
+				f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}".center(150, ' ')
 			)
 	print(f">> groupby...", end="\t")
 	st_t = time.time()
@@ -779,15 +780,8 @@ def main():
 	print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
 
-	# print( glob.glob( dfs_path+'/'+'*nUSRs_*_nTKs_*.gz' ) )
-
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_*_nUSRs_x_*_nTKs.gz' )[0] )
-	# except (IndexError, ValueError) as er:
-	# 	print(f"<!> ERROR: {er} => EXIT!")
-	# 	return
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		user_token_df = get_users_tokens_df()
 
