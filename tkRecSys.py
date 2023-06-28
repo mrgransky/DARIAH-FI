@@ -748,14 +748,8 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def get_users_tokens_df():
 	print(f">> concatinating: ", glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ))
 	st_t = time.time()
-	try:
-		with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-			usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f, dftype=True) ).shape[0]>0  ] )
-	except Exception as e:
-		logging.exception(e)
-		# return
-		sys.exit(1)
-
+	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
@@ -788,9 +782,9 @@ def main():
 	print( glob.glob( dfs_path+'/'+'*nUSRs_*_nTKs_*.gz' ) )
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_nUSRs_*_nTKs_*.gz' )[0] )
-	except (IndexError, ValueError) as er:
-		print(f"<!>ERROR: {er} => EXIT!")
-		return
+	# except (IndexError, ValueError) as er:
+	# 	print(f"<!> ERROR: {er} => EXIT!")
+	# 	return
 	except Exception as e:
 		logging.exception(e)
 		user_token_df = get_users_tokens_df()

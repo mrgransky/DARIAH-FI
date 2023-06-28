@@ -226,7 +226,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {cntFile} ...")	
 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile, dftype=True)
+		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -239,7 +239,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	print(f"\n>> Getting {sqFile} ...")	
 	try:
-		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile, dftype=True)
+		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile)
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -253,7 +253,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {snHWFile} ...")	
 	df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_raw_snHWs, na_action='ignore')
 	try:
-		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile, dftype=True)
+		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile)
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -267,7 +267,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {snFile} ...")	
 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
 	try:
-		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile, dftype=True)
+		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -281,7 +281,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {cntHWFile} ...")	
 	df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile, dftype=True)
+		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -295,7 +295,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {cntPTFile} ...")	
 	df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile, dftype=True)
+		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -442,7 +442,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 
 	# print(f"USERs DF".center(100, ' '))
 	try:
-		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"), dftype=True)
+		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -1206,7 +1206,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def main():
-	df_raw = load_pickle(fpath=args.inputDF, dftype=True)
+	df_raw = load_pickle(fpath=args.inputDF)
 	# analyze_df(df=df_raw, fname=__file__)
 	run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
 
