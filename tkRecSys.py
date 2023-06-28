@@ -641,6 +641,7 @@ def plot_heatmap_sparse(sp_mtrx, df_usr_tk, bow, norm_sp:bool=False, ifb_log10: 
 								#cmap="gist_yarg", # 0: white , max -> black
 								cmap="GnBu",
 								#cmap="gist_gray", # 0: black , max -> white
+								aspect="auto",
 								)
 	cbar = ax.figure.colorbar(im,
 														ax=ax,
