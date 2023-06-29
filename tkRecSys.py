@@ -259,10 +259,15 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	
-	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
+	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
+	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten().max()[:N], 'user_ip'].values
+	print(nUsers_with_max_cosine)
+	print(cos_sim.flatten().max()[:N])
+	print(cos_sim_idx.flatten().max()[:N])
 	######################################################################3
 
-	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
+	# ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
+	ax.scatter(x=cos_sim_idx.flatten().max()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
