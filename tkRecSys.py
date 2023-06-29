@@ -213,8 +213,13 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	print(f"Sklearn Cosine Similarity QUERY: {QU.shape} vs REFERENCE: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
-	sorted_cosine = np.flip(np.sort(cos_sim)) # descending
-	sorted_cosine_idx = np.flip(cos_sim.argsort()) # descending
+
+	# sorted_cosine = np.flip(np.sort(cos_sim)) # descending
+	# sorted_cosine_idx = np.flip(cos_sim.argsort()) # descending
+
+	sorted_cosine = cos_sim
+	sorted_cosine_idx = cos_sim.argsort()
+
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	print(sorted_cosine_idx.flatten()[:17])
 	print(sorted_cosine.flatten()[:17])
