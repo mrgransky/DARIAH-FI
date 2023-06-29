@@ -800,8 +800,13 @@ def main():
 	except:
 		user_token_df = get_users_tokens_df()
 
-	print(user_token_df.head(10))
+	# print(user_token_df.head(10))
+	print(user_token_df)
 	print("#"*100)
+
+
+
+	return
 
 	BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
 	
