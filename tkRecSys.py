@@ -811,7 +811,7 @@ def main():
 	print(user_token_df.sort_index(ascending=False))
 	print("#"*100)
 
-	print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0))
+	print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=1))
 	print("#"*100)
 
 	print("#"*100)
