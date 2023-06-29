@@ -823,11 +823,10 @@ def main():
 		user_token_df = get_users_tokens_df()
 
 	# print(user_token_df.head(10))
-	print(user_token_df)
 
 	user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
 	print(user_token_df['kantakirjasonni'])
-	print(user_token_df.index[user_token_df['kantakirjasonni']].tolist())
+	print(user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist())
 
 	with open('your_file.txt', 'w') as f:
 		for line in user_token_df.index[user_token_df['kantakirjasonni']].tolist():
@@ -844,9 +843,6 @@ def main():
 
 	# print(user_token_df.sort_index(ascending=False))
 	# print("#"*100)
-	pd.set_option('display.max_rows', None)
-	pd.set_option('display.max_columns', 50)
-	pd.set_option('display.width', 1000)
 	print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0).head(500))
 	print("#"*100)
 

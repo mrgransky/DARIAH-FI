@@ -130,6 +130,10 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 # dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs_nikeXY" )
 #dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
 
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', 50)
+pd.set_option('display.width', 1000)
+
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
 
