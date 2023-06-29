@@ -941,7 +941,8 @@ def main():
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 
-	all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	# all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	all_recommended_tks = [k for idx in avgrec.flatten().argsort() for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
