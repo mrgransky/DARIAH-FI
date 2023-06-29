@@ -218,6 +218,8 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	print(sorted_cosine_idx.flatten()[:17])
 	print(sorted_cosine.flatten()[:17])
+	DF = pd.DataFrame(sorted_cosine)
+	DF.to_csv("kantakirjasonni.csv")
 	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
