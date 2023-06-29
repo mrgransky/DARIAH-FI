@@ -8,7 +8,7 @@
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=278,286
+#SBATCH --array=283
 # # # # # # SBATCH --array=280-289
 
 stars=$(printf '%*s' 110 '')
