@@ -940,9 +940,12 @@ def main():
 	print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
-
+	st_t = time.time()
 	# all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
-	all_recommended_tks = [k for idx in avgrec.flatten().argsort() for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	# all_recommended_tks = [k for idx in avgrec.flatten().argsort() for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
+	all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if ( idx not in np.nonzero(query_vector)[0] )]
+
+	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	
 	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
