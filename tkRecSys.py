@@ -853,7 +853,7 @@ def main():
 
 	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 	nUsers, nItems = sp_mat_rf.shape
-	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
+	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))
 	#print("#"*120)
 	#cos = np.random.rand(nUsers).reshape(1, -1)
 	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
@@ -944,10 +944,9 @@ def main():
 	# all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	# all_recommended_tks = [k for idx in avgrec.flatten().argsort() for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if ( vidx not in np.nonzero(query_vector)[0] )]
-
-	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s |nTKs={len(all_recommended_tks)}|".center(120, " "))
 	
-	print(f"TOP-15: (all: {len(all_recommended_tks)}):\n{all_recommended_tks[-15:]}")
+	print(f"TOP-15 / {len(all_recommended_tks)}:\n{all_recommended_tks[-15:]}")
 	topK_recommended_tokens = all_recommended_tks[-(topK+0):]
 	print(f"top-{topK} recommended Tokens: {len(topK_recommended_tokens)}: {topK_recommended_tokens}")
 	topK_recommended_tks_weighted_user_interest = [ avgrec.flatten()[BoWs.get(vTKs)] for iTKs, vTKs in enumerate(topK_recommended_tokens)]
