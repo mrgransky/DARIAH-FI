@@ -218,10 +218,10 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	# sorted_cosine_idx = np.flip(cos_sim.argsort()) # descending
 
 	sorted_cosine = cos_sim
-	sorted_cosine_idx = cos_sim#.argsort()
+	sorted_cosine_idx = cos_sim.flatten().argsort()
 
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
-	print(sorted_cosine_idx.flatten().argsort()[-17:])
+	print(sorted_cosine_idx[-17:])
 	print(sorted_cosine.flatten()[:17])
 	DF = pd.DataFrame(sorted_cosine)
 	DF.to_csv("kantakirjasonni.csv")
