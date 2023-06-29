@@ -261,6 +261,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	
 	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
 	print(cos_sim.flatten().max())
+	print()
 	print(cos_sim_idx.flatten().max())
 	# a = np.argpartition(a, -4)[-4:]
 	print()
@@ -824,9 +825,16 @@ def main():
 	# print(user_token_df.head(10))
 	print(user_token_df)
 
-	user_token_df.loc["ip998", :].to_csv('out.csv')
+	user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
 
-	# return
+	print(user_token_df.index[user_token_df['kantakirjasonni']].tolist())
+	with open('your_file.txt', 'w') as f:
+		for line in user_token_df.index[user_token_df['kantakirjasonni']].tolist():
+			f.write(f"{line}\n")
+
+
+
+	return
 
 	# print(user_token_df.loc["ip4571", :].head(25))
 	# print("#"*100)
