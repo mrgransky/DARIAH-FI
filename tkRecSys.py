@@ -803,7 +803,9 @@ def main():
 	# print(user_token_df.head(10))
 	print(user_token_df)
 
-	user_token_df.to_csv('out.csv')
+	user_token_df.loc["ip4571", :].to_csv('out.csv')
+
+	return
 
 	# print(user_token_df.loc["ip4571", :].head(25))
 	# print("#"*100)
