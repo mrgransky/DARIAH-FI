@@ -942,7 +942,7 @@ def main():
 	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
 	st_t = time.time()
 	# all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if vidx not in np.nonzero(query_vector)[0]]
-	all_recommended_tks = list(map(list(my_dict.keys()).__getitem__, [list(my_dict.values()).index(vidx) for vidx in avgrec.flatten().argsort() if vidx not in np.nonzero(query_vector)[0]]))
+	all_recommended_tks = list(map(list(BoWs.keys()).__getitem__, [list(BoWs.values()).index(vidx) for vidx in avgrec.flatten().argsort() if vidx not in np.nonzero(query_vector)[0]]))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s |nTKs={len(all_recommended_tks)}|".center(120, " "))
 	
 	print(f"TOP-50 / {len(all_recommended_tks)}:\n{all_recommended_tks[-50:]}")
