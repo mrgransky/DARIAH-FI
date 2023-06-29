@@ -802,7 +802,10 @@ def main():
 
 	# print(user_token_df.head(10))
 	print(user_token_df)
+
 	print(user_token_df.loc["ip4571", :].head(25))
+	print(user_token_df.loc["ip4571", :].sort_index(ascending=False))
+
 	print("#"*100)
 
 
