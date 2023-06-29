@@ -943,7 +943,7 @@ def main():
 	st_t = time.time()
 	# all_recommended_tks = [k for idx in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
 	# all_recommended_tks = [k for idx in avgrec.flatten().argsort() for k, v in BoWs.items() if (idx not in np.nonzero(query_vector)[0] and v==idx)]
-	all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if ( idx not in np.nonzero(query_vector)[0] )]
+	all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if ( vidx not in np.nonzero(query_vector)[0] )]
 
 	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	
