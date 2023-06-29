@@ -826,15 +826,16 @@ def main():
 
 	user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
 	print(user_token_df['kantakirjasonni'])
-	print(user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist().sorted)
 
-	with open('your_file.txt', 'w') as f:
-		for line in user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist():
-			f.write(f"{line}\n")
+	# print(user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist().sorted)
+
+	# with open('your_file.txt', 'w') as f:
+	# 	for line in user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist():
+	# 		f.write(f"{line}\n")
 
 
 
-	return
+	# return
 
 	# print(user_token_df.loc["ip4571", :].head(25))
 	# print("#"*100)
