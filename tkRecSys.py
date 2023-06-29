@@ -804,14 +804,14 @@ def main():
 	print(user_token_df)
 
 	# print(user_token_df.loc["ip4571", :].head(25))
-	print("#"*100)
-	print(user_token_df.loc["ip4571", :].sort_index(ascending=False))
-	print("#"*100)
+	# print("#"*100)
+	# print(user_token_df.loc["ip4571", :].sort_index(ascending=False))
+	# print("#"*100)
 
-	print(user_token_df.sort_index(ascending=False))
-	print("#"*100)
-	with pd.set_option('max_rows', 1000):
-		print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0).head(500))
+	# print(user_token_df.sort_index(ascending=False))
+	# print("#"*100)
+	pd.set_option('max_rows', 1000):
+	print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0).head(500))
 	print("#"*100)
 
 	# print("#"*100)
