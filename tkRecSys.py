@@ -210,7 +210,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	QU = QU.reshape(1, -1) #qu_ (nItems,) => (1, nItems) 
-	print(f"Sklearn Cosine Similarity QUERY: {QU.shape} vs REFERENCE: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	print(f"Sklearn Cosine Similarity QUERY[{type(QU)}]: {QU.shape} vs REFERENCE[{type(RF)}]: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
 

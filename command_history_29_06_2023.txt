@@ -1,10 +1,14 @@
 import pandas as pd
 f = "dfs_concat_lemmaMethod_stanza_user_token_sparse_df_4625_nUSRs_x_44758_nTKs.gz"
+wdir = "/scratch/project_2004072/Nationalbiblioteket/dataframes/"
+fpath = wdir+f
 import pandas as pd
 pkl = pd.read_pickle(f)
 pkl.info()
 pkl.loc["ip4571", "kantakirjasonni"]
+pkl.columns.get_loc("kantakirjasonni")
 pkl.index
+list(pkl.index).index("ip1427")
 pkl.head(5)
 pkl[5]
 pkl.head(5)
@@ -82,13 +86,6 @@ pkl.info()
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 ￼
 tempquery=pkl.iloc[0,:].copy()
-tempquery
-￼
-tempquery.iloc[0,:]=0
-￼
-tempquery.iloc[0,:]=0
-￼
-tempquery.iloc[0,:]=0
 tempquery.iloc[:]=0
 tempquery
 tempquery.loc[("helsinki","pörssi","suomi","pankki")]=1
@@ -106,6 +103,7 @@ pkl.mul(tempquery,axis=1)).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1) ) * np
 pkl.mul(tempquery,axis=1).div(   np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum()) )
 pkl.mul(tempquery,axis=1).div(   np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum()) ).isna().sum()
 pkl.mul(tempquery,axis=1).sum(axis=1)
+
 numm = pkl.mul(tempquery,axis=1).sum(axis=1)
 denum = np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum())
 numm /denum
@@ -128,7 +126,9 @@ tempquery.shape
 tempquery.reshape(1, -1)
 tempquery.to_numpy().reshape(1, -1)
 tempquery.to_numpy().reshape(1, -1).shape
+
 my_cs = cosine_similarity(tempquery.to_numpy().reshape(1, -1), pkl.to_numpy())
+
 my_cs
 my_cs.shape
 np.all(my_cs==cs.to_numpy())
@@ -141,10 +141,6 @@ cs
 my_cs
 cs.to_numpy()
 my_cs
-￼
-tempquery.iloc[:]=0
-￼
-tempquery.iloc[:]=0
 tempquery.loc[:]=0
 tempquery
 tempquery.loc["kantakirjasonni"]=1
