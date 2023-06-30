@@ -220,17 +220,18 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	sorted_cosine = cos_sim
 	sorted_cosine_idx = cos_sim.flatten().argsort()
 
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
 	print(sorted_cosine_idx[-17:])
-	print(sorted_cosine.flatten()[:17])
+	print(sorted_cosine.flatten()[-17:])
 	print(sorted_cosine_idx[-1])
 
 	print(list(users_tokens_df.index.values)[sorted_cosine_idx[-1]])
-	
+
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s".center(100, " "))
+
 	print("#"*10)
-	DF = pd.DataFrame(sorted_cosine)
-	DF.to_csv("kantakirjasonni.csv")
-	# plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
+	# DF = pd.DataFrame(sorted_cosine)
+	# DF.to_csv("kantakirjasonni.csv")
+	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
 def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
@@ -274,8 +275,6 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten().max(), 'user_ip'].values
 	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten().max(), 'user_ip']
 	print(nUsers_with_max_cosine)
-	
-
 
 	print(cos_sim.flatten().max()[:N])
 	print(cos_sim_idx.flatten().max()[:N])

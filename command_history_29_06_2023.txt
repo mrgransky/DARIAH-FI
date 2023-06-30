@@ -1,0 +1,176 @@
+import pandas as pd
+f = "dfs_concat_lemmaMethod_stanza_user_token_sparse_df_4625_nUSRs_x_44758_nTKs.gz"
+import pandas as pd
+pkl = pd.read_pickle(f)
+pkl.info()
+pkl.loc["ip4571", "kantakirjasonni"]
+pkl.index
+pkl.head(5)
+pkl[5]
+pkl.head(5)
+pkl.iloc[5, "aaad"]
+pkl.loc[5, "aaad"]
+pkl.index("ip10")
+pkl.index.name
+pkl[pkl.index.name=="ip10"]
+pkl.index
+pkl.index[2630]
+pkl.head(10)
+import numpy as np
+np.sqrt(np.square(pkl).sum(axis=0))
+np.sqrt(np.square(pkl).sum(axis=1))
+np.linalg.norm(pkl)
+pkl.div(pkl.sum(axis=1), axis=0)
+np.linalg.norm(pkl, axis=1)
+np.sum(np.abs(x)**2,axis=-1)**(1./2)
+np.sum(np.abs(pkl)**2,axis=-1)**(1./2)
+np.sqrt(np.square(pkl).sum(axis=0))
+np.sqrt(np.square(pkl).sum(axis=1))
+np.square(pkl)
+np.square(pkl).head()
+np.sqrt(np.square(pkl).sum(axis=1))
+np.sqrt(np.square(pkl).sum(axis=1)).index[2]
+np.sqrt(np.square(pkl.loc["ip1001", :]).sum(axis=1))
+np.sqrt(np.square(pkl.loc["ip1001", :]).sum(axis=1))
+pkl.iloc["ip1001", :]
+pkl.loc["ip1001", :]
+pkl.loc["ip1001", :].sort_values(ascending=False)
+pkl.loc["ip1001", :].sort_values(ascending=False).head(60)
+np.square(pkl.loc["ip1001", :].sort_values(ascending=False))
+pkl.loc["ip1001", :].sort_values(ascending=False).head(60)
+np.square(pkl.loc["ip1001", :].sort_values(ascending=False))
+pkl.loc["ip1001", :].sort_values(ascending=False)**2
+(pkl.loc["ip1001", :]**2).sort_values(ascending=False)
+pkl.loc["ip1001", "vuorisalo"]
+pkl.loc["ip1001", "vuorisalo"]**2
+pkl.astype("float64")
+pkl.loc["ip1001", "vuorisalo"]**2
+(pkl.loc["ip1001", :]**2).sort_values(ascending=False)
+pkl.loc["ip1001", "vuorisalo"]
+pkl = pkl.astype("float64")
+pkl.info()
+(pkl.loc["ip1001", :]**2).sort_values(ascending=False)
+￼
+np.sqrt((pkl**2).sum(axis=1))
+pkl/np.sqrt((pkl**2).sum(axis=1))
+pkl
+np.all(pkl.loc["ip10"]==0.0)
+np.sqrt((pkl**2).sum(axis=1))
+np.all(pkl.loc["ip10"]==0.0)
+np.all(pkl.loc["ip100"]==0.0)
+pkl/np.sqrt((pkl**2).sum(axis=1))
+pkl.isna().sum()
+pkl/np.sqrt((pkl**2).sum(axis=1)).isna().sum()
+pkl/np.sqrt((pkl**2).sum(axis=1))
+￼
+(pkl/np.sqrt((pkl**2).sum(axis=1))).loc[:,"kantakirjasonni"]
+(pkl/np.sqrt((pkl**2).sum(axis=1))).loc[:,"kantakirjasonni"].sort_values(ascending=False)
+(pkl/np.sqrt((pkl**2).sum(axis=1))).loc[:,"kantakirjasonni"].isna().sum()
+(pkl/np.sqrt((pkl**2).sum(axis=1))).loc[:,"kantakirjasonni"].dropna(axis=0)
+np.sqrt((pkl**2).sum(axis=1))
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=1)).loc[:,"kantakirjasonni"].dropna(axis=0)
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=0)).loc[:,"kantakirjasonni"].dropna(axis=0)
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=0)).loc[:,"kantakirjasonni"]
+np.sqrt((pkl**2).sum(axis=1))
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=0))
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=0)).loc[:,"kantakirjasonni"]
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=0)).loc[:,"kantakirjasonni"].sort_values(ascending=False)
+(pkl.div(np.sqrt((pkl**2).sum(axis=1)),axis=0)).loc[:,"kantakirjasonni"].sort_values(ascending=False).head(20)
+pkl.loc["ip1427", :].sort_values(ascending=False).head(100)
+pkl.loc["ip1427", :].sort_values(ascending=False).head(60)
+pkl.info()
+from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
+￼
+tempquery=pkl.iloc[0,:].copy()
+tempquery
+￼
+tempquery.iloc[0,:]=0
+￼
+tempquery.iloc[0,:]=0
+￼
+tempquery.iloc[0,:]=0
+tempquery.iloc[:]=0
+tempquery
+tempquery.loc[("helsinki","pörssi","suomi","pankki")]=1
+tempquery.loc["helsinki","pörssi","suomi","pankki"]=1
+tempquery.loc[["helsinki","pörssi","suomi","pankki"]]=1
+tempquery.value_counts()
+(   pkl.mul(tempquery,axis=1).div(np.sqrt((pkl**2).sum(axis=1)))) / np.sqrt((tempquery**2).sum()))
+pkl.mul(tempquery,axis=1).div(np.sqrt((pkl**2).sum(axis=1)))) / np.sqrt((tempquery**2).sum())
+pkl.mul(tempquery, axis=1).div( np.sqrt( (pkl**2).sum(axis=1) ) ) ) / np.sqrt( ( tempquery**2 ).sum() )
+pkl.mul(tempquery, axis=1).div( np.sqrt( (pkl**2).sum(axis=1) ) )  / np.sqrt( ( tempquery**2 ).sum() )
+(pkl.mul(tempquery,axis=1).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum())
+q
+pkl.mul(tempquery,axis=1).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1) ) * np.sqrt((tempquery**2).sum()
+pkl.mul(tempquery,axis=1)).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1) ) * np.sqrt((tempquery**2).sum()
+pkl.mul(tempquery,axis=1).div(   np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum()) )
+pkl.mul(tempquery,axis=1).div(   np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum()) ).isna().sum()
+pkl.mul(tempquery,axis=1).sum(axis=1)
+numm = pkl.mul(tempquery,axis=1).sum(axis=1)
+denum = np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum())
+numm /denum
+cs = numm / denum
+cs.sort_values(ascending=False)
+pkl.loc["ip2599", :].sort_values(ascending=False)
+pkl.loc["ip2599", :].sort_values(ascending=False).head(20)
+pkl.loc["ip2599", :].sort_values(ascending=False).head(50)
+cs.sort_values(ascending=False)
+my_cs = cosine_similarity(tempquery, pkl.values())
+my_cs = cosine_similarity(tempquery, pkl)
+my_cs = cosine_similarity(tempquery, pkl.values().toarray())
+pkl.head()
+my_cs = cosine_similarity(tempquery, pkl.toarray())
+my_cs = cosine_similarity(tempquery, pkl.to_array())
+my_cs = cosine_similarity(tempquery, pkl.to_numpy())
+tempquery.shape
+my_cs = cosine_similarity(tempquery.reshape(1, -1), pkl.to_numpy())
+tempquery.shape
+tempquery.reshape(1, -1)
+tempquery.to_numpy().reshape(1, -1)
+tempquery.to_numpy().reshape(1, -1).shape
+my_cs = cosine_similarity(tempquery.to_numpy().reshape(1, -1), pkl.to_numpy())
+my_cs
+my_cs.shape
+np.all(my_cs==cs.to_numpy())
+cs
+cs.to_numpy()
+my_cs
+cs.to_numpy()[:12]
+my_cs
+cs
+my_cs
+cs.to_numpy()
+my_cs
+￼
+tempquery.iloc[:]=0
+￼
+tempquery.iloc[:]=0
+tempquery.loc[:]=0
+tempquery
+tempquery.loc["kantakirjasonni"]=1
+my_cs = cosine_similarity(tempquery.reshape(1, -1), pkl.to_numpy())
+my_cs = cosine_similarity(tempquery.to_numpy().reshape(1, -1), pkl.to_numpy())
+
+my_cs.argsort()
+np.sort(my_cs)
+
+denum = np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum())
+cs = numm / denum
+cs
+cs.sort_values(ascending=False)
+np.sort(my_cs)
+pkl.loc["ip1427", :].sort_values(ascending=False)
+pkl.loc["ip1427", :].sort_values(ascending=False).head(50)
+import realine
+import readline
+readline.write_history_file()
+%history -o -n -p -f filename.txt
+readline.write_history_file("fils")
+import os
+os.listdir()
+os.listdir('fils')
+readline.write_history_file("fils.oy")
+readline.write_history_file("fils.py")
+os.listdir('fils')
+os.listdir()
+import readline; print('\n'.join([str(readline.get_history_item(i + 1)) for i in range(readline.get_current_history_length())]))
