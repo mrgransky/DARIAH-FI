@@ -851,6 +851,9 @@ def main():
 	# return
 
 	BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
+	with open("tmpBoWs.json", "w") as fw:
+		json.dump(BoWs, fw, indent=2, ensure_ascii=False)
+
 	print(f"|BoWs|: {len(BoWs)}")
 
 	try:
