@@ -802,16 +802,18 @@ def get_users_tokens_df():
 	st_t = time.time()
 	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float16")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
-	# df_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_{len(user_token_df.columns)}_BoWs.gz")
+	user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
+
 	user_token_df_fname = os.path.join(dfs_path,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
 																							f"{len( usr_tk_raw_dfs.user_ip.value_counts() )}_nUSRs_x_"
 																							f"{len(user_token_df.columns)}_nTKs.gz"
 																		)
+
 	save_pickle(pkl=user_token_df, fname=user_token_df_fname)
 	save_vocab(	vb={c: i for i, c in enumerate(user_token_df.columns)}, 
 							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
 						)
-	user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
+	# user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
 	return user_token_df
 
 def main():
@@ -827,7 +829,7 @@ def main():
 	except:
 		user_token_df = get_users_tokens_df()
 
-	# print(user_token_df.head(10))
+	print(user_token_df.head(10))
 
 	# user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
 	# print(user_token_df['kantakirjasonni'])
@@ -850,7 +852,9 @@ def main():
 
 	# return
 
-	BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
+	# BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
+	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
+
 	with open("tmpBoWs.json", "w") as fw:
 		json.dump(BoWs, fw, indent=2, ensure_ascii=False)
 
