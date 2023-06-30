@@ -829,8 +829,8 @@ def main():
 
 	# print(user_token_df.head(10))
 
-	user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
-	print(user_token_df['kantakirjasonni'])
+	# user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
+	# print(user_token_df['kantakirjasonni'])
 
 	# print(user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist().sorted)
 
