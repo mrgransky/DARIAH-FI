@@ -838,10 +838,6 @@ def main():
 	# 	for line in user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist():
 	# 		f.write(f"{line}\n")
 
-
-
-	# return
-
 	# print(user_token_df.loc["ip4571", :].head(25))
 	# print("#"*100)
 	# print(user_token_df.loc["ip4571", :].sort_index(ascending=False))
@@ -849,12 +845,8 @@ def main():
 
 	# print(user_token_df.sort_index(ascending=False))
 	# print("#"*100)
-	print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0).head(500))
-	print("#"*100)
-
-
-
-
+	# print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0).head(500))
+	# print("#"*100)
 
 	# return
 
