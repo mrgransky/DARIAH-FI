@@ -851,7 +851,8 @@ def main():
 	# return
 
 	BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
-	
+	print(f"|BoWs|: {len(BoWs)}")
+
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
@@ -863,12 +864,13 @@ def main():
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
+
 	for qutk in query_phrase_tk:
-		#print(qutk, BoWs.get(qutk))
+		print(qutk, BoWs.get(qutk))
 		if BoWs.get(qutk):
 			query_vector[BoWs.get(qutk)] += 1.0
 
-	print(f"<> queryVec in vocab\tAllzero: {np.all(query_vector==0.0)} "
+	print(f"<> queryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
 				f"TK(s): {[list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
