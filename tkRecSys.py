@@ -220,9 +220,9 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	sorted_cosine = cos_sim
 	sorted_cosine_idx = cos_sim.flatten().argsort()
 
-	print(sorted_cosine_idx[-17:])
-	print(sorted_cosine.flatten()[-17:])
-	print(sorted_cosine_idx[-1])
+	print(sorted_cosine_idx[-7:])
+	print(sorted_cosine.flatten()[-7:])
+	print(sorted_cosine_idx[-1], sorted_cosine.flatten()[-1], users_tokens_df.index[sorted_cosine_idx[-1]])
 
 	print(list(users_tokens_df.index.values)[sorted_cosine_idx[-1]])
 
