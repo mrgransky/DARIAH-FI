@@ -354,7 +354,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 		nTokens = len(users_tokens_df)
 		print(f"Plotting top-{topTKs} token(s) out of |ALL_UnqTKs = {nTokens}| {usr}".center(110, "-"))
 		ax = users_tokens_df.plot.barh(	x=list(users_tokens_df.loc[usr, :].sort_values(ascending=False).index[:topTKs]), 
-																		y=users_tokens_df.loc[usr, :].sort_values(ascending=False).values.tolist()[:topTKs]
+																		y=users_tokens_df.loc[usr, :].sort_values(ascending=False).values.tolist()[:topTKs],
 																		color="#0000ff",
 																		height=0.4,
 																		)
