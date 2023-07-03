@@ -213,22 +213,20 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	print(f"Sklearn Cosine Similarity QUERY[{type(QU)}]: {QU.shape} vs REFERENCE[{type(RF)}]: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
-
-	# sorted_cosine = np.flip(np.sort(cos_sim)) # descending
-	# sorted_cosine_idx = np.flip(cos_sim.argsort()) # descending
-
-	sorted_cosine = cos_sim
-	sorted_cosine_idx = cos_sim.flatten().argsort()
-
-	print(sorted_cosine_idx[-7:])
-
-	print(sorted_cosine.flatten()[:10])
-
-	print(sorted_cosine_idx[-1], users_tokens_df.index[sorted_cosine_idx[-1]], sorted_cosine.flatten()[sorted_cosine_idx[-1]])
-
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {cos_sim.shape}".center(100, " "))
 
-	print("#"*10)
+	sorted_cosine = np.flip(np.sort(cos_sim)) # descending
+	sorted_cosine_idx = np.flip(cos_sim.argsort()) # descending
+
+	# sorted_cosine = cos_sim
+	# sorted_cosine_idx = cos_sim.flatten().argsort()
+	# elp_t = time.time()
+
+	# sorted_cosine_idx = cos_sim.flatten().argsort()
+	# print(sorted_cosine_idx[-7:])
+	# print(sorted_cosine.flatten()[:10])
+	# print(sorted_cosine_idx[-1], users_tokens_df.index[sorted_cosine_idx[-1]], sorted_cosine.flatten()[sorted_cosine_idx[-1]])
+
 	# DF = pd.DataFrame(sorted_cosine)
 	# DF.to_csv("kantakirjasonni.csv")
 	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
@@ -238,8 +236,8 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	sp_type = "Normalized" if norm_sp else "Original"
 	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Lemma(s) : {query_token}")	
 	
-	if users_tokens_df.index.inferred_type == 'string':
-		users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
+	# if users_tokens_df.index.inferred_type == 'string':
+	# 	users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
 
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
@@ -264,29 +262,20 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
-	
 	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
-	print(cos_sim.flatten().max())
-	print()
-	print(cos_sim_idx.flatten().max())
-	# a = np.argpartition(a, -4)[-4:]
-	print()
-
-	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten().max(), 'user_ip'].values
-	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten().max(), 'user_ip']
+	nUsers_with_max_cosine = users_tokens_df.index[cos_sim_idx[:N]]
 	print(nUsers_with_max_cosine)
 
-	print(cos_sim.flatten().max()[:N])
-	print(cos_sim_idx.flatten().max()[:N])
+	print(cos_sim.flatten()[:N])
+	print(cos_sim_idx.flatten()[:N])
 	######################################################################3
 
-	# ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
-	ax.scatter(x=cos_sim_idx.flatten().max()[:N], y=cos_sim.flatten().max()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
+	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
 	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
-	plt.xticks(	[i for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0], 
-							[f"{users_tokens_df.loc[i, 'user_ip']}" for i in range(len(users_tokens_df["user_ip"])) if i%MODULE==0],
+	plt.xticks(	[i for i in range(len(users_tokens_df.index)) if i%MODULE==0], 
+							[f"{users_tokens_df.index.tolist()[i]}" for i in range(len(users_tokens_df.index)) if i%MODULE==0],
 							rotation=90,
 							fontsize=10.0,
 							)
