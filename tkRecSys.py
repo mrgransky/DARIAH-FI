@@ -260,7 +260,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
-	nUsers_with_max_cosine = users_tokens_df.index.tolist()[cos_sim_idx.flatten()[:N]]
+	nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])
 
 	print(cos_sim_idx.flatten()[:N], nUsers_with_max_cosine, cos_sim.flatten()[:N], )
 	
