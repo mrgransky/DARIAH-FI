@@ -353,8 +353,8 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 		print(usr)
 		nTokens = len(users_tokens_df)
 		print(f"Plotting top-{topTKs} token(s) out of |ALL_UnqTKs = {nTokens}| {usr}".center(110, "-"))
-		ax = users_tokens_df.plot.barh(	x=list(users_tokens_df.loc[urs, :].sort_values(ascending=False).index[:topTKs]), 
-																		y=pkl.users_tokens_df[urs, :].sort_values(ascending=False).values[:topTKs],
+		ax = users_tokens_df.plot.barh(	x=list(users_tokens_df.loc[usr, :].sort_values(ascending=False).index[:topTKs]), 
+																		y=pkl.users_tokens_df[usr, :].sort_values(ascending=False).values[:topTKs],
 																		color="#0000ff",
 																		height=0.4,
 																		)
@@ -375,11 +375,9 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 										label_type='edge',
 									)
 		ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
-		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{usr}_topTKs{nTokens}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
+		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{usr}_topTKs{nTokens}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 		plt.clf()
 		plt.close(f)
-
-
 
 	print(f"DONE".center(100, "-"))
 
