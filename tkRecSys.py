@@ -236,9 +236,6 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	sp_type = "Normalized" if norm_sp else "Original"
 	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Lemma(s) : {query_token}")	
 	
-	# if users_tokens_df.index.inferred_type == 'string':
-	# 	users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
-
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
 	for i, v in np.ndenumerate(cos_sim.flatten()):
@@ -259,10 +256,9 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
-	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
-	nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])
+	# nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 
-	print(cos_sim_idx.flatten()[:N], nUsers_with_max_cosine, cos_sim.flatten()[:N], )
 	
 	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
@@ -314,11 +310,9 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 def get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df:pd.DataFrame, N:int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
-	print(f"\n< {N} > user(s) with max cosine similarity:", end=" ")
-
-	topN_max_cosine = cos_sim.flatten()[:N]
-	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values.tolist()
-	print(nUsers_with_max_cosine, topN_max_cosine)
+	print(f"\n< {N} > user(s) with max CS:", end=" ")
+	nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])	
+	print(cos_sim_idx.flatten()[:N], nUsers_with_max_cosine, cos_sim.flatten()[:N], )
 	return nUsers_with_max_cosine
 
 def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp: bool=False):
@@ -348,21 +342,45 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 	#return
 
-def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp: bool=False):
-	if users_tokens_df.index.inferred_type == 'string':
-		users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
+def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=20, norm_sp: bool=False):
+	sp_type = "Normalized" if norm_sp else "Original"
+	# if users_tokens_df.index.inferred_type == 'string':
+	# 	users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
 
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	for _, usr in enumerate(nUsers_with_max_cosine):
-		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
-		plot_tokens_by(	userIP=usr, 
-										tks_name=tokens_names, 
-										tks_value_all=tokens_values_total, 
-										tks_value_separated=tokens_values_separated, 
-										topTKs=20,
-										bow=bow,
-										norm_sp=norm_sp,
+		f, ax = plt.subplots()
+		print(usr)
+		nTokens = len(users_tokens_df)
+		print(f"Plotting top-{topTKs} token(s) out of |ALL_UnqTKs = {nTokens}| {usr}".center(110, "-"))
+		ax = users_tokens_df.plot.barh(	x=list(pkl.loc[urs, :].sort_values(ascending=False).index[:topTKs]), 
+																		y=pkl.loc[urs, :].sort_values(ascending=False).values[:topTKs],
+																		color="#0000ff",
+																		height=0.4,
+																		)
+
+		ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
+		ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
+		ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
+		ax.invert_yaxis()  # labels read top-to-botto
+		ax.set_title(f'Top-{topTKs} Unique Tokens / |ALL_UnqTKs = {nTokens}| {userIP}', fontsize=10)
+		ax.margins(1e-2, 5e-3)
+		ax.spines[['top', 'right']].set_visible(False)
+		for container in ax.containers:
+			ax.bar_label(	container, 
+										#rotation=45, # no rotation for barh 
+										fontsize=6.0,
+										padding=1.5,
+										fmt='%.3f', #if norm_sp else '%.2f',
+										label_type='edge',
 									)
+		ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
+		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{usr}_topTKs{nTokens}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
+		plt.clf()
+		plt.close(f)
+
+
+
 	print(f"DONE".center(100, "-"))
 
 def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp: bool=False):
@@ -862,7 +880,8 @@ def main():
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+
 	nUsers, nItems = sp_mat_rf.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))
 	#print("#"*120)

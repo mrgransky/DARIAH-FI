@@ -143,8 +143,10 @@ cs = numm / denum
 cs
 cs.sort_values(ascending=False)
 np.sort(my_cs)
+
 pkl.loc["ip1427", :].sort_values(ascending=False)
 pkl.loc["ip1427", :].sort_values(ascending=False).head(50)
+
 import realine
 import readline
 readline.write_history_file()

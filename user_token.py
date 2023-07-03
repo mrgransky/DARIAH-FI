@@ -684,6 +684,9 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
 	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Token(s) : {query_token}")	
+	if users_tokens_df.index.inferred_type == 'string':
+		users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
+
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
 	for i, v in np.ndenumerate(cos_sim.flatten()):
