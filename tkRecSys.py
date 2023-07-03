@@ -348,11 +348,14 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 	# 	users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
 
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
+	nTokens = len(users_tokens_df.columns)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		f, ax = plt.subplots()
 		print(usr)
-		nTokens = len(users_tokens_df)
-		print(f"Plotting top-{topTKs} token(s) out of |ALL_UnqTKs = {nTokens}| {usr}".center(110, "-"))
+		utDF_s = users_tokens_df.loc[usr, :].sort_values(ascending=False)
+		utDF_s_positives = utDF_s[utDF_s > 0]
+		topTKs = len(utDF_s_positives) if len(utDF_s_positives) < topTKs else topTKs
+		print(f"Plotting top-{topTKs} token(s) out of |TKs[ > 0] = {len(utDF_s_positives)}| {usr}".center(110, "-"))
 		ax.barh(list(users_tokens_df.loc[usr, :].sort_values(ascending=False).index[:topTKs]), 
 						users_tokens_df.loc[usr, :].sort_values(ascending=False).values.tolist()[:topTKs],
 						color="#0000ff",
@@ -361,9 +364,9 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 
 		ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
 		ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
-		ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
+		ax.set_xlabel(f'{usr} UserInterest {sp_type} Sparse Matrix', fontsize=10.0)
 		ax.invert_yaxis()  # labels read top-to-botto
-		ax.set_title(f'Top-{topTKs} Unique Tokens / |ALL_UnqTKs = {nTokens}| {usr}', fontsize=10)
+		ax.set_title(f'Top-{topTKs} Unique Tokens / |TKs[ > 0] = {len(utDF_s_positives)}| {usr}', fontsize=10)
 		ax.margins(1e-2, 5e-3)
 		ax.spines[['top', 'right']].set_visible(False)
 		for container in ax.containers:
@@ -371,7 +374,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 										#rotation=45, # no rotation for barh 
 										fontsize=6.0,
 										padding=1.5,
-										fmt='%.3f', #if norm_sp else '%.2f',
+										# fmt='%.3f', #if norm_sp else '%.2f',
 										label_type='edge',
 									)
 		ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
