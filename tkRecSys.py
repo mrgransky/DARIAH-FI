@@ -256,20 +256,16 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 							marker=".",
 						)
 	
-
-	######################################################################3
-	#TODO: must be removed and replaced with!
 	N=3
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
-	nUsers_with_max_cosine = users_tokens_df.index[cos_sim_idx[:N]]
+	nUsers_with_max_cosine = users_tokens_df.index[cos_sim_idx.flatten()[:N]]
 	print(nUsers_with_max_cosine)
 
 	print(cos_sim.flatten()[:N])
 	print(cos_sim_idx.flatten()[:N])
-	######################################################################3
-
+	
 	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
