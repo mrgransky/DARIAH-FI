@@ -260,11 +260,9 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	# nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values
-	nUsers_with_max_cosine = users_tokens_df.index[cos_sim_idx.flatten()[:N]]
-	print(nUsers_with_max_cosine)
+	nUsers_with_max_cosine = users_tokens_df.index.tolist()[cos_sim_idx.flatten()[:N]]
 
-	print(cos_sim.flatten()[:N])
-	print(cos_sim_idx.flatten()[:N])
+	print(cos_sim_idx.flatten()[:N], nUsers_with_max_cosine, cos_sim.flatten()[:N], )
 	
 	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
@@ -813,35 +811,8 @@ def main():
 	except:
 		user_token_df = get_users_tokens_df()
 
-	print(user_token_df.head(10))
-
-	# user_token_df.loc[:, "kantakirjasonni"].to_csv('out.csv')
-	# print(user_token_df['kantakirjasonni'])
-
-	# print(user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist().sorted)
-
-	# with open('your_file.txt', 'w') as f:
-	# 	for line in user_token_df.index[user_token_df.loc[:, "kantakirjasonni"]].tolist():
-	# 		f.write(f"{line}\n")
-
-	# print(user_token_df.loc["ip4571", :].head(25))
-	# print("#"*100)
-	# print(user_token_df.loc["ip4571", :].sort_index(ascending=False))
-	# print("#"*100)
-
-	# print(user_token_df.sort_index(ascending=False))
-	# print("#"*100)
-	# print(user_token_df.loc["ip4571", :].sort_values(ascending=False, axis=0).head(500))
-	# print("#"*100)
-
-	# return
-
-	# BoWs = {c: i for i, c in enumerate(user_token_df.columns.difference(['user_ip']))}
+	print(user_token_df.head(20))
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
-
-	with open("tmpBoWs.json", "w") as fw:
-		json.dump(BoWs, fw, indent=2, ensure_ascii=False)
-
 	print(f"|BoWs|: {len(BoWs)}")
 
 	try:
@@ -854,10 +825,10 @@ def main():
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
-	query_vector = np.zeros(len(BoWs))
 
+	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
-		print(qutk, BoWs.get(qutk))
+		# print(qutk, BoWs.get(qutk))
 		if BoWs.get(qutk):
 			query_vector[BoWs.get(qutk)] += 1.0
 
@@ -1019,41 +990,6 @@ def main():
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
 	plot_tokens_distribution(sp_mat_rf, user_token_df, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
-
-def practice(topK=5):
-	nUsers = 5
-	nItems = 11
-	cos = np.random.rand(nUsers).reshape(1, -1)
-	usr_itm = np.random.randint(100, size=(nUsers, nItems))
-	avgrec = np.zeros((1,nItems))
-	print(f"> avgrec{avgrec.shape}:\n{avgrec}")
-	print()
-	
-	print(f"> cos{cos.shape}:\n{cos}")
-	print()
-
-	print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
-	print("#"*100)
-
-	for iUser in range(nUsers):
-		print(f"USER: {iUser}")
-		userInterest = usr_itm[iUser, :]
-		print(f"<> userInterest{userInterest.shape}:\n{userInterest}")
-		userInterest = userInterest / np.linalg.norm(userInterest)
-		print(f"<> userInterest_norm{userInterest.shape}:\n{userInterest}")
-		print(f"cos[{iUser}]: {cos[0, iUser]}")
-		print(f"<> avgrec (B4):{avgrec.shape}\n{avgrec}")
-		avgrec = avgrec + cos[0, iUser] * userInterest
-		print(f"<> avgrec (After):{avgrec.shape}\n{avgrec}")
-		print()
-
-	print(f"-"*100)
-	avgrec = avgrec / np.sum(cos)
-	print(f"avgrec:{avgrec.shape}\n{avgrec}")
-	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()
-	topk_matches_avgRecSys = np.sort(avgrec.flatten())
-
-	print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 
 if __name__ == '__main__':
 	os.system("clear")

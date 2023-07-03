@@ -1,9 +1,9 @@
+import numpy as np
 import pandas as pd
 f = "dfs_concat_lemmaMethod_stanza_user_token_sparse_df_4625_nUSRs_x_44758_nTKs.gz"
 wdir = "/scratch/project_2004072/Nationalbiblioteket/dataframes/"
 fpath = wdir+f
-import pandas as pd
-pkl = pd.read_pickle(f)
+pkl = pd.read_pickle(fpath)
 pkl.info()
 pkl.loc["ip4571", "kantakirjasonni"]
 pkl.columns.get_loc("kantakirjasonni")
@@ -20,7 +20,6 @@ pkl[pkl.index.name=="ip10"]
 pkl.index
 pkl.index[2630]
 pkl.head(10)
-import numpy as np
 np.sqrt(np.square(pkl).sum(axis=0))
 np.sqrt(np.square(pkl).sum(axis=1))
 np.linalg.norm(pkl)
@@ -114,14 +113,6 @@ my_cs = cosine_similarity(tempquery, pkl.values())
 my_cs = cosine_similarity(tempquery, pkl)
 my_cs = cosine_similarity(tempquery, pkl.values().toarray())
 pkl.head()
-my_cs = cosine_similarity(tempquery, pkl.toarray())
-my_cs = cosine_similarity(tempquery, pkl.to_array())
-my_cs = cosine_similarity(tempquery, pkl.to_numpy())
-tempquery.shape
-my_cs = cosine_similarity(tempquery.reshape(1, -1), pkl.to_numpy())
-tempquery.shape
-tempquery.reshape(1, -1)
-tempquery.to_numpy().reshape(1, -1)
 tempquery.to_numpy().reshape(1, -1).shape
 
 my_cs = cosine_similarity(tempquery.to_numpy().reshape(1, -1), pkl.to_numpy())
