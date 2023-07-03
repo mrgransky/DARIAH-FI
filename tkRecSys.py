@@ -363,7 +363,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 		ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 		ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
 		ax.invert_yaxis()  # labels read top-to-botto
-		ax.set_title(f'Top-{topTKs} Unique Tokens / |ALL_UnqTKs = {nTokens}| {userIP}', fontsize=10)
+		ax.set_title(f'Top-{topTKs} Unique Tokens / |ALL_UnqTKs = {nTokens}| {usr}', fontsize=10)
 		ax.margins(1e-2, 5e-3)
 		ax.spines[['top', 'right']].set_visible(False)
 		for container in ax.containers:
