@@ -225,7 +225,6 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 	print(sorted_cosine.flatten()[:10])
 
 	print(sorted_cosine_idx[-1], users_tokens_df.index[sorted_cosine_idx[-1]], sorted_cosine.flatten()[sorted_cosine_idx[-1]])
-	print( list( users_tokens_df.index ).index("ip1427") )
 
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {cos_sim.shape}".center(100, " "))
 
