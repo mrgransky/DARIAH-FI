@@ -257,7 +257,7 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	# print(f"URL: {URL:<150}", end="")
+	print(f"URL: {URL:<150}")
 	# up_url = re.sub(r'amp;', '', URL)
 	# up_url = re.sub(r'\?page=(\d+)', r'&page=(\d+)', up_url)
 	up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', re.sub(r'amp;', '', URL )) #\1 refers to matched group (page=\d+), ensuring that it's included in modified URL
@@ -274,8 +274,8 @@ def scrap_newspaper_content_page(URL):
 	NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
 	NWP_CONTENT_RESULTS["page"] = parameters.get("page")
 
-	# print(f"parsed_url : {parsed_url}")
-	# print(json.dumps(parameters, indent=2, ensure_ascii=False))
+	print(f"parsed_url : {parsed_url}")
+	print(json.dumps(parameters, indent=2, ensure_ascii=False))
 
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 	# print(f"<> page-X.txt: {txt_pg_url}")
