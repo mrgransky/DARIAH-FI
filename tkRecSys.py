@@ -895,7 +895,7 @@ def main():
 	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
 	#print("#"*100)
 
-	assert len(user_token_df.index.values.tolist()) == nUsers, f"df_idx: {len(user_token_df.index.values.tolist())} != nUsers: {nUsers}"
+	assert len(user_token_df.index) == nUsers, f"df_idx: {len(user_token_df.index)} != nUsers: {nUsers}"
 
 	st_t = time.time()
 	for iUser in range(nUsers):

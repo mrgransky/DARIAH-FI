@@ -138,7 +138,8 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	parsing_t = time.time()
 	print(f">> Scraping Newspaper Content Pages...")
 	st_nwp_content_t = time.time()
-	df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
+	# df["nwp_content_referer"] = df[df.referer.str.contains('term=')]["referer"]
+	df["nwp_content_referer"] = df.referer.map(lambda x: x if re.search(r'\/binding\/(\d+)', x) else np.nan, na_action="ignore",)
 	df["nwp_content_results"] = df["nwp_content_referer"].map(scrap_newspaper_content_page, na_action='ignore')
 	print(f"{f'Total Elapsed_t [Newspaper Content Pages]: {time.time()-st_nwp_content_t:.2f} s'.center(120, ' ')}")
 
