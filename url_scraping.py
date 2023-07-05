@@ -260,7 +260,7 @@ def scrap_newspaper_content_page(URL):
 	# print(f"URL: {URL:<150}", end=" ")
 	print(f"URL: {URL}")
 	URL = re.sub(r'amp;', '', URL)
-	if re.search(r'(\/binding\/\d+\?page=\d+)', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
+	if re.search(r'\/\w+\/binding\/\d+\?page=\d+', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
 		print(f"pass")
 		up_url = URL
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'page=\d+', URL):
@@ -269,11 +269,12 @@ def scrap_newspaper_content_page(URL):
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and not re.search(r'page=\d+', URL):
 		print(f"must add &page=1")
 		up_url = f"{URL}&page=1"
-	elif re.search(r'\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL):
+	elif re.search(r'\/\w+\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL) and not re.search(r'\/\w+\/binding\/\d+\/\w+', URL):
 		print(f">> add ?page=1")
 		up_url = f"{URL}?page=1"
 	else:
-		print(f">> {URL} error!=> exit")
+		print(f">> error!=> exit")
+		up_url = None
 		sys.exit()
 
 	if checking_(up_url) is None:
