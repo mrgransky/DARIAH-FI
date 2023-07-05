@@ -344,18 +344,14 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=20, norm_sp: bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
-	# if users_tokens_df.index.inferred_type == 'string':
-	# 	users_tokens_df = users_tokens_df.reset_index()#.rename(columns = {'index':'user_ip'})
-
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	nTokens = len(users_tokens_df.columns)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		f, ax = plt.subplots()
-		print(usr)
 		utDF_s = users_tokens_df.loc[usr, :].sort_values(ascending=False)
 		utDF_s_positives = utDF_s[utDF_s > 0]
 		topTKs = len(utDF_s_positives) if len(utDF_s_positives) < topTKs else topTKs
-		print(f"Plotting top-{topTKs} token(s) out of |TKs[ > 0] = {len(utDF_s_positives)}| {usr}".center(110, "-"))
+		print(f"Plotting top-{topTKs} token(s) / |TKs[ > 0.0] = {len(utDF_s_positives)}| {usr}".center(110, "-"))
 		ax.barh(list(users_tokens_df.loc[usr, :].sort_values(ascending=False).index[:topTKs]), 
 						users_tokens_df.loc[usr, :].sort_values(ascending=False).values.tolist()[:topTKs],
 						color="#0000ff",
@@ -366,7 +362,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 		ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
 		ax.set_xlabel(f'{usr} UserInterest {sp_type} Sparse Matrix', fontsize=10.0)
 		ax.invert_yaxis()  # labels read top-to-botto
-		ax.set_title(f'Top-{topTKs} Unique Tokens / |TKs[ > 0] = {len(utDF_s_positives)}| {usr}', fontsize=10)
+		ax.set_title(f'Top-{topTKs} Tokens / |TKs[ > 0.0] = {len(utDF_s_positives)}| {usr}', fontsize=10)
 		ax.margins(1e-2, 5e-3)
 		ax.spines[['top', 'right']].set_visible(False)
 		for container in ax.containers:
@@ -378,7 +374,7 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 										label_type='edge',
 									)
 		ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
-		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{usr}_topTKs{nTokens}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
+		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{usr}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 		plt.clf()
 		plt.close(f)
 
@@ -881,7 +877,7 @@ def main():
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=10, norm_sp=normalize_sp_mtrx)
 
 	nUsers, nItems = sp_mat_rf.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))

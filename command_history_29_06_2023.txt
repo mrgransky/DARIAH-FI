@@ -5,6 +5,7 @@ wdir = "/scratch/project_2004072/Nationalbiblioteket/dataframes/"
 fpath = wdir+f
 pkl = pd.read_pickle(fpath)
 pkl.info()
+pkl = pkl.astype("float64")
 pkl.loc["ip4571", "kantakirjasonni"]
 pkl.columns.get_loc("kantakirjasonni")
 pkl.index
@@ -50,7 +51,6 @@ pkl.astype("float64")
 pkl.loc["ip1001", "vuorisalo"]**2
 (pkl.loc["ip1001", :]**2).sort_values(ascending=False)
 pkl.loc["ip1001", "vuorisalo"]
-pkl = pkl.astype("float64")
 pkl.info()
 (pkl.loc["ip1001", :]**2).sort_values(ascending=False)
 ￼
@@ -83,36 +83,21 @@ pkl.loc["ip1427", :].sort_values(ascending=False).head(100)
 pkl.loc["ip1427", :].sort_values(ascending=False).head(60)
 pkl.info()
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
-￼
+
 tempquery=pkl.iloc[0,:].copy();tempquery.iloc[:]=0
 tempquery
 tempquery.loc[["helsinki","pörssi","suomi","pankki"]]=1
 tempquery.value_counts()
-(   pkl.mul(tempquery,axis=1).div(np.sqrt((pkl**2).sum(axis=1)))) / np.sqrt((tempquery**2).sum()))
-pkl.mul(tempquery,axis=1).div(np.sqrt((pkl**2).sum(axis=1)))) / np.sqrt((tempquery**2).sum())
-pkl.mul(tempquery, axis=1).div( np.sqrt( (pkl**2).sum(axis=1) ) ) ) / np.sqrt( ( tempquery**2 ).sum() )
-pkl.mul(tempquery, axis=1).div( np.sqrt( (pkl**2).sum(axis=1) ) )  / np.sqrt( ( tempquery**2 ).sum() )
-(pkl.mul(tempquery,axis=1).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum())
-q
-pkl.mul(tempquery,axis=1).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1) ) * np.sqrt((tempquery**2).sum()
-pkl.mul(tempquery,axis=1)).sum(axis=1)).div( np.sqrt((pkl**2).sum(axis=1) ) * np.sqrt((tempquery**2).sum()
-pkl.mul(tempquery,axis=1).div(   np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum()) )
-pkl.mul(tempquery,axis=1).div(   np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum()) ).isna().sum()
-pkl.mul(tempquery,axis=1).sum(axis=1)
+
 
 numm = pkl.mul(tempquery,axis=1).sum(axis=1)
 denum = np.sqrt((pkl**2).sum(axis=1)) * np.sqrt((tempquery**2).sum())
-numm /denum
 cs = numm / denum
 cs.sort_values(ascending=False)
+
 pkl.loc["ip2599", :].sort_values(ascending=False)
 pkl.loc["ip2599", :].sort_values(ascending=False).head(20)
-pkl.loc["ip2599", :].sort_values(ascending=False).head(50)
 cs.sort_values(ascending=False)
-my_cs = cosine_similarity(tempquery, pkl.values())
-my_cs = cosine_similarity(tempquery, pkl)
-my_cs = cosine_similarity(tempquery, pkl.values().toarray())
-pkl.head()
 tempquery.to_numpy().reshape(1, -1).shape
 
 my_cs = cosine_similarity(tempquery.to_numpy().reshape(1, -1), pkl.to_numpy())
@@ -125,11 +110,8 @@ cs.to_numpy()
 my_cs
 cs.to_numpy()[:12]
 my_cs
-cs
-my_cs
-cs.to_numpy()
-my_cs
-tempquery.loc[:]=0
+
+tempquery=pkl.iloc[0,:].copy();tempquery.iloc[:]=0
 tempquery
 tempquery.loc["kantakirjasonni"]=1
 my_cs = cosine_similarity(tempquery.reshape(1, -1), pkl.to_numpy())
