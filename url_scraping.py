@@ -257,8 +257,8 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	# print(f"URL: {URL:<150}", end=" ")
-	print(f"URL: {URL}")
+	print(f"URL: {URL:<150}", end=" ")
+	# print(f"URL: {URL}")
 	URL = re.sub(r'amp;', '', URL)
 	if re.search(r'\/\w+\/binding\/\d+\?page=\d+', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
 		print(f"pass")
@@ -275,7 +275,7 @@ def scrap_newspaper_content_page(URL):
 	else:
 		print(f">> error!=> exit")
 		up_url = None
-		sys.exit()
+		# sys.exit()
 
 	if checking_(up_url) is None:
 		return
