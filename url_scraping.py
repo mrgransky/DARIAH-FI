@@ -257,12 +257,25 @@ def scrap_ocr_page_content(URL):
 	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
 
 def scrap_newspaper_content_page(URL):
-	print(f"URL: {URL:<150}")
-	# up_url = re.sub(r'amp;', '', URL)
-	# up_url = re.sub(r'\?page=(\d+)', r'&page=(\d+)', up_url)
-	up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', re.sub(r'amp;', '', URL )) #\1 refers to matched group (page=\d+), ensuring that it's included in modified URL
+	# print(f"URL: {URL:<150}", end=" ")
+	print(f"URL: {URL}")
+	URL = re.sub(r'amp;', '', URL)
+	if re.search(r'(\/binding\/\d+\?page=\d+)', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
+		print(f"pass")
+		up_url = URL
+	elif re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'page=\d+', URL):
+		print(f"{URL} does not contain &page=\d+")
+		up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', URL)
+	elif re.search(r'(\/binding\/\d+\?term=)', URL) and not re.search(r'page=\d+', URL):
+		print(f"must add &page=1")
+		up_url = f"{URL}&page=1"
+	elif re.search(r'\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL):
+		print(f">> add ?page=1")
+		up_url = f"{URL}?page=1"
+	else:
+		print(f">> {URL} error!=> exit")
+		sys.exit()
 
-	up_url = up_url if re.search(r'page=(\d+)', up_url) else f"{up_url}&page=1"
 	if checking_(up_url) is None:
 		return
 	print(f"upd_URL: {up_url:<150}", end=" ")
