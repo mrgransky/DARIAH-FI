@@ -267,19 +267,20 @@ def scrap_newspaper_content_page(URL):
 		print(f"{URL} does not contain &page=\d+")
 		up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', URL)
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and not re.search(r'page=\d+', URL):
-		print(f"must add &page=1")
+		print(f">> adding &page=1")
 		up_url = f"{URL}&page=1"
-	elif re.search(r'\/\w+\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL) and not re.search(r'\/\w+\/binding\/\d+\/\w+', URL):
-		print(f">> add ?page=1")
+	elif re.search(r'\/\w+\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL) and not re.search(r'\/\w+\/binding\/\d+[^\w\s]', URL):
+		print(f">> adding ?page=1")
 		up_url = f"{URL}?page=1"
 	else:
-		print(f">> error!=> exit")
+		print(f"<!> Error! => return none!")
 		up_url = None
+		# return
 		# sys.exit()
 
-	if checking_(up_url) is None:
+	if up_url is None or checking_(up_url) is None:
 		return
-	print(f"upd_URL: {up_url:<150}", end=" ")
+	print(f"upd_URL: {up_url:<150}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
 	if not parameters:
 		return
