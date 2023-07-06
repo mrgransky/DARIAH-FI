@@ -280,7 +280,7 @@ def scrap_newspaper_content_page(URL):
 
 	if up_url is None or checking_(up_url) is None:
 		return
-	print(f"upd_URL: {up_url:<150}")
+	# print(f"upd_URL: {up_url:<150}")
 	parsed_url, parameters = get_parsed_url_parameters(up_url)
 	if not parameters:
 		return
@@ -289,8 +289,8 @@ def scrap_newspaper_content_page(URL):
 	NWP_CONTENT_RESULTS["parsed_term"] = parameters.get("term")
 	NWP_CONTENT_RESULTS["page"] = parameters.get("page")
 
-	print(f"parsed_url : {parsed_url}")
-	print(json.dumps(parameters, indent=2, ensure_ascii=False))
+	# print(f"parsed_url : {parsed_url}")
+	# print(json.dumps(parameters, indent=2, ensure_ascii=False))
 
 	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
 	# print(f"<> page-X.txt: {txt_pg_url}")
