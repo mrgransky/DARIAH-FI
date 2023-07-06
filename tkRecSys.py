@@ -373,94 +373,11 @@ def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topT
 										# fmt='%.3f', #if norm_sp else '%.2f',
 										label_type='edge',
 									)
-		ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
+		ax.set_xlim(right=ax.get_xlim()[1]+5.0, auto=True)
 		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{usr}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
 		plt.clf()
 		plt.close(f)
-
 	print(f"DONE".center(100, "-"))
-
-def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp: bool=False):
-	sp_type = "Normalized" if norm_sp else "Original"
-	nTokens_orig = len(tks_name)
-
-	if len(tks_name) > topTKs:
-		tks_name = tks_name[:topTKs]
-		tks_value_all = tks_value_all[:topTKs]
-		tks_value_separated = [elem[:topTKs] for elem in tks_value_separated]
-
-	nTokens = len(tks_name)
-	print(f"Plotting top-{nTokens} token(s) out of |ALL_UnqTKs = {nTokens_orig}| {userIP}".center(110, "-"))
-
-	f, ax = plt.subplots()
-	ax.barh(tks_name, 
-					tks_value_all,
-					color="#0000ff",
-					height=0.4,
-				)
-	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
-	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
-	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
-	ax.invert_yaxis()  # labels read top-to-botto
-	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| {userIP}', fontsize=10)
-	ax.margins(1e-2, 5e-3)
-	ax.spines[['top', 'right']].set_visible(False)
-	for container in ax.containers:
-		ax.bar_label(	container, 
-									#rotation=45, # no rotation for barh 
-									fontsize=6.0,
-									padding=1.5,
-									fmt='%.3f', #if norm_sp else '%.2f',
-									label_type='edge',
-								)
-	ax.set_xlim(right=ax.get_xlim()[1]+1.0, auto=True)
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
-	plt.clf()
-	plt.close(f)
-
-	f, ax = plt.subplots()
-	lft = np.zeros(len(tks_name))
-	qcol_list = ["Search PHRs", "Snippet HWs", "Snippet Appr", "Content HWs", "Content PRTs", "Content Appr",]
-	hbars = list()
-	for i, v in enumerate( tks_value_separated ):
-		#print(i, tks_name, v)
-		hbar = ax.barh(	tks_name, 
-										v, 
-										color=clrs[i], 
-										height=0.65,
-										left=lft, 
-										edgecolor='w', 
-										lw=0.4, 
-										label=f"{qcol_list[i]:<20}w: {w_list[i]:<{10}.{3}f}{[f'{val:.3f}' for val in v]}",
-									)
-		lft += v
-		hbars.append(hbar)
-		#print(hbar.datavalues)
-	
-	ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
-	ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
-	
-	ax.set_xlabel(f'Cell Value in {sp_type} Sparse Matrix', fontsize=10.0)
-	ax.invert_yaxis()  # labels read top-to-botto
-	ax.set_title(f'Top-{nTokens} Unique Tokens / |ALL_UnqTKs = {nTokens_orig}| {userIP}', fontsize=10)
-	ax.margins(1e-2, 5e-3)
-	ax.spines[['top', 'right']].set_visible(False)
-	ax.legend(loc='lower right', fontsize=(115.0/topTKs))
-	
-	for bar in hbars:
-		filtered_lbls = [f"{v:.1f}" if v>=5.0 else "" for v in bar.datavalues]
-		ax.bar_label(	container=bar, 
-									labels=filtered_lbls, 
-									label_type='center', 
-									rotation=0.0, 
-									fontsize=5.0,
-								)
-	
-	ax.set_xlim(right=ax.get_xlim()[1]+0.5, auto=True)
-
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_usr_{userIP}_topTKs{nTokens}_separated_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
-	plt.clf()
-	plt.close(f)
 
 def plot_users_by(token, usrs_name, usrs_value_all, usrs_value_separated, topUSRs, bow, norm_sp: bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
