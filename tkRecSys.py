@@ -178,9 +178,9 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	RF = RF.astype(np.float32) # RF: (nUsers, nItems) 
 	
 	print(f"<Faiss> {device} Cosine Similarity: "
-			 	f"QUERY: {QU.shape} {type(QU)} {QU.dtype}"
+			 	f"QU: {QU.shape} {type(QU)} {QU.dtype}"
 				f" vs. "
-				f"REFERENCE: {RF.shape} {type(RF)} {RF.dtype}".center(160, " ")
+				f"RF: {RF.shape} {type(RF)} {RF.dtype}".center(160, " ")
 			)
 	"""
 	RF = normalize(RF, norm="l2", axis=1)
@@ -209,8 +209,12 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 
 def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	QU = QU.reshape(1, -1) #qu_ (nItems,) => (1, nItems) 
-	print(f"Sklearn Cosine Similarity QUERY[{type(QU)}]: {QU.shape} vs REFERENCE[{type(RF)}]: {RF.shape}".center(110, " ")) # QU: (nItems, ) => (1, nItems) | RF: (nUsers, nItems) 
+	QU = QU.reshape(1, -1)
+	print(f"Sklearn Cosine Similarity: "
+				f"QU {type(QU)} {QU.shape} {QU.dtype}" # QU: (nItems, ) => (1, nItems)
+				f" vs. "
+				f"RF {type(RF)} {RF.shape} {RF.dtype}".center(160, " ") # RF: (nUsers, nItems)
+			)
 	st_t = time.time()
 	cos_sim = cosine_similarity(QU, RF) # -> cos: (1, nUsers)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {cos_sim.shape}".center(100, " "))
@@ -342,7 +346,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 	#return
 
-def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=20, norm_sp: bool=False):
+def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=25, norm_sp: bool=False):
 	sp_type = "Normalized" if norm_sp else "Original"
 	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
 	nTokens = len(users_tokens_df.columns)
@@ -797,7 +801,7 @@ def main():
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=10, norm_sp=normalize_sp_mtrx)
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=30, norm_sp=normalize_sp_mtrx)
 
 	nUsers, nItems = sp_mat_rf.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))
