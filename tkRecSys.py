@@ -209,7 +209,8 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 
 def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	QU = QU.reshape(1, -1)
+	QU = QU.reshape(1, -1).astype(np.float32) # QU: (nItems, ) => (1, nItems)
+	RF = RF.astype(np.float32) # RF: (nUsers, nItems) 
 	print(f"Sklearn Cosine Similarity: "
 				f"QU {type(QU)} {QU.shape} {QU.dtype}" # QU: (nItems, ) => (1, nItems)
 				f" vs. "
