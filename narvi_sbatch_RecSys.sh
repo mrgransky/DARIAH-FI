@@ -3,7 +3,7 @@
 #SBATCH -J nikeQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
-#SBATCH --mail-type=ALL
+#SBATCH --mail-type=END,FAIL
 #SBATCH --time=06-23:59:59
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:teslav100:1

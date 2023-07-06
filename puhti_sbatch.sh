@@ -7,7 +7,7 @@
 #SBATCH --mem-per-cpu=5G
 #SBATCH --time=2-23:59:59
 #SBATCH --mail-user=farid.alijani@gmail.com
-#SBATCH --mail-type=ALL
+#SBATCH --mail-type=END,FAIL
 #SBATCH --array=0-1
 # # # # array: 0-1096
 # # # # array: 730-1096 -> useless no information
