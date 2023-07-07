@@ -80,6 +80,7 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'[\{\}@®©%,+;,=&\'€£*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■\\\[\]-]+', ' ', docs ).strip()
 	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
+	docs = re.sub(r'\d+', "", docs)
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
 	print(f'preprocessed: len: {len(docs)}:\n{docs}')
@@ -93,7 +94,8 @@ def stanza_lemmatizer(docs):
 
 	# lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', word.lemma ) ) > 2 and word.upos not in useless_upos_tags and word.lemma.lower() not in UNIQUE_STOPWORDS ) ]
 	lm = [ re.sub('#|_','', wlm.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( (wlm:=word.lemma) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and word.upos not in useless_upos_tags and wlm.lower() not in UNIQUE_STOPWORDS ) ]
-
+	del docs, all_
+	gc.collect()
 	print( lm )
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
 	print("<>"*70)
