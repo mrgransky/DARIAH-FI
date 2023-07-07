@@ -5,7 +5,7 @@
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=00-00:59:59
+#SBATCH --time=00-00:29:59
 #SBATCH --mem=8G
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
