@@ -89,7 +89,7 @@ def stanza_lemmatizer(docs):
 	
 	st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
-	# print(all_.sentences)
+	print(all_.sentences)
 
 	# lm = [ re.sub('#|_','', word.lemma.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( word.lemma and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', word.lemma ) ) > 2 and word.upos not in useless_upos_tags and word.lemma.lower() not in UNIQUE_STOPWORDS ) ]
 	lm = [ re.sub('#|_','', wlm.lower()) for i, sent in enumerate(all_.sentences) for word in sent.words if ( (wlm:=word.lemma) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and word.upos not in useless_upos_tags and wlm.lower() not in UNIQUE_STOPWORDS ) ]
