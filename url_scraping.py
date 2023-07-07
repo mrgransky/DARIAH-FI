@@ -209,53 +209,6 @@ def scrap_search_page(URL):
 		return
 	return SEARCH_RESULTS
 
-def scrap_ocr_page_content(URL):
-	print(f"Scraping newspaper content page: {URL}")
-
-	if "&page=" in URL:
-		up_url = URL
-	else:
-		up_url = f"{URL}&page=1"
-
-	#print(f"\tUpdated: {up_url}")
-	parsed_url, parameters = get_parsed_url_parameters(up_url)
-	#print(f"Parsed url | OCR extraction: {parameters}")
-	#print(f"parsed_url : {parsed_url}")
-	
-	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
-	try:
-		hgltd_wrds = [d.get("text") for d in requests.get(api_url, params=parameters).json()]
-	except json.JSONDecodeError as jve:
-		print(f"JSON empty response:\n{jve}")
-		hgltd_wrds = []
-	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
-	nwp_info = requests.get(api_nwp).json()
-	
-	#print(list(nwp_info.get("bindingInformation").keys()))
-	#print(list(nwp_info.get("bindingInformation").get("citationInfo").keys()))
-	#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage"))
-	#print(nwp_info.get("bindingInformation").get("citationInfo").get("refWorksOutputLanguage")) # English (30)
-	#print()
-	
-	title = nwp_info.get("bindingInformation").get("publicationTitle") # Uusi Suometar 
-	doc_type = nwp_info.get("bindingInformation").get("generalType") # NEWSPAER
-	issue = nwp_info.get("bindingInformation").get("issue") # 63
-	publisher = nwp_info.get("bindingInformation").get("citationInfo").get("publisher") # Uuden Suomettaren Oy
-	pub_date = nwp_info.get("bindingInformation").get("citationInfo").get("localizedPublishingDate") # 16.03.1905
-	pub_place = nwp_info.get("bindingInformation").get("citationInfo").get("publishingPlace") # Helsinki, Suomi
-	lang = nwp_info.get("bindingInformation").get("citationInfo").get("refWorksLanguage") # English
-
-	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	# ocr_api_url = f"https://digi.kansalliskirjasto.fi/rest/binding/ocr-data?bindingId={parsed_url.path.split('/')[-1]}&page={parameters.get('page')[0]}&oldOcr=false"
-	# print(f">> ocr_api_url: {ocr_api_url}")
-	text_response = checking_(txt_pg_url)
-	if text_response: # 200
-		txt = text_response.text
-	else:
-		txt = None
-
-	return title, doc_type, issue, publisher, pub_date, pub_place, lang, parameters.get("term"), hgltd_wrds, parameters.get("page"), txt
-
 def scrap_newspaper_content_page(URL):
 	print(f"URL: {URL:<150}", end=" ")
 	# print(f"URL: {URL}")

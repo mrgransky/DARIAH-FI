@@ -440,6 +440,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 
+	return
+
 	# print(f"USERs DF".center(100, ' '))
 	try:
 		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
