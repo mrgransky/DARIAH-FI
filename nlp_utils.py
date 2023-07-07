@@ -113,7 +113,9 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	gc.collect()
 
 	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
-	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and not re.search(r"\d", subitem) ) ]
+	# raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and not re.search(r"\d", subitem) and max([len(el) for el in subitem.split()])>2 ) ]
+	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2 ) ]
+
 	del raw_texts_list
 	gc.collect()
 
