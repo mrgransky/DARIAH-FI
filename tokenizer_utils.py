@@ -77,7 +77,7 @@ def stanza_lemmatizer(docs):
 		return
 	# treat all as document
 	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', '', docs)
-	docs = re.sub(r'[\{\}@®©%,+;,=&\'€£*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■\\\[\]-]+', ' ', docs ).strip()
+	docs = re.sub(r'[\{\}@®§©%,+;,=&\'€£*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■\\\[\]-]+', ' ', docs ).strip()
 	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\d+', "", docs)
