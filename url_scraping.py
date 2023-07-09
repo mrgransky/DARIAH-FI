@@ -226,7 +226,7 @@ def scrap_newspaper_content_page(URL):
 		print(f">> adding ?page=1", end=" ")
 		up_url = f"{URL}?page=1"
 	else:
-		print(f"<!> Error! => return none!", end=" ")
+		print(f"<!> Error! => return none!")
 		up_url = None
 		# return
 		# sys.exit()
