@@ -214,19 +214,19 @@ def scrap_newspaper_content_page(URL):
 	# print(f"URL: {URL}")
 	URL = re.sub(r'amp;', '', URL)
 	if re.search(r'\/\w+\/binding\/\d+\?page=\d+', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
-		print(f"pass")
+		print(f"pass", end=" ")
 		up_url = URL
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'page=\d+', URL):
-		print(f"{URL} does not contain &page=\d+")
+		print(f"{URL} does not contain &page=\d+", end=" ")
 		up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', URL)
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and not re.search(r'page=\d+', URL):
-		print(f">> adding &page=1")
+		print(f">> adding &page=1", end=" ")
 		up_url = f"{URL}&page=1"
 	elif re.search(r'\/\w+\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL) and not re.search(r'\/\w+\/binding\/\d+[^\w\s]', URL):
-		print(f">> adding ?page=1")
+		print(f">> adding ?page=1", end=" ")
 		up_url = f"{URL}?page=1"
 	else:
-		print(f"<!> Error! => return none!")
+		print(f"<!> Error! => return none!", end=" ")
 		up_url = None
 		# return
 		# sys.exit()
