@@ -220,13 +220,13 @@ def scrap_newspaper_content_page(URL):
 		print(f"{URL} does not contain &page=\d+", end=" ")
 		up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', URL)
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and not re.search(r'page=\d+', URL):
-		print(f">> adding &page=1", end=" ")
+		print(f"add &page=1", end=" ")
 		up_url = f"{URL}&page=1"
 	elif re.search(r'\/\w+\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL) and not re.search(r'\/\w+\/binding\/\d+[^\w\s]', URL):
-		print(f">> adding ?page=1", end=" ")
+		print(f"add ?page=1", end=" ")
 		up_url = f"{URL}?page=1"
 	elif re.search(r'\/\w+\/binding\/\d+/articles/\d+', URL):
-		print(f"contains articles")
+		print(f"contains articles", end=" ")
 		try:
 			id = int( re.search(r'/articles/(\d+)', URL).group(1) )
 			api_article=f"https://digi.kansalliskirjasto.fi/rest/article/{id}"
@@ -239,7 +239,6 @@ def scrap_newspaper_content_page(URL):
 		up_url = None
 		# return
 		# sys.exit()
-
 
 	if up_url is None or checking_(up_url) is None:
 		return
