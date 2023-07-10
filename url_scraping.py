@@ -234,6 +234,17 @@ def scrap_newspaper_content_page(URL):
 		except Exception as e:
 			logging.exception(e)
 			up_url = None
+	elif re.search(r'\/\w+\/binding\/\d+/thumbnail/\d+', URL):
+		print(f"contains thumbnail", end=" ")
+		pt = r'(\w+)/binding/(\d+)/thumbnail/(\d+)'
+		try:
+			btype = re.search(pt, URL).group(1)
+			bid = re.search(pt, URL).group(2)
+			pgnum = re.search(pt, URL).group(3)
+			up_url = f"https://digi.kansalliskirjasto.fi/{btype}/binding/{bid}?page={pgnum}"
+		except Exception as e:
+			logging.exception(e)
+			up_url = None
 	else:
 		print(f"<!> Error! => return none!")
 		up_url = None
