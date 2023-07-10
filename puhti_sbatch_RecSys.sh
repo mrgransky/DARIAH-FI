@@ -33,8 +33,8 @@ if [ $user == 'alijani' ]; then
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
-	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
+	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets_old"
+	files=(/scratch/project_2004072/Nationalbiblioteket/datasets_old/*.dump)
 fi
 
 echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
