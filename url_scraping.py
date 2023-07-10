@@ -231,7 +231,8 @@ def scrap_newspaper_content_page(URL):
 			id = int( re.search(r'/articles/(\d+)', URL).group(1) )
 			api_article=f"https://digi.kansalliskirjasto.fi/rest/article/{id}"
 			up_url = f"https://digi.kansalliskirjasto.fi{requests.get(api_article, params=None,).json().get('bindingPageUrl')}"
-		except:
+		except Exception as e:
+			print(e)
 			up_url = None
 	else:
 		print(f"<!> Error! => return none!")
