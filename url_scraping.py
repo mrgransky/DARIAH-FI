@@ -8,7 +8,7 @@ def scrap_clipping_page(URL):
 	#print(f"parsed_url : {parsed_url}")
 
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
-	clipping_pg_api = f"https://digi.kansalliskirjasto.fi/rest/article-search/search-by-type?offset={offset_pg}&count=20"
+	clipping_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/article-search/search-by-type?offset={offset_pg}&count=20"
 	payload = {	"categoryIds": parameters.get('categoryId') if parameters.get('categoryId') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
 							"endDate": parameters.get('endDate')[0] if parameters.get('endDate') else None,
@@ -71,7 +71,7 @@ def scrap_collection_page(URL):
 	#print(f"parsed_url : {parsed_url}")
 
 	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
-	collection_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=200"
+	collection_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/search/binding?offset={offset_pg}&count=200"
 	#print(collection_pg_api)
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
@@ -141,7 +141,7 @@ def scrap_search_page(URL):
 
 	# print(f"{parsed_url}")
 	offset_pg=( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
-	search_pg_api = f"https://digi.kansalliskirjasto.fi/rest/binding-search/search/binding?offset={offset_pg}&count=20"
+	search_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
 	
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
@@ -225,6 +225,14 @@ def scrap_newspaper_content_page(URL):
 	elif re.search(r'\/\w+\/binding\/\d+', URL) and not re.search(r'\?page=\d+', URL) and not re.search(r'\/\w+\/binding\/\d+[^\w\s]', URL):
 		print(f">> adding ?page=1", end=" ")
 		up_url = f"{URL}?page=1"
+	elif re.search(r'\/\w+\/binding\/\d+/articles/\d+', URL):
+		print(f"contains articles")
+		try:
+			id = int( re.search(r'/articles/(\d+)', URL).group(1) )
+			api_article=f"https://digi.kansalliskirjasto.fi/rest/article/{id}"
+			up_url = f"https://digi.kansalliskirjasto.fi{requests.get(api_article, params=None,).json().get('bindingPageUrl')}"
+		except:
+			up_url = None
 	else:
 		print(f"<!> Error! => return none!")
 		up_url = None
@@ -266,7 +274,7 @@ def scrap_newspaper_content_page(URL):
 				) as e:
 			print(f"<!> {e}")
 
-	api_url = f"https://digi.kansalliskirjasto.fi/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
+	api_url = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	rs_api_url = checking_(url=api_url, prms=parameters)
 	if rs_api_url:
 		try:
@@ -279,7 +287,7 @@ def scrap_newspaper_content_page(URL):
 			print(f"<!ERR!> HWs: {e}")
 			# hgltd_wrds = []
 
-	api_nwp = f"https://digi.kansalliskirjasto.fi/rest/binding?id={parsed_url.path.split('/')[-1]}"
+	api_nwp = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding?id={parsed_url.path.split('/')[-1]}"
 	rsp_api_nwp = checking_(url=api_nwp, prms=None)
 	if rsp_api_nwp:
 		try:
