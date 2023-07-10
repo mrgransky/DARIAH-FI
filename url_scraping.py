@@ -239,6 +239,7 @@ def scrap_newspaper_content_page(URL):
 		# return
 		# sys.exit()
 
+
 	if up_url is None or checking_(up_url) is None:
 		return
 	# print(f"upd_URL: {up_url:<150}")
