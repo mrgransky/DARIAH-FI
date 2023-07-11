@@ -70,8 +70,8 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):
-	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')
-	print(f"{f'Inp word(s): { len( docs.split() ) }':<22}", end="")
+	print(f'Raw: (len: {len(docs)}) >>{docs}<<')
+	# print(f"{f'Inp word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
 	if not docs:
 		return
@@ -83,19 +83,19 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'\d+', "", docs)
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
-	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
-	print(f"{f'prepr. doc contain(s) { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<60}", end="")
+	print(f'preprocessed: len: {len(docs)}:\n{docs}')
+	# print(f"{f'prepr. doc contain(s) { len( docs.split() ) } words':<50}{str(docs.split()[:3]):<55}", end="")
 	if not docs or len(docs)==0 or docs=="":
 		return
 	
 	st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
 	# print(all_.sentences)
-	print(f"all: {len(all_.sentences)} sent. with {[len(sv.words) for _, sv in enumerate(all_.sentences)]} words vs unq: {[len(set(sv.words)) for _, sv in enumerate(all_.sentences)]} words!", end="\t")
+	print(f"{len(all_.sentences)} sent. with {[len(sv.words) for _, sv in enumerate(all_.sentences)]} words vs unq: {[len(set(sv.words)) for _, sv in enumerate(all_.sentences)]} words!", end=" ")
 	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and w.upos not in useless_upos_tags and wlm.lower() not in UNIQUE_STOPWORDS ) ]
 	# print( lm )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-	# print("<>"*70)
+	print("<>"*70)
 	del docs, all_
 	gc.collect()
 	return lm
