@@ -81,7 +81,8 @@ def stanza_lemmatizer(docs):
 	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\d+', "", docs)
-	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
+	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
+	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
 	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
 	print(f"{f'prepr. with { len( docs.split() ) } words':<40}{str(docs.split()[:3]):<55}", end="")
