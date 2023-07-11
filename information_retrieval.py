@@ -167,11 +167,12 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print("#"*100)
 	print(f"Total Parsing Elapsed_t: {time.time()-parsing_t:.2f} s | DF: {df.shape}")
 	print("<>"*50)
-	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
-	print("-"*90)
+
 	print(f"Memory usage of each column in bytes (total column(s)={len(list(df.columns))})")
 	print(df.memory_usage(deep=True, index=False, ))
-	print("-"*90)
+	print("-"*100)
+
+	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
 	
 	if args.saveDF:
 		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))

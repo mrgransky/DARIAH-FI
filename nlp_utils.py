@@ -8,7 +8,7 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 def get_raw_sqp(phrase_list):
-	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
+	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1!"
 	phrase = phrase_list[0]
 	return phrase
 
@@ -101,11 +101,13 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	
 	for n, g in dframe.groupby("user_ip"):
 		users_list.append(n)
-		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ]
-		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0]
-		ls = [ sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ]
-		lc = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ]
+		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ] # ["global warming", "econimic crisis", "", ]
+		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
+		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["", "", "", ...]
+
+		ls = [ sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ] # ["", "", "", ...]
+		lc = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ] # ["", "", "", ...]
+
 		ltot = lq + lcol + lclp + ls + lc
 		raw_texts_list.append( ltot )
 
