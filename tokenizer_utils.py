@@ -70,7 +70,7 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):
-	print(f'Raw: (len: {len(docs)}) >>{docs}<<')
+	print(f'Raw: (len: {len(docs)})\n{docs}')
 	# print(f"{f'Inp word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
 	if not docs:
@@ -90,7 +90,11 @@ def stanza_lemmatizer(docs):
 	
 	st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
-	# print(all_.sentences)
+	for i, v in all_.sentences:
+		print(i, v)
+		print()
+
+	print("#"*100)
 	print(f"{len(all_.sentences)} sent. with {[len(sv.words) for _, sv in enumerate(all_.sentences)]} words vs unq: {[len(set(sv.words)) for _, sv in enumerate(all_.sentences)]} words!", end=" ")
 	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and w.upos not in useless_upos_tags and wlm.lower() not in UNIQUE_STOPWORDS ) ]
 	# print( lm )
