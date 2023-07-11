@@ -90,7 +90,7 @@ def stanza_lemmatizer(docs):
 	
 	st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
-	for i, v in all_.sentences:
+	for i, v in enumerate(all_.sentences):
 		print(i, v)
 		print()
 
