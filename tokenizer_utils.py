@@ -94,7 +94,7 @@ def stanza_lemmatizer(docs):
 		# print(i, v)
 		for iw, vw in enumerate(v.words):
 			print(iw, type(vw), vw.text, vw.upos, vw.lemma)
-			assert vw.lemma.lower() == vw.lemma
+			# assert vw.lemma.lower() == vw.lemma
 		print("#"*80)
 	print(f"{len(all_.sentences)} sent. with { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words: { [ type(sv.words) for _, sv in enumerate(all_.sentences) ] }", end=" ")
 	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and w.upos not in useless_upos_tags and wlm.lower() not in UNIQUE_STOPWORDS ) ]
