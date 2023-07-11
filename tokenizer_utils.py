@@ -1,6 +1,5 @@
 from utils import *
 
-
 # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
 	import nltk
@@ -30,18 +29,19 @@ with HiddenPrints():
 	from stanza.pipeline.core import DownloadMethod
 
 	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
-	lang_configs = {"en": {"processors": "tokenize,lemma,pos,depparse"},
-											"ru": {"processors": "tokenize,lemma,pos,depparse"},
-											"sv": {"processors": "tokenize,lemma,pos,depparse"},
-											"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
-															"package": 		'ftb',
-														},
+	lang_configs = {#"en": {"processors": "tokenize,lemma,pos,depparse"},
+									"ru": {"processors": "tokenize,lemma,pos,depparse"},
+									"sv": {"processors": "tokenize,lemma,pos,depparse"},
+									"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
+													"package": 		'ftb',
+												},
 								}
 	stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
 																							use_gpu=True,
 																							lang_configs=lang_configs,
 																							download_method=DownloadMethod.REUSE_RESOURCES,
 																					)
+
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
@@ -91,7 +91,7 @@ def stanza_lemmatizer(docs):
 	st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
 	for i, v in enumerate(all_.sentences):
-		# print(i, v)
+		print(i, v)
 		for iw, vw in enumerate(v.words):
 			print(iw, type(vw), vw.text, vw.upos, vw.lemma)
 			# assert vw.lemma.lower() == vw.lemma
