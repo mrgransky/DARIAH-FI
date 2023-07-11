@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nkQ
+#SBATCH -J nkQQ
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=02-23:59:59
-#SBATCH --mem=196G
+#SBATCH --mem=165G
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
 #SBATCH --array=0-1
@@ -33,8 +33,8 @@ if [ $user == 'alijani' ]; then
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets_old"
-	files=(/scratch/project_2004072/Nationalbiblioteket/datasets_old/*.dump)
+	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
+	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
 echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
