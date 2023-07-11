@@ -1,5 +1,4 @@
 from utils import *
-# from tokenizer_utils import *
 from nlp_utils import *
 
 parser = argparse.ArgumentParser(	description='User-Item Recommendation system developed based on National Library of Finland (NLF) dataset', 
@@ -15,12 +14,6 @@ parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
-
-# lemmatizer_methods = {"nltk": nltk_lemmatizer,
-# 											"spacy": spacy_tokenizer,
-# 											"trankit": trankit_lemmatizer,
-# 											"stanza": stanza_lemmatizer,
-# 											}
 
 RES_DIR = make_result_dir(infile=args.inputDF)
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
@@ -1252,7 +1245,7 @@ def practice(topK=5):
 
 if __name__ == '__main__':
 	#os.system("clear")
-	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
 	main()	
 	#practice()
-	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
+	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
