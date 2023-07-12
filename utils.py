@@ -65,6 +65,7 @@ params = {
 	}
 pylab.rcParams.update(params)
 
+# check for more hex_color: https://www.webucator.com/article/python-color-constants-module/
 clrs = ["#ff2eee",
 				'#0eca11',
 				'#16b3fd',
@@ -74,6 +75,7 @@ clrs = ["#ff2eee",
 				"#ffee32",
 				"#742",
 				"#4aaaa5",
+				"#8A2BE2",
 				"#742802",
 				'#0ef',
 				"#ffb563",
@@ -101,6 +103,7 @@ clrs = ["#ff2eee",
 				"#0000ff",
 				'#7f688e',
 				'#d62789',
+				"#FCE6C9",
 				'#99f9',
 				'#d627',
 				"#7eee88", 
@@ -113,6 +116,7 @@ clrs = ["#ff2eee",
 				"#006cf789",
 				'#900fcc99',
 				"#102d",
+				"#79CDCD",
 			]
 
 usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket', 

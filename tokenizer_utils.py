@@ -27,39 +27,35 @@ with HiddenPrints():
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
-
-	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
-	lang_configs = {#"en": {"processors": "tokenize,lemma,pos,depparse"},
-									"ru": {"processors": "tokenize,lemma,pos,depparse"},
-									"sv": {"processors": "tokenize,lemma,pos,depparse"},
-									"fi": {	"processors": "tokenize,lemma,pos,depparse,mwt", 
-													"package": 		'ftb',
-												},
-								}
-	stanza_multi_pipeline = MultilingualPipeline(	lang_id_config=lang_id_config, 
-																								use_gpu=True,
-																								lang_configs=lang_configs,
-																								download_method=DownloadMethod.REUSE_RESOURCES,
-																							)
-
-STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
-my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
-												"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
-												'aldiz', 'baizik', 'bukatzeko', 
-												'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
-												'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
-												'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
-												'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
-												'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
-												'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
-												'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
-												'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
-												'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
-												]
-STOPWORDS.extend(my_custom_stopwords)
-UNIQUE_STOPWORDS = list(set(STOPWORDS))
-#print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
-useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ"]
+	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru', 'en']}
+	lang_configs = {"en": {"processors":"tokenize,pos,lemma","tokenize_no_ssplit":True},
+									"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+									"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+									"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
+									}
+	stanza_multi_pipeline = MultilingualPipeline(
+			lang_id_config=lang_id_config,
+			lang_configs=lang_configs,
+			download_method=DownloadMethod.REUSE_RESOURCES,
+	)
+	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ", "X"]
+	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
+	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
+													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
+													'aldiz', 'baizik', 'bukatzeko', 
+													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
+													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
+													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
+													'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
+													'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
+													'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
+													'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
+													'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
+													'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
+													]
+	STOPWORDS.extend(my_custom_stopwords)
+	UNIQUE_STOPWORDS = list(set(STOPWORDS))
+	#print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
 
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
@@ -85,7 +81,7 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
 	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
-	print(f"{f'prepr. with { len( docs.split() ) } words':<40}{str(docs.split()[:3]):<55}", end="")
+	print(f"{f'prepr. with { len( docs.split() ) } words':<35}{str(docs.split()[:3]):<60}", end="")
 
 	if not docs or len(docs)==0 or docs=="":
 		return
@@ -99,7 +95,7 @@ def stanza_lemmatizer(docs):
 	# 		print(iw, type(vw), vw.text, vw.upos, vw.lemma)
 	# 	print("#"*80)
 
-	print(f"{f'{ len(all_.sentences) } sent. with { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<50}", end="")
+	print(f"{f'{ len(all_.sentences) } sent. with { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<80}", end="")
 
 	# lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
 	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
