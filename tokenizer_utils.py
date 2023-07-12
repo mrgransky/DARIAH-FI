@@ -27,8 +27,8 @@ with HiddenPrints():
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
-	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru', 'en']}
-	lang_configs = {"en": {"processors":"tokenize,pos,lemma","tokenize_no_ssplit":True},
+	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
+	lang_configs = {#"en": {"processors":"tokenize,pos,lemma","tokenize_no_ssplit":True},
 									"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
@@ -81,7 +81,7 @@ def stanza_lemmatizer(docs):
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
 	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
-	print(f"{f'prepr. with { len( docs.split() ) } words':<25}{str(docs.split()[:3]):<60}", end="")
+	print(f"{f'preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 
 	if not docs or len(docs)==0 or docs=="":
 		return
@@ -95,12 +95,12 @@ def stanza_lemmatizer(docs):
 	# 		print(iw, type(vw), vw.text, vw.upos, vw.lemma)
 	# 	print("#"*80)
 
-	print(f"{f'{ len(all_.sentences) } sent. with { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
+	# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
 
 	# lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and len( re.sub(r'\b[A-Za-z](\.| |:)+', '', wlm ) ) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
-	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma.lower()) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
 	# print( lm )
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 	# print("<>"*70)
 	del docs, all_
 	gc.collect()
