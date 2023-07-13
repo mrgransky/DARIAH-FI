@@ -69,8 +69,10 @@ def stanza_lemmatizer(docs):
 	print(f'Raw[{len(docs)}]:\n>>{docs}<<')
 	# print(f"{f'Inp word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
-	if not docs:
-		return
+
+	# if not docs:
+	# 	return
+
 	# treat all as document
 	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', '', docs)
 	docs = re.sub(r'[\{\}@®©§%,+;,=&\'€£#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■\\\[\]-]+', ' ', docs ).strip()
@@ -83,8 +85,8 @@ def stanza_lemmatizer(docs):
 	print(f'preprocessed[{len(docs)}]:\n{docs}')
 	# print(f"{f'preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 
-	if not docs or len(docs)==0 or docs=="":
-		return
+	# if not docs or len(docs)==0 or docs=="":
+	# 	return
 	
 	# st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
