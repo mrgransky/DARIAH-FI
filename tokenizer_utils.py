@@ -80,7 +80,7 @@ def stanza_lemmatizer(docs):
 	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
-	print(f'preprocessed: len: {len(docs)}:\n{docs}')
+	print(f'preprocessed[{len(docs)}]:\n{docs}')
 	# print(f"{f'preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 
 	if not docs or len(docs)==0 or docs=="":
