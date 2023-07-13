@@ -91,8 +91,8 @@ def stanza_lemmatizer(docs):
 	# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
 	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
 	# print( lm )
-	# print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-	# print("<>"*70)
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+	print("<>"*70)
 	del docs, all_
 	gc.collect()
 	return lm
