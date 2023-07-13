@@ -66,7 +66,7 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):
-	print(f'Raw: (len: {len(docs)})\n>>{docs}<<')
+	print(f'Raw[{len(docs)}]:\n>>{docs}<<')
 	# print(f"{f'Inp word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
 	if not docs:
