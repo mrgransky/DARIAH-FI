@@ -88,7 +88,7 @@ def stanza_lemmatizer(docs):
 	# if not docs or len(docs)==0 or docs=="":
 	# 	return
 	
-	# st_t = time.time()
+	st_t = time.time()
 	all_ = stanza_multi_pipeline(docs)
 	# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
 	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
