@@ -126,6 +126,11 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	raw_docs_list = list(set(raw_docs_list))
 	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
+	print(f"Preprocessing {len(raw_docs_list)} Raw Documents...", end=" ")
+	pst = time.time()
+	preprocessed_docs = [cdocs for istn, vsnt in enumerate(raw_docs_list) if (cdocs:=clean_(docs=vsnt)) and len(cdocs) > 1 ]
+	print(f"Elapsed_t: {time.time()-pst:3f} s")
+
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
 	
@@ -140,12 +145,14 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 		# Initialize TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
 		# Fit TFIDF # TIME CONSUMING:
-		try:
-			tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
-		except Exception as e:
-			print(f"<!> TfidfVectorizer Error: {e}")
-			# logging.exception(e)
+		# try:
+		# 	tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
+		# except Exception as e:
+		# 	print(f"<!> TfidfVectorizer Error: {e}")
+		# 	# logging.exception(e)
 		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
+		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
+
 		del raw_docs_list
 		gc.collect()
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
