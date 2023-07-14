@@ -128,7 +128,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	print(f"Preprocessing {len(raw_docs_list)} Raw Documents...", end=" ")
 	pst = time.time()
-	preprocessed_docs = [cdocs for istn, vsnt in enumerate(raw_docs_list) if (cdocs:=clean_(docs=vsnt)) and len(cdocs) > 1 ]
+	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if (cdocs:=clean_(docs=vsnt)) and len(cdocs) > 1 ]
 	print(f"Elapsed_t: {time.time()-pst:3f} s")
 
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")

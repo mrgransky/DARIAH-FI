@@ -67,7 +67,7 @@ def spacy_tokenizer(sentence):
 
 def clean_(docs):
 	# print(f'Raw[{len(docs)}]:\n>>{docs}<<')
-	print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
+	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
 	if docs is None:
 		return
@@ -82,7 +82,7 @@ def clean_(docs):
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
 	# print(f'preprocessed[{len(docs)}]:\n{docs}')
-	print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
+	# print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
 	if docs is None or len(docs) == 0 or docs == "":
 		return
 
