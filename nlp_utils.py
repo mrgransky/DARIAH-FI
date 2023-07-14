@@ -137,24 +137,18 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	try:
 		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"Training TFIDF vector for {len(preprocessed_docs)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		st_t = time.time()
 		# Initialize TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
+
 		# Fit TFIDF # TIME CONSUMING:
-		# try:
-		# 	tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
-		# except Exception as e:
-		# 	print(f"<!> TfidfVectorizer Error: {e}")
-		# 	# logging.exception(e)
-		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
 		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 
 		del raw_docs_list
 		gc.collect()
+
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
 		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
@@ -164,6 +158,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	feat_names = tfidf_vec.get_feature_names_out()
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
+
 	# example:
 	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
 	#	   		example   is         simple     this	
