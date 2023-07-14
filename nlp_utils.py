@@ -140,8 +140,8 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
-		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
-		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
+		# print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
+		print(f"Training TFIDF vector for {len(preprocessed_docs)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		st_t = time.time()
 		# Initialize TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
