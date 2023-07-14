@@ -129,7 +129,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"Preprocessing {len(raw_docs_list)} Raw Documents...", end=" ")
 	pst = time.time()
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if (cdocs:=clean_(docs=vsnt)) and len(cdocs) > 1 ]
-	print(f"Elapsed_t: {time.time()-pst:3f} s")
+	print(f"{f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
 
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
@@ -140,6 +140,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
+		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		print(f"Training TFIDF vector for {len(raw_docs_list)} raw words/phrases/sentences, might take a while...".center(150, " "))
 		st_t = time.time()
 		# Initialize TFIDF # not time consuming...
