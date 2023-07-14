@@ -89,11 +89,16 @@ def stanza_lemmatizer(docs):
 	# 	return
 	
 	st_t = time.time()
-	all_ = stanza_multi_pipeline(docs)
-	# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-	lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+	try:
+		all_ = stanza_multi_pipeline(docs)
+		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
+		lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+	except Exception as e:
+		print(f"<!> Stanza Error: {e}")
+		# logging.exception(e)
+		return
 	# print( lm )
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+	print(f"{f'Got {len(lm)} Lemma(s)':<25}Elapsed_t: {time.time()-st_t:.3f} s")
 	# print("<>"*70)
 	del docs, all_
 	gc.collect()

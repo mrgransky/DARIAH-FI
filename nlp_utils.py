@@ -140,7 +140,11 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 		# Initialize TFIDF # not time consuming...
 		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
 		# Fit TFIDF # TIME CONSUMING:
-		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
+		try:
+			tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=raw_docs_list)
+		except Exception as e:
+			print(f"<!> TfidfVectorizer Error: {e}")
+			# logging.exception(e)
 		#tfidf_matrix_rf = np.random.choice(10_000, 10_000)
 		del raw_docs_list
 		gc.collect()
