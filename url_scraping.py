@@ -265,26 +265,13 @@ def scrap_newspaper_content_page(URL):
 	# print(f"parsed_url : {parsed_url}")
 	# print(json.dumps(parameters, indent=2, ensure_ascii=False))
 
-	txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
-	# print(f"<> page-X.txt: {txt_pg_url}")
-	rsp_txt = checking_(txt_pg_url)
-	if rsp_txt:
-		try:
-			NWP_CONTENT_RESULTS["text"] = rsp_txt.text
-		except(requests.exceptions.Timeout,
-						requests.exceptions.ConnectionError, 
-						requests.exceptions.RequestException, 
-						requests.exceptions.TooManyRedirects,
-						requests.exceptions.InvalidSchema,
-						json.decoder.JSONDecodeError,
-						json.JSONDecodeError,
-						ValueError, 
-						TypeError, 
-						EOFError, 
-						RuntimeError,
-						Exception, 
-				) as e:
-			print(f"<!> {e}")
+	try:
+		txt_pg_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}/page-{parameters.get('page')[0]}.txt"
+		# print(f"<> page-X.txt: {txt_pg_url}")
+		rsp_txt = checking_(txt_pg_url)
+		NWP_CONTENT_RESULTS["text"] = rsp_txt.text
+	except Exception as e:
+		print(f"<!> {e}")
 
 	api_url = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 	rs_api_url = checking_(url=api_url, prms=parameters)
