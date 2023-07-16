@@ -74,7 +74,7 @@ def clean_(docs):
 
 	# treat all as document
 	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', '', docs)
-	docs = re.sub(r'[\{\}@®©§%,+;,=&\'€£#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■\\\[\]-]+', ' ', docs ).strip()
+	docs = re.sub(r'[\{\}@®©§%,+;,=&\'$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■▼▲❖★☆\\\[\]-]+', ' ', docs ).strip()
 	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\d+', "", docs)
@@ -108,7 +108,7 @@ def stanza_lemmatizer(docs):
 	try:
 		all_ = stanza_multi_pipeline(docs)
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-		lm = [ re.sub('#|_','', wlm) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+		lm = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)
