@@ -220,12 +220,10 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
-		cnt_list = df_preprocessed["nwp_content_ocr_text"].map(lambda snt: get_lemmatized_cnt(snt, lm=args.lmMethod), na_action='ignore') # inp: "my car is black." => out ["car", "black"]
+		cnt_list = df_preprocessed["nwp_content_ocr_text"].map(lambda raw_snt: get_lemmatized_cnt(raw_snt, lm=args.lmMethod), na_action='ignore') # inp: "my car is black." => out ["car", "black"]
 		df_preprocessed['nwp_content_ocr_text_tklm'] = cnt_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=cnt_list, fname=cntFile)
@@ -233,8 +231,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"\n>> Getting {sqFile} ...")	
 	try:
 		df_preprocessed["search_query_phrase_tklm"] = load_pickle(fpath=sqFile)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"<!> Search query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
@@ -247,8 +243,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['search_results_hw_snippets'] = df_preprocessed["search_results"].map(get_raw_snHWs, na_action='ignore')
 	try:
 		df_preprocessed["search_results_hw_snippets_tklm"] = load_pickle(fpath=snHWFile)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"<!> Snippet Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
@@ -261,8 +255,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
 	try:
 		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"<!> Snippets [tokenization + lemmatization]...")
 		st_t = time.time()
@@ -275,8 +267,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
@@ -289,8 +279,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
-	# except Exception as e:
-	# 	logging.exception(e)
 	except:
 		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
 		st_t = time.time()

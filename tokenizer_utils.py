@@ -65,50 +65,14 @@ def spacy_tokenizer(sentence):
 	
 	return lematized_tokens
 
-def clean_(docs):
-	# print(f'Raw[{len(docs)}]:\n>>{docs}<<')
-	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
-	# st_t = time.time()
-	if docs is None:
-		return
-
-	# treat all as document
-	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', '', docs)
-	docs = re.sub(r'[\{\}@®©§%,+;,=&\'$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■▼▲❖★☆\\\[\]-]+', ' ', docs ).strip()
-	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
-	# docs = " ".join([w for w in docs.split() if len(w)>2])
-	docs = re.sub(r'\d+', "", docs)
-	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
-	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
-	
+def stanza_lemmatizer(docs):	
 	# print(f'preprocessed[{len(docs)}]:\n{docs}')
-	# print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
-	if docs is None or len(docs) == 0 or docs == "":
-		return
-
-	return docs
-
-def stanza_lemmatizer(docs):
-	# # print(f'Raw[{len(docs)}]:\n>>{docs}<<')
-	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
-	# # st_t = time.time()
-
-	# # treat all as document
-	# docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', '', docs)
-	# docs = re.sub(r'[\{\}@®©§%,+;,=&\'€£#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■\\\[\]-]+', ' ', docs ).strip()
-	# # docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
-	# # docs = " ".join([w for w in docs.split() if len(w)>2])
-	# docs = re.sub(r'\d+', "", docs)
-	# # docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
-	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip().lower() # rm words with len() < 3 ex) ö v or l m and extra spaces 
-	
-	# # print(f'preprocessed[{len(docs)}]:\n{docs}')
 	print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
 	st_t = time.time()
 	try:
 		all_ = stanza_multi_pipeline(docs)
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-		lm = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+		lm = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)

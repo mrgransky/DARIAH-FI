@@ -15,8 +15,8 @@ def get_raw_sqp(phrase_list):
 def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 	# qu_list = ['some word in this format with always length 1']
 	#print(len(qu_list), qu_list)
-	assert len(qu_list) == 1, f"query list length MUST be 1, it is now {len(qu_list)}!!"
-	return lemmatizer_methods.get(lm)(qu_list[0])
+	assert len(qu_list) == 1, f"query list length MUST be len(qu_list)==1, it is now {len(qu_list)}!!"
+	return lemmatizer_methods.get(lm)( clean_(docs=qu_list[0]) )
 
 def get_raw_snHWs(search_results_list):
 	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
@@ -24,16 +24,13 @@ def get_raw_snHWs(search_results_list):
 	return hw_snippets
 
 def get_lemmatized_snHWs(results, lm: str="stanza"):
-	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) )) ) for tklm in lemmas if tklm ]
 
 def get_raw_cntHWs(cnt_dict):
 	return cnt_dict.get("highlighted_term")
 
 def get_lemmatized_cntHWs(results, lm: str="stanza"):
-	# print(results)
-	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
-	# if results:
-	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(clean_(docs=el))) ) for tklm in lemmas if tklm ]
 
 def get_raw_cntPTs(cnt_dict):
 	return cnt_dict.get("parsed_term")
@@ -50,7 +47,7 @@ def get_raw_sn(results):
 	return snippets_list
 
 def get_lemmatized_sn(results, lm: str="stanza"):
-	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
 def get_raw_snTEXTs(results):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
@@ -61,7 +58,7 @@ def get_raw_cnt(cnt_dict):
 	return cnt_dict.get("text")
 
 def get_lemmatized_cnt(sentences: str, lm: str="stanza"):
-	return lemmatizer_methods.get(lm)(sentences)
+	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
 def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
@@ -128,7 +125,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	print(f"Preprocessing {len(raw_docs_list)} Raw Documents...", end=" ")
 	pst = time.time()
-	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if (cdocs:=clean_(docs=vsnt)) and len(cdocs) > 1 ]
+	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 	print(f"{f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
 
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
