@@ -711,10 +711,9 @@ def just_test_for_expected_results(df):
 		print("-"*100)
 
 def clean_(docs):
-	# print(f'Raw[{len(docs)}]:\n>>{docs}<<')
+	print(f'Raw[{len(docs)}]:\n>>{docs}<<')
 	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
-	# if docs is None:
 	if not docs or len(docs) == 0 or docs == "":
 		return
 
@@ -722,13 +721,13 @@ def clean_(docs):
 	# treat all as document
 	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip()
 	docs = re.sub(r'[\{\}@®©§%,+;,=&\'$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■▼▲❖★☆\\\[\]-]+', ' ', docs ).strip()
-	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2])) 
+	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2]))
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\d+', " ", docs).strip()
 	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces 
 	
-	# print(f'preprocessed[{len(docs)}]:\n{docs}')
+	print(f'preprocessed[{len(docs)}]:\n{docs}')
 	# print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
 	if not docs or len(docs) == 0 or docs == "":
 		return
