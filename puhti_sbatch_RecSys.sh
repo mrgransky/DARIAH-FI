@@ -6,7 +6,7 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --time=02-23:59:59
-#SBATCH --mem=6G
+#SBATCH --mem=32G
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:v100:1
 #SBATCH --array=0-1
