@@ -72,17 +72,36 @@ def stanza_lemmatizer(docs):
 	try:
 		all_ = stanza_multi_pipeline(docs)
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-		lm = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+
+		words_list = list()
+		lemmas_list = list()
+
+		for _, vsnt in enumerate(doc.sentences):
+			for _, vw in enumerate(vsnt.words):
+				wlm = re.sub('#|_','', vw.lemma.lower()) 
+				wtxt = vw.text.lower()
+				if wtxt in words_list and wlm in lemmas_list:
+					# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
+					lemmas_list.append(wlm)
+				elif ( wtxt not in words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
+					# print(f"have not lemmatized: {wtxt}")
+					lemmas_list.append(wlm)
+				words_list.append(wtxt)
+				# print(f"#"*50)
+
+		# list comprehension: slow but functional alternative
+		# lemmas_list = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)
 		return
-	# print( lm )
-	print(f"{f'Got {len(lm)} Lemma(s)':<25}Elapsed_t: {time.time()-st_t:.3f} s")
+	# print( lemmas_list )
+	print(f"{f'Got {len(lemmas_list)} Lemma(s)':<25}Elapsed_t: {time.time()-st_t:.3f} s")
 	# print("<>"*70)
 	del docs, all_
 	gc.collect()
-	return lm
+	return lemmas_list
 
 def trankit_lemmatizer(docs):
 	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')

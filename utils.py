@@ -137,7 +137,8 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 500)
 
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
+# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes_fast")
 
 class HiddenPrints:
 	def __enter__(self):
