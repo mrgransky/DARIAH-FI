@@ -56,6 +56,8 @@ with HiddenPrints():
 	STOPWORDS.extend(my_custom_stopwords)
 	UNIQUE_STOPWORDS = list(set(STOPWORDS))
 	#print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
+	all_words_list = list()
+	all_lemmas_list = list()
 
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
@@ -68,7 +70,7 @@ def spacy_tokenizer(sentence):
 def stanza_lemmatizer(docs):	
 	# print(f'preprocessed[{len(docs)}]:\n{docs}')
 	print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
-	words_list = list()
+	# words_list = list()
 	lemmas_list = list()
 	st_t = time.time()
 	try:
@@ -78,15 +80,16 @@ def stanza_lemmatizer(docs):
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
 		for _, vsnt in enumerate(all_.sentences):
 			for _, vw in enumerate(vsnt.words):
-				wlm = vw.lemma.lower()
+				wlm = re.sub('#|_','', vw.lemma.lower())
 				wtxt = vw.text.lower()
-				if wtxt in words_list and wlm in lemmas_list:
+				if wtxt in all_words_list and wlm in all_lemmas_list:
 					# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
 					lemmas_list.append(wlm)
 				elif ( wtxt not in words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
 					# print(f"have not lemmatized: {wtxt}")
-					lemmas_list.append( re.sub('#|_','', wlm) )
-				words_list.append(wtxt)
+					lemmas_list.append( wlm )
+					all_lemmas_list.append( wlm )
+				all_words_list.append(wtxt)
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)
