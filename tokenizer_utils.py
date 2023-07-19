@@ -72,10 +72,8 @@ def stanza_lemmatizer(docs):
 	try:
 		all_ = stanza_multi_pipeline(docs)
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-
 		words_list = list()
 		lemmas_list = list()
-
 		for _, vsnt in enumerate(doc.sentences):
 			for _, vw in enumerate(vsnt.words):
 				wlm = re.sub('#|_','', vw.lemma.lower()) 
