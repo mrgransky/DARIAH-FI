@@ -76,7 +76,7 @@ def stanza_lemmatizer(docs):
 		# list comprehension: slow but functional alternative
 		# lemmas_list = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-		for _, vsnt in enumerate(docs.sentences):
+		for _, vsnt in enumerate(all_.sentences):
 			for _, vw in enumerate(vsnt.words):
 				wlm = vw.lemma.lower()
 				wtxt = vw.text.lower()
