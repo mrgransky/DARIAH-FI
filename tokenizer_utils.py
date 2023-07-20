@@ -85,7 +85,7 @@ def stanza_lemmatizer(docs):
 				if wtxt in all_words_list and wlm in all_lemmas_list:
 					# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
 					lemmas_list.append(wlm)
-				elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
+				elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
 					# print(f"have not lemmatized: {wtxt}")
 					lemmas_list.append( wlm )
 					all_lemmas_list.append( wlm )
