@@ -621,9 +621,13 @@ def checking_(url, prms=None):
 		return
 
 def make_folder(folder_name="MUST_BE_RENAMED"):
-	if not os.path.exists(folder_name): 
-		#print(f"\n>> Creating DIR:\n{folder_name}")
+	# if not os.path.exists(folder_name): 
+	# 	#print(f"\n>> Creating DIR:\n{folder_name}")
+	# 	os.makedirs( folder_name )
+	try:
 		os.makedirs( folder_name )
+	except Exception as e:
+		print(f"<!> {e}")
 
 def save_vocab(vb, fname:str=""):
 	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
