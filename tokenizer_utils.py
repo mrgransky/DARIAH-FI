@@ -69,27 +69,29 @@ def spacy_tokenizer(sentence):
 
 def stanza_lemmatizer(docs):	
 	# print(f'preprocessed[{len(docs)}]:\n{docs}')
-	print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
 	# words_list = list()
 	lemmas_list = list()
 	st_t = time.time()
 	try:
+		print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:5]):<100}", end="")	
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
-		# lemmas_list = [ re.sub('#|_','', wlm.lower()) for _, sv in enumerate(all_.sentences) for w in sv.words if ( (wlm:=w.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and w.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
-		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(sv.words) for _, sv in enumerate(all_.sentences) ] } words':<40}", end="")
-		for _, vsnt in enumerate(all_.sentences):
-			for _, vw in enumerate(vsnt.words):
-				wlm = re.sub('#|_','', vw.lemma.lower())
-				wtxt = vw.text.lower()
-				if wtxt in all_words_list and wlm in all_lemmas_list:
-					# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
-					lemmas_list.append(wlm)
-				elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
-					# print(f"have not lemmatized: {wtxt}")
-					lemmas_list.append( wlm )
-					all_lemmas_list.append( wlm )
-				all_words_list.append(wtxt)
+		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
+		lemmas_list = [ re.sub('#|_','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
+	
+		# for _, vsnt in enumerate(all_.sentences):
+		# 	for _, vw in enumerate(vsnt.words):
+		# 		wlm = re.sub('#|_','', vw.lemma.lower())
+		# 		wtxt = vw.text.lower()
+		# 		if wtxt in all_words_list and wlm in all_lemmas_list:
+		# 			# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
+		# 			lemmas_list.append(wlm)
+		# 		elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
+		# 			# print(f"have not lemmatized: {wtxt}")
+		# 			lemmas_list.append( wlm )
+		# 			all_lemmas_list.append( wlm )
+		# 		all_words_list.append(wtxt)
+	
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)
