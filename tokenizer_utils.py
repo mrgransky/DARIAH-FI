@@ -68,7 +68,7 @@ def spacy_tokenizer(sentence):
 	return lematized_tokens
 
 def stanza_lemmatizer(docs):	
-	# print(f'preprocessed[{len(docs)}]:\n{docs}')
+	print(f'preprocessed[{len(docs)}]:\n{docs}')
 	# words_list = list()
 	lemmas_list = list()
 	st_t = time.time()
