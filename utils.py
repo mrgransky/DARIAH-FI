@@ -721,7 +721,6 @@ def clean_(docs):
 	if not docs or len(docs) == 0 or docs == "":
 		return
 
-
 	docs = docs.lower()
 	# treat all as document
 	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip()
