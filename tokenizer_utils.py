@@ -43,6 +43,7 @@ with HiddenPrints():
 	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
 													'aldiz', 'baizik', 'bukatzeko', 
+													'klo','nro',
 													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
 													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
 													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
@@ -54,8 +55,8 @@ with HiddenPrints():
 													'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
 													]
 	STOPWORDS.extend(my_custom_stopwords)
-	UNIQUE_STOPWORDS = list(set(STOPWORDS))
-	#print(f"Unique Stopwords: {len(UNIQUE_STOPWORDS)} | {type(UNIQUE_STOPWORDS)}\n{UNIQUE_STOPWORDS}")
+	UNQ_STW = list(set(STOPWORDS))
+	#print(f"Unique Stopwords: {len(UNQ_STW)} | {type(UNQ_STW)}\n{UNQ_STW}")
 	all_words_list = list()
 	all_lemmas_list = list()
 
@@ -67,18 +68,17 @@ def spacy_tokenizer(sentence):
 	
 	return lematized_tokens
 
-def stanza_lemmatizer(docs):	
-	print(f'preprocessed[{len(docs)}]:\n{docs}')
+def stanza_lemmatizer(docs):
 	# words_list = list()
 	lemmas_list = list()
 	st_t = time.time()
 	try:
-		print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:5]):<130}", end="")
+		print(f'stanza input:[{len(docs)}]:\n{docs}')
+		print(f"{f'|words|: { len( docs.split() ) }':<30}{str(docs.split()[:5]):<130}", end="")
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
-		lemmas_list = [ re.sub(r'#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ) ]
-	
+		lemmas_list = [ re.sub(r'#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm)>2 and len(wlm)<=35 and not re.search(r"\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ) ]
 		# for _, vsnt in enumerate(all_.sentences):
 		# 	for _, vw in enumerate(vsnt.words):
 		# 		wlm = re.sub('#|_','', vw.lemma.lower())
@@ -86,7 +86,7 @@ def stanza_lemmatizer(docs):
 		# 		if wtxt in all_words_list and wlm in all_lemmas_list:
 		# 			# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
 		# 			lemmas_list.append(wlm)
-		# 		elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNIQUE_STOPWORDS ):
+		# 		elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ):
 		# 			# print(f"have not lemmatized: {wtxt}")
 		# 			lemmas_list.append( wlm )
 		# 			all_lemmas_list.append( wlm )
@@ -120,8 +120,8 @@ def trankit_lemmatizer(docs):
 		return
 
 	all_dict = p(docs)
-	#lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ] 
-	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Za-z](\.| |:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNIQUE_STOPWORDS ) ]
+	#lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNQ_STW ) ] 
+	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Za-z](\.| |:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNQ_STW ) ]
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
 	# print( lm )
 	return lm
@@ -141,7 +141,7 @@ def nltk_lemmatizer(sentence):
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 	tokens = tokenizer.tokenize(sentences)
 
-	filtered_tokens = [w for w in tokens if not w in UNIQUE_STOPWORDS and len(w) > 1 and not w.isnumeric() ]
+	filtered_tokens = [w for w in tokens if not w in UNQ_STW and len(w) > 1 and not w.isnumeric() ]
 	# nltk.pos_tag: cheatsheet: pg2: https://computingeverywhere.soc.northwestern.edu/wp-content/uploads/2017/07/Text-Analysis-with-NLTK-Cheatsheet.pdf
 	lematized_tokens = [wnl.lemmatize(w, t[0].lower()) if t[0].lower() in ['a', 's', 'r', 'n', 'v'] else wnl.lemmatize(w) for w, t in nltk.pos_tag(filtered_tokens)] 
 	#print( list( set( lematized_tokens ) ) )

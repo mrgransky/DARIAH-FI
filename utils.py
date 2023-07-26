@@ -723,14 +723,20 @@ def clean_(docs):
 
 	docs = docs.lower()
 	# treat all as document
-	docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip()
-	docs = re.sub(r'[\{\}@®©§%,+;,=&\'\-$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■►▼▲❖★☆\\\[\]]+', ' ', docs ).strip()
-	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs).strip()	# remove words with similar characters occurring more than twice or numbers(\d+)
-	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces 
-	docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces 
-	
+	# docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip() # "kuuslammi janakkala"^5 or # "karl urnberg"~1
+	docs = re.sub(r'[\{\}@®©§½✓%,+;,=&\'\-$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■►▼▲❖★☆\\\[\]]+', ' ', docs )#.strip()
+	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2]))
+	# docs = " ".join([w for w in docs.split() if len(w)>2])
+	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs)#.strip()
+	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces
+	docs = re.sub(r'\s{2,}', 
+								" ", 
+								# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
+								re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
+				).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
+
 	print(f'preprocessed[{len(docs)}]:\n{docs}')
-	# print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")	
+	# print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
 
