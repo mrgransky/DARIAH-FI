@@ -43,7 +43,7 @@ with HiddenPrints():
 	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
 													'aldiz', 'baizik', 'bukatzeko', 
-													'klo','nro',
+													'klo','nro', 'vol',
 													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
 													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
 													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
@@ -74,7 +74,7 @@ def stanza_lemmatizer(docs):
 	st_t = time.time()
 	try:
 		print(f'stanza input:[{len(docs)}]:\n{docs}')
-		print(f"{f'|words|: { len( docs.split() ) }':<30}{str(docs.split()[:5]):<130}", end="")
+		print(f"{f'|words|: { len( docs.split() ) }':<20}{str(docs.split()[:5]):<100}", end="")
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
