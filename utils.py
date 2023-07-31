@@ -638,7 +638,7 @@ def save_vocab(vb, fname:str=""):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
 
 def load_vocab(fname: str="VOCABULARY_FILE.json"):
-	print(f"<> Loading {fname}")
+	print(f"Loading BoWs: {fname}")
 	st_t = time.time()
 	with open(fname, "r") as fr:
 		vb = json.load(fr)

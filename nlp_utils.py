@@ -123,32 +123,26 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 	print(f"{f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
 
-	# return
-
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
 	
-	try:
-		tfidf_matrix_rf = load_pickle(fpath=tfidf_rf_matrix_fpath)
-		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
-	except:
-		print(f"Training TFIDF vector for {len(preprocessed_docs)} raw words/phrases/sentences, might take a while...".center(150, " "))
-		st_t = time.time()
-		# Initialize TFIDF # not time consuming...
-		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
+	print(f"Training TFIDF vector for {len(preprocessed_docs)} raw words/phrases/sentences, might take a while...".center(150, " "))
+	st_t = time.time()
+	# Initialize TFIDF # not time consuming...
+	tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
 
-		# Fit TFIDF # TIME CONSUMING:
-		tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
+	# Fit TFIDF # TIME CONSUMING:
+	tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 
-		del raw_docs_list
-		gc.collect()
+	del raw_docs_list
+	gc.collect()
 
-		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
-		save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-		save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
+	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
+	save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
+	save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
 								fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
-							)
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
+						)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 
 	feat_names = tfidf_vec.get_feature_names_out()
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
