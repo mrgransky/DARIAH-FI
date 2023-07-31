@@ -118,7 +118,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	raw_docs_list = list(set(raw_docs_list))
 	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	print(f"Preprocessing {len(raw_docs_list)} Raw Documents:")
+	print(f"Cleaning {len(raw_docs_list)} Raw Documents:")
 	pst = time.time()
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 	print(f"{f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
