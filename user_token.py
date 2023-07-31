@@ -422,6 +422,10 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz")
 		tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz")
 		vb_fpath = [fn for fn in glob.glob(os.path.join(dfs_path, "*.json")) if fn.startswith(fprefix)]
+		for fn in glob.glob(os.path.join(dfs_path, "*.json")): 
+			print(fn)
+			if fn.startswith(fprefix):
+				print(f"bamm> {fn}")
 		print(fprefix, vb_fpath)
 		BoWs = load_vocab(fname=vb_fpath)
 	except:
