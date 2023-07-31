@@ -632,10 +632,19 @@ def save_vocab(vb, fname:str=""):
 	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
 	st_t = time.time()
 	with open(fname, "w") as fw:
-		json.dump(vb, fw, indent=4, ensure_ascii=False)
+		json.load(vb, fw, indent=4, ensure_ascii=False)
 
 	fsize_dump = os.stat( fname ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
+
+def load_vocab(fname: str="VOCABULARY_FILE.json"):
+	print(f"<> Loading {fname}")
+	st_t = time.time()
+	with open(fname, "r") as fr:
+		vb = json.load(fr)
+	fsize_dump = os.stat( fname ).st_size / 1e6
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
+	return vb
 
 def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname

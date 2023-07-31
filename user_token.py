@@ -418,8 +418,13 @@ def get_sparse_matrix(df: pd.DataFrame):
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	# BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
-	BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
+	try:
+		tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz")
+		tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz")
+		BoWs = load_vocab(fname=dfs_path+f"/{fprefix}_lemmaMethod_{args.lmMethod}_"+"*_vocabs.json")
+	except:
+		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
+
 
 	# return
 

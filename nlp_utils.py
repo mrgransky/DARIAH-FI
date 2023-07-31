@@ -88,11 +88,6 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_snTEXTs, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-	# print(dframe.info())
-	# print(dframe[["user_ip", "query_phrase_raw_text", "snippet_raw_text", "ocr_raw_text"]].tail(60))
-	# print(f"<>"*50)
-	# return
-
 	users_list = list()
 	raw_texts_list = list()
 	
@@ -163,8 +158,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	#	   		example   is         simple     this	
 	# 0  		0.377964  0.377964   0.377964   0.377964
 
-	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)}")
-	print(f"TFIDF REF matrix: {tfidf_matrix_rf.shape}")
+	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)} | TFIDF: {tfidf_matrix_rf.shape}")
 	assert len(BOWs) == tfidf_matrix_rf.shape[1], f"size of vocabs: {len(BoWs)} != tfidf_matrix_rf: {tfidf_matrix_rf.shape[1]}"
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs
