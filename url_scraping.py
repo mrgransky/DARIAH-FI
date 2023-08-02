@@ -8,7 +8,8 @@ def scrap_clipping_page(URL):
 	#print()
 	#print(f"parsed_url : {parsed_url}")
 
-	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
+	# offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
+	offset_pg=( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
 	clipping_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/article-search/search-by-type?offset={offset_pg}&count=20"
 	payload = {	"categoryIds": parameters.get('categoryId') if parameters.get('categoryId') else [],
 							"collections": parameters.get('collection') if parameters.get('collection') else [],
@@ -72,7 +73,9 @@ def scrap_collection_page(URL):
 	#print()
 	#print(f"parsed_url : {parsed_url}")
 
-	offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
+	# offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
+	offset_pg=( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
+
 	collection_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/search/binding?offset={offset_pg}&count=200"
 	#print(collection_pg_api)
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],

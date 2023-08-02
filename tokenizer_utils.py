@@ -42,8 +42,8 @@ with HiddenPrints():
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
-													'aldiz', 'baizik', 'bukatzeko', 
-													'klo','nro', 'vol', 'amp', 'sid', 'obs',
+													'aldiz', 'baizik', 'bukatzeko', 'ift',
+													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'inc', 'per',
 													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
 													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
 													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
@@ -100,7 +100,7 @@ def stanza_lemmatizer(docs):
 	print(f"{f'{len(lemmas_list)} Lemma(s)':<20}Elapsed_t: {time.time()-st_t:.3f} s")
 	# print( lemmas_list )
 	# print("<>"*70)
-	del docs, all_
+	del all_
 	gc.collect()
 	return lemmas_list
 
