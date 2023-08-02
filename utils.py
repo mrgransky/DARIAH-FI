@@ -34,7 +34,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 
 from colorama import Fore, Style, Back
-import seaborn as sns
+from functools import cache
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
@@ -42,6 +42,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
 import matplotlib.ticker as ticker
 import matplotlib
+import seaborn as sns
 
 #matplotlib.use("Agg")
 

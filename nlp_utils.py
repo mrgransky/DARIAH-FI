@@ -57,7 +57,10 @@ def get_raw_snTEXTs(results):
 def get_raw_cnt(cnt_dict):
 	return cnt_dict.get("text")
 
-def get_lemmatized_cnt(sentences: str, lm: str="stanza"):
+def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"):
+	# cleaned = clean_(docs=sentences)
+	# if cleaned:
+	# 	return lemmatizer_methods.get(lm)(cleaned)
 	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
 def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):

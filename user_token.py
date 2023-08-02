@@ -223,10 +223,10 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	except:
 		print(f"<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
-		cnt_list = df_preprocessed["nwp_content_ocr_text"].map(lambda raw_snt: get_lemmatized_cnt(raw_snt, lm=args.lmMethod), na_action='ignore') # inp: "my car is black." => out ["car", "black"]
-		df_preprocessed['nwp_content_ocr_text_tklm'] = cnt_list
+		cntLMs = df_preprocessed["nwp_content_ocr_text"].map(lambda raw_snt: get_lemmatized_cnt(sentences=raw_snt, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
+		df_preprocessed['nwp_content_ocr_text_tklm'] = cntLMs
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		save_pickle(pkl=cnt_list, fname=cntFile)
+		save_pickle(pkl=cntLMs, fname=cntFile)
 	
 	print(f"\n>> Getting {sqFile} ...")	
 	try:

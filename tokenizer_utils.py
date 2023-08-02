@@ -68,13 +68,14 @@ def spacy_tokenizer(sentence):
 	
 	return lematized_tokens
 
+@cache
 def stanza_lemmatizer(docs):
 	# words_list = list()
 	lemmas_list = list()
 	st_t = time.time()
 	try:
 		# print(f'stanza input:[{len(docs)}]:\n{docs}')
-		print(f"{f'|words|: { len( docs.split() ) }':<20}{str(docs.split()[:5]):<100}", end="")
+		print(f"{f'nWORDS: { len( docs.split() ) }':<17}{str(docs.split()[:5]):<150}", end="")
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
@@ -96,7 +97,7 @@ def stanza_lemmatizer(docs):
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)
 		return
-	print(f"{f'Got {len(lemmas_list)} Lemma(s)':<25}Elapsed_t: {time.time()-st_t:.3f} s")
+	print(f"{f'{len(lemmas_list)} Lemma(s)':<25}Elapsed_t: {time.time()-st_t:.3f} s")
 	# print( lemmas_list )
 	# print("<>"*70)
 	del docs, all_
