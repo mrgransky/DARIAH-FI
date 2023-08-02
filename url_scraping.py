@@ -1,5 +1,6 @@
 from utils import *
 
+@cache
 def scrap_clipping_page(URL):
 	#print(f"Scraping clipping page: {URL}")
 	parsed_url, parameters = get_parsed_url_parameters(URL)
@@ -62,6 +63,7 @@ def scrap_clipping_page(URL):
 		return
 	return CLIPPING_RESULTS
 
+@cache
 def scrap_collection_page(URL):
 	#print(f"Scraping collection page: {URL}")
 	st_t = time.time()
@@ -133,6 +135,7 @@ def scrap_collection_page(URL):
 		return
 	return COLLECTION_RESULTS
 
+@cache
 def scrap_search_page(URL):
 	# print(f"<> Scraping: {URL}")
 	st_t = time.time()
@@ -209,6 +212,7 @@ def scrap_search_page(URL):
 		return
 	return SEARCH_RESULTS
 
+@cache
 def scrap_newspaper_content_page(URL):
 	print(f"URL: {URL:<150}", end=" ")
 	# print(f"URL: {URL}")
