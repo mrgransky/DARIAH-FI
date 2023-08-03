@@ -75,7 +75,6 @@ def scrap_collection_page(URL):
 
 	# offset_pg=(int(parameters.get('page')[0])-1)*20 if "page=" in URL else 0
 	offset_pg=( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
-
 	collection_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/search/binding?offset={offset_pg}&count=200"
 	#print(collection_pg_api)
 	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
@@ -304,7 +303,7 @@ def scrap_newspaper_content_page(URL):
 	except Exception as e:
 		print(f"<!> {e}")
 	
-	print(f"\tElapsed: {time.time()-st_t:.3f} s")
+	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>30}")
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':
