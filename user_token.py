@@ -225,7 +225,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		cntLMs = df_preprocessed["nwp_content_ocr_text"].map(lambda raw_snt: get_lemmatized_cnt(sentences=raw_snt, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
 		df_preprocessed['nwp_content_ocr_text_tklm'] = cntLMs
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
 		save_pickle(pkl=cntLMs, fname=cntFile)
 	
 	print(f"\n>> Getting {sqFile} ...")	

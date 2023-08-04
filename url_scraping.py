@@ -303,7 +303,7 @@ def scrap_newspaper_content_page(URL):
 	except Exception as e:
 		print(f"<!> {e}")
 	
-	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>15}")
+	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>30}")
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':
