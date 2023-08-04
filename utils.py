@@ -733,7 +733,7 @@ def clean_(docs):
 	docs = docs.lower()
 	# treat all as document
 	# docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip() # "kuuslammi janakkala"^5 or # "karl urnberg"~1
-	docs = re.sub(r'[\{\}@®©§½✓%,+;,=&\'\-$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■►▼▲❖★☆\\\[\]]+', ' ', docs )#.strip()
+	docs = re.sub(r'[\{\}@®†©§½✓%,+;,=&\'\-$€£¥#*"°^~?!—.•()˶“”„:/|‘’<>»«□™♦_■►▼▲❖★☆\\\[\]]+', ' ', docs )#.strip()
 	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2]))
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs)#.strip()

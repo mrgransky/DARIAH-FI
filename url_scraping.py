@@ -223,7 +223,7 @@ def scrap_newspaper_content_page(URL):
 		print(f"pass", end=" ")
 		up_url = URL
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'page=\d+', URL):
-		print(f"{URL} does not contain &page=\d+", end=" ")
+		print(f"{URL} without &page=\d+", end=" ")
 		up_url = re.sub(r'(?<!&)(page=\d+)', r'&\1', URL)
 	elif re.search(r'(\/binding\/\d+\?term=)', URL) and not re.search(r'page=\d+', URL):
 		print(f"add &page=1", end=" ")
@@ -232,7 +232,7 @@ def scrap_newspaper_content_page(URL):
 		print(f"add ?page=1", end=" ")
 		up_url = f"{URL}?page=1"
 	elif re.search(r'\/\w+\/binding\/\d+/articles/\d+', URL):
-		print(f"contains articles", end=" ")
+		print(f"articles", end=" ")
 		try:
 			id = int( re.search(r'/articles/(\d+)', URL).group(1) )
 			api_article=f"https://digi.kansalliskirjasto.fi/rest/article/{id}"
@@ -241,7 +241,7 @@ def scrap_newspaper_content_page(URL):
 			logging.exception(e)
 			up_url = None
 	elif re.search(r'\/\w+\/binding\/\d+/thumbnail/\d+', URL):
-		print(f"contains thumbnail", end=" ")
+		print(f"thumbnail", end=" ")
 		pt = r'(\w+)/binding/(\d+)/thumbnail/(\d+)'
 		try:
 			btype = re.search(pt, URL).group(1)
@@ -303,7 +303,7 @@ def scrap_newspaper_content_page(URL):
 	except Exception as e:
 		print(f"<!> {e}")
 	
-	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>30}")
+	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>15}")
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':

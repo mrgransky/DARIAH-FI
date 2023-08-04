@@ -27,11 +27,12 @@ with HiddenPrints():
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
-	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru']}
+	lang_id_config = {"langid_lang_subset": ['fi', 'sv', 'ru', 'de']}
 	lang_configs = {#"en": {"processors":"tokenize,pos,lemma","tokenize_no_ssplit":True},
 									"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
+									"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 									}
 	stanza_multi_pipeline = MultilingualPipeline(
 			lang_id_config=lang_id_config,
@@ -41,18 +42,23 @@ with HiddenPrints():
 	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ", "X"]
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
-													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 
-													'aldiz', 'baizik', 'bukatzeko', 'ift',
-													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'inc', 'per',
-													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 
-													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 
-													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 
+													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 'oops', 'tmt', 'ocb', 'rdf',
+													'aldiz', 'baizik', 'bukatzeko', 'ift', 'jja', 'lrhe', 'iih', 'rno', 'jgfj', 'puh', 'knr', 'rirrh',
+													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'inc', 'per', 'ops', 'vpv', 'ojv', 'rva', 'hvr', 'nfn',
+													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 'njj', 'aab', 'arb', 'tel', 'fkhi',
+													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 'hel', 'aac', 'ake', 'oeb',
+													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 'gen', 'fjh', 'fji',
 													'баҳри', 'болои', 'валекин', 'вақте', 'вуҷуди', 'гар', 'гарчанде', 'даме', 'карда', 
 													'кошки', 'куя', 'кӣ', 'магар', 'майлаш', 'модоме', 'нияти', 'онан', 'оре', 'рӯи', 
-													'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар', 
+													'сар', 'тразе', 'хом', 'хуб', 'чаро', 'чи', 'чунон', 'ш', 'шарте', 'қадар',
 													'ҳай-ҳай', 'ҳамин', 'ҳатто', 'ҳо', 'ҳой-ҳой', 'ҳол', 'ҳолате', 'ӯим', 'באיזו', 'בו', 'במקום', 
 													'בשעה', 'הסיבה', 'לאיזו', 'למקום', 'מאיזו', 'מידה', 'מקום', 'סיבה', 'ש', 'שבגללה', 'שבו', 'תכלית', 'أفعل', 
-													'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ', '’',
+													'أفعله', 'انفك', 'برح', 'سيما', 'कम', 'से', 'ἀλλ',
+													'rhr', 'trl', 'amt', 'nen', 'mnl', 'krj', 'laj', 'nrn', 'aakv', 'aal', 'oii', 'rji', 'ynn', 
+													'hyv', 'kpl', 'ppt', 'ebr', 'emll', 'cdcdb', 'ecl', 'jjl', 'cdc', 'cdb', 'aga', 'ldr', 'lvg',
+													'åbq', 'aug', 'ordf', 'cuw', 'nrh', 'mmtw', 'crt', 'csök', 'hcrr', 'nvri', 'disp', 'ocll', 
+													'dii', 'hii', 'hij', 'stt', 'gsj', 'ådg', 'phj',
+													'aabcd', 'lop', 'chr', 'lli', 'lhyww', 'ttll', 'lch', 'lcg', 'lcf', 'lcfv', 'nsö', 'chp',
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
