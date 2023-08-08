@@ -98,7 +98,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print("#"*100)
 	print(dframe['snippet_raw_text'].tail(10))
 	print("#"*100)
-	print(type(dframe['snippet_raw_text'].tail(1)), len(dframe['snippet_raw_text'].tail(1)))
+	print( type( dframe['snippet_raw_text'].tail(1).values ), len( dframe['snippet_raw_text'].tail(1).values ) )
 	sys.exit()
 
 	users_list = list()
