@@ -101,8 +101,9 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print( type( dframe['snippet_raw_text'].values[-1:] ), len( dframe['snippet_raw_text'].values[-1:] ) )
 	print(dframe['snippet_raw_text'].values[-1:])
 	for n, g in dframe.groupby("user_ip"):
-		print(n)
-		print(g["snippet_raw_text"])
+		print(f"user: {n}")
+		lsn = g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values
+		print(lsn)
 		print("<>"*50)
 
 	sys.exit()
