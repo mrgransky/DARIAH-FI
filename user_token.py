@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('--inputDF', default=os.path.join(dataset_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
+parser.add_argument('--inputDF', default=os.path.join(datasets_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
 parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -216,6 +216,18 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	df_preprocessed = dframe.copy()
 	print(f">> Preparing df_preprocessed [initial]: {df_preprocessed.shape}")
 
+	print(f"\n>> Getting {snFile} ...")	
+	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
+	try:
+		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
+	except:
+		print(f"<!> Snippets [tokenization + lemmatization]...")
+		st_t = time.time()
+		sn_list = df_preprocessed["search_results_snippets"].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
+		df_preprocessed['search_results_snippets_tklm'] = sn_list
+		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		save_pickle(pkl=sn_list, fname=snFile)
+
 	print(f"\n>> Getting {cntFile} ...")	
 	df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
@@ -250,18 +262,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		df_preprocessed['search_results_hw_snippets_tklm'] = snHW_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=snHW_list, fname=snHWFile)
-
-	print(f"\n>> Getting {snFile} ...")	
-	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
-	try:
-		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
-	except:
-		print(f"<!> Snippets [tokenization + lemmatization]...")
-		st_t = time.time()
-		sn_list = df_preprocessed["search_results_snippets"].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
-		df_preprocessed['search_results_snippets_tklm'] = sn_list
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
-		save_pickle(pkl=sn_list, fname=snFile)
 	
 	print(f"\n>> Getting {cntHWFile} ...")	
 	df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')

@@ -44,7 +44,8 @@ with HiddenPrints():
 	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 'oops', 'tmt', 'ocb', 'rdf',
 													'aldiz', 'baizik', 'bukatzeko', 'ift', 'jja', 'lrhe', 'iih', 'rno', 'jgfj', 'puh', 'knr', 'rirrh',
-													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'inc', 'per', 'ops', 'vpv', 'ojv', 'rva', 'hvr', 'nfn',
+													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'huom',
+													'inc', 'per', 'ops', 'vpv', 'ojv', 'rva', 'hvr', 'nfn',
 													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 'njj', 'aab', 'arb', 'tel', 'fkhi',
 													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 'hel', 'aac', 'ake', 'oeb',
 													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 'gen', 'fjh', 'fji',
@@ -58,6 +59,7 @@ with HiddenPrints():
 													'hyv', 'kpl', 'ppt', 'ebr', 'emll', 'cdcdb', 'ecl', 'jjl', 'cdc', 'cdb', 'aga', 'ldr', 'lvg',
 													'åbq', 'aug', 'ordf', 'cuw', 'nrh', 'mmtw', 'crt', 'csök', 'hcrr', 'nvri', 'disp', 'ocll', 
 													'dii', 'hii', 'hij', 'stt', 'gsj', 'ådg', 'phj', 'nnw', 'wnw', 'nne', 'sij', 'apt', 'iit',
+													'afg', 'ank', 'fnb', 'ffc', 'oju',
 													'aabcd', 'lop', 'chr', 'lli', 'lhyww', 'ttll', 'lch', 'lcg', 'lcf', 'lcfv', 'nsö', 'chp',
 													]
 	STOPWORDS.extend(my_custom_stopwords)

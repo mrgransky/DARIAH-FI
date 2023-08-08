@@ -43,7 +43,6 @@ from matplotlib.colors import Colormap as cm
 import matplotlib.ticker as ticker
 import matplotlib
 import seaborn as sns
-
 #matplotlib.use("Agg")
 
 sz=16
@@ -127,18 +126,16 @@ usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket',
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
-dataset_path = os.path.join( NLF_DATASET_PATH, f"datasets" )
-# dataset_path = os.path.join( NLF_DATASET_PATH, f"datasets_old" )
+datasets_path = os.path.join( NLF_DATASET_PATH, f"datasets" )
 dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 # dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs_nikeXY" ) # only for PUHTI
-#dpath = os.path.join( NLF_DATASET_PATH, f"no_ip_logs" )
+rpath = os.path.join( NLF_DATASET_PATH, f"results" )
+# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes_cache")
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 500)
-
-rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
 
 class HiddenPrints:
 	def __enter__(self):
