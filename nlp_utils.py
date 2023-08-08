@@ -91,9 +91,11 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_snTEXTs, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-	print(dframe['snippet_raw_text'].head(20))
+	print(dframe.info(verbose=True, memory_usage="deep"))
 	print("#"*100)
-	print(dframe['snippet_raw_text'].tail(20))
+	print(dframe['snippet_raw_text'].head(10))
+	print("#"*100)
+	print(dframe['snippet_raw_text'].tail(10))
 	
 	sys.exit()
 
