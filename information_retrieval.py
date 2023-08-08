@@ -175,11 +175,11 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
 	
 	if args.saveDF:
-		save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.dump'))
-		# save_pickle(pkl=df, fname=os.path.join(dataset_path, f'{file_}.gz')) #TODO: check with nikeX and nikeY time taking!
+		save_pickle(pkl=df, fname=os.path.join(datasets_path, f'{file_}.dump'))
+		# save_pickle(pkl=df, fname=os.path.join(datasets_path, f'{file_}.gz')) #TODO: check with nikeX and nikeY time taking!
 
 def run():
-	make_folder(folder_name=dataset_path)
+	make_folder(folder_name=datasets_path)
 	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
 	"""	
 	# run single log file	
