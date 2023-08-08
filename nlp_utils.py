@@ -42,18 +42,11 @@ def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_raw_sn(results):
-	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
-	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
+	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if sent] # ["sentA", "sentB", "sentC"]
 	return snippets_list
 
 def get_lemmatized_sn(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
-
-def get_raw_sn_list(results):
-	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
-	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
-	# return ' '.join(snippets_list)
-	return snippets_list
 
 def get_raw_cnt(cnt_dict):
 	return cnt_dict.get("text")
@@ -89,7 +82,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	
 	print(f"{f'Extracting raw texts snippets':<50}", end="")
 	st_t = time.time()
-	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_sn_list, na_action='ignore')
+	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_sn, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(dframe.info(verbose=True, memory_usage="deep"))
@@ -106,7 +99,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 
 	# sys.exit()
-
+	return
 	users_list = list()
 	raw_texts_list = list()
 	for n, g in dframe.groupby("user_ip"):
@@ -115,8 +108,8 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
 		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["", "", "", ...]
 
-		lsnp = [ sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
-		lcnt = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ] # ["", "", "", ...]
+		lsnp = [sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
+		lcnt = [sent for sent in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sent ] # ["", "", "", ...]
 
 		ltot = lque + lcol + lclp + lsnp + lcnt
 		raw_texts_list.append( ltot )
@@ -126,7 +119,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 	print(f">> creating raw_docs_list", end=" ")
-	raw_docs_list = [subitem for itm in raw_texts_list if ( itm is not None and len(itm) > 0 ) for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
+	raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
 
 	del raw_texts_list
 	gc.collect()
