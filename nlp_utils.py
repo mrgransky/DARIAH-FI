@@ -95,10 +95,15 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(dframe.info(verbose=True, memory_usage="deep"))
 	for n, g in dframe.groupby("user_ip"):
 		print(f"user: {n}")
-		print(g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist())
-		print("-"*50)
+		# print(g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist())
+		# print("-"*50)
 		print([ sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] )
+		print("x"*50)
+		print( g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() )
+		print("-"*20)
+		print([ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sentences ])
 		print("<>"*100)
+
 
 	sys.exit()
 
@@ -106,14 +111,14 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	raw_texts_list = list()
 	for n, g in dframe.groupby("user_ip"):
 		users_list.append(n)
-		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ] # ["global warming", "econimic crisis", "", ]
+		lque = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ] # ["global warming", "econimic crisis", "", ]
 		lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
 		lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["", "", "", ...]
 
-		ls = [ sentences for sentences in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if len(sentences) > 0 ] # ["", "", "", ...]
-		lc = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ] # ["", "", "", ...]
+		lsnp = [ sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
+		lcnt = [ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if len(sentences) > 0 ] # ["", "", "", ...]
 
-		ltot = lq + lcol + lclp + ls + lc
+		ltot = lque + lcol + lclp + lsnp + lcnt
 		raw_texts_list.append( ltot )
 
 	del dframe
