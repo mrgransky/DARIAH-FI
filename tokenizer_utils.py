@@ -82,8 +82,8 @@ def stanza_lemmatizer(docs):
 	lemmas_list = list()
 	st_t = time.time()
 	try:
-		# print(f'stanza input:[{len(docs)}]:\n{docs}')
-		print(f"{f'nWORDS: { len( docs.split() ) }':<15}{str(docs.split()[:5]):<150}", end="")
+		print(f'stanza input:[{len(docs)}]:\n{docs}')
+		# print(f"{f'nWORDS: { len( docs.split() ) }':<15}{str(docs.split()[:5]):<150}", end="")
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
@@ -107,7 +107,7 @@ def stanza_lemmatizer(docs):
 		return
 	print(f"{f'{len(lemmas_list)} Lemma(s)':<20}Elapsed_t: {time.time()-st_t:.3f} s")
 	# print( lemmas_list )
-	# print("<>"*70)
+	print("<>"*70)
 	del all_
 	gc.collect()
 	return lemmas_list

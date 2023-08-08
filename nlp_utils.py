@@ -42,7 +42,7 @@ def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_raw_sn(results):
-	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if sent] # ["sentA", "sentB", "sentC"]
+	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if (sent and len(sent)>0)] # ["sentA", "sentB", "sentC"]
 	return snippets_list
 
 def get_lemmatized_sn(results, lm: str="stanza"):
