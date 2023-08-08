@@ -93,21 +93,11 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(dframe.info(verbose=True, memory_usage="deep"))
-	print("#"*100)
-	print(dframe['snippet_raw_text'].head(10))
-	print("#"*100)
-	print(dframe['snippet_raw_text'].tail(10))
-	print("#"*100)
-	print( type( dframe['snippet_raw_text'].values[-1:] ), len( dframe['snippet_raw_text'].values[-1:] ) )
-	print(dframe['snippet_raw_text'].values[-1:])
 	for n, g in dframe.groupby("user_ip"):
 		print(f"user: {n}")
-		lsn_v = g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values
-		print(lsn_v)
-		print()
 		print(g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist())
-		print("-"*15)
-		print([ el for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el ] )
+		print("-"*50)
+		print([ sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] )
 		print("<>"*100)
 
 	sys.exit()
