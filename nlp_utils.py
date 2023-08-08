@@ -106,6 +106,8 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 		print(lsn_v)
 		print()
 		print(g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist())
+		print("-"*15)
+		print([ el for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el ] )
 		print("<>"*100)
 
 	sys.exit()
