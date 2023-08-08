@@ -127,12 +127,12 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
 	raw_docs_list = list(set(raw_docs_list))
-	print(f"<<!>> unique phrases: {len(raw_docs_list)}")
+	# print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	print(f"Cleaning {len(raw_docs_list)} Raw Documents:")
+	print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]", end="\t")
 	pst = time.time()
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
-	print(f"{f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
+	print(f"=> {f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
 
 	tfidf_vec_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
 	tfidf_rf_matrix_fpath = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
