@@ -136,7 +136,7 @@ dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes_cache")
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
-# pd.set_option('display.max_colwidth', 500)
+pd.set_option('display.max_colwidth', None)
 
 class HiddenPrints:
 	def __enter__(self):
