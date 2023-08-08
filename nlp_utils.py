@@ -99,7 +99,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 
 	# sys.exit()
-	return
+	# return
 	users_list = list()
 	raw_texts_list = list()
 	for n, g in dframe.groupby("user_ip"):

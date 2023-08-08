@@ -44,8 +44,8 @@ with HiddenPrints():
 	my_custom_stopwords = ['btw', "could've", "n't","'s","—", "i'm", "'m", 
 													"i've", "ive", "'d", "i'd", " i'll", "'ll", "'ll", "'re", "'ve", 'oops', 'tmt', 'ocb', 'rdf',
 													'aldiz', 'baizik', 'bukatzeko', 'ift', 'jja', 'lrhe', 'iih', 'rno', 'jgfj', 'puh', 'knr', 'rirrh',
-													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'huom', 'ajl', 'alf', 'frk',
-													'inc', 'per', 'ops', 'vpv', 'ojv', 'rva', 'hvr', 'nfn', 'smk', 'lkm',
+													'klo','nro', 'vol', 'amp', 'sid', 'obs', 'annan', 'huom', 'ajl', 'alf', 'frk', 'albi', 'edv', 'ell',
+													'inc', 'per', 'ops', 'vpv', 'ojv', 'rva', 'hvr', 'nfn', 'smk', 'lkm', 'quo', 'utf', 'hfvo', 'mim', 'htnm',
 													'edota', 'eze', 'ezpabere', 'ezpada', 'ezperen', 'gainera', 'njj', 'aab', 'arb', 'tel', 'fkhi',
 													'gainerontzean', 'guztiz', 'hainbestez', 'horra', 'onların', 'ordea', 'hel', 'aac', 'ake', 'oeb',
 													'osterantzean', 'sha', 'δ', 'δι', 'агар-чи', 'аз-баски', 'афташ', 'бале', 'gen', 'fjh', 'fji',
@@ -82,8 +82,8 @@ def stanza_lemmatizer(docs):
 	lemmas_list = list()
 	st_t = time.time()
 	try:
-		print(f'stanza input[{len(docs)}]: {docs}')
-		# print(f"{f'nWORDS: { len( docs.split() ) }':<15}{str(docs.split()[:5]):<150}", end="")
+		# print(f'stanza input[{len(docs)}]: {docs}')
+		print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
@@ -105,9 +105,9 @@ def stanza_lemmatizer(docs):
 		print(f"<!> Stanza Error: {e}")
 		# logging.exception(e)
 		return
-	print( lemmas_list )
+	# print( lemmas_list )
 	print(f"{f'{len(lemmas_list)} Lemma(s)':<20}Elapsed_t: {time.time()-st_t:.3f} s")
-	print("<>"*100)
+	# print("<>"*100)
 	del all_
 	gc.collect()
 	return lemmas_list
