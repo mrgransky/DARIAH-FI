@@ -93,7 +93,12 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 
 	users_list = list()
 	raw_texts_list = list()
+
+	print(dframe['snippet_raw_text'].head(20))
+	print("#"*100)
+	print(dframe['snippet_raw_text'].tail(20))
 	
+	return
 	for n, g in dframe.groupby("user_ip"):
 		users_list.append(n)
 		lq = [ phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ] # ["global warming", "econimic crisis", "", ]
