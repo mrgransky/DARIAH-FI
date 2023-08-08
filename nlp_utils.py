@@ -49,10 +49,11 @@ def get_raw_sn(results):
 def get_lemmatized_sn(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
-def get_raw_snTEXTs(results):
+def get_raw_sn_list(results):
 	#snippets_list = [sn.get("textHighlights").get("text") for sn in results if sn.get("textHighlights").get("text") ] # [["sentA"], ["sentB"], ["sentC"]]
 	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
-	return ' '.join(snippets_list)
+	# return ' '.join(snippets_list)
+	return snippets_list
 
 def get_raw_cnt(cnt_dict):
 	return cnt_dict.get("text")
@@ -88,7 +89,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	
 	print(f"{f'Extracting raw texts snippets':<50}", end="")
 	st_t = time.time()
-	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_snTEXTs, na_action='ignore')
+	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_sn_list, na_action='ignore')
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(dframe.info(verbose=True, memory_usage="deep"))
