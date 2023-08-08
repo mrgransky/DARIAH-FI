@@ -64,7 +64,8 @@ with HiddenPrints():
 													'atm', 'vmrc', 'swc', 'fjijcn', 'hvmv', 'arb', 'inr', 'cch', 'msk', 'vjj', 'phj', 'jgk', 'mlk',
 													'ffllil', 'adr', 'bea', 'ret', 'inh', 'vrk', 'ang', 'hra', 'nit', 'arr', 'jai', 'enk', 'bjb', 'iin',
 													'kka', 'tta', 'avu', 'nbl', 'drg', 'sek', 'wrw', 'tjk', 'jssjl', 'ing', 'scn', 'joh', 'yhd', 'uskc',
-													'tyk', 'wbl', 'vvichmann', 'okt', 'yht',
+													'tyk', 'wbl', 'vvichmann', 'okt', 'yht', 'akt', 
+													'jfe', 'ifc', 'flfl', 'bml', 'zibi', 'ibb', 'bbß',
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
