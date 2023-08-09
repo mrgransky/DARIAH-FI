@@ -216,7 +216,7 @@ def scrap_search_page(URL):
 
 @cache
 def scrap_newspaper_content_page(URL):
-	print(f"URL: {URL:<150}", end=" ")
+	print(f"{URL:<170}", end=" ")
 	# print(f"URL: {URL}")
 	URL = re.sub(r'amp;', '', URL)
 	if re.search(r'\/\w+\/binding\/\d+\?page=\d+', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
@@ -303,7 +303,7 @@ def scrap_newspaper_content_page(URL):
 	except Exception as e:
 		print(f"<!> {e}")
 	
-	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>30}")
+	print(f"{f'Elapsed: {time.time()-st_t:.3f} s':>15}")
 	return NWP_CONTENT_RESULTS
 
 if __name__ == '__main__':
