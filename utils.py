@@ -130,8 +130,8 @@ datasets_path = os.path.join( NLF_DATASET_PATH, f"datasets" )
 dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 # dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs_nikeXY" ) # only for PUHTI
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
-dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes_cache")
+dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
+# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes_cache")
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)

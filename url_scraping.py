@@ -187,10 +187,6 @@ def scrap_search_page(URL):
 											json=payload, 
 											headers=headers,
 											)
-
-		#print(r.headers)
-		#print(r.status_code)
-
 		res = r.json()
 		# a list of up to 20 results, each of which contains: 
 		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']

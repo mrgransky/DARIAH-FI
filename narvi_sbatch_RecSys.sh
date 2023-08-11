@@ -4,11 +4,11 @@
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=06-23:59:59
+#SBATCH --time=07-00:00:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=280G
-#SBATCH --array=0-259
+#SBATCH --mem=14G
+#SBATCH --array=639-641
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
@@ -32,13 +32,13 @@ if [ $user == 'alijani' ]; then
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	dfs_dir="/scratch/project_2004072/Nationalbiblioteket/datasets"
+	ddir="/scratch/project_2004072/Nationalbiblioteket/datasets"
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
 echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
 python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
-# python -u tkRecSys.py --dsPath $dfs_dir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
+# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

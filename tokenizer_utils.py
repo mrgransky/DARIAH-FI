@@ -64,8 +64,9 @@ with HiddenPrints():
 													'atm', 'vmrc', 'swc', 'fjijcn', 'hvmv', 'arb', 'inr', 'cch', 'msk', 'vjj', 'phj', 'jgk', 'mlk',
 													'ffllil', 'adr', 'bea', 'ret', 'inh', 'vrk', 'ang', 'hra', 'nit', 'arr', 'jai', 'enk', 'bjb', 'iin',
 													'kka', 'tta', 'avu', 'nbl', 'drg', 'sek', 'wrw', 'tjk', 'jssjl', 'ing', 'scn', 'joh', 'yhd', 'uskc',
-													'tyk', 'wbl', 'vvichmann', 'okt', 'yht', 'akt', 
-													'jfe', 'ifc', 'flfl', 'bml', 'zibi', 'ibb', 'bbß',
+													'tyk', 'wbl', 'vvichmann', 'okt', 'yht', 'akt', 'nti', 'mgl', 'vna', 'anl', 'lst', 'hku', 'wllss',
+													'jfe', 'ifc', 'flfl', 'bml', 'zibi', 'ibb', 'bbß', 'sfr', 'yjet', 'stm', 'imk', 'sotmt', 'oslfesfl', 
+													'mmik', 'pytmkn', 
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
@@ -111,7 +112,7 @@ def stanza_lemmatizer(docs):
 		# logging.exception(e)
 		return
 	# print( lemmas_list )
-	print(f"{f'{len(lemmas_list)} Lemma(s)':<20}Elapsed_t: {time.time()-st_t:.3f} s")
+	print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
 	# print("<>"*100)
 	del all_
 	gc.collect()

@@ -4,7 +4,7 @@
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=5G
-#SBATCH --time=6-23:59:59
+#SBATCH --time=7-00:00:00
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
