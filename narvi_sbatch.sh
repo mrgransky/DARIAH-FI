@@ -3,13 +3,13 @@
 #SBATCH -J irQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=5G
+#SBATCH --mem=4G
 #SBATCH --time=7-00:00:00
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 # # # # # # SBATCH --array=75
-#SBATCH --array=0-36%2
+#SBATCH --array=530-575%5
 
 stars=$(printf '%*s' 110 '')
 txt="SLURM JOB STARTED AT: `date`"
