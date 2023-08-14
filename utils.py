@@ -631,7 +631,7 @@ def save_vocab(vb, fname:str=""):
 	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
 	st_t = time.time()
 	with open(fname, "w") as fw:
-		json.load(vb, fw, indent=4, ensure_ascii=False)
+		json.dump(vb, fw, indent=4, ensure_ascii=False)
 
 	fsize_dump = os.stat( fname ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
