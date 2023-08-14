@@ -124,6 +124,10 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
 	print(f"DF_init Loaded in: {time.time()-st_t:.3f} sec | {df.shape}".center(100, " "))
 
+	if df.shape[0] == 0:
+		print(f"<!> Empty DF_init: {df.shape}, Nothing to retrieve, Stop Executing...")
+		return
+
 	print(f"{f'Page Analysis'.center(150, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "
@@ -176,7 +180,6 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 	
 	if args.saveDF:
 		save_pickle(pkl=df, fname=os.path.join(datasets_path, f'{file_}.dump'))
-		# save_pickle(pkl=df, fname=os.path.join(datasets_path, f'{file_}.gz')) #TODO: check with nikeX and nikeY time taking!
 
 def run():
 	make_folder(folder_name=datasets_path)
