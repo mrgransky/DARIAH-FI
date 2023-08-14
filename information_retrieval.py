@@ -119,12 +119,12 @@ def single_query(file_="", ts=None, browser_show=False):
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
 def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
-	print(f">> Analyzing Q[{nQ}]: {file_}")
+	print(f"Q[{nQ}]: {file_}")
 	st_t = time.time()
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
-	print(f"INITIAL df Loaded in: {time.time()-st_t:.3f} sec | {df.shape}")
+	print(f"DF_init Loaded in: {time.time()-st_t:.3f} sec | {df.shape}".center(100, " "))
 
-	print(f"{f'Page Analysis'.center(140, ' ')}\n"
+	print(f"{f'Page Analysis'.center(150, ' ')}\n"
 				f"search pages: {df.referer.str.count('/search').sum()}, "
 				f"collection pages: {df.referer.str.count('/collections').sum()}, "
 				f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "

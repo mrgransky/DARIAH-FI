@@ -521,8 +521,8 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	
 	df = pd.DataFrame.from_dict(cleaned_lines)
 	# with pandas:
-	print(df.isna().sum())
-	print("-"*50)
+	# print(df.isna().sum())
+	# print("-"*50)
 	# df = df.dropna(subset=['timestamp'])
 	# df.timestamp = pd.to_datetime(df.timestamp, format='%d/%b/%Y %H:%M:%S %z', errors='coerce')
 	# df = df.dropna(subset=['timestamp'])
@@ -541,8 +541,8 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print(df.dtypes)
 	# print("<>"*50)
 	#print(f">> Raw DF: {df.shape}")
-	print(df.isna().sum())
-	print("-"*50)
+	# print(df.isna().sum())
+	# print("-"*50)
 
 	#print(f">> Replacing space + bad urls + empty fields with np.nan :")
 	# with numpy:
@@ -563,8 +563,8 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	df['prev_time'] = df.groupby(['referer','user_ip'])['timestamp'].shift()
 	# print("#"*100)
 	print(df.info())
-	print("<>"*50)
-	print(df.timestamp.dtypes, df.prev_time.dtypes, pd.Timestamp(0).tzinfo)
+	# print("<>"*50)
+	# print(df.timestamp.dtypes, df.prev_time.dtypes, pd.Timestamp(0).tzinfo)
 
 	assert pdtypes.is_datetime64_any_dtype(df['prev_time']), f"prev_time dtype: {df.prev_time.dtypes}"
 	assert pdtypes.is_datetime64_any_dtype(df['timestamp']), f"timestamp dtype: {df.timestamp.dtypes}"
