@@ -139,7 +139,7 @@ def scrap_collection_page(URL):
 
 @cache
 def scrap_search_page(URL):
-	# print(f"<> Scraping: {URL}")
+	print(f"{URL:<170}", end="")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
@@ -190,24 +190,27 @@ def scrap_search_page(URL):
 		res = r.json()
 		# a list of up to 20 results, each of which contains: 
 		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']
-		SEARCH_RESULTS = res.get("rows") 
-		#print(f"\t\tFound {len(SEARCH_RESULTS)} search result(s) | Elapsed_t: {time.time()-st_t:.2f} s")
+		SEARCH_RESULTS = res.get("rows")
+		print(f"Got {len(SEARCH_RESULTS)} result(s) in {time.time()-st_t:.2f} s")
 		#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
-	except (requests.exceptions.Timeout,
-					requests.exceptions.ConnectionError, 
-					requests.exceptions.RequestException, 
-					requests.exceptions.TooManyRedirects,
-					requests.exceptions.InvalidSchema,
-					ValueError, 
-					TypeError, 
-					EOFError, 
-					RuntimeError,
-					json.JSONDecodeError,
-					json.decoder.JSONDecodeError,
-					Exception, 
-					) as e:
-		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+	except Exception as e:
+		print(f"<!> {e}")
 		return
+	# except (requests.exceptions.Timeout,
+	# 				requests.exceptions.ConnectionError, 
+	# 				requests.exceptions.RequestException, 
+	# 				requests.exceptions.TooManyRedirects,
+	# 				requests.exceptions.InvalidSchema,
+	# 				ValueError, 
+	# 				TypeError, 
+	# 				EOFError, 
+	# 				RuntimeError,
+	# 				json.JSONDecodeError,
+	# 				json.decoder.JSONDecodeError,
+	# 				Exception, 
+	# 				) as e:
+	# 	print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+	# 	return
 	return SEARCH_RESULTS
 
 @cache
