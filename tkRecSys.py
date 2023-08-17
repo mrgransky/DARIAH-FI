@@ -6,7 +6,12 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('--dsPath', """default=dfs_path,""" type=str, required=True)
+parser.add_argument('-d', 
+										'--dsPath', 
+										# default=dfs_path, 
+										type=str, 
+										required=True,
+									)
 parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
