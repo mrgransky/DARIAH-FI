@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 
 parser.add_argument('-d', 
 										'--dsPath', 
-										default=dfs_path, 
+										# default=dfs_path, 
 										type=str, 
 										required=True,
 										help='Path to directory of df_concat',
