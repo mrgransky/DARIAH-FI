@@ -11,6 +11,7 @@ parser.add_argument('-d',
 										# default=dfs_path, 
 										type=str, 
 										required=True,
+										help='Path to directory of df_concat',
 									)
 parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
