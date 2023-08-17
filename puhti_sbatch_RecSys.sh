@@ -34,7 +34,7 @@ if [ $user == 'alijani' ]; then
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/datasets"
+	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_tmp" # currently df_concat only available in dataframes_tmp
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 

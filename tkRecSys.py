@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-# parser.add_argument('--dsPath', default=datasets_path, type=str) # smallest
+parser.add_argument('--dsPath', """default=dfs_path,""" type=str, required=True)
 parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 fprefix = "df_concat"
 #RES_DIR = make_result_dir(infile=fprefix)
-make_folder(folder_name=dfs_path)
+make_folder(folder_name=args.dsPath)
 MODULE=60
 
 # list of all weights:
@@ -167,7 +167,7 @@ def get_sparse_matrix(df):
 				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
 			)
 	print("-"*110)
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
+	sp_mat_user_token_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 	return sparse_matrix
 
@@ -706,11 +706,11 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df():
-	user_df_files = glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' )
+	user_df_files = glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' )
 	print(f">> concatinating {len(user_df_files)} user_df files:\n{user_df_files}")
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( dfs_path+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
+		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
 	
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
@@ -723,14 +723,14 @@ def get_users_tokens_df():
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 	user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
 
-	user_token_df_fname = os.path.join(dfs_path,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
+	user_token_df_fname = os.path.join(args.dsPath,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
 																							f"{len( usr_tk_raw_dfs.user_ip.value_counts() )}_nUSRs_x_"
 																							f"{len(user_token_df.columns)}_nTKs.gz"
 																		)
 
 	save_pickle(pkl=user_token_df, fname=user_token_df_fname)
 	save_vocab(	vb={c: i for i, c in enumerate(user_token_df.columns)}, 
-							fname=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
+							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
 						)
 	# user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
 	return user_token_df
@@ -744,7 +744,7 @@ def main():
 	topK=args.topTKs
 	
 	try:
-		user_token_df = load_pickle( fpath=glob.glob( dfs_path+'/'+'*user_token_sparse_df_*_nUSRs_x_*_nTKs.gz' )[0] )
+		user_token_df = load_pickle( fpath=glob.glob( args.dsPath+'/'+'*user_token_sparse_df_*_nUSRs_x_*_nTKs.gz' )[0] )
 	except:
 		user_token_df = get_users_tokens_df()
 
@@ -753,7 +753,7 @@ def main():
 	print(f"|BoWs|: {len(BoWs)}")
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except:
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
