@@ -754,7 +754,8 @@ def main():
 	except:
 		user_token_df = get_users_tokens_df()
 
-	print(user_token_df.head(20))
+	# print(user_token_df.head(20))
+	print(f"USER_TOKEN DF: {user_token_df.shape}")
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
 
