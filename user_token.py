@@ -6,7 +6,20 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('--inputDF', default=os.path.join(datasets_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), type=str) # smallest
+parser.add_argument('-idf', 
+										'--inputDF', 
+										required=True,
+										# default=os.path.join(datasets_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), 
+										type=str,
+										help="Input DataFrame",
+									)
+parser.add_argument('-odir', 
+										'--outDIR', 
+										# default="/scratch/project_2004072/Nationalbiblioteket/dataframes",
+										type=str, 
+										required=True, 
+										help='output directory to save files',
+									)
 parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -18,7 +31,7 @@ args = parser.parse_args()
 RES_DIR = make_result_dir(infile=args.inputDF)
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 
-make_folder(folder_name=dfs_path)
+make_folder(folder_name=args.outDIR)
 MODULE=60
 
 # list of all weights:
@@ -206,12 +219,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Getting USERs DataFrame from Input DF: {dframe.shape}".center(150, "-"))
 	print(dframe.info(verbose=True, memory_usage="deep"))
 	print("<>"*60)
-	sqFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
-	snHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
-	snFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.gz")
-	cntHWFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.gz")
-	cntPTFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.gz")
-	cntFile = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.gz")
+	sqFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
+	snHWFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
+	snFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.gz")
+	cntHWFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.gz")
+	cntPTFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.gz")
+	cntFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.gz")
 	dframe = dframe.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df_preprocessed = dframe.copy()
 	print(f">> Preparing df_preprocessed [initial]: {df_preprocessed.shape}")
@@ -382,7 +395,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	print(f"USERs {type(user_df)} | Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, "-"))
 
-	user_df_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
+	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
 	
 	return user_df
@@ -409,7 +422,7 @@ def get_sparse_matrix(df: pd.DataFrame):
 	#print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
 	#print("#"*110)
 	##########################Sparse Matrix info##########################
-	sp_mat_user_token_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
+	sp_mat_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 	print(f"{type(sparse_matrix)} (Users, Tokens): {sparse_matrix.shape} | {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
@@ -419,16 +432,16 @@ def get_sparse_matrix(df: pd.DataFrame):
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	try:
-		tfidf_matrix_rf = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz"))
-		tfidf_vec = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz"))
-		BoWs = load_vocab(fname=[fn for fn in glob.glob(os.path.join(dfs_path, "*.json")) if fn.startswith(f"{dfs_path}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
+		tfidf_matrix_rf = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz"))
+		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz"))
+		BoWs = load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> {e}")
 		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 
 	# print(f"USERs DF".center(100, ' '))
 	try:
-		df_user = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
+		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
@@ -439,7 +452,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	gc.collect()
 
 	try:
-		usr_tk_spm = load_pickle(fpath=os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:

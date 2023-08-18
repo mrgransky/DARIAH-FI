@@ -18,8 +18,8 @@ ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
 echo "HOST: $SLURM_SUBMIT_HOST, CLUSTER: $SLURM_CLUSTER_NAME, WRK_DIR: $SLURM_SUBMIT_DIR"
-echo "JOB: name: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, Array_ID: $SLURM_ARRAY_JOB_ID"
-echo "NUM_NODES: $SLURM_JOB_NUM_NODES, NODELIST: $SLURM_JOB_NODELIST, NODE_ID: $SLURM_NODEID"
+echo "JOBname: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, Array_ID: $SLURM_ARRAY_JOB_ID"
+echo "NUM_NODES: $SLURM_JOB_NUM_NODES, NODELIST: $SLURM_JOB_NODELIST, NODE_ID: $SLURM_NODEID, $SLURM_JOB_PARTITION"
 echo "NTASKS: $SLURM_NTASKS, PROCID: $SLURM_PROCID"
 echo "CPUS_ON_NODE: $SLURM_CPUS_ON_NODE, CPUS/TASK: $SLURM_CPUS_PER_TASK, MEM/CPU: $SLURM_MEM_PER_CPU"
 echo "${stars// /*}"
@@ -31,15 +31,16 @@ echo "Cluster: $cluster Current User: $user"
 if [ $user == 'alijani' ]; then
 	echo ">> Using Narvi conda env from Anaconda..."
 	source activate py39
+	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently nothing available!
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_tmp" # currently df_concat only available in dataframes_tmp
+	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
 echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
-python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
+python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 # python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 # python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
