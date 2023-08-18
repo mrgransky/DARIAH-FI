@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J qXY_cpu
+#SBATCH -J qXY_gpu
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
-#SBATCH --mem=16G
-#SBATCH --partition=longrun
-# # # # # # SBATCH --gres=gpu:v100:1
-#SBATCH --time=14-00:00:00
+#SBATCH --mem=14G
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:v100:1
+#SBATCH --time=03-00:00:00
 #SBATCH --array=0-1
 # # # # # # SBATCH --array=1
 
