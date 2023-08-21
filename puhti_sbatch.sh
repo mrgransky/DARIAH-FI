@@ -4,12 +4,13 @@
 #SBATCH -J dfQ
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=small
-#SBATCH --mem-per-cpu=5G
-#SBATCH --time=2-23:59:59
+#SBATCH --mem-per-cpu=3G
+#SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=0-1
-# # # # array: 730-1096 -> useless no information
+#SBATCH --array=699-729%6
+# # # # array: 730-1095 -> useless, no valuable information
+
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
 ch="#"
