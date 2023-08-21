@@ -200,7 +200,7 @@ def run():
 	)
 
 if __name__ == '__main__':
-	os.system('clear')
+	# os.system('clear')
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
 	run()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))

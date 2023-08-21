@@ -4,7 +4,7 @@
 #SBATCH -J dfQ
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=small
-#SBATCH --mem-per-cpu=3G
+#SBATCH --mem=3G
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
