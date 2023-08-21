@@ -193,24 +193,25 @@ def scrap_search_page(URL):
 		SEARCH_RESULTS = res.get("rows")
 		print(f"Got {len(SEARCH_RESULTS)} result(s)\t{time.time()-st_t:.3f} sec")
 		#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
-	except Exception as e:
-		print(f"<!> {e}")
-		return
-	# except (requests.exceptions.Timeout,
-	# 				requests.exceptions.ConnectionError, 
-	# 				requests.exceptions.RequestException, 
-	# 				requests.exceptions.TooManyRedirects,
-	# 				requests.exceptions.InvalidSchema,
-	# 				ValueError, 
-	# 				TypeError, 
-	# 				EOFError, 
-	# 				RuntimeError,
-	# 				json.JSONDecodeError,
-	# 				json.decoder.JSONDecodeError,
-	# 				Exception, 
-	# 				) as e:
-	# 	print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+	# except Exception as e:
+	# 	print(f"<!> {e}")
 	# 	return
+	except (requests.exceptions.Timeout,
+					requests.exceptions.ConnectionError, 
+					requests.exceptions.RequestException, 
+					requests.exceptions.TooManyRedirects,
+					requests.exceptions.InvalidSchema,
+					ValueError, 
+					TypeError, 
+					IndexError,
+					EOFError, 
+					RuntimeError,
+					json.JSONDecodeError,
+					json.decoder.JSONDecodeError,
+					Exception, 
+					) as e:
+		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
+		return
 	return SEARCH_RESULTS
 
 @cache
