@@ -34,6 +34,7 @@ elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
 fi
 
+echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${logFiles[$SLURM_ARRAY_TASK_ID]}"
 python -u information_retrieval.py --saveDF True --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]}
 
 done_txt="SLURM JOB ENDED AT: `date`"

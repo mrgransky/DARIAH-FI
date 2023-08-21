@@ -120,7 +120,7 @@ def single_query(file_="", ts=None, browser_show=False):
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
 def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
-	print(f"Q[{nQ}]: {file_}")
+	print(f"Query Log File: {file_}")
 	st_t = time.time()
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
 	print(f"DF_init Loaded in: {time.time()-st_t:.3f} sec | {df.shape}".center(100, " "))
