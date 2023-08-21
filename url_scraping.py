@@ -209,7 +209,7 @@ def scrap_search_page(URL):
 					json.JSONDecodeError,
 					json.decoder.JSONDecodeError,
 					Exception, 
-					) as e:
+				) as e:
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
 		return
 	return SEARCH_RESULTS
