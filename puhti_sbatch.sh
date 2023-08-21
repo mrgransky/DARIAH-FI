@@ -8,7 +8,7 @@
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=699-729%6
+#SBATCH --array=649-729%6
 # # # # array: 730-1095 -> useless, no valuable information
 
 stars=$(printf '%*s' 90 '')
@@ -28,6 +28,7 @@ echo "Cluster: $SLURM_CLUSTER_NAME | $user | arrayTaskID: $SLURM_ARRAY_TASK_ID |
 
 if [ $user == 'alijani' ]; then
 	source activate py39
+	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log) #TODO: must be adjusted!
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
 	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)

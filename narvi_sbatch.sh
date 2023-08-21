@@ -29,11 +29,12 @@ echo "Cluster: $SLURM_CLUSTER_NAME | $user | arrayTaskID: $SLURM_ARRAY_TASK_ID |
 if [ $user == 'alijani' ]; then
 	echo ">> Using Narvi conda env from Anaconda..."
 	source activate py39
+	logFiles=(/lustre/sgn-data/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log) #TODO: must be adjusted!
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
 fi
 
-python -u information_retrieval.py --saveDF True --query $SLURM_ARRAY_TASK_ID
+python -u information_retrieval.py --saveDF True --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]}
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
