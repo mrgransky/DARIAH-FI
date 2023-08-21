@@ -191,7 +191,7 @@ def scrap_search_page(URL):
 		# a list of up to 20 results, each of which contains: 
 		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']
 		SEARCH_RESULTS = res.get("rows")
-		print(f"Got {len(SEARCH_RESULTS)} result(s) in {time.time()-st_t:.3f} s")
+		print(f"Got {len(SEARCH_RESULTS)} result(s)\t{time.time()-st_t:.3f} sec")
 		#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	except Exception as e:
 		print(f"<!> {e}")
