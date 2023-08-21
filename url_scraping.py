@@ -139,7 +139,7 @@ def scrap_collection_page(URL):
 
 @cache
 def scrap_search_page(URL):
-	print(f"{URL:<170}", end="")
+	print(f"{URL:<200}", end=" ")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
 	#print(f"Parsed url:\n{json.dumps(parameters, indent=2, ensure_ascii=False)}")
@@ -191,7 +191,7 @@ def scrap_search_page(URL):
 		# a list of up to 20 results, each of which contains: 
 		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']
 		SEARCH_RESULTS = res.get("rows")
-		print(f"Got {len(SEARCH_RESULTS)} result(s) in {time.time()-st_t:.2f} s")
+		print(f"Got {len(SEARCH_RESULTS)} result(s) in {time.time()-st_t:.3f} s")
 		#print(json.dumps(SEARCH_RESULTS, indent=2, ensure_ascii=False))
 	except Exception as e:
 		print(f"<!> {e}")
