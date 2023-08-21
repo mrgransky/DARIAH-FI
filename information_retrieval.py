@@ -5,8 +5,9 @@ from utils import *
 # nohup python -u nationalbiblioteket_logs.py --query 0 --saveDF True > logNEW_q0.out &
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
-parser.add_argument('--query', default=0, type=int) # smallest
+parser.add_argument('-qlf', '--queryLogFile', required=True, type=str, help="Query log file") # smallest
 parser.add_argument('--saveDF', default=False, type=bool, help='Save DataFrame in directory | Def: False')
+
 args = parser.parse_args()
 
 def single_query(file_="", ts=None, browser_show=False):
@@ -183,7 +184,7 @@ def all_queries(file_: str="", nQ: int=args.query, ts: List[str]=None):
 
 def run():
 	make_folder(folder_name=datasets_path)
-	all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
+	# all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
 	"""	
 	# run single log file	
 	single_query(file_=all_log_files[args.query],
@@ -192,9 +193,11 @@ def run():
 							)
 	"""
 	# run all log files using array in batch
-	all_queries(file_=all_log_files[args.query],
-							#ts=["14:30:00", "14:56:59"],
-							)
+	all_queries(
+		file_=args.queryLogFile,
+		# file_=all_log_files[args.query],
+		#ts=["14:30:00", "14:56:59"],
+	)
 
 if __name__ == '__main__':
 	os.system('clear')
