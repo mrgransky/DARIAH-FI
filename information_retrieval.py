@@ -178,16 +178,17 @@ def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 	print("-"*100)
 
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
-	
+	log_file_name = log_file_name = file_[file_.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
+
 	if args.saveDF:
-		save_pickle(pkl=df, fname=os.path.join(datasets_path, f'{file_}.dump'))
+		save_pickle( pkl=df, fname=os.path.join( datasets_path, f'{log_file_name}.dump') )
 
 def run():
 	make_folder(folder_name=datasets_path)
 	# all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
 	"""	
 	# run single log file	
-	single_query(file_=all_log_files[args.query],
+	single_query(file_=args.queryLogFile,
 							#browser_show=True, 
 							#ts=["23:52:00", "23:59:59"],
 							)
@@ -195,7 +196,6 @@ def run():
 	# run all log files using array in batch
 	all_queries(
 		file_=args.queryLogFile,
-		# file_=all_log_files[args.query],
 		#ts=["14:30:00", "14:56:59"],
 	)
 
