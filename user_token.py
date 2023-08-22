@@ -68,6 +68,8 @@ def sum_tk(lst, wg, vb):
 			updated_vb[tk] = updated_vb.get(tk) + wg
 			#print(tk, wg, updated_vb[tk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
+	del lst, vb, wg
+	gc.collect()
 	return updated_vb
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
