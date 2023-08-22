@@ -12,7 +12,7 @@
 #SBATCH --array=0-11
 # # # # # # SBATCH --array=1
 
-stars=$(printf '%*s' 90 '')
+stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
@@ -28,8 +28,6 @@ echo "SLURM_TASKS_PER_NODE: $SLURM_TASKS_PER_NODE, SLURM_THREADS_PER_CORE: $SLUR
 echo "${stars// /*}"
 
 user="`whoami`"
-cluster="$SLURM_CLUSTER_NAME"
-echo "Cluster: $cluster Current User: $user"
 
 if [ $user == 'alijani' ]; then
 	echo ">> Using Narvi conda env from Anaconda..."

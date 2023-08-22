@@ -8,14 +8,14 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 def get_raw_sqp(phrase_list):
-	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1!"
+	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1! Now: {len(phrase_list)}"
 	phrase = phrase_list[0]
 	return phrase
 
 def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 	# qu_list = ['some word in this format with always length 1']
 	#print(len(qu_list), qu_list)
-	assert len(qu_list) == 1, f"query list length MUST be len(qu_list)==1, it is now {len(qu_list)}!!"
+	assert len(qu_list) == 1, f"query list length MUST be len(qu_list)==1, Now: {len(qu_list)}!!"
 	return lemmatizer_methods.get(lm)( clean_(docs=qu_list[0]) )
 
 def get_raw_snHWs(search_results_list):

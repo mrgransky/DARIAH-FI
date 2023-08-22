@@ -690,9 +690,7 @@ def get_parsed_url_parameters(inp_url):
 	#print(parameters)
 	return p_url, params
 
-def get_query_phrase(inp_url):
-	#print(f"\nParsing {inp_url}")
-	
+def get_query_phrase(inp_url):	
 	p_url = urllib.parse.urlparse(inp_url)
 	#print(parsed_url)
 
