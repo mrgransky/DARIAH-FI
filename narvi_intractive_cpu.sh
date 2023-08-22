@@ -5,4 +5,4 @@
 # OR ...
 # $ source puhti_intractive_cpu.sh
 
-srun -J cpu_grid  --partition=grid --time=01-23:59:00 --mem=256G --pty /bin/bash -i
+srun -J cpu_intractive  --partition=amd --time=00-23:59:59 --mem=256G --pty /bin/bash -i
