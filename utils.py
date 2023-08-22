@@ -40,10 +40,10 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
-import matplotlib.ticker as ticker
-import matplotlib
+# import matplotlib.ticker as ticker
+# import matplotlib
 import seaborn as sns
-#matplotlib.use("Agg")
+# matplotlib.use("Agg")
 
 sz=16
 params = {
