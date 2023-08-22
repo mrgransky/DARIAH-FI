@@ -60,7 +60,7 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def sum_tk(lst: List[str], wg: float=0.0, vb: Dict[str, int]):
+def sum_tk(lst: List[str], wg: float, vb: Dict[str, int]):
 	# print(lst)
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
 	for itk, vtk in enumerate(lst): # [tk1, tk2, …]
