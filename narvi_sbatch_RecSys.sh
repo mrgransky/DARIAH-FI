@@ -27,19 +27,21 @@ cluster="$SLURM_CLUSTER_NAME"
 echo "Cluster: $cluster Current User: $user"
 
 if [ $user == 'alijani' ]; then
-	echo ">> Using Narvi conda env from Anaconda..."
+	echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 	source activate py39
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
+	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
 elif [ $user == 'alijanif' ]; then
-	echo ">> Using Puhti conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/datasets"
+	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
+	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION"
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
-echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
-python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --lmMethod 'stanza' --qphrase 'Stockholms universitet'
+echo "Q[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
+python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 # python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
+# python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
-done_txt="SLURM JOB ENDED AT: `date`"
+done_txt="SLURM JOB ENDED @ `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
 echo "${stars// /*}"

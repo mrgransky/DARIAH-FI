@@ -35,12 +35,12 @@ if [ $user == 'alijani' ]; then
 	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently nothing available!
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
-	echo ">> Using Puhti conda env from tykky module..."
+	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
-echo "<> Loading Q[$SLURM_ARRAY_TASK_ID] : ${files[$SLURM_ARRAY_TASK_ID]}"
+echo "Q[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Stockholms universitet'
 # python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 # python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
