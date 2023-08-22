@@ -60,6 +60,10 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
+def sum_tk(lst, wg, vb):
+	print(lst)
+	# return 
+
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
 	for tk in dframe[qcol]: # [tk1, tk2, …]
@@ -391,7 +395,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	st_t = time.time()
 
 	print(f">> usrInt_qu_tk")
-	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
+	# user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
+	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda tk: sum_tk(tk, wg=weightQueryAppearance, vb=bow), na_action="ignore")
 
 	print(f">> usrInt_sn_hw_tk")
 	user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
