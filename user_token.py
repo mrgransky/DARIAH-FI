@@ -396,7 +396,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	print(f">> usrInt_qu_tk")
 	# user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
-	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda tk: sum_tk(tk, wg=weightQueryAppearance, vb=bow), na_action="ignore")
+	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: sum_tk(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> usrInt_sn_hw_tk")
 	user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
