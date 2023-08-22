@@ -114,7 +114,7 @@ def stanza_lemmatizer(docs):
 		return
 	print( lemmas_list )
 	# print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
-	print(f"{len(lemmas_list)}| Elapsed_t: {time.time()-st_t:.3f} sec".center(100, "-") )
+	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {time.time()-st_t:.3f} sec".center(100, "-") )
 	del all_
 	gc.collect()
 	return lemmas_list
