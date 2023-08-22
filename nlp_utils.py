@@ -102,20 +102,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza"):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	print(dframe.info(verbose=True, memory_usage="deep"))
-	# for n, g in dframe.groupby("user_ip"):
-	# 	print(f"user: {n}")
-	# 	# print(g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist())
-	# 	# print("-"*50)
-	# 	print([ sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] )
-	# 	print("x"*50)
-	# 	print( g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() )
-	# 	print("-"*20)
-	# 	print([ sentences for sentences in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sentences ])
-	# 	print("<>"*100)
-
-
-	# sys.exit()
-	# return
+	print(f"<>"*80)
 	users_list = list()
 	raw_texts_list = list()
 	for n, g in dframe.groupby("user_ip"):

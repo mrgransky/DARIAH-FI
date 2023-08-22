@@ -303,6 +303,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Input_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 	print( df_preprocessed.info( verbose=True, memory_usage="deep") )
 	print("<>"*40)
+
 	print(f">> Getting USERs DF from DF_preprocessed: {df_preprocessed.shape}...")
 	st_t = time.time()
 	users_list = list()
@@ -358,17 +359,17 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 				)
 
 	user_df = pd.DataFrame(list(zip(users_list, 
-																				search_query_phrase_tokens_list, 
-																				search_results_hw_snippets_tokens_list, 
-																				search_results_snippets_tokens_list, 
-																				nwp_content_lemmas_all_list, 
-																				nwp_content_lemmas_separated_list,
-																				nwp_content_pt_tokens_list, 
-																				nwp_content_hw_tokens_list,
-																				nwp_content_raw_texts_list,
-																				search_results_snippets_raw_texts_list,
-																			)
-																	),
+																	search_query_phrase_tokens_list, 
+																	search_results_hw_snippets_tokens_list, 
+																	search_results_snippets_tokens_list, 
+																	nwp_content_lemmas_all_list, 
+																	nwp_content_lemmas_separated_list,
+																	nwp_content_pt_tokens_list, 
+																	nwp_content_hw_tokens_list,
+																	nwp_content_raw_texts_list,
+																	search_results_snippets_raw_texts_list,
+																)
+															),
 																columns =['user_ip',
 																					'qu_tokens',
 																					'snippets_hw_token', 
@@ -382,7 +383,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																				]
 															)
 
-	print(f"<> Adding Implicit Feedback to USERs {type(user_df)} | {user_df.shape}")
+	print(f"<> Adding Implicit Feedback to USER DF: {type(user_df)} | {user_df.shape}")
 	# st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
 	user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
@@ -440,6 +441,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod)
 
 	# print(f"USERs DF".center(100, ' '))
+	df_inp = df_inp.dropna(axis=1, how='all') #TODO: this must be transfered before get_cBoWs()
 	try:
 		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	# except Exception as e:
