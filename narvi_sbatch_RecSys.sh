@@ -8,7 +8,7 @@
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:teslav100:1
 #SBATCH --mem=9G
-#SBATCH --array=724-725
+#SBATCH --array=723-724
 
 stars=$(printf '%*s' 90 '')
 txt="SLURM JOB STARTED AT: `date`"
