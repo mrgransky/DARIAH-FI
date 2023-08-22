@@ -37,7 +37,7 @@ def get_raw_cntPTs(cnt_dict):
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	# print(results)
-	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
+	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 	# if results:
 	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
