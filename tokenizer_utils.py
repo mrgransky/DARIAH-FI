@@ -80,7 +80,7 @@ with HiddenPrints():
 													'xxbx', 'xvy', 'xwr', 'xxii', 'xxix', 'xxo', 'xxm', 'xxl', 'xxv', 'xxä', 'xxvii', 'xyc', 'xxp', 'xxih', 'xxlui', 'xzå',
 													'ybd', 'ybfi', 'ybh', 'ybj', 'yca', 'yck', 'ycs', 'yey', 'yfcr', 'yfc', 'yfe', 'yffk', 'yff', 'yfht', 'yfj', 'yfl', 'yft',
 													'ynnaxy', 'aoaxy', 'aob', 'cxy', 'jmw', 'jmxy', 'msxy', 'msx', 'msy', 'msßas', 'mszsk', 'mta', 'kirj', 'ius', 'tsb',
-													'ile', 'lle', 'htdle', 'sir','pai', 'päi', 'str', 'ent', 'ciuj', 'homoj', 'quot', 'pro', 'tft', 'lso',
+													'ile', 'lle', 'htdle', 'sir','pai', 'päi', 'str', 'ent', 'ciuj', 'homoj', 'quot', 'pro', 'tft', 'lso', 'sii',
 													'hpl', 'tpv', 'vrpl', 'jtihiap', 'nii', 'nnf', 'aää', 'jofc', 'lxx', 'vmll', 'sll', 'vlli', 'pernstclln', 'nttä', 'npunl', 'aln',
 													]
 	STOPWORDS.extend(my_custom_stopwords)
@@ -103,32 +103,18 @@ def stanza_lemmatizer(docs):
 	lemmas_list = list()
 	st_t = time.time()
 	try:
-		# print(f'stanza input[{len(docs)}]: {docs}')
-		print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
+		print(f'\nstanza raw input:\n{docs}')
+		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		all_ = stanza_multi_pipeline(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
 		lemmas_list = [ re.sub(r'#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm)>=3 and len(wlm)<=35 and not re.search(r"\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ) ]
-		# for _, vsnt in enumerate(all_.sentences):
-		# 	for _, vw in enumerate(vsnt.words):
-		# 		wlm = re.sub('#|_','', vw.lemma.lower())
-		# 		wtxt = vw.text.lower()
-		# 		if wtxt in all_words_list and wlm in all_lemmas_list:
-		# 			# print(f"Already seen {wtxt} & lemma >>{wlm}<< available")
-		# 			lemmas_list.append(wlm)
-		# 		elif ( wtxt not in all_words_list and wlm and len(wlm) > 2 and not re.search(r"<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ):
-		# 			# print(f"have not lemmatized: {wtxt}")
-		# 			lemmas_list.append( wlm )
-		# 			all_lemmas_list.append( wlm )
-		# 		all_words_list.append(wtxt)
-	
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
-		# logging.exception(e)
 		return
-	# print( lemmas_list )
-	print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
-	# print("<>"*100)
+	print( lemmas_list )
+	# print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
+	print(f"{len(lemmas_list)}| Elapsed_t: {time.time()-st_t:.3f} sec".center(100, "-") )
 	del all_
 	gc.collect()
 	return lemmas_list
