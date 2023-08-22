@@ -62,7 +62,13 @@ def get_snippet_raw_text(search_results_list):
 
 def sum_tk(lst, wg, vb):
 	print(lst)
-	# return 
+	updated_vb = dict.fromkeys(vb.keys(), 0.0)
+	for tk in lst: # [tk1, tk2, …]
+		if updated_vb.get(tk) is not None: # check if this token is available in BoWs
+			updated_vb[tk] = updated_vb.get(tk) + wg
+			#print(tk, wg, updated_vb[tk])
+	#print(f"{dframe.user_ip}".center(50, '-'))
+	return updated_vb
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
