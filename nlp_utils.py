@@ -20,24 +20,34 @@ def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 
 def get_raw_snHWs(search_results_list):
 	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
-	hw_snippets = [w for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 ) for w in sn.get("terms")] # ["A", "B", "C"]
+	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
 	return hw_snippets
 
 def get_lemmatized_snHWs(results, lm: str="stanza"):
-	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) )) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
 def get_raw_cntHWs(cnt_dict):
-	return cnt_dict.get("highlighted_term")
+	try:
+		raw_highlighted_term = cnt_dict.get("highlighted_term")
+	except Exception as e:
+		print(f"<!> highlighted_term does not exist!: {e}")
+		return
+	return raw_highlighted_term
 
 def get_lemmatized_cntHWs(results, lm: str="stanza"):
-	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(clean_(docs=el))) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
 def get_raw_cntPTs(cnt_dict):
-	return cnt_dict.get("parsed_term")
+	try:
+		raw_parsed_term_text = cnt_dict.get("parsed_term")
+	except Exception as e:
+		print(f"<!> parsed_term does not exist!: {e}")
+		return
+	return raw_parsed_term_text
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	# print(results)
-	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	return [tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 	# if results:
 	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
@@ -46,10 +56,16 @@ def get_raw_sn(results):
 	return snippets_list
 
 def get_lemmatized_sn(results, lm: str="stanza"):
-	return [ tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
 def get_raw_cnt(cnt_dict):
-	return cnt_dict.get("text")
+	# return cnt_dict.get("text")
+	try:
+		raw_content_text = cnt_dict.get("text")
+	except Exception as e:
+		print(f"<!> cnt_text does not exist!: {e}")
+		return
+	return raw_content_text
 
 def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"):
 	# cleaned = clean_(docs=sentences)
