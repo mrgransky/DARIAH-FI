@@ -405,27 +405,32 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: sum_tk(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> usrInt_sn_hw_tk")
-	user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
+	# user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
+	user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: sum_tk(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> usrInt_sn_tk")
-	user_df["usrInt_sn_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
+	# user_df["usrInt_sn_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
+	user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: sum_tk(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> usrInt_cnt_hw_tk")
-	user_df["usrInt_cnt_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
+	# user_df["usrInt_cnt_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
+	user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: sum_tk(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> usrInt_cnt_pt_tk")
-	user_df["usrInt_cnt_pt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
+	# user_df["usrInt_cnt_pt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
+	user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: sum_tk(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> usrInt_cnt_tk")
-	user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
+	# user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
+	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: sum_tk(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 
 	print(f">> selected_content")
 	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 
-	print(f"USERs {type(user_df)} | Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, "-"))
-
 	print(f">> user_token_interest")
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
+
+	print(f"USERs {type(user_df)} | Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, "-"))
 
 	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
