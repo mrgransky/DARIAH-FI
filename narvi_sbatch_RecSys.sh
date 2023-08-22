@@ -1,14 +1,15 @@
 #!/bin/bash
 
-#SBATCH -J nkQ
+#SBATCH -J nkQ_XY
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=302G
-#SBATCH --array=0-29
+#SBATCH --mem=369G
+#SBATCH --array=723
+# # # -29
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
