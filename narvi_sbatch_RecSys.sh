@@ -7,7 +7,7 @@
 #SBATCH --time=07-00:00:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=64G
+#SBATCH --mem=128G
 #SBATCH --array=723
 # # #  -724
 
