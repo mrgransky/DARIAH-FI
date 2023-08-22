@@ -60,26 +60,26 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def sum_tk(lst, wg, vb):
+def sum_tk(lst: List[str], wg: float=0.0, vb: Dict[str, int]):
 	# print(lst)
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
-	for tk in lst: # [tk1, tk2, …]
-		if updated_vb.get(tk) is not None: # check if this token is available in BoWs
-			updated_vb[tk] = updated_vb.get(tk) + wg
-			#print(tk, wg, updated_vb[tk])
+	for itk, vtk in enumerate(lst): # [tk1, tk2, …]
+		if updated_vb.get(vtk) is not None: # check if this token is available in BoWs
+			updated_vb[vtk] = updated_vb.get(vtk) + wg
+			#print(vtk, wg, updated_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
 	del lst, vb, wg
 	gc.collect()
 	return updated_vb
 
-def sum_tk_apperance_vb(dframe, qcol, wg, vb):
-	updated_vb = dict.fromkeys(vb.keys(), 0.0)
-	for tk in dframe[qcol]: # [tk1, tk2, …]
-		if updated_vb.get(tk) is not None: # check if this token is available in BoWs
-			updated_vb[tk] = updated_vb.get(tk) + wg
-			#print(tk, wg, updated_vb[tk])
-	#print(f"{dframe.user_ip}".center(50, '-'))
-	return updated_vb
+# def sum_tk_apperance_vb(dframe, qcol, wg, vb):
+# 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
+# 	for tk in dframe[qcol]: # [tk1, tk2, …]
+# 		if updated_vb.get(tk) is not None: # check if this token is available in BoWs
+# 			updated_vb[tk] = updated_vb.get(tk) + wg
+# 			#print(tk, wg, updated_vb[tk])
+# 	#print(f"{dframe.user_ip}".center(50, '-'))
+# 	return updated_vb
 
 def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, int]):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
@@ -100,6 +100,9 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 			# print(f"QU[{i}]: {q_tk:<25}w: {w_qu}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[q_tk] = curr
 	# print('*'*60)
+	del prev, curr
+	gc.collect()
+
 	for i, sn_hw_tk in enumerate(dframe.snippets_hw_token):
 		#print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn} | vb_exist? {updated_vocab.get(sn_hw_tk) is not None} ")
 		if updated_vocab.get(sn_hw_tk) is not None:
@@ -108,6 +111,9 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 			# print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[sn_hw_tk] = curr
 	# print('*'*60)
+	del prev, curr
+	gc.collect()
+	
 	for i, sn_tk in enumerate(dframe.snippets_token):
 		#print(f"sn[{i}]: {sn_tk:<25}w: {w_sn} | vb_exist? {updated_vocab.get(sn_tk) is not None} ")
 		if updated_vocab.get(sn_tk) is not None:
@@ -116,6 +122,9 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 			# print(f"sn[{i}]: {sn_tk:<25}w: {w_sn}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[sn_tk] = curr
 	# print('*'*60)
+	del prev, curr
+	gc.collect()
+	
 	for i, c_hw_tk in enumerate(dframe.nwp_content_hw_token):
 		#print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt} | vb_exist? {updated_vocab.get(c_hw_tk) is not None} ")
 		if updated_vocab.get(c_hw_tk) is not None:
@@ -124,6 +133,10 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 			# print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_hw_tk] = curr
 	# print('*'*60)
+	
+	del prev, curr
+	gc.collect()
+	
 	for i, c_pt_tk in enumerate(dframe.nwp_content_pt_token):
 		#print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt} | vb_exist? {updated_vocab.get(c_pt_tk) is not None} ")
 		if updated_vocab.get(c_pt_tk) is not None:
@@ -132,6 +145,10 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 			# print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_pt_tk] = curr
 	# print('*'*60)
+	
+	del prev, curr
+	gc.collect()
+	
 	for i, c_tk in enumerate(dframe.nwp_content_lemma_all):
 		#print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt} | vb_exist? {updated_vocab.get(c_tk) is not None} ")
 		if updated_vocab.get(c_tk) is not None:
@@ -139,8 +156,11 @@ def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, 
 			curr = prev + w_cnt
 			# print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_tk] = curr
-
 	# print("#"*150)
+	
+	del prev, curr
+	gc.collect()
+	
 	return updated_vocab
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
@@ -400,39 +420,55 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print("-"*100)
 
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
-	st_t = time.time()
+	imf_st_t = time.time()
 
-	print(f">> usrInt_qu_tk")
+	print(f">> usrInt_qu_tk", end= " ")
+	st_t = time.time()
 	# user_df["usrInt_qu_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="qu_tokens", wg=weightQueryAppearance, vb=bow), axis=1)
 	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: sum_tk(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> usrInt_sn_hw_tk")
+	print(f">> usrInt_sn_hw_tk", end=" ")
+	st_t = time.time()
 	# user_df["usrInt_sn_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_hw_token", wg=weightSnippetHWAppearance, vb=bow), axis=1)
 	user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: sum_tk(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> usrInt_sn_tk")
+	print(f">> usrInt_sn_tk", end=" ")
+	st_t = time.time()
 	# user_df["usrInt_sn_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="snippets_token", wg=weightSnippetAppearance, vb=bow), axis=1)
 	user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: sum_tk(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> usrInt_cnt_hw_tk")
+	print(f">> usrInt_cnt_hw_tk", end=" ")
+	st_t = time.time()
 	# user_df["usrInt_cnt_hw_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_hw_token", wg=weightContentHWAppearance, vb=bow), axis=1)
 	user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: sum_tk(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> usrInt_cnt_pt_tk")
+	print(f">> usrInt_cnt_pt_tk", end=" ")
+	st_t = time.time()
 	# user_df["usrInt_cnt_pt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_pt_token", wg=weightContentPTAppearance, vb=bow), axis=1)
 	user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: sum_tk(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> usrInt_cnt_tk")
+	print(f">> usrInt_cnt_tk", end=" ")
+	st_t = time.time()
 	# user_df["usrInt_cnt_tk"] = user_df.apply(lambda x_df: sum_tk_apperance_vb(x_df, qcol="nwp_content_lemma_all", wg=weightContentAppearance, vb=bow), axis=1)
 	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: sum_tk(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> selected_content")
+	print(f">> selected_content", end=" ")
+	st_t = time.time()
 	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f">> user_token_interest")
+	print(f">> user_token_interest", end=" ")
+	st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
+	print(f"Elapsed_t: {time.time()-st_t:.2f}")
 
-	print(f"USERs {type(user_df)} | Elapsed_t: {time.time()-st_t:.2f} s | {user_df.shape}".center(150, "-"))
+	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} sec | {user_df.shape}".center(150, "-"))
 
 	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
