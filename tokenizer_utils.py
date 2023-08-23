@@ -116,12 +116,12 @@ def stanza_lemmatizer(docs):
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
 		lemmas_list = [ re.sub(r'#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm)>=3 and len(wlm)<=35 and not re.search(r"\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ) ]
+		end_t = time.time()
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		return
 	del all_
 	gc.collect()
-	end_t = time.time()
 	print( lemmas_list )
 	# print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
 	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} sec".center(100, "-") )
