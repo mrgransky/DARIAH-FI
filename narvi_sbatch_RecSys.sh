@@ -5,9 +5,9 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:teslav100:1
-#SBATCH --mem=369G
+#SBATCH --partition=amd
+# # # # SBATCH --gres=gpu:teslav100:1
+#SBATCH --mem=465G
 #SBATCH --array=723
 # # # -29
 
