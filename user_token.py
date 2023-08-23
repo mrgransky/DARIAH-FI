@@ -458,14 +458,14 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: sum_tk(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
-	print(f">> selected_content", end=" ")
-	st_t = time.time()
-	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
-
 	print(f">> user_token_interest", end=" ")
 	st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( lambda x_df: sum_all_tokens_appearance_in_vb(x_df, w_list, bow), axis=1, )	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+
+	print(f">> selected_content", end=" ")
+	st_t = time.time()
+	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} sec | {user_df.shape}".center(150, "-"))

@@ -1,17 +1,17 @@
 #!/bin/bash
 
-#SBATCH --job-name=nkQ
+#SBATCH --job-name=nkQ_XY
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --partition=gpu
+#SBATCH --partition=grid
 #SBATCH --nodes=1
-#SBATCH --ntasks=10
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=10G
-# # # # SBATCH --gres=gpu:teslap100:2
-#SBATCH --array=405-410
+#SBATCH --ntasks=25
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=574G
+# # # # SBATCH --gres=gpu:teslap100:1
+#SBATCH --array=730
 # # # -29
 
 stars=$(printf '%*s' 100 '')
