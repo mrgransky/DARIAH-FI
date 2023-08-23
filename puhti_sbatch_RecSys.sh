@@ -6,8 +6,8 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --nodes=1
-#SBATCH --ntasks=40
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks=10
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=10G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
