@@ -6,11 +6,11 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
 #SBATCH --partition=gpu
-#SBATCH --nodes=1
-#SBATCH --ntasks=20
+#SBATCH --nodes=2
+#SBATCH --ntasks=25
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=10G
-#SBATCH --gres=gpu:teslak80:1
+# # # # SBATCH --gres=gpu:teslak80:1
 #SBATCH --array=500-505
 # # # -29
 
