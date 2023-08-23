@@ -5,10 +5,13 @@
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=small
 #SBATCH --mem=3G
+#SBATCH --ntasks=40
+#SBATCH --cpus-per-task=5
+#SBATCH --nodes=1
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=649-729%6
+#SBATCH --array=699-729%6
 # # # # array: 730-1095 -> useless, no valuable information
 
 stars=$(printf '%*s' 100 '')
