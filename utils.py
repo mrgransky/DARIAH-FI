@@ -131,7 +131,6 @@ dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 # dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs_nikeXY" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
-# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes_cache")
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
@@ -780,16 +779,4 @@ def get_concat_df(dir_path: str):
 	del dfs
 	gc.collect()
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}")
-	# df_concat_fname = os.path.join(dfs_path, f"{ndfs}_dfs_{df_concat.shape[0]}_x_{df_concat.shape[1]}_concat.gz")
-	# save_pickle(pkl=df_concat, 
-	# 						fname=df_concat_fname,
-	# 					)
-
-	# df_concat_mem_sz = df_concat.values.nbytes + df_concat.index.nbytes + df_concat.columns.nbytes
-	# print(df_concat.info(verbose=True, memory_usage="deep"))
-	# print(df_concat[["user_ip", "timestamp"]].head(20))
-	# print("#"*100)
-	# print(df_concat[["user_ip", "timestamp"]].tail(20))
-	# print(df_concat.user_ip.nunique()) #Count Unique Values in Column
-	# print(len(df_concat.user_ip.value_counts()))
 	return df_concat, ndfs
