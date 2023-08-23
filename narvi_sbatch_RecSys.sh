@@ -8,7 +8,7 @@
 #SBATCH --partition=amd
 # # # # SBATCH --gres=gpu:teslav100:1
 #SBATCH --mem=465G
-#SBATCH --array=723
+#SBATCH --array=730
 # # # -29
 
 stars=$(printf '%*s' 100 '')
