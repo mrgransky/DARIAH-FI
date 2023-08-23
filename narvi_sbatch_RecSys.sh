@@ -6,12 +6,12 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
 #SBATCH --partition=gpu
-#SBATCH --nodes=2
-#SBATCH --ntasks=25
-#SBATCH --cpus-per-task=1
+#SBATCH --nodes=1
+#SBATCH --ntasks=10
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=10G
-# # # # SBATCH --gres=gpu:teslak80:1
-#SBATCH --array=501-510
+# # # # SBATCH --gres=gpu:teslap100:2
+#SBATCH --array=405-410
 # # # -29
 
 stars=$(printf '%*s' 100 '')
