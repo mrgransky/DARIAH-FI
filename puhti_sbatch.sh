@@ -6,7 +6,7 @@
 #SBATCH --partition=small
 #SBATCH --mem=3G
 #SBATCH --ntasks=40
-#SBATCH --cpus-per-task=5
+#SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
