@@ -151,7 +151,8 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# print("#"*150)
 	# del prev, curr
 	# gc.collect()
-	del dframe
+
+	del dframe, weights, vb
 	gc.collect()
 	
 	return updated_vocab
