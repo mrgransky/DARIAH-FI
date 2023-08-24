@@ -8,7 +8,7 @@
 #SBATCH --partition=amd
 #SBATCH --nodes=2
 #SBATCH --ntasks=10
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=488G
 # # # # SBATCH --gres=gpu:teslap100:1
 #SBATCH --array=730
