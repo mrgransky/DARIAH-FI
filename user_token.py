@@ -72,16 +72,16 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			#print(vtk, wg, updated_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
 
-	# # TODO: time consuming:
-	# print(f"deleting...", end=" ")
-	# st_t = time.time()
-	# del lst, vb, wg
-	# print(f"elapsed_t: {time.time()-st_t:.2f} sec")
+	# TODO: time consuming:
+	print(f"Deleting...", end=" ")
+	st_t = time.time()
+	del lst, vb, wg
+	print(f"elapsed_t: {time.time()-st_t:.2f} sec")
 
-	# print(f"gc collector", end=" ")
-	# st_t = time.time()
-	# gc.collect()
-	# print(f"elapsed_t: {time.time()-st_t:.2f} sec")
+	print(f"GC collect", end=" ")
+	st_t = time.time()
+	gc.collect()
+	print(f"elapsed_t: {time.time()-st_t:.2f} sec")
 
 	return updated_vb
 
@@ -440,7 +440,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
 
-	print(f">> usrInt_qu_tk", end= " ")
+	print(f">> usrInt_qu_tk", end=" ")
 	st_t = time.time()
 	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
