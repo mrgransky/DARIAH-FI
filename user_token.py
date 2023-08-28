@@ -72,16 +72,16 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			#print(vtk, wg, updated_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
 
-	# TODO: time consuming:
-	print(f"deleting...", end=" ")
-	st_t = time.time()
-	del lst, vb, wg
-	print(f"elapsed_t: {time.time()-st_t:.2f} sec")
+	# # TODO: time consuming:
+	# print(f"deleting...", end=" ")
+	# st_t = time.time()
+	# del lst, vb, wg
+	# print(f"elapsed_t: {time.time()-st_t:.2f} sec")
 
-	print(f"gc collector", end=" ")
-	st_t = time.time()
-	gc.collect()
-	print(f"elapsed_t: {time.time()-st_t:.2f} sec")
+	# print(f"gc collector", end=" ")
+	# st_t = time.time()
+	# gc.collect()
+	# print(f"elapsed_t: {time.time()-st_t:.2f} sec")
 
 	return updated_vb
 
