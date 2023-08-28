@@ -4,12 +4,12 @@
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=07-00:00:00
-#SBATCH --partition=amd
+#SBATCH --time=01-00:00:00
+#SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --ntasks=6
-#SBATCH --cpus-per-task=6
-#SBATCH --mem=488G
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=128G
 # # # # SBATCH --gres=gpu:teslap100:1
 #SBATCH --array=730-731
 

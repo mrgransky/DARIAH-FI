@@ -63,7 +63,7 @@ def get_snippet_raw_text(search_results_list):
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	# print(lst)
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
-	for itk, vtk in enumerate(lst): # [tk1, tk2, …]
+	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		if updated_vb.get(vtk) is not None: # check if this token is available in BoWs
 			prev = updated_vb.get(vtk)
 			curr = prev + wg
@@ -71,8 +71,8 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			# updated_vb[vtk] = updated_vb.get(vtk) + wg # original implementation
 			#print(vtk, wg, updated_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
-	del lst, vb, wg
-	gc.collect()
+	# del lst, vb, wg
+	# gc.collect()
 	return updated_vb
 
 def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
@@ -159,13 +159,17 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	return updated_vocab
 
 def get_total_user_interest(df):
-	return dict(Counter(df.usrInt_qu_tk) + 
-							Counter(df.usrInt_sn_hw_tk) + 
-							Counter(df.usrInt_sn_tk) +
-							Counter(df.usrInt_cnt_hw_tk) +
-							Counter(df.usrInt_cnt_pt_tk) +
-							Counter(df.usrInt_cnt_tk)
-						)
+	print(type(df.usrInt_qu_tk), df.usrInt_qu_tk)
+	print(type(df.usrInt_sn_hw_tk), df.usrInt_sn_hw_tk)
+	print(type(df.usrInt_sn_tk), df.usrInt_sn_tk)
+	print(type(df.usrInt_cnt_hw_tk), df.usrInt_cnt_hw_tk)
+	print(type(df.usrInt_cnt_pt_tk), df.usrInt_cnt_pt_tk)
+	print(type(df.usrInt_cnt_tk), df.usrInt_cnt_tk)
+	print()
+	r=dict( Counter(df.usrInt_qu_tk)+Counter(df.usrInt_sn_hw_tk)+Counter(df.usrInt_sn_tk)+Counter(df.usrInt_cnt_hw_tk)+Counter(df.usrInt_cnt_pt_tk)+Counter(df.usrInt_cnt_tk) )
+	print(r)
+	print("-"*100)
+	return r
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
@@ -455,6 +459,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	st_t = time.time()
 	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+
+	print( user_df.info( verbose=True, memory_usage="deep") )
+	print("#"*80)
 
 	print(f">> TOTAL user_token_interest", end=" ")
 	st_t = time.time()
