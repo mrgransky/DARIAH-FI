@@ -440,52 +440,52 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
 
-	print(f">> usrInt_qu_tk", end=" ")
+	print(f">> usrInt_qu_tk", end="\t")
 	st_t = time.time()
 	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 	
 	gc.collect()
 	
-	print(f">> usrInt_sn_hw_tk", end=" ")
+	print(f">> usrInt_sn_hw_tk", end="\t")
 	st_t = time.time()
 	user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	gc.collect()
 
-	print(f">> usrInt_sn_tk", end=" ")
+	print(f">> usrInt_sn_tk", end="\t")
 	st_t = time.time()
 	user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	gc.collect()
 
-	print(f">> usrInt_cnt_hw_tk", end=" ")
+	print(f">> usrInt_cnt_hw_tk", end="\t")
 	st_t = time.time()
 	user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	gc.collect()
 
-	print(f">> usrInt_cnt_pt_tk", end=" ")
+	print(f">> usrInt_cnt_pt_tk", end="\t")
 	st_t = time.time()
 	user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	gc.collect()
 
-	print(f">> usrInt_cnt_tk", end=" ")
+	print(f">> usrInt_cnt_tk", end="\t")
 	st_t = time.time()
 	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
+	gc.collect()
+
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
 	
-	gc.collect()
-	
-	print(f">> TOTAL user_token_interest", end=" ")
+	print(f"<TOTAL> user_token_interest", end="\t")
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
 	user_df["user_token_interest"] = user_df.apply( get_total_user_interest, axis=1, )	
