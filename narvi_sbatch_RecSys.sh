@@ -11,8 +11,7 @@
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=488G
 # # # # SBATCH --gres=gpu:teslap100:1
-#SBATCH --array=730
-# # # -29
+#SBATCH --array=730-731
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"

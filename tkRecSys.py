@@ -7,8 +7,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																)
 
 parser.add_argument('-d', 
-										'--dsPath', 
-										# default=dfs_path, 
+										'--dsPath', # only available small df_concat: /scratch/project_2004072/Nationalbiblioteket/dataframes_tmp/
 										type=str, 
 										required=True,
 										help='Path to directory of df_concat',
@@ -19,7 +18,7 @@ parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
 # how to run:
-# python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+# 
 
 fprefix = "df_concat"
 #RES_DIR = make_result_dir(infile=fprefix)
