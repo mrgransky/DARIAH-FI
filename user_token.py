@@ -88,7 +88,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 			)
 
 	for i, q_tk in enumerate(dframe.qu_tokens): # [qtk1, qtk2, qtk3, ...]
-		print(f"QU[{i}]: {q_tk:<25}w: {w_qu} | vb_exist? {updated_vocab.get(q_tk) is not None} ")
+		# print(f"QU[{i}]: {q_tk:<25}w: {w_qu} | vb_exist? {updated_vocab.get(q_tk) is not None} ")
 		if updated_vocab.get(q_tk) is not None:
 			prev = updated_vocab.get(q_tk)
 			curr = prev + w_qu
@@ -99,7 +99,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# gc.collect()
 
 	for i, sn_hw_tk in enumerate(dframe.snippets_hw_token):
-		print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn} | vb_exist? {updated_vocab.get(sn_hw_tk) is not None} ")
+		# print(f"snHW[{i}]: {sn_hw_tk:<25}w: {w_hw_sn} | vb_exist? {updated_vocab.get(sn_hw_tk) is not None} ")
 		if updated_vocab.get(sn_hw_tk) is not None:
 			prev = updated_vocab.get(sn_hw_tk)
 			curr = prev + w_hw_sn
@@ -110,7 +110,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# gc.collect()
 	
 	for i, sn_tk in enumerate(dframe.snippets_token):
-		print(f"sn[{i}]: {sn_tk:<25}w: {w_sn} | vb_exist? {updated_vocab.get(sn_tk) is not None} ")
+		# print(f"sn[{i}]: {sn_tk:<25}w: {w_sn} | vb_exist? {updated_vocab.get(sn_tk) is not None} ")
 		if updated_vocab.get(sn_tk) is not None:
 			prev = updated_vocab.get(sn_tk)
 			curr = prev + w_sn
@@ -121,7 +121,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# gc.collect()
 	
 	for i, c_hw_tk in enumerate(dframe.nwp_content_hw_token):
-		print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt} | vb_exist? {updated_vocab.get(c_hw_tk) is not None} ")
+		# print(f"cntHW[{i}]: {c_hw_tk:<25}w: {w_hw_cnt} | vb_exist? {updated_vocab.get(c_hw_tk) is not None} ")
 		if updated_vocab.get(c_hw_tk) is not None:
 			prev = updated_vocab.get(c_hw_tk)
 			curr = prev + w_hw_cnt
@@ -132,7 +132,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# gc.collect()
 	
 	for i, c_pt_tk in enumerate(dframe.nwp_content_pt_token):
-		print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt} | vb_exist? {updated_vocab.get(c_pt_tk) is not None} ")
+		# print(f"cntPT[{i}]: {c_pt_tk:<25}w: {w_pt_cnt} | vb_exist? {updated_vocab.get(c_pt_tk) is not None} ")
 		if updated_vocab.get(c_pt_tk) is not None:
 			prev = updated_vocab.get(c_pt_tk)
 			curr = prev + w_pt_cnt
@@ -143,13 +143,13 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# gc.collect()
 	
 	for i, c_tk in enumerate(dframe.nwp_content_lemma_all):
-		print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt} | vb_exist? {updated_vocab.get(c_tk) is not None} ")
+		# print(f"cnt[{i}]: {c_tk:<40}w: {w_cnt} | vb_exist? {updated_vocab.get(c_tk) is not None} ")
 		if updated_vocab.get(c_tk) is not None:
 			prev = updated_vocab.get(c_tk)
 			curr = prev + w_cnt
-			print(f"cnt[{i}]: {c_tk:<25}w: {w_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
+			print(f"cnt[{i}]: {c_tk:<40}w: {w_cnt}\tprev: {prev:.3f}\tcurr: {curr:.3f}")
 			updated_vocab[c_tk] = curr
-	print("#"*150)
+	print("<>"*80)
 	# del prev, curr
 	# gc.collect()
 
@@ -500,7 +500,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz"))
 		BoWs = load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
-		print(f"<!> {e}")
+		print(f"<!> Error Loading BoWs: {e}")
 		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR)
 
 	# print(f"USERs DF".center(100, ' '))
