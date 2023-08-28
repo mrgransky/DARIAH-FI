@@ -71,8 +71,11 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			# updated_vb[vtk] = updated_vb.get(vtk) + wg # original implementation
 			#print(vtk, wg, updated_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
-	del lst, vb, wg
-	gc.collect()
+
+	# TODO: time consuming:
+	# del lst, vb, wg
+	# gc.collect()
+
 	return updated_vb
 
 def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
