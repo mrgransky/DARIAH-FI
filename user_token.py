@@ -164,7 +164,7 @@ def get_total_user_interest(df):
 							Counter(df.usrInt_sn_tk) +
 							Counter(df.usrInt_cnt_hw_tk) +
 							Counter(df.usrInt_cnt_pt_tk) +
-							Counter(df.usrInt_cnt_tk) +
+							Counter(df.usrInt_cnt_tk)
 						)
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
