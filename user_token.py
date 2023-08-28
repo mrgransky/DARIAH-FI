@@ -84,7 +84,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 				f"sn: {len(dframe.snippets_token)}, "
 				f"cntHW: {len(dframe.nwp_content_hw_token)}, "
 				f"cntPT: {len(dframe.nwp_content_pt_token)}, "
-				f"cnt: {len(dframe.nwp_content_lemma_all)}".center(130, " ")
+				f"cnt: {len(dframe.nwp_content_lemma_all)}".center(150, " ")
 			)
 
 	for i, q_tk in enumerate(dframe.qu_tokens): # [qtk1, qtk2, qtk3, ...]
@@ -157,6 +157,15 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	gc.collect()
 	
 	return updated_vocab
+
+def get_total_user_interest(df):
+	return dict(Counter(df.usrInt_qu_tk) + 
+							Counter(df.usrInt_sn_hw_tk) + 
+							Counter(df.usrInt_sn_tk) +
+							Counter(df.usrInt_cnt_hw_tk) +
+							Counter(df.usrInt_cnt_pt_tk) +
+							Counter(df.usrInt_cnt_tk) +
+						)
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
@@ -417,11 +426,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
 
-	print(f">> user_token_interest", end=" ")
-	st_t = time.time()
-	user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
-
 	print(f">> usrInt_qu_tk", end= " ")
 	st_t = time.time()
 	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
@@ -450,6 +454,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f">> usrInt_cnt_tk", end=" ")
 	st_t = time.time()
 	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+
+	print(f">> TOTAL user_token_interest", end=" ")
+	st_t = time.time()
+	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
+	user_df["user_token_interest"] = user_df.apply( get_total_user_interest, axis=1, )	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	print(f">> selected_content", end=" ")
