@@ -493,7 +493,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		gc.collect()
 
-		user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], axis=1)
+		user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], errors="ignore", axis=1)
+		print( user_df.info( verbose=True, memory_usage="deep") )
+		print("#"*80)
 
 		save_pickle(pkl=user_df, fname=user_df_separated_fname)
 	
@@ -529,6 +531,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} s | {user_df.shape}".center(150, "-"))
 
+	print( user_df.info( verbose=True, memory_usage="deep") )
+	print("#"*80)
 
 	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
