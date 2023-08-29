@@ -157,7 +157,11 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	
 	return updated_vocab
 
-def get_total_user_interest(df: pd.DataFrame):
+def get_total_user_interest(df):
+	print(df)
+	print(type(df))
+	print(df.shape)
+	print(df.columns)
 	print(type(df.usrInt_qu_tk), 
 				# df.usrInt_qu_tk,
 			)
