@@ -62,7 +62,7 @@ def get_snippet_raw_text(search_results_list):
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	# print(lst)
-	updated_vb = dict.fromkeys(vb.keys(), 0.0)
+	updated_vb: Dict[str, float] = dict.fromkeys(vb.keys(), 0.0)
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		if updated_vb.get(vtk) is not None: # check if this token is available in BoWs
 			prev = updated_vb.get(vtk)
@@ -71,17 +71,6 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			# updated_vb[vtk] = updated_vb.get(vtk) + wg # original implementation
 			#print(vtk, wg, updated_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
-
-	# # TODO: time consuming:
-	# print(f"Deleting...", end=" ")
-	# st_t = time.time()
-	# del lst, vb, wg
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
-
-	# print(f"GC collect", end=" ")
-	# st_t = time.time()
-	# gc.collect()
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 
 	return updated_vb
 
@@ -187,6 +176,8 @@ def get_total_user_interest(df):
 	# print(type(df.usrInt_cnt_tk), 
 	# 			# df.usrInt_cnt_tk,
 	# 		)
+	if not df.usrInt_qu_tk and not df.usrInt_sn_hw_tk:
+		return
 	print()
 	r=dict(	Counter(df.usrInt_qu_tk)
 					+Counter(df.usrInt_sn_hw_tk)
@@ -506,7 +497,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"<TOTAL> user_token_interest")
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-	user_df["user_token_interest"] = user_df.apply( lambda d: get_total_user_interest(d) if d else np.nan, axis=1, )	
+	user_df["user_token_interest"] = user_df.apply( get_total_user_interest, axis=1, )	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
 	gc.collect()
