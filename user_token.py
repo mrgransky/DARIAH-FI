@@ -492,8 +492,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	# gc.collect()
 
-	# # print( user_df.info( verbose=True, memory_usage="deep") )
-	# # print("#"*80)
+	print( user_df.info( verbose=True, memory_usage="deep") )
+	print("#"*80)
 	
 	print(f"<TOTAL> user_token_interest")
 	st_t = time.time()
