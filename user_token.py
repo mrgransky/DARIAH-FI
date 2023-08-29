@@ -188,12 +188,12 @@ def get_total_user_interest(df):
 	# 			# df.usrInt_cnt_tk,
 	# 		)
 	print()
-	r=dict(	Counter(df.usrInt_qu_tk)+
-					Counter(df.usrInt_sn_hw_tk)+
-				# 	Counter(df.usrInt_sn_tk)+
-				# 	Counter(df.usrInt_cnt_hw_tk)+
-				# 	Counter(df.usrInt_cnt_pt_tk)+
-				# 	Counter(df.usrInt_cnt_tk)
+	r=dict(	Counter(df.usrInt_qu_tk)
+					+Counter(df.usrInt_sn_hw_tk)
+					# +Counter(df.usrInt_sn_tk)
+					# +Counter(df.usrInt_cnt_hw_tk)
+					# +Counter(df.usrInt_cnt_pt_tk)
+					# +Counter(df.usrInt_cnt_tk)
 				)
 	print(r)
 	print("-"*100)
