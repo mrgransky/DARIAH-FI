@@ -157,7 +157,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	
 	return updated_vocab
 
-def get_total_user_interest(df):
+def get_total_user_interest(df: pd.DataFrame):
 	print(type(df.usrInt_qu_tk), 
 				# df.usrInt_qu_tk,
 			)
@@ -177,6 +177,7 @@ def get_total_user_interest(df):
 	# 			# df.usrInt_cnt_tk,
 	# 		)
 	if not df.usrInt_qu_tk and not df.usrInt_sn_hw_tk:
+		print(f"does not exist! exit...")
 		return
 	print()
 	r=dict(	Counter(df.usrInt_qu_tk)
@@ -186,7 +187,7 @@ def get_total_user_interest(df):
 					# +Counter(df.usrInt_cnt_pt_tk)
 					# +Counter(df.usrInt_cnt_tk)
 				)
-	print(r)
+	print(r, len(r))
 	print("-"*100)
 	return r
 
@@ -497,7 +498,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"<TOTAL> user_token_interest")
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-	user_df["user_token_interest"] = user_df.apply( get_total_user_interest, axis=1, )	
+	# user_df["user_token_interest"] = user_df.apply( get_total_user_interest, axis=1, )
+	user_df["user_token_interest"] = user_df.applymap( get_total_user_interest, na_action="ignore", )
+	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
 	gc.collect()
