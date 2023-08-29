@@ -10,7 +10,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
-# # # # SBATCH --gres=gpu:teslap100:1
+#SBATCH --gres=gpu:teslap100:1
 #SBATCH --array=5-10
 
 stars=$(printf '%*s' 100 '')

@@ -106,10 +106,8 @@ def spacy_tokenizer(sentence):
 
 @cache
 def stanza_lemmatizer(docs):
-	# words_list = list()
-	lemmas_list = list()
 	try:
-		# print(f'\nstanza raw input:\n{docs}\n')
+		print(f'\nstanza raw input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = stanza_multi_pipeline(docs)
@@ -122,9 +120,9 @@ def stanza_lemmatizer(docs):
 		return
 	# del all_
 	# gc.collect()
-	# print( lemmas_list )
+	print( lemmas_list )
 	# print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
-	# print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} sec".center(100, "-") )
+	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} sec".center(150, "-") )
 	return lemmas_list
 
 def trankit_lemmatizer(docs):
