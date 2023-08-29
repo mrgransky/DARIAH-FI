@@ -158,13 +158,8 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	return updated_vocab
 
 def get_total_user_interest(df, vb: Dict[str, int]):
-	# print(df)
-	# print(type(df))
-	# print(df.shape)
-	# print(df.columns)
-  df = df.fillna(value=dict.fromkeys(vb.keys(), 0.0)) # to avoid {} + NaN
-
-	print(type(df["usrInt_qu_tk"]), 
+	df = df.fillna(value=dict.fromkeys(vb.keys(), 0.0)) # to avoid {} + NaN
+	print(type(df["usrInt_qu_tk"]),
 				# df.usrInt_qu_tk,
 			)
 	print(type(df["usrInt_sn_hw_tk"]), 
