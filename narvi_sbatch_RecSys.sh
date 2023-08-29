@@ -1,15 +1,15 @@
 #!/bin/bash
 
-#SBATCH --job-name=nikeQ_XY_backup
+#SBATCH --job-name=nikeQ_XY
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=01-00:00:00
+#SBATCH --time=07-00:00:00
 #SBATCH --partition=normal
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=602G
+#SBATCH --mem=612G
 # # # # # SBATCH --gres=gpu:rtx100:1
 #SBATCH --array=730-731
 
