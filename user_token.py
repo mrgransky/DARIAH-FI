@@ -493,8 +493,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
 	# user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_token_interest(r, bow), axis=1, )
-	user_df["user_token_interest"] = user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]]
-																	.apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=True).sort_index().to_dict(), axis=1)
+	user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=True).sort_index().to_dict(), axis=1)
 
 	# user_df["user_token_interest"]=(pd.json_normalize(user_df["usrInt_qu_tk"]).fillna(value=0)
 	# 																.add(pd.json_normalize(user_df["usrInt_sn_hw_tk"]).fillna(value=0))
