@@ -9,7 +9,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=512G
+#SBATCH --mem=602G
 # # # # # SBATCH --gres=gpu:rtx100:1
 #SBATCH --array=730-731
 
