@@ -157,7 +157,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	
 	return updated_vocab
 
-def get_total_user_interest(df, vb: Dict[str, int]):
+def get_total_user_token_interest(df: pd.DataFrame, vb: Dict[str, int]):
 	df = df.dropna()
 	# print(df)
 	# print("usrInt_qu_tk" in df)
@@ -283,7 +283,8 @@ def tokenize_pt_nwp_content(results_list):
 def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Getting USERs DataFrame from Input DF: {dframe.shape}".center(150, "-"))
 	print(dframe.info(verbose=True, memory_usage="deep"))
-	print("<>"*60)
+	print("<>"*55)
+
 	sqFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
 	snHWFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
 	snFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets.gz")
@@ -408,31 +409,19 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#nwp_content_lemmas_all_list = [f"nwp_content_{i}" for i in range(len(users_list))]
 	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
-	# del df_preprocessed, dframe
+	del df_preprocessed, dframe
 	gc.collect()
-
-	# print(len(users_list),
-	# 			len(search_query_phrase_tokens_list),
-	# 			len(search_results_hw_snippets_tokens_list),
-	# 			len(search_results_snippets_tokens_list),
-	# 			len(nwp_content_lemmas_all_list),
-	# 			len(nwp_content_lemmas_separated_list),
-	# 			len(nwp_content_pt_tokens_list),
-	# 			len(nwp_content_hw_tokens_list),
-	# 			len(nwp_content_raw_texts_list),
-	# 			len(search_results_snippets_raw_texts_list),
-	# 			)
 
 	user_df = pd.DataFrame(list(zip(users_list, 
 																	search_query_phrase_tokens_list, 
 																	search_results_hw_snippets_tokens_list, 
 																	search_results_snippets_tokens_list, 
 																	nwp_content_lemmas_all_list, 
-																	nwp_content_lemmas_separated_list,
+																	# nwp_content_lemmas_separated_list,
 																	nwp_content_pt_tokens_list, 
 																	nwp_content_hw_tokens_list,
-																	nwp_content_raw_texts_list,
-																	search_results_snippets_raw_texts_list,
+																	# nwp_content_raw_texts_list,
+																	# search_results_snippets_raw_texts_list,
 																)
 															),
 																columns =['user_ip',
@@ -440,11 +429,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																					'snippets_hw_token', 
 																					'snippets_token',
 																					'nwp_content_lemma_all',
-																					'nwp_content_lemma_separated',
+																					# 'nwp_content_lemma_separated',
 																					'nwp_content_pt_token',
 																					'nwp_content_hw_token',
-																					'nwp_content_raw_text',
-																					'snippets_raw_text',
+																					# 'nwp_content_raw_text',
+																					# 'snippets_raw_text',
 																				]
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec | {user_df.shape}")
@@ -503,21 +492,19 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"<TOTAL> user_token_interest")
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-	user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_interest(r, bow), axis=1, )
+	user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_token_interest(r, bow), axis=1, )
 	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
 	gc.collect()
 
-	print(f"selected_content", end=" ")
-	st_t = time.time()
-	user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance), na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
+	# print(f"selected_content", end=" ")
+	# st_t = time.time()
+	# user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance) if l_of_l else np.nan, na_action="ignore")
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	# gc.collect()
 
 	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} s | {user_df.shape}".center(150, "-"))
 
-	gc.collect()
 
 	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
