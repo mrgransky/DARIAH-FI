@@ -160,37 +160,39 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 def get_total_user_interest(df, vb: Dict[str, int]):
 	df = df.dropna()
 	print(df)
-	print(type(df["usrInt_qu_tk"]),
-				# df.usrInt_qu_tk,
-			)
-	print(type(df["usrInt_sn_hw_tk"]), 
-				# df.usrInt_sn_hw_tk,
-			)
-	# print(type(df.usrInt_sn_tk), 
-	# 			# df.usrInt_sn_tk,
-	# 		)
-	# print(type(df.usrInt_cnt_hw_tk), 
-	# 			# df.usrInt_cnt_hw_tk,
-	# 		)
-	# print(type(df.usrInt_cnt_pt_tk), 
-	# 			# df.usrInt_cnt_pt_tk,
-	# 		)
-	# print(type(df.usrInt_cnt_tk), 
-	# 			# df.usrInt_cnt_tk,
-	# 		)
-	if not df.usrInt_qu_tk and not df.usrInt_sn_hw_tk:
-		print(f"does not exist! exit...")
-		return
-	print()
-	r=dict(	Counter(df["usrInt_qu_tk"])
-					+Counter(df["usrInt_sn_hw_tk"])
-					# +Counter(df.usrInt_sn_tk)
-					# +Counter(df.usrInt_cnt_hw_tk)
-					# +Counter(df.usrInt_cnt_pt_tk)
-					# +Counter(df.usrInt_cnt_tk)
-				)
-	print(r, len(r))
-	print("-"*100)
+	print("usrInt_qu_tk" in df)
+	print("usrInt_sn_hw_tk" in df)
+	print("usrInt_sn_tk" in df)
+	print("usrInt_cnt_hw_tk" in df)
+	print("usrInt_cnt_pt_tk" in df)
+	print("usrInt_cnt_tk" in df)
+
+	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	print(type(dict_usrInt_qu_tk), dict_usrInt_qu_tk)
+
+	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	print(type(dict_usrInt_sn_hw_tk), dict_usrInt_sn_hw_tk)
+
+	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	print(type(dict_usrInt_sn_tk), dict_usrInt_sn_tk)
+
+	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	print(type(dict_usrInt_cnt_hw_tk), dict_usrInt_cnt_hw_tk)
+
+	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	print(type(dict_usrInt_cnt_pt_tk), dict_usrInt_cnt_pt_tk)
+
+	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	print(type(dict_usrInt_cnt_tk), dict_usrInt_cnt_tk)
+
+	r = dict(
+		Counter(dict_usrInt_qu_tk)
+		+Counter(dict_usrInt_sn_hw_tk)
+		+Counter(dict_usrInt_sn_tk)
+		+Counter(dict_usrInt_cnt_hw_tk)
+		+Counter(dict_usrInt_cnt_pt_tk)
+		+Counter(dict_usrInt_cnt_tk)
+	)
 	return r
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
