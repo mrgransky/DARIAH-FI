@@ -452,7 +452,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
 
-	user_df_separated_fname = os.path.join(args.outDIR, f"{fprefix}_separated_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
+	user_df_separated_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_separated_{len(bow)}_BoWs.gz")
 	try:
 		load_pickle(fpath=user_df_separated_fname)
 	except Exception as e:
@@ -492,6 +492,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		gc.collect()
+
+		user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], axis=1)
 
 		save_pickle(pkl=user_df, fname=user_df_separated_fname)
 	
