@@ -452,58 +452,63 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
 
-	print(f"usrInt_qu_tk", end="\t")
-	st_t = time.time()
-	user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-	
-	gc.collect()
-	
-	print(f"usrInt_sn_hw_tk", end="\t")
-	st_t = time.time()
-	user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	user_df_separated_fname = os.path.join(args.outDIR, f"{fprefix}_separated_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
+	try:
+		load_pickle(fpath=user_df_separated_fname)
+	except Exception as e:
+		print(f"<!> {user_df_separated_fname} does NOT exist...\n{e}")
+		print(f"usrInt_qu_tk", end="\t")
+		st_t = time.time()
+		user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		
+		gc.collect()
+		
+		print(f"usrInt_sn_hw_tk", end="\t")
+		st_t = time.time()
+		user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
-	gc.collect()
+		gc.collect()
 
-	print(f"usrInt_sn_tk", end="\t")
-	st_t = time.time()
-	user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"usrInt_sn_tk", end="\t")
+		st_t = time.time()
+		user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
-	gc.collect()
+		gc.collect()
 
-	print(f"usrInt_cnt_hw_tk", end="\t")
-	st_t = time.time()
-	user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"usrInt_cnt_hw_tk", end="\t")
+		st_t = time.time()
+		user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
-	gc.collect()
+		gc.collect()
 
-	print(f"usrInt_cnt_pt_tk", end="\t")
-	st_t = time.time()
-	user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"usrInt_cnt_pt_tk", end="\t")
+		st_t = time.time()
+		user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
-	gc.collect()
+		gc.collect()
 
-	print(f"usrInt_cnt_tk", end="\t")
-	st_t = time.time()
-	user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"usrInt_cnt_tk", end="\t")
+		st_t = time.time()
+		user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
-	gc.collect()
+		gc.collect()
 
-	print( user_df.info( verbose=True, memory_usage="deep") )
-	print("#"*80)
+		print( user_df.info( verbose=True, memory_usage="deep") )
+		print("#"*80)
+		
+		save_pickle(pkl=user_df, fname=user_df_separated_fname)
 	
 	print(f"<TOTAL> user_token_interest", end="\t")
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-
 	user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_token_interest(r, bow), axis=1, )
-
-	# user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=True).sort_index().to_dict(), axis=1)
+	# user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=False).sort_index().to_dict(), axis=1)
 
 	# user_df["user_token_interest"]=(pd.json_normalize(user_df["usrInt_qu_tk"]).fillna(value=0)
 	# 																.add(pd.json_normalize(user_df["usrInt_sn_hw_tk"]).fillna(value=0))
@@ -515,6 +520,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	# 															)
 
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+
 	gc.collect()
 
 	# print(f"selected_content", end=" ")
