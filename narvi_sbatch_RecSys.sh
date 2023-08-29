@@ -1,17 +1,17 @@
 #!/bin/bash
 
-#SBATCH --job-name=nikeQ_XY
+#SBATCH --job-name=nkQ
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --partition=normal
+#SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=612G
-# # # # # SBATCH --gres=gpu:rtx100:1
-#SBATCH --array=730-731
+#SBATCH --mem=32G
+#SBATCH --gres=gpu:teslav100:1
+#SBATCH --array=0-4
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
