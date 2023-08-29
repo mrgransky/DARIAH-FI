@@ -158,42 +158,43 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	return updated_vocab
 
 def get_total_user_token_interest(df: pd.DataFrame, vb: Dict[str, int]):
-	df = df.dropna()
-	# print(df)
-	# print("usrInt_qu_tk" in df)
-	# print("usrInt_sn_hw_tk" in df)
-	# print("usrInt_sn_tk" in df)
-	# print("usrInt_cnt_hw_tk" in df)
-	# print("usrInt_cnt_pt_tk" in df)
-	# print("usrInt_cnt_tk" in df)
+	# df = df.dropna()
+	# # print(df)
+	# # print("usrInt_qu_tk" in df)
+	# # print("usrInt_sn_hw_tk" in df)
+	# # print("usrInt_sn_tk" in df)
+	# # print("usrInt_cnt_hw_tk" in df)
+	# # print("usrInt_cnt_pt_tk" in df)
+	# # print("usrInt_cnt_tk" in df)
 
-	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_qu_tk), dict_usrInt_qu_tk)
+	# dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	# # print(type(dict_usrInt_qu_tk), dict_usrInt_qu_tk)
 
-	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_sn_hw_tk), dict_usrInt_sn_hw_tk)
+	# dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	# # print(type(dict_usrInt_sn_hw_tk), dict_usrInt_sn_hw_tk)
 
-	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_sn_tk), dict_usrInt_sn_tk)
+	# dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	# # print(type(dict_usrInt_sn_tk), dict_usrInt_sn_tk)
 
-	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_cnt_hw_tk), dict_usrInt_cnt_hw_tk)
+	# dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	# # print(type(dict_usrInt_cnt_hw_tk), dict_usrInt_cnt_hw_tk)
 
-	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_cnt_pt_tk), dict_usrInt_cnt_pt_tk)
+	# dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	# # print(type(dict_usrInt_cnt_pt_tk), dict_usrInt_cnt_pt_tk)
 
-	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_cnt_tk), dict_usrInt_cnt_tk)
+	# dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	# # print(type(dict_usrInt_cnt_tk), dict_usrInt_cnt_tk)
 
-	r = dict(
-		Counter(dict_usrInt_qu_tk)
-		+Counter(dict_usrInt_sn_hw_tk)
-		+Counter(dict_usrInt_sn_tk)
-		+Counter(dict_usrInt_cnt_hw_tk)
-		+Counter(dict_usrInt_cnt_pt_tk)
-		+Counter(dict_usrInt_cnt_tk)
-	)
-	r = dict( sorted(r.items()) ) # sort by keys: ascending! A, B, .., Ö
+	# r = dict(
+	# 	Counter(dict_usrInt_qu_tk)
+	# 	+Counter(dict_usrInt_sn_hw_tk)
+	# 	+Counter(dict_usrInt_sn_tk)
+	# 	+Counter(dict_usrInt_cnt_hw_tk)
+	# 	+Counter(dict_usrInt_cnt_pt_tk)
+	# 	+Counter(dict_usrInt_cnt_tk)
+	# )
+	# r = dict( sorted(r.items()) ) # sort by keys: ascending! A, B, .., Ö
+	
 	return r
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
@@ -492,8 +493,15 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"<TOTAL> user_token_interest")
 	st_t = time.time()
 	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-	user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_token_interest(r, bow), axis=1, )
-	
+	# user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_token_interest(r, bow), axis=1, )
+	user_df["user_token_interest"]=(pd.json_normalize(user_df["usrInt_qu_tk"]).fillna(value=0)
+																	.add(pd.json_normalize(user_df["usrInt_sn_hw_tk"]).fillna(value=0))
+																	.add(pd.json_normalize(user_df["usrInt_sn_tk"]).fillna(value=0))
+																	.add(pd.json_normalize(user_df["usrInt_cnt_hw_tk"]).fillna(value=0))
+																	.add(pd.json_normalize(user_df["usrInt_cnt_pt_tk"]).fillna(value=0))
+																	.add(pd.json_normalize(user_df["usrInt_cnt_tk"]).fillna(value=0))
+																	.to_dict(orient="records")
+																)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 	gc.collect()
 
