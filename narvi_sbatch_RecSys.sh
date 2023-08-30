@@ -5,13 +5,13 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --partition=normal
+#SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=656G
-# # # # # SBATCH --gres=gpu:teslav100:1
-#SBATCH --array=730-731
+#SBATCH --mem=32G
+#SBATCH --gres=gpu:teslap100:1
+#SBATCH --array=1-5
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
