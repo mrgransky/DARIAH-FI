@@ -514,7 +514,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	return user_df
 
 def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"Getting Sparse Matrix from user_df: {df.shape} | len(BoWs): {len(BoWs)}".center(150, '-'))
+	print(f"Getting Sparse Matrix from user_df: {df.shape} | len(BoWs): {len(vb)}".center(150, '-'))
 	#print(list(df.columns))
 	#print(df.dtypes)
 
