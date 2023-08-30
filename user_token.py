@@ -514,7 +514,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	return user_df
 
 def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"Getting Sparse Matrix from user_df: {df.shape}".center(110, '-'))
+	print(f"Getting Sparse Matrix from user_df: {df.shape} | len(BoWs): {len(BoWs)}".center(150, '-'))
 	#print(list(df.columns))
 	#print(df.dtypes)
 
@@ -555,7 +555,7 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 	print(f"{type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} | {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
-	print("-"*110)
+	print("-"*150)
 	return sparse_matrix
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
@@ -588,7 +588,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# 	logging.exception(e)
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm = get_sparse_matrix(df=df_user, vb=BoWs)
+		usr_tk_spm = get_sparse_matrix(df=df_user[["user_ip", "user_token_interest"]], vb=BoWs)
 
 	if normalize_sp_mtrx:
 		#usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=0) # l2 normalize by column -> items
