@@ -528,8 +528,8 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 
 	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end=" ")
 	st_t = time.time()
-	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series)
-	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1).astype("float32")
+	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
+	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
 
 
