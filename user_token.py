@@ -173,34 +173,14 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	
 	return updated_vocab
 
-def get_total_user_token_interest(df: pd.DataFrame, vb: Dict[str, int]):
+def get_total_user_token_interest(df: pd.DataFrame):
 	df = df.dropna()
-	# print(df)
-	# print("usrInt_qu_tk" in df)
-	# print("usrInt_sn_hw_tk" in df)
-	# print("usrInt_sn_tk" in df)
-	# print("usrInt_cnt_hw_tk" in df)
-	# print("usrInt_cnt_pt_tk" in df)
-	# print("usrInt_cnt_tk" in df)
-
-	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_qu_tk), dict_usrInt_qu_tk)
-
-	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_sn_hw_tk), dict_usrInt_sn_hw_tk)
-
-	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_sn_tk), dict_usrInt_sn_tk)
-
-	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_cnt_hw_tk), dict_usrInt_cnt_hw_tk)
-
-	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_cnt_pt_tk), dict_usrInt_cnt_pt_tk)
-
-	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
-	# print(type(dict_usrInt_cnt_tk), dict_usrInt_cnt_tk)
-
+	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict()
+	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict()
+	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict()
+	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict()
+	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict()
+	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict()
 	r = dict(
 		Counter(dict_usrInt_qu_tk)
 		+Counter(dict_usrInt_sn_hw_tk)
@@ -209,17 +189,7 @@ def get_total_user_token_interest(df: pd.DataFrame, vb: Dict[str, int]):
 		+Counter(dict_usrInt_cnt_pt_tk)
 		+Counter(dict_usrInt_cnt_tk)
 	)
-	r = dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
-
-	# r = dict(
-	# 	functools.reduce(	lambda a, b: a.update(b) or a, 
-	# 										[dict_usrInt_qu_tk, dict_usrInt_sn_hw_tk, dict_usrInt_sn_tk, dict_usrInt_cnt_hw_tk, dict_usrInt_cnt_pt_tk, dict_usrInt_cnt_tk], 
-	# 										Counter(),
-	# 									)
-	# 	)
-
-
-	return r
+	return dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
 
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
@@ -442,11 +412,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																	search_results_hw_snippets_tokens_list, 
 																	search_results_snippets_tokens_list, 
 																	nwp_content_lemmas_all_list, 
-																	# nwp_content_lemmas_separated_list,
+																	nwp_content_lemmas_separated_list,
 																	nwp_content_pt_tokens_list, 
 																	nwp_content_hw_tokens_list,
-																	# nwp_content_raw_texts_list,
-																	# search_results_snippets_raw_texts_list,
+																	nwp_content_raw_texts_list,
+																	search_results_snippets_raw_texts_list,
 																)
 															),
 																columns =['user_ip',
@@ -454,11 +424,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																					'snippets_hw_token', 
 																					'snippets_token',
 																					'nwp_content_lemma_all',
-																					# 'nwp_content_lemma_separated',
+																					'nwp_content_lemma_separated',
 																					'nwp_content_pt_token',
 																					'nwp_content_hw_token',
-																					# 'nwp_content_raw_text',
-																					# 'snippets_raw_text',
+																					'nwp_content_raw_text',
+																					'snippets_raw_text',
 																				]
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec | {user_df.shape}")
@@ -516,26 +486,13 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 		save_pickle(pkl=user_df, fname=user_df_separated_fname)
 	
-	# gc.collect()
-	
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
 	
 	print(f"<TOTAL> user_token_interest", end="\t")
 	st_t = time.time()
-	# user_df["user_token_interest"] = user_df.apply( lambda x_df: get_agg_allTKs_apr(x_df, w_list, bow), axis=1, )	
-	user_df["user_token_interest"] = user_df.apply( lambda r: get_total_user_token_interest(r, bow), axis=1, )
+	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, )
 	# user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=False).sort_index().to_dict(), axis=1)
-
-	# user_df["user_token_interest"]=(pd.json_normalize(user_df["usrInt_qu_tk"]).fillna(value=0)
-	# 																.add(pd.json_normalize(user_df["usrInt_sn_hw_tk"]).fillna(value=0))
-	# 																.add(pd.json_normalize(user_df["usrInt_sn_tk"]).fillna(value=0))
-	# 																.add(pd.json_normalize(user_df["usrInt_cnt_hw_tk"]).fillna(value=0))
-	# 																.add(pd.json_normalize(user_df["usrInt_cnt_pt_tk"]).fillna(value=0))
-	# 																.add(pd.json_normalize(user_df["usrInt_cnt_tk"]).fillna(value=0))
-	# 																.to_dict(orient="records")
-	# 															)
-
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
 	gc.collect()
@@ -556,7 +513,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	return user_df
 
-def get_sparse_matrix(df: pd.DataFrame):
+def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	#print(list(df.columns))
 	#print(df.dtypes)
@@ -564,7 +521,14 @@ def get_sparse_matrix(df: pd.DataFrame):
 	# print( df['user_token_interest'].apply(pd.Series).head(15) )
 	# print(">"*100)
 
-	df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
+	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series)
+	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1)#.astype("float16")
+
+	sparse_df = pd.DataFrame(0, index=np.arange(user_token_df.shape[0]), columns=vb.keys()).set_index(df["user_ip"])
+
+	df_new = user_token_df.combine_first(sparse_df).astype("float32")
+
+	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
 	#print(df_new.head(15))
 	#print("<"*100)
@@ -603,7 +567,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# 	logging.exception(e)
 	except:
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
-	print(df_user.type, df_user.shape)
+	print(type(df_user), df_user.shape)
 	print(df_user.info(verbose=True, memory_usage="deep"))
 
 	# del df_inp
@@ -614,7 +578,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# except Exception as e:
 	# 	logging.exception(e)
 	except:
-		usr_tk_spm = get_sparse_matrix(df_user)
+		usr_tk_spm = get_sparse_matrix(df=df_user, vb=BoWs)
 
 	if normalize_sp_mtrx:
 		#usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=0) # l2 normalize by column -> items
