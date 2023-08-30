@@ -603,9 +603,10 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# 	logging.exception(e)
 	except:
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
+	print(df_user.type, df_user.shape)
 	print(df_user.info(verbose=True, memory_usage="deep"))
 
-	del df_inp
+	# del df_inp
 	gc.collect()
 
 	try:
