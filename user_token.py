@@ -523,20 +523,20 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 
 	print(f">> init spm: {df.shape[0]} x {len(list(vb.keys()))}", end=" ")
 	st_t = time.time()
-	sparse_df = pd.DataFrame(0, index=np.arange(df.shape[0]), columns=list(vb.keys())).set_index(df["user_ip"])
-	print(f"Elapsed_t: {time.time()-st_t:.3f}")
+	sparse_df = pd.DataFrame(0.0, index=np.arange(df.shape[0]), columns=list(vb.keys())).set_index(df["user_ip"]).astype("float32")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
 
 	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end=" ")
 	st_t = time.time()
 	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series)
 	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1).astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.3f}")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
 
 
 	print(f">> combining user_token_df: {user_token_df.shape} into sparse_df: {sparse_df.shape}", end=" ")
 	st_t = time.time()
 	df_new = user_token_df.combine_first(sparse_df).astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.3f}")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
 
 	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
