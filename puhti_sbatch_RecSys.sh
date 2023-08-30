@@ -6,8 +6,8 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --nodes=1
-#SBATCH --ntasks=10
-#SBATCH --cpus-per-task=2
+#SBATCH --ntasks=5
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=820G
 #SBATCH --partition=hugemem_longrun
 #SBATCH --time=14-00:00:00
