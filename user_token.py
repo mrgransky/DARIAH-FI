@@ -521,22 +521,23 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 	# print( df['user_token_interest'].apply(pd.Series).head(15) )
 	# print(">"*100)
 
-	print(f">> init spm: {df.shape[0]} x {len(list(vb.keys()))}", end=" ")
+	print(f">> init ZERO Sparse DF: {df.shape[0]} x {len(list(vb.keys()))}...", end=" ")
 	st_t = time.time()
-	sparse_df = pd.DataFrame(0.0, index=np.arange(df.shape[0]), columns=list(vb.keys())).set_index(df["user_ip"]).astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
+	# sparse_df = pd.DataFrame(0.0, index=range(df.shape[0]), columns=list(vb.keys())).set_index(df["user_ip"]).astype("float32") # ~80 sec
+	sparse_df = pd.DataFrame( data=np.zeros( ( df.shape[0], len( vb.keys() ) ) ), columns=vb.keys(), index=df["user_ip"], dtype="float32", )#.astype("float32").set_index(df["user_ip"])
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end=" ")
+	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)...", end=" ")
 	st_t = time.time()
 	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
 	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1)
-	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 
-	print(f">> combining user_token_df: {user_token_df.shape} into sparse_df: {sparse_df.shape}", end=" ")
+	print(f">> combining user_token_df: {user_token_df.shape} into init ZERO Sparse DF: {sparse_df.shape}...", end=" ")
 	st_t = time.time()
 	df_new = user_token_df.combine_first(sparse_df).astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
