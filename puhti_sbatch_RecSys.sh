@@ -1,18 +1,18 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeQ_continue
+#SBATCH -J df_concat
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=640G
-#SBATCH --partition=hugemem_longrun
-#SBATCH --time=14-00:00:00
-# # # # #SBATCH --gres=gpu:v100:1
-#SBATCH --array=11-21
+#SBATCH --mem=716G
+#SBATCH --partition=hugemem
+#SBATCH --time=03-00:00:00
+# # # # # # SBATCH --gres=gpu:v100:1
+# # # # # # SBATCH --array=11-21
 # # # # # # SBATCH --array=1
 
 stars=$(printf '%*s' 100 '')
@@ -39,14 +39,14 @@ if [ $user == 'alijani' ]; then
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-	# ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
 	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
-echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
-# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
+# echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
+# python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
+
+python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
 # python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
 done_txt="SLURM JOB ENDED AT: `date`"

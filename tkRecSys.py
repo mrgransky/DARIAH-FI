@@ -712,12 +712,12 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def get_users_tokens_df():
 	user_df_files = glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' )
-	print(f">> Concatinating {len(user_df_files)} user_df files:\n{user_df_files}\nmight take a while...")
+	print(f"\n<> Concatinating {len(user_df_files)} user_df files:\n{user_df_files}\nmight take a while...\n")
 	st_t = time.time()
 	# with open(os.devnull, "w") as f, contextlib.redirect_stdout(f): # no print...
 	# 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
 	
-	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
+	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for file_ in user_df_files if ( df:=load_pickle(fpath=file_) ).shape[0]>0  ] )
 	
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
