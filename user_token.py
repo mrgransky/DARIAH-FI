@@ -60,19 +60,35 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
-	# print(lst)
-	updated_vb: Dict[str, float] = dict.fromkeys(vb.keys(), 0.0)
+def get_agg_tk_apr_orig(lst: List[str], wg: float, vb: Dict[str, int]):
+	result_vb: Dict[str, float] = dict.fromkeys(vb.keys(), 0.0)
+	# result_vb: Dict[str, float] = {}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
-		if updated_vb.get(vtk) is not None: # check if this token is available in BoWs
-			prev = updated_vb.get(vtk)
+		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
+			prev = result_vb.get(vtk)
 			curr = prev + wg
-			updated_vb[vtk] = curr
-			# updated_vb[vtk] = updated_vb.get(vtk) + wg # original implementation
-			#print(vtk, wg, updated_vb[vtk])
+			result_vb[vtk] = curr
+			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
+			#print(vtk, wg, result_vb[vtk])
 	#print(f"{dframe.user_ip}".center(50, '-'))
+	return result_vb
 
-	return updated_vb
+def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
+	result_vb: Dict[str, float] = {}
+	for _, vtk in enumerate(lst): # [tk1, tk2, …]
+		if vb.get(vtk) is None:
+			return
+		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
+			prev = result_vb.get(vtk)
+			curr = prev + wg
+			result_vb[vtk] = curr
+			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
+			#print(vtk, wg, result_vb[vtk])
+		else:
+			result_vb[vtk] = 0.0
+	#print(f"{dframe.user_ip}".center(50, '-'))
+	return result_vb
+
 
 def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
