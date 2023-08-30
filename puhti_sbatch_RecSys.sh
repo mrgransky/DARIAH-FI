@@ -1,17 +1,17 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeQ
+#SBATCH -J nikeQ_continue
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --nodes=1
 #SBATCH --ntasks=10
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=32G
-#SBATCH --partition=gpu
-#SBATCH --time=03-00:00:00
-#SBATCH --gres=gpu:v100:1
+#SBATCH --mem=820G
+#SBATCH --partition=hugemem_longrun
+#SBATCH --time=14-00:00:00
+# # # # #SBATCH --gres=gpu:v100:1
 #SBATCH --array=11-21
 # # # # # # SBATCH --array=1
 
@@ -35,11 +35,12 @@ user="`whoami`"
 if [ $user == 'alijani' ]; then
 	echo ">> Using Narvi conda env from Anaconda..."
 	source activate py39
-	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently nothing available!
+	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" # currently nothing available!
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
+	# ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_$SLURM_JOB_PARTITION" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
+	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 

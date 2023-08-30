@@ -493,7 +493,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		gc.collect()
 
-		user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], errors="ignore", axis=1)
+		# user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], errors="ignore", axis=1)
 		print( user_df.info( verbose=True, memory_usage="deep") )
 		print("#"*80)
 
