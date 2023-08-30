@@ -183,22 +183,22 @@ def get_total_user_token_interest(df: pd.DataFrame, vb: Dict[str, int]):
 	# print("usrInt_cnt_pt_tk" in df)
 	# print("usrInt_cnt_tk" in df)
 
-	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_qu_tk), dict_usrInt_qu_tk)
 
-	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_sn_hw_tk), dict_usrInt_sn_hw_tk)
 
-	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_sn_tk), dict_usrInt_sn_tk)
 
-	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_cnt_hw_tk), dict_usrInt_cnt_hw_tk)
 
-	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_cnt_pt_tk), dict_usrInt_cnt_pt_tk)
 
-	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
+	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict()#.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_cnt_tk), dict_usrInt_cnt_tk)
 
 	r = dict(
