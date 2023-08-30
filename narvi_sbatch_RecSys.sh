@@ -9,7 +9,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=624G
+#SBATCH --mem=654G
 # # # # # SBATCH --gres=gpu:teslap100:1
 # # # # # SBATCH --array=6-11
 
