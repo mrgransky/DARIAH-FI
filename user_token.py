@@ -516,7 +516,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 		save_pickle(pkl=user_df, fname=user_df_separated_fname)
 	
-	gc.collect()
+	# gc.collect()
 	
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
