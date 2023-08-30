@@ -514,19 +514,28 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	return user_df
 
 def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"Getting Sparse Matrix from DF: {df.shape}".center(110, '-'))
+	print(f"Getting Sparse Matrix from user_df: {df.shape}".center(110, '-'))
 	#print(list(df.columns))
 	#print(df.dtypes)
 
 	# print( df['user_token_interest'].apply(pd.Series).head(15) )
 	# print(">"*100)
 
+	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end=" ")
+	st_t = time.time()
 	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series)
 	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1)#.astype("float16")
+	print(f"Elapsed_t: {time.time()-st_t:.3f}")
 
-	sparse_df = pd.DataFrame(0, index=np.arange(user_token_df.shape[0]), columns=vb.keys()).set_index(df["user_ip"])
+	print(f">> init spm: {user_token_df.shape[0]} x {len(list(vb.keys()))}", end=" ")
+	st_t = time.time()
+	sparse_df = pd.DataFrame(0, index=np.arange(user_token_df.shape[0]), columns=list(vb.keys())).set_index(df["user_ip"])
+	print(f"Elapsed_t: {time.time()-st_t:.3f}")
 
+	print(f">> combining user_token_df: {user_token_df.shape} into sparse_df: {sparse_df.shape}", end=" ")
+	st_t = time.time()
 	df_new = user_token_df.combine_first(sparse_df).astype("float32")
+	print(f"Elapsed_t: {time.time()-st_t:.3f}")
 
 	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
 
@@ -545,7 +554,7 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 	sp_mat_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
-	print(f"{type(sparse_matrix)} (Users, Tokens): {sparse_matrix.shape} | {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
+	print(f"{type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} | {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
 	print("-"*110)
 	return sparse_matrix
 
