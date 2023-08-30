@@ -27,6 +27,7 @@ import pandas.api.types as pdtypes
 from natsort import natsorted
 from collections import Counter
 from typing import List, Set, Dict, Tuple
+import functools
 
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel

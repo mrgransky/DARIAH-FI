@@ -201,22 +201,23 @@ def get_total_user_token_interest(df: pd.DataFrame, vb: Dict[str, int]):
 	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict.fromkeys(vb.keys(), 0.0)
 	# print(type(dict_usrInt_cnt_tk), dict_usrInt_cnt_tk)
 
-	# r = dict(
-	# 	Counter(dict_usrInt_qu_tk)
-	# 	+Counter(dict_usrInt_sn_hw_tk)
-	# 	+Counter(dict_usrInt_sn_tk)
-	# 	+Counter(dict_usrInt_cnt_hw_tk)
-	# 	+Counter(dict_usrInt_cnt_pt_tk)
-	# 	+Counter(dict_usrInt_cnt_tk)
-	# )
-	# r = dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
+	r = dict(
+		Counter(dict_usrInt_qu_tk)
+		+Counter(dict_usrInt_sn_hw_tk)
+		+Counter(dict_usrInt_sn_tk)
+		+Counter(dict_usrInt_cnt_hw_tk)
+		+Counter(dict_usrInt_cnt_pt_tk)
+		+Counter(dict_usrInt_cnt_tk)
+	)
+	r = dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
 
-	res = dict(
-		functools.reduce(	lambda a, b: a.update(b) or a, 
-											[dict_usrInt_qu_tk, dict_usrInt_sn_hw_tk, dict_usrInt_sn_tk, dict_usrInt_cnt_hw_tk, dict_usrInt_cnt_pt_tk, dict_usrInt_cnt_tk], 
-											Counter(),
-										)
-		)
+	# r = dict(
+	# 	functools.reduce(	lambda a, b: a.update(b) or a, 
+	# 										[dict_usrInt_qu_tk, dict_usrInt_sn_hw_tk, dict_usrInt_sn_tk, dict_usrInt_cnt_hw_tk, dict_usrInt_cnt_pt_tk, dict_usrInt_cnt_tk], 
+	# 										Counter(),
+	# 									)
+	# 	)
+
 
 	return r
 
@@ -476,37 +477,37 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"usrInt_qu_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		gc.collect()
 		
 		print(f"usrInt_sn_hw_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		gc.collect()
 
 		print(f"usrInt_sn_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		gc.collect()
 
 		print(f"usrInt_cnt_hw_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		gc.collect()
 
 		print(f"usrInt_cnt_pt_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		gc.collect()
 
 		print(f"usrInt_cnt_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		gc.collect()
 
 		# user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], errors="ignore", axis=1)
