@@ -439,9 +439,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
 
-	user_df_separated_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_separated_{len(bow)}_BoWs.gz")
+	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
 	try:
-		load_pickle(fpath=user_df_separated_fname)
+		load_pickle(fpath=users_df_detailed_fname)
 	except Exception as e:
 		print(f"<!> {e}")
 		print(f"usrInt_qu_tk", end="\t")
@@ -484,7 +484,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print( user_df.info( verbose=True, memory_usage="deep") )
 		print("#"*80)
 
-		save_pickle(pkl=user_df, fname=user_df_separated_fname)
+		save_pickle(pkl=user_df, fname=users_df_detailed_fname)
 	
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)

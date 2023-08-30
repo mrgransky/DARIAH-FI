@@ -712,7 +712,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def get_users_tokens_df():
 	user_df_files = glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' )
-	print(f">> concatinating {len(user_df_files)} user_df files:\n{user_df_files}")
+	print(f">> Concatinating {len(user_df_files)} user_df files:\n{user_df_files}\nmight take a while...")
 	st_t = time.time()
 	with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 		usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
@@ -722,11 +722,15 @@ def get_users_tokens_df():
 				f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
 				f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}".center(150, ' ')
 			)
+	gc.collect()
+	
 	print(f">> groupby...", end="\t")
 	st_t = time.time()
-	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float16")
+	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float32")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
 	user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
+
+	gc.collect()
 
 	user_token_df_fname = os.path.join(args.dsPath,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
 																							f"{len( usr_tk_raw_dfs.user_ip.value_counts() )}_nUSRs_x_"
@@ -738,6 +742,8 @@ def get_users_tokens_df():
 							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
 						)
 	# user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
+	gc.collect()
+
 	return user_token_df
 
 def main():
@@ -939,7 +945,7 @@ def main():
 	plot_tokens_distribution(sp_mat_rf, user_token_df, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
 
 if __name__ == '__main__':
-	os.system("clear")
+	# os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
 	main()	
 	#practice()
