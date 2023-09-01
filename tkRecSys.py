@@ -716,7 +716,7 @@ def get_users_tokens_df():
 	nTOTAL_BoWs = 0
 	for file_ in BoWs_files:
 		print(file_)
-		print(int( file_[file_.find(f"{args.lmMethod}_")+1: file_.rfind("_")] ))
+		print(int( file_[file_.rfind("_", 0, file_rfind("_")): file_.rfind("_")] ))
 		nTOTAL_BoWs += int( file_[file_.rfind(f"{args.lmMethod}_"): file_.rfind("_")] )
 	print("<>"*80)
 	st_t = time.time()	
