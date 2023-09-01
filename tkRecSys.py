@@ -794,7 +794,7 @@ def get_users_tokens_df():
 	
 	print(f"<> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end="\t")
 	st_t = time.time()
-	sparse_df = pd.DataFrame( data=np.zeros( ( user_token_df_concat.shape[0], len( BoWs_merged.keys() ) ) ), 
+	sparse_df = pd.DataFrame( data=np.zeros( ( user_token_df_concat.shape[0], len( BoWs_merged.keys() ) ), dtype="float32" ),
 														columns=BoWs_merged.keys(), 
 														index=user_token_df_concat.index, 
 														dtype="float32", 
