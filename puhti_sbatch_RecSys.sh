@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=896G
+#SBATCH --mem=916G
 #SBATCH --partition=hugemem_longrun
 #SBATCH --time=14-00:00:00
 # # # # # SBATCH --gres=gpu:v100:1
