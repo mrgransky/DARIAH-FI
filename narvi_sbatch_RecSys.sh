@@ -9,7 +9,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=654G
+#SBATCH --mem=656G
 # # # # # SBATCH --gres=gpu:teslap100:1
 # # # # # SBATCH --array=6-11
 
@@ -44,7 +44,7 @@ fi
 # echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 # python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
 
-python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
+python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 # python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
 done_txt="SLURM JOB ENDED @ `date`"

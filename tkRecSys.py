@@ -711,45 +711,88 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df():
+	BoWs_files = glob.glob( args.dsPath + "/nike" + "*.json" )
+	print(f"<> Loading and Merging {len(user_df_files)} BoWs")
+	for files_ in BoWs_files:
+		print(files_)
+	print("<>"*80)
+	st_t = time.time()	
+	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_BoWs|: {len(BoWs_merged)}")
+
 	user_df_files = glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' )
-	print(f"\n<> Concatinating {len(user_df_files)} user_df files: (might take a while...)")
+	print(f"\n<> Loading {len(user_df_files)} user_df files: (might take a while...)")
 	for files_ in user_df_files:
 		print(files_)
 	print("<>"*80)
-	st_t = time.time()
-	# with open(os.devnull, "w") as f, contextlib.redirect_stdout(f): # no print...
-	# 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
+
+	# # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f): # no print... # PAY ATTENTION TO AXIS=0 (MUST BE AXIS=0) => UNCOMMENT FIRST LINE
+	# # 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=0 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] ) 
+	# # 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
 	
-	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float32')], axis=1 ) for file_ in user_df_files if ( df:=load_pickle(fpath=file_) ).shape[0]>0  ] )
+	# # usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float32')], axis=1 ) for file_ in user_df_files if ( df:=load_pickle(fpath=file_) ).shape[0]>0  ] )
+
+	# # usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float32')], axis=0 ) for file_ in user_df_files if ( df:=load_pickle(fpath=file_) ).shape[0]>0  ] )
+	# print(f"Elapsed_t: {time.time()-st_t:.1f} s | "
+	# 			f"DF: {usr_tk_raw_dfs.shape} | "
+	# 			f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
+	# 			f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}".center(150, ' ')
+	# 		)
+	# gc.collect()
+
+	# print(f"\nGroupby `user_ip` column", end="\t")
+	# st_t = time.time()
+	# user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().sort_index(ascending=True).astype("float32")
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF(nUsers x nTokens): {user_token_df.shape}")
+	# user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
+
+	# gc.collect()
+
+	# user_token_df_fname = os.path.join(args.dsPath,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
+	# 																						f"{len( usr_tk_raw_dfs.user_ip.value_counts() )}_nUSRs_x_"
+	# 																						f"{len(user_token_df.columns)}_nTKs.gz"
+	# 																	)
+
+	# save_pickle(pkl=user_token_df, fname=user_token_df_fname)
+	# save_vocab(	vb={key: idx for idx, key in enumerate(user_token_df.columns)}, # key: token, idx: index in BoWs 
+	# 						fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
+	# 					)
+	# # user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
+	# gc.collect()
+
+	# return user_token_df
+	users_tokens_dfs = list()
+	st_t = time.time()	
+	for df_file in user_df_files:
+		user_df = load_pickle(fpath=df_file)
+		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
+		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+		users_tokens_dfs.append(user_token_df)
+	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-st_t:.2f} sec".center(100, "-"))
+
+	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs...")
+	st_t = time.time()	
+	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")
+	print(f"<> Groupby `user_ip` column")
+	user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) )).astype("float32")
+	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")
 	
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s | "
-				f"DF: {usr_tk_raw_dfs.shape} | "
-				f"unq_users: {len( usr_tk_raw_dfs.user_ip.value_counts() )} | "
-				f"unq_tokens: {len( list( usr_tk_raw_dfs.columns.difference(['user_ip'])))}".center(150, ' ')
-			)
-	gc.collect()
-
-	print(f"\nGroupby `user_ip` column", end="\t")
+	print(f">> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end="\t")
 	st_t = time.time()
-	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF(nUsers x nTokens): {user_token_df.shape}")
-	user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
+	sparse_df = pd.DataFrame( data=np.zeros( ( user_token_df_concat.shape[0], len( BoWs_merged.keys() ) ) ), 
+														columns=BoWs_merged.keys(), 
+														index=user_token_df_concat.index, 
+														dtype="float32", 
+													)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"init_ZERO Sparse DF: {sparse_df.shape}, USR_TK_Concat: {user_token_df_concat.shape}") # nUsers x nTokens
 
-	gc.collect()
+	complete_user_token_df = user_token_df_concat.combine_first(sparse_df).astype("float32")
 
-	user_token_df_fname = os.path.join(args.dsPath,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
-																							f"{len( usr_tk_raw_dfs.user_ip.value_counts() )}_nUSRs_x_"
-																							f"{len(user_token_df.columns)}_nTKs.gz"
-																		)
+	return complete_user_token_df
 
-	save_pickle(pkl=user_token_df, fname=user_token_df_fname)
-	save_vocab(	vb={key: idx for idx, key in enumerate(user_token_df.columns)}, # key: token, idx: index in BoWs 
-							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
-						)
-	# user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})
-	gc.collect()
-
-	return user_token_df
 
 def main():
 	global fprefix, RES_DIR

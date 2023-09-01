@@ -89,7 +89,6 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	#print(f"{dframe.user_ip}".center(50, '-'))
 	return result_vb
 
-
 def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
 	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
