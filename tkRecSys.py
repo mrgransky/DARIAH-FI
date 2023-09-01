@@ -713,21 +713,23 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def get_users_tokens_df():
 	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
 	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
-	nTOTAL_BoWs = 0
+	# nTOTAL_BoWs = 0
 	for file_ in BoWs_files:
 		print(file_)
-		print(int( file_[file_.rfind("_", 0, file_.rfind("_")+1): file_.rfind("_")] ))
-		nTOTAL_BoWs += int( file_[file_.rfind(f"{args.lmMethod}_"): file_.rfind("_")] )
+		# print(int( file_[file_.rfind("_", 0, file_.rfind("_")): file_.rfind("_")] ))
+		# nTOTAL_BoWs += int( file_[file_.rfind(f"{args.lmMethod}_"): file_.rfind("_")] )
 	print("<>"*80)
-	st_t = time.time()	
+	st_t = time.time()
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\tnTOTAL_BoWs{nTOTAL_BoWs}")
+	gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"\n<> Loading {len(user_df_files)} user_df files:")
 	for files_ in user_df_files:
 		print(files_)
 	print("<>"*80)
+	gc.collect()
 
 	# # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f): # no print... # PAY ATTENTION TO AXIS=0 (MUST BE AXIS=0) => UNCOMMENT FIRST LINE
 	# # 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=0 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] ) 
@@ -774,18 +776,23 @@ def get_users_tokens_df():
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.2f} sec".center(100, "-"))
+	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.2f} sec".center(150, "-"))
+
+	gc.collect()
 
 	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs...")
 	st_t = time.time()	
 	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")
+	gc.collect()
+
 	print(f"<> Groupby `user_ip` column")
 	user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) )).astype("float32")
 	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")
+	gc.collect()
 	
-	print(f">> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end="\t")
+	print(f"<> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end="\t")
 	st_t = time.time()
 	sparse_df = pd.DataFrame( data=np.zeros( ( user_token_df_concat.shape[0], len( BoWs_merged.keys() ) ) ), 
 														columns=BoWs_merged.keys(), 
@@ -793,9 +800,13 @@ def get_users_tokens_df():
 														dtype="float32", 
 													)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-	print(f"init_ZERO Sparse DF: {sparse_df.shape}, USR_TK_Concat: {user_token_df_concat.shape}") # nUsers x nTokens
+	gc.collect()
 
+	print(f"<> Combining user_token_df_concat: {user_token_df_concat.shape} into init ZERO Sparse DF: {sparse_df.shape}...", end=" ")
+	st_t = time.time()
 	complete_user_token_df = user_token_df_concat.combine_first(sparse_df).astype("float32")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {complete_user_token_df.shape}")
+	gc.collect()
 
 	return complete_user_token_df
 
