@@ -713,7 +713,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def get_users_tokens_df():
 	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
 	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
-	# nTOTAL_BoWs = 0
+	nTOTAL_BoWs: int = 0
 	for file_ in BoWs_files:
 		print(file_)
 		# print(int( file_[file_.rfind("_", 0, file_.rfind("_")): file_.rfind("_")] ))
@@ -726,8 +726,8 @@ def get_users_tokens_df():
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"\n<> Loading {len(user_df_files)} user_df files:")
-	for files_ in user_df_files:
-		print(files_)
+	for f in user_df_files:
+		print(f)
 	print("<>"*80)
 	gc.collect()
 
@@ -777,7 +777,6 @@ def get_users_tokens_df():
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
 	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.2f} sec".center(150, "-"))
-
 	gc.collect()
 
 	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs...")
