@@ -713,12 +713,15 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def get_users_tokens_df():
 	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
 	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
-	for files_ in BoWs_files:
-		print(files_)
+	nTOTAL_BoWs = 0
+	for file_ in BoWs_files:
+		print(file_)
+		print(int( file_[file_.rfind(f"{args.lmMethod}_"): file_.rfind("_")] ))
+		nTOTAL_BoWs += int( file_[file_.rfind(f"{args.lmMethod}_"): file_.rfind("_")] )
 	print("<>"*80)
 	st_t = time.time()	
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_BoWs|: {len(BoWs_merged)}")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\tnTOTAL_BoWs{nTOTAL_BoWs}")
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"\n<> Loading {len(user_df_files)} user_df files:")
