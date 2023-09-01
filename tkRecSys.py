@@ -712,7 +712,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def get_users_tokens_df():
 	BoWs_files = glob.glob( args.dsPath + "/nike" + "*.json" )
-	print(f"<> Loading and Merging {len(user_df_files)} BoWs")
+	print(f"<> Loading and Merging {len(BoWs_files)} BoWs")
 	for files_ in BoWs_files:
 		print(files_)
 	print("<>"*80)
