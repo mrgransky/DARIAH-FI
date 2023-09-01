@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=nkQ
+#SBATCH --job-name=nkQ_contine
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -12,7 +12,7 @@
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:teslap100:1
 # # # # # SBATCH --array=6-11
-#SBATCH --array=5
+#SBATCH --array=405-408
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
