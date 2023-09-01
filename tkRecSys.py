@@ -769,7 +769,7 @@ def get_users_tokens_df():
 	try:
 		user_token_df_concat = load_pickle( fpath= glob.glob( args.dsPath+'/'+'*_USR_TOK_DF_concat_*_USRs_x_*_TOKs.gz' )[0] )
 	except Exception as e:
-		print(f"<!> {e}")
+		print(f"<!> File Not Found! {e} Generating user_token_df ...")
 		users_tokens_dfs = list()
 		load_time_start = time.time()	
 		for df_file in user_df_files:
