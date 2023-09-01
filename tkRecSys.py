@@ -721,7 +721,7 @@ def get_users_tokens_df():
 	print("<>"*80)
 	st_t = time.time()
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\tnTOTAL_BoWs{nTOTAL_BoWs}")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\tnTOTAL_BoWs: {nTOTAL_BoWs}")
 	gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
@@ -752,7 +752,6 @@ def get_users_tokens_df():
 	# user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
 
 	# gc.collect()
-
 	# user_token_df_fname = os.path.join(args.dsPath,f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
 	# 																						f"{len( usr_tk_raw_dfs.user_ip.value_counts() )}_nUSRs_x_"
 	# 																						f"{len(user_token_df.columns)}_nTKs.gz"
@@ -806,6 +805,15 @@ def get_users_tokens_df():
 	complete_user_token_df = user_token_df_concat.combine_first(sparse_df).astype("float32")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {complete_user_token_df.shape}")
 	gc.collect()
+
+	user_token_df_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
+																									f"{complete_user_token_df.shape[0]}_nUSRs_x_"
+																									f"{complete_user_token_df.shape[1]}_nTKs.gz"
+																		)
+	save_pickle(pkl=complete_user_token_df, fname=user_token_df_fname)
+	save_vocab(	vb={key: idx for idx, key in enumerate(complete_user_token_df.columns)}, # TODO: >>>>>>>>>>>>>>> ideal case: vb=BoWs_merged <<<<<<<<<<<<<<<<<
+							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
+						)
 
 	return complete_user_token_df
 
