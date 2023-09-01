@@ -12,7 +12,7 @@
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
-#SBATCH --array=0-10
+#SBATCH --array=0-10 ############## PAY ATTENTION TO RUN user_token.py ############## 
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
@@ -42,10 +42,10 @@ elif [ $user == 'alijanif' ]; then
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
-# echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-# python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
+echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
+python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
 
-python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
+# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Åbo Akademi'
 # python -u tkRecSys.py --lmMethod 'stanza' --qphrase 'Stockholms Universitet'
 
 done_txt="SLURM JOB ENDED AT: `date`"
