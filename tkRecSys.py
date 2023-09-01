@@ -12,7 +12,7 @@ parser.add_argument('-d',
 										required=True,
 										help='Path to directory of df_concat',
 									)
-parser.add_argument('-q', '--qphrase', default="Juha Sipilä Sahalahti", type=str)
+parser.add_argument('-q', '--qphrase', default="Helsingin Pörssi ja Suomen Pankki", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
@@ -712,12 +712,15 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def get_users_tokens_df():
 	user_df_files = glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' )
-	print(f"\n<> Concatinating {len(user_df_files)} user_df files:\n{user_df_files}\nmight take a while...\n")
+	print(f"\n<> Concatinating {len(user_df_files)} user_df files: (might take a while...)")
+	for files_ in user_df_files:
+		print(files_)
+	print("<>"*80)
 	st_t = time.time()
 	# with open(os.devnull, "w") as f, contextlib.redirect_stdout(f): # no print...
 	# 	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for f in glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) if ( df:=load_pickle(fpath=f) ).shape[0]>0  ] )
 	
-	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float16')], axis=1 ) for file_ in user_df_files if ( df:=load_pickle(fpath=file_) ).shape[0]>0  ] )
+	usr_tk_raw_dfs = pd.concat( [pd.concat( [df.user_ip, df.user_token_interest.apply(pd.Series).astype('float32')], axis=1 ) for file_ in user_df_files if ( df:=load_pickle(fpath=file_) ).shape[0]>0  ] )
 	
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s | "
 				f"DF: {usr_tk_raw_dfs.shape} | "
@@ -726,10 +729,10 @@ def get_users_tokens_df():
 			)
 	gc.collect()
 
-	print(f">> groupby...", end="\t")
+	print(f"\nGroupby `user_ip` column", end="\t")
 	st_t = time.time()
 	user_token_df = usr_tk_raw_dfs.groupby("user_ip").sum().astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF: {user_token_df.shape}")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | DF(nUsers x nTokens): {user_token_df.shape}")
 	user_token_df = user_token_df.sort_index(axis = 1) # Sort a DataFrame based on column names: A, B, C, D, ...
 
 	gc.collect()
@@ -740,7 +743,7 @@ def get_users_tokens_df():
 																		)
 
 	save_pickle(pkl=user_token_df, fname=user_token_df_fname)
-	save_vocab(	vb={c: i for i, c in enumerate(user_token_df.columns)}, 
+	save_vocab(	vb={key: idx for idx, key in enumerate(user_token_df.columns)}, # key: token, idx: index in BoWs 
 							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
 						)
 	# user_token_df = user_token_df.reset_index().rename(columns = {'index': 'user_ip'})

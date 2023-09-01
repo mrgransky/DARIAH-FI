@@ -575,11 +575,13 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	# except Exception as e:
 	# 	logging.exception(e)
-	except:
+	except Exception as e:
+		print(f"<!> {e}")
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
-	print(type(df_user), df_user.shape)
-	print(df_user.info(verbose=True, memory_usage="deep"))
 
+	print(f"USER_DF (detailed): {type(df_user)} | {df_user.shape}")
+	print(df_user.info(verbose=True, memory_usage="deep"))
+	print("<>"*50)
 	# del df_inp
 	gc.collect()
 
