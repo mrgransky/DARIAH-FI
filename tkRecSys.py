@@ -711,8 +711,8 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df():
-	BoWs_files = glob.glob( args.dsPath + "/nike" + "*.json" )
-	print(f"<> Loading and Merging {len(BoWs_files)} BoWs")
+	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
+	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
 	for files_ in BoWs_files:
 		print(files_)
 	print("<>"*80)
@@ -720,8 +720,8 @@ def get_users_tokens_df():
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_BoWs|: {len(BoWs_merged)}")
 
-	user_df_files = glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' )
-	print(f"\n<> Loading {len(user_df_files)} user_df files: (might take a while...)")
+	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
+	print(f"\n<> Loading {len(user_df_files)} user_df files:")
 	for files_ in user_df_files:
 		print(files_)
 	print("<>"*80)
@@ -762,13 +762,16 @@ def get_users_tokens_df():
 
 	# return user_token_df
 	users_tokens_dfs = list()
-	st_t = time.time()	
+	load_time_start = time.time()	
 	for df_file in user_df_files:
 		user_df = load_pickle(fpath=df_file)
+		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)...", end=" ")
+		st_t = time.time()
 		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-st_t:.2f} sec".center(100, "-"))
+	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.2f} sec".center(100, "-"))
 
 	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs...")
 	st_t = time.time()	
