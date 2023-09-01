@@ -522,7 +522,11 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 
 	print(f">> init ZERO Sparse DF: {df.shape[0]} x {len(list(vb.keys()))}...", end=" ")
 	st_t = time.time()
-	sparse_df = pd.DataFrame( data=np.zeros( ( df.shape[0], len( vb.keys() ) ) ), columns=vb.keys(), index=df["user_ip"], dtype="float32", )#.astype("float32").set_index(df["user_ip"])
+	sparse_df = pd.DataFrame( data=np.zeros( ( df.shape[0], len( vb.keys() ) ), dtype="float32" ), 
+														columns=vb.keys(), 
+														index=df["user_ip"], 
+														dtype="float32",
+													)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
 	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)...", end=" ")
