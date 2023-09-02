@@ -35,7 +35,7 @@ if [ $user == 'alijani' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 	source activate py39
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
+	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY"
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
