@@ -784,7 +784,7 @@ def get_users_tokens_df():
 		gc.collect()
 
 		print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs", end="\t")
-		st_t = time.time()	
+		st_t = time.time()
 		user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).astype("float32")
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_token_df_concat.shape}")
 		gc.collect()

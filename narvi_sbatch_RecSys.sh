@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=df_concat
+#SBATCH --job-name=df_XY_concat
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
