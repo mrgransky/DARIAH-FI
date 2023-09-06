@@ -774,6 +774,7 @@ def get_users_tokens_df():
 		load_time_start = time.time()	
 		for df_file in user_df_files:
 			user_df = load_pickle(fpath=df_file)
+			# user_ddf = dd.from_pandas(user_df, npartitions=10)
 			print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
 			st_t = time.time()
 			user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")

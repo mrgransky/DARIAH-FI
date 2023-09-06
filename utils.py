@@ -666,12 +666,13 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	st_t = time.time()
 	try:
 		pkl = pd.read_pickle(fpath)
-	except:
+	except Exception as e:
+		print(f"<!> Pandas read_pickle: {e}")
 		with open(fpath, 'rb') as f:
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Successfully loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(150, " "))
+	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(150, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
