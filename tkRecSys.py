@@ -721,11 +721,11 @@ def get_users_tokens_df():
 	print("<>"*80)
 	st_t = time.time()
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\t|nTOTAL_BoWs|: {nTOTAL_BoWs}")
+	print(f"Loaded all {BoWs_files} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
 	gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	print(f"\n<> Loading {len(user_df_files)} user_df files:")
+	print(f"<> Loading {len(user_df_files)} user_df files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
