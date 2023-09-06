@@ -716,12 +716,12 @@ def get_users_tokens_df():
 	nTOTAL_BoWs: int = 0
 	for file_ in BoWs_files:
 		print(file_)
-		# print(int( file_[file_.rfind("_", 0, file_.rfind("_")): file_.rfind("_")] ))
-		# nTOTAL_BoWs += int( file_[file_.rfind(f"{args.lmMethod}_"): file_.rfind("_")] )
+		m=re.search(r'_(\d+)_vocabs\.json', file_)
+		nTOTAL_BoWs += int( m.group(1) ) if m else 0
 	print("<>"*80)
 	st_t = time.time()
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\tnTOTAL_BoWs: {nTOTAL_BoWs}")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s\t|tot_(unq)_BoWs|: {len(BoWs_merged)}\t|nTOTAL_BoWs|: {nTOTAL_BoWs}")
 	gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
@@ -789,7 +789,7 @@ def get_users_tokens_df():
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_token_df_concat.shape}")
 		gc.collect()
 
-		print(f"<> user_token_dfs groupby `user_ip` column", end="\t")
+		print(f"<> user_token_dfs groupby user_ip column", end=" ")
 		user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) )).astype("float32")
 		user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")
@@ -806,14 +806,14 @@ def get_users_tokens_df():
 
 	gc.collect()
 	
-	print(f"<> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end="\t")
+	print(f"<> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end=" ")
 	st_t = time.time()
 	sparse_df = pd.DataFrame( data=np.zeros( ( user_token_df_concat.shape[0], len( BoWs_merged.keys() ) ), dtype="float32" ),
 														columns=BoWs_merged.keys(), 
 														index=user_token_df_concat.index, 
 														dtype="float32", 
 													)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {sparse_df.shape} | {type(sparse_df)}")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {sparse_df.shape} | {type(sparse_df)}")
 	gc.collect()
 
 	print(f"<> Combining user_token_df_concat: {user_token_df_concat.shape} into init ZERO Sparse DF: {sparse_df.shape}...", end=" ")
@@ -829,9 +829,8 @@ def get_users_tokens_df():
 																		)
 
 	save_pickle(pkl=complete_user_token_df, fname=complete_user_token_df_fname)
-
-	save_vocab(	vb=BoWs_merged,#{key: idx for idx, key in enumerate(complete_user_token_df.columns)}, # TODO: >>>>>>>>>>>>>>> ideal case: vb=BoWs_merged <<<<<<<<<<<<<<<<<
-							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df.columns)}_vocabs.json"),
+	save_vocab(	vb=BoWs_merged,
+							fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(BoWs_merged)}_vocabs.json"),
 						)
 
 	return complete_user_token_df

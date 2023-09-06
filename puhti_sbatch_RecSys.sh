@@ -8,11 +8,11 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
-#SBATCH --array=70-82 ############## PAY ATTENTION TO RUN user_token.py ############## 
+#SBATCH --array=22-69 ############## PAY ATTENTION TO RUN user_token.py ############## 
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
