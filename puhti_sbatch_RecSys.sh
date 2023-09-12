@@ -8,8 +8,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=570G
-#SBATCH --partition=hugemem_longrun
+#SBATCH --mem=150G
+#SBATCH --partition=small
 #SBATCH --time=14-00:00:00
 # # # # # # SBATCH --gres=gpu:v100:1
 # # # # # # SBATCH --array=22-69 ############## PAY ATTENTION TO RUN user_token.py ############## 
