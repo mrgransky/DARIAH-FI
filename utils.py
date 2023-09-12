@@ -20,10 +20,13 @@ import webbrowser
 import string
 import time
 import logging
+import dask
 
 import numpy as np
 import pandas as pd
 import dask.dataframe as dd
+
+print(f"Numpy: {np.__version__} Pandas: {pd.__version__} Dask: {dask.__version__}")
 
 # import pandas.api.types as pdtypes
 from natsort import natsorted
