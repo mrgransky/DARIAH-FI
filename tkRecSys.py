@@ -799,6 +799,7 @@ def get_users_tokens_df():
 	# return complete_user_token_df
 
 def get_users_tokens_ddf():
+	print(f"Dask DataFrame".center(120, " "))
 	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
 	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
 	nTOTAL_BoWs: int = 0
@@ -827,6 +828,7 @@ def get_users_tokens_ddf():
 		st_t = time.time()
 		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+		print(f">> user_token_df: {user_token_df.shape} => user_token_ddf...")
 		user_token_ddf = dd.from_pandas(user_token_df.reset_index(), npartitions=10)
 		user_token_ddf = user_token_ddf.assign(n=user_token_ddf['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])#.compute()
 		
@@ -856,7 +858,7 @@ def main():
 	global fprefix, RES_DIR
 	fprefix = f"dfs_concat"
 	RES_DIR = make_result_dir(infile=fprefix)
-	print(fprefix, RES_DIR)
+	# print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
 	topK=args.topTKs
 	
