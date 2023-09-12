@@ -718,14 +718,14 @@ def get_users_tokens_df():
 		print(file_)
 		m=re.search(r'_(\d+)_vocabs\.json', file_)
 		nTOTAL_BoWs += int( m.group(1) ) if m else 0
-	print("<>"*80)
 	st_t = time.time()
 	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Loaded all {BoWs_files} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
+	print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
+	# print("-"*80)
 	gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	print(f"<> Loading {len(user_df_files)} user_df files:")
+	print(f">> Loading {len(user_df_files)} user_df files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
@@ -742,18 +742,20 @@ def get_users_tokens_df():
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.1f} s".center(180, "-"))
+	print(f"Loaded all {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 	gc.collect()
+
+	# # Memory allocation issue for several dataframe:
 	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs", end="\t")
 	st_t = time.time()
-	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).astype("float32")
+	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).astype("float32")	
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_token_df_concat.shape}")
 	gc.collect()
+
 	print(f"<> user_token_dfs groupby user_ip column", end=" ")
 	user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) )).astype("float32")
 	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")
-	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")	
 	gc.collect()
 	
 	user_token_df_concat_fname = os.path.join(args.dsPath, 
@@ -796,6 +798,59 @@ def get_users_tokens_df():
 
 	# return complete_user_token_df
 
+def get_users_tokens_ddf():
+	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
+	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
+	nTOTAL_BoWs: int = 0
+	for file_ in BoWs_files:
+		print(file_)
+		m=re.search(r'_(\d+)_vocabs\.json', file_)
+		nTOTAL_BoWs += int( m.group(1) ) if m else 0
+	st_t = time.time()
+	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
+	print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
+	# print("-"*80)
+	gc.collect()
+
+	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
+	print(f">> Loading {len(user_df_files)} user_df files:")
+	for f in user_df_files:
+		print(f)
+	print("<>"*80)
+	gc.collect()
+
+	users_tokens_ddfs = list()
+	load_time_start = time.time()	
+	for df_file in user_df_files:
+		user_df = load_pickle(fpath=df_file)
+		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
+		st_t = time.time()
+		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
+		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+		user_token_ddf = dd.from_pandas(user_token_df.reset_index(), npartitions=10)
+		user_token_ddf = user_token_ddf.assign(n=user_token_ddf['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])#.compute()
+		
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		users_tokens_ddfs.append(user_token_ddf)
+	print(f"Loaded all {len(users_tokens_ddfs)} in {time.time()-load_time_start:.1f} s".center(180, "-"))
+	gc.collect()
+
+	print(f"<> Concatinating {len(users_tokens_ddfs)} users_tokens_ddfs & GroupBy user_ip column", end="\t")
+	st_t = time.time()
+	user_token_ddf_concat = dd.concat(users_tokens_ddfs, axis=0).groupby("user_ip").sum().reset_index()
+	user_token_ddf_concat = user_token_ddf_concat.assign(n=user_token_ddf_concat['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])
+	user_token_ddf_concat = user_token_ddf_concat[sorted(user_token_ddf_concat.columns)]
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_ddf_concat: {user_token_df_concat.shape}")	
+	gc.collect()
+	
+	# user_token_ddf_concat_fname = os.path.join(args.dsPath, 
+	# 																					f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_concat_"
+	# 																					f"{user_token_ddf_concat.shape[0]}_nUSRs_x_"
+	# 																					f"{user_token_ddf_concat.shape[1]}_nTOKs.gz"
+	# 																				)
+	# save_pickle(pkl=user_token_ddf_concat, fname=user_token_ddf_concat_fname)
+	# gc.collect()
+	return user_token_ddf_concat 
 
 def main():
 	global fprefix, RES_DIR
@@ -811,7 +866,14 @@ def main():
 		user_token_df = get_users_tokens_df()
 
 	# print(user_token_df.head(20))
-	print(f"USER_TOKEN: {user_token_df.shape}")
+	print(f"USER_TOKEN DF: {user_token_df.shape}")
+
+	user_token_ddf = get_users_tokens_ddf()
+
+	print(f">> checking equal: {user_token_df.equals( user_token_ddf.compute() ) }")
+
+	return
+
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
 
