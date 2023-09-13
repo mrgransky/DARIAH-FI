@@ -736,12 +736,12 @@ def get_users_tokens_df():
 	load_time_start = time.time()	
 	for df_file in user_df_files:
 		user_df = load_pickle(fpath=df_file)
-		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
+		print(f"<> Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
 		st_t = time.time()
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
 		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32")
+		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
 	print(f"Loaded all {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
@@ -750,14 +750,15 @@ def get_users_tokens_df():
 	# # Memory allocation issue for several dataframe:
 	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs", end="\t")
 	st_t = time.time()
-	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).astype("float32")	
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {user_token_df_concat.shape}")
+	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)#.astype("float32")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
 
 	print(f"<> user_token_dfs groupby user_ip column", end=" ")
-	user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) )).astype("float32")
+	st_t = time.time()
+	user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))#.astype("float32")
 	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {user_token_df_concat.shape}")	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
 	
 	user_token_df_concat_fname = os.path.join(args.dsPath, 
