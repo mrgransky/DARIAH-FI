@@ -825,7 +825,10 @@ def get_users_tokens_ddf():
 																						f"{user_token_ddf_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_ddf_concat.shape[1]}_nTOKs.parquet"
 																					)
+	print(f"Saving {user_token_ddf_concat_fname} might take a while...")
+	st_time = time.time()
 	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname)
+	print(f"Elapsed_t: {time.time-st_time:.2f} sec")
 	gc.collect()
 	return user_token_ddf_concat 
 
