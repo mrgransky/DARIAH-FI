@@ -744,19 +744,19 @@ def get_users_tokens_df():
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded all {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
+	print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 	gc.collect()
 
-	# # Memory allocation issue for several dataframe:
 	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs", end="\t")
 	st_t = time.time()
-	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)#.astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
-	gc.collect()
-
-	print(f"<> user_token_dfs groupby user_ip column", end=" ")
-	st_t = time.time()
-	user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))#.astype("float32")
+	# multiple lines & separately! concat + groupby
+	# user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)#.astype("float32")
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
+	# gc.collect()
+	# print(f"<> user_token_dfs groupby user_ip column", end="\t")
+	# st_t = time.time()
+	# user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))#.astype("float32")
+	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ) )
 	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
@@ -769,37 +769,6 @@ def get_users_tokens_df():
 	save_pickle(pkl=user_token_df_concat, fname=user_token_df_concat_fname)
 	# gc.collect()
 	return user_token_df_concat 
-
-	# # MEMORY ISSUE: COMBINE USER_TOKEN_DF_CONCAT into Sparse Matrix	
-	# print(f"<> init ZERO Sparse DF: {user_token_df_concat.shape[0]} x {len(list(BoWs_merged.keys()))}", end=" ")
-	# st_t = time.time()
-	# sparse_df = pd.DataFrame( data=np.zeros( ( user_token_df_concat.shape[0], len( BoWs_merged.keys() ) ), dtype="float32" ),
-	# 													columns=BoWs_merged.keys(), 
-	# 													index=user_token_df_concat.index, 
-	# 													dtype="float32", 
-	# 												)
-	# print(f"Elapsed_t: {time.time()-st_t:.3f} s | {sparse_df.shape} | {type(sparse_df)}")
-	# gc.collect()
-
-	# print(f"<> Combining user_token_df_concat: {user_token_df_concat.shape} into init ZERO Sparse DF: {sparse_df.shape}...", end=" ")
-
-	# st_t = time.time()
-	# complete_user_token_df = user_token_df_concat.combine_first(sparse_df).astype("float32")
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_df_concat: {complete_user_token_df.shape}")
-	# gc.collect()
-
-	# complete_user_token_df_fname = os.path.join(args.dsPath, 
-	# 																						f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_df_"
-	# 																						f"{complete_user_token_df.shape[0]}_nUSRs_x_"
-	# 																						f"{complete_user_token_df.shape[1]}_nTKs.gz"
-	# 																	)
-
-	# save_pickle(pkl=complete_user_token_df, fname=complete_user_token_df_fname)
-	# save_vocab(	vb=BoWs_merged,
-	# 						fname=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(BoWs_merged)}_vocabs.json"),
-	# 					)
-
-	# return complete_user_token_df
 
 def get_users_tokens_ddf():
 	print(f"Dask DataFrame".center(120, " "))
