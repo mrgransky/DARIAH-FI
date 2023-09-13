@@ -1,18 +1,18 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J df_concat_XY
+#SBATCH -J nikeXY
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=257G
+#SBATCH --mem=128G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
-# # # # # # SBATCH --nodes=1
-# # # # # # SBATCH --array=22-69 ############## PAY ATTENTION TO RUN user_token.py ############## 
+#SBATCH --nodes=1
+#SBATCH --array=81-82 ############## PAY ATTENTION TO RUN user_token.py ############## 
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
@@ -38,14 +38,14 @@ if [ $user == 'alijani' ]; then
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
+	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes" # currently df_concat only available in dataframes_tmp only to run tkRecSys.py
 	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 fi
 
-# echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-# python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
+python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
-python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
