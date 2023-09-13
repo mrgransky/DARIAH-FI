@@ -772,18 +772,20 @@ def get_users_tokens_df():
 
 def get_users_tokens_ddf():
 	print(f"Dask DataFrame".center(120, " "))
-	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
-	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
-	nTOTAL_BoWs: int = 0
-	for file_ in BoWs_files:
-		print(file_)
-		m=re.search(r'_(\d+)_vocabs\.json', file_)
-		nTOTAL_BoWs += int( m.group(1) ) if m else 0
-	st_t = time.time()
-	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
-	# print("-"*80)
-	gc.collect()
+
+	# BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
+	# print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
+	# nTOTAL_BoWs: int = 0
+	# for file_ in BoWs_files:
+	# 	print(file_)
+	# 	m=re.search(r'_(\d+)_vocabs\.json', file_)
+	# 	nTOTAL_BoWs += int( m.group(1) ) if m else 0
+	# st_t = time.time()
+	# BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
+	# print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
+	# # print("-"*80)
+	# gc.collect()
+
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f">> Loading {len(user_df_files)} user_df files:")
@@ -795,19 +797,15 @@ def get_users_tokens_ddf():
 	users_tokens_dfs = list()
 	load_time_start = time.time()	
 	for df_file in user_df_files:
+		print(f"[PANDAS] Loading {df_file} ...")
 		user_df = load_pickle(fpath=df_file)
-		print(f"<> Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
+		print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
 		st_t = time.time()
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
 		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
-
-		# print(f">> user_token_df: {user_token_df.shape} => user_token_ddf...")
-		# user_token_ddf = dd.from_pandas(user_token_df.reset_index(), npartitions=10)
-		# user_token_ddf = user_token_ddf.assign(n=user_token_ddf['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])#.compute()
-		
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])		
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df)} | {user_token_df.shape}")
 		users_tokens_dfs.append(user_token_df)
 	print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
 	gc.collect()
