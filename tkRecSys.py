@@ -848,18 +848,19 @@ def main():
 	print(f"USER_TOKEN PDF: {user_token_df.shape}")
 	print(user_token_df)
 	print("<>"*50)
-	print(user_token_df.head(20))
+	print(user_token_df.head(50))
 	print("<>"*50)
 
 	try:
 		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_concat_*_nUSRs_x_*_nTOKs.parquet' )[0] )
-	except:
+	except Exception as e:
+		print(f"<!> [DASK] <read_parquet> {e}")
 		user_token_ddf = get_users_tokens_ddf()
 
 	print(f"USER_TOKEN DDF: {user_token_ddf.shape}")
 	print(user_token_ddf)
 	print("<>"*50)
-	print(user_token_ddf.head(20))
+	print(user_token_ddf.head(50))
 	print("<>"*50)
 	
 	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }")

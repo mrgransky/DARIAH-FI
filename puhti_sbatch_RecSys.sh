@@ -5,13 +5,13 @@
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=257G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
+# # # # # # SBATCH --nodes=1
 # # # # # # SBATCH --array=22-69 ############## PAY ATTENTION TO RUN user_token.py ############## 
 
 stars=$(printf '%*s' 100 '')
