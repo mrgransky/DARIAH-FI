@@ -809,15 +809,15 @@ def get_users_tokens_ddf():
 		
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.1f} s".center(180, "-"))
+	print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
 	gc.collect()
 
-	print(f"<> Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column using Dask", end="\t")
+	print(f"[DASK] Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column", end="\t")
 	st_t = time.time()
 	user_token_ddf_concat = dd.concat(users_tokens_dfs, axis=0).groupby("user_ip").sum().reset_index()
 	user_token_ddf_concat = user_token_ddf_concat.assign(n=user_token_ddf_concat['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])
 	user_token_ddf_concat = user_token_ddf_concat[sorted(user_token_ddf_concat.columns)]
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_ddf_concat: {user_token_df_concat.shape}")	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_ddf_concat)} | {user_token_ddf_concat.shape}")	
 	gc.collect()
 	
 	# user_token_ddf_concat_fname = os.path.join(args.dsPath, 
