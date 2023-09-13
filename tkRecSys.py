@@ -865,8 +865,7 @@ def get_users_tokens_ddf():
 
 def main():
 	global fprefix, RES_DIR
-	# fprefix = f"dfs_concat" # TODO: replace it with fprefix = f"concatinated_dataframes"
-	fprefix = f"concatinated_dataframes" # TODO: replace it with fprefix = f"concatinated_dataframes"
+	fprefix = f"concatinated_dataframes"
 	RES_DIR = make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
@@ -886,7 +885,7 @@ def main():
 	print(glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' ))
 
 	try:
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0] )
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' ) ) # TODO: without [0]
 	except Exception as e:
 		print(f"<!> [DASK] <read_parquet> {e}")
 		user_token_ddf = get_users_tokens_ddf()
