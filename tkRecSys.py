@@ -825,11 +825,11 @@ def get_users_tokens_ddf():
 																						f"{user_token_ddf_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_ddf_concat.shape[1]}_nTOKs.parquet"
 																					)
-	print(f"Saving {user_token_ddf_concat_fname} might take a while...")
+	print(f"Saving {type(user_token_ddf_concat)} might take a while...\{user_token_ddf_concat_fname}")
 	st_time = time.time()
 	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname)
-	print(f"Elapsed_t: {time.time-st_time:.2f} sec")
-	gc.collect()
+	print(f"Elapsed_t: {time.time-st_time:.2f} sec".center(110, " "))
+	# gc.collect()
 	return user_token_ddf_concat 
 
 def main():
@@ -849,7 +849,7 @@ def main():
 	print(user_token_df)
 	print("<>"*50)
 	print(user_token_df.head(20))
-
+	print("<>"*50)
 
 	try:
 		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_concat_*_nUSRs_x_*_nTOKs.parquet' )[0] )
@@ -860,6 +860,7 @@ def main():
 	print(user_token_ddf)
 	print("<>"*50)
 	print(user_token_ddf.head(20))
+	print("<>"*50)
 	
 	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }")
 
