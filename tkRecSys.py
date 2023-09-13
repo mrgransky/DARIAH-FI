@@ -882,12 +882,14 @@ def main():
 	print(user_token_df.head(50))
 	print("<>"*50)
 
-	print(glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' ))
+	print(glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0])
 
 	try:
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet'+'/*.parquet' ) ) # TODO: without [0]
+		# user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet'+'/*.parquet' ) ) # TODO: without [0]
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0] )
+		
 	except Exception as e:
-		print(f"<!> [DASK] <read_parquet> {e}")
+		print(f"<!> [DASK] <read_parquet>\n{e}")
 		user_token_ddf = get_users_tokens_ddf()
 
 	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
