@@ -733,24 +733,27 @@ def get_users_tokens_df():
 	print("<>"*80)
 	# gc.collect()
 
-	users_tokens_dfs = list()
-	load_time_start = time.time()	
-	for df_file in user_df_files:
-		print(f"[PANDAS] Loading {df_file} ...")
-		user_df = load_pickle(fpath=df_file)
-		print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
-		st_t = time.time()
-		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
-		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
-		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s  | {type(user_token_df)} | {user_token_df.shape}")
-		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
-	gc.collect()
-	
-	usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
-	save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
+	try:
+		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
+	except Exception as e:
+		print(f"<!> Load pkl <pDFs list> {e}")
+		users_tokens_dfs = list()
+		load_time_start = time.time()	
+		for df_file in user_df_files:
+			print(f"[PANDAS] Loading {df_file} ...")
+			user_df = load_pickle(fpath=df_file)
+			print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
+			st_t = time.time()
+			# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
+			# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
+			user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
+			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+			print(f"Elapsed_t: {time.time()-st_t:.2f} s  | {type(user_token_df)} | {user_token_df.shape}")
+			users_tokens_dfs.append(user_token_df)
+		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
+		gc.collect()
+		usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_dfs", end="\t")
 	st_t = time.time()
@@ -767,7 +770,7 @@ def get_users_tokens_df():
 	gc.collect()
 	
 	user_token_df_concat_fname = os.path.join(args.dsPath, 
-																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_concat_"
+																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
 																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																					)
@@ -799,24 +802,45 @@ def get_users_tokens_ddf():
 	print("<>"*80)
 	# gc.collect()
 
-	users_tokens_dfs = list()
-	load_time_start = time.time()	
-	for df_file in user_df_files:
-		print(f"[PANDAS] Loading {df_file} ...")
-		user_df = load_pickle(fpath=df_file)
-		print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
-		st_t = time.time()
-		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
-		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
-		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])		
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df)} | {user_token_df.shape}")
-		users_tokens_dfs.append(user_token_df)
-	print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
-	gc.collect()
+	try:
+		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
+	except Exception as e:
+		print(f"<!> Load pkl <pDFs list> {e}")
+		users_tokens_dfs = list()
+		load_time_start = time.time()	
+		for df_file in user_df_files:
+			print(f"[PANDAS] Loading {df_file} ...")
+			user_df = load_pickle(fpath=df_file)
+			print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
+			st_t = time.time()
+			# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
+			# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
+			user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
+			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+			print(f"Elapsed_t: {time.time()-st_t:.2f} s  | {type(user_token_df)} | {user_token_df.shape}")
+			users_tokens_dfs.append(user_token_df)
+		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
+		gc.collect()
+		usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
-	usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
-	save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
+	# users_tokens_dfs = list()
+	# load_time_start = time.time()	
+	# for df_file in user_df_files:
+	# 	print(f"[PANDAS] Loading {df_file} ...")
+	# 	user_df = load_pickle(fpath=df_file)
+	# 	print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
+	# 	st_t = time.time()
+	# 	# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
+	# 	# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
+	# 	user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
+	# 	user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])		
+	# 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df)} | {user_token_df.shape}")
+	# 	users_tokens_dfs.append(user_token_df)
+	# print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
+	# gc.collect()
+	# usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+	# save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	print(f"[DASK] Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column", end="\t")
 	st_t = time.time()
@@ -828,7 +852,7 @@ def get_users_tokens_ddf():
 
 	# TODO: investigate with user_token_ddf_concat.index.size.compute() for nUSRs
 	user_token_ddf_concat_fname = os.path.join(args.dsPath, 
-																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_concat_"
+																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_"
 																						f"XXX_nUSRs_x_"
 																						f"{len(user_token_ddf_concat.columns)}_nTOKs.parquet"
 																					)
@@ -841,7 +865,8 @@ def get_users_tokens_ddf():
 
 def main():
 	global fprefix, RES_DIR
-	fprefix = f"dfs_concat" # TODO: replace it with fprefix = f"concatinated_dataframes"
+	# fprefix = f"dfs_concat" # TODO: replace it with fprefix = f"concatinated_dataframes"
+	fprefix = f"concatinated_dataframes" # TODO: replace it with fprefix = f"concatinated_dataframes"
 	RES_DIR = make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
