@@ -20,7 +20,7 @@ args = parser.parse_args()
 # how to run:
 # 
 
-fprefix = "df_concat"
+fprefix = "DIRname_MUST_BE_RENAMED"
 #RES_DIR = make_result_dir(infile=fprefix)
 make_folder(folder_name=args.dsPath)
 MODULE=60
