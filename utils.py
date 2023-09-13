@@ -16,23 +16,21 @@ import json
 import argparse
 import datetime
 import glob
-import webbrowser
+# import webbrowser
 import string
 import time
 import logging
-import dask
+import functools
 
+import dask
 import numpy as np
 import pandas as pd
 import dask.dataframe as dd
+# Numpy: 1.25.2 Pandas: 2.1.0 Dask: 2023.9.1 # September 2023
 
-print(f"Numpy: {np.__version__} Pandas: {pd.__version__} Dask: {dask.__version__}")
-
-# import pandas.api.types as pdtypes
 from natsort import natsorted
 from collections import Counter
 from typing import List, Set, Dict, Tuple
-import functools
 
 from scipy.sparse import csr_matrix, coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel

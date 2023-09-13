@@ -711,6 +711,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df():
+	print(f"Pandas DataFrame".center(120, " "))
 	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
 	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
 	nTOTAL_BoWs: int = 0
@@ -735,11 +736,10 @@ def get_users_tokens_df():
 	load_time_start = time.time()	
 	for df_file in user_df_files:
 		user_df = load_pickle(fpath=df_file)
-		# user_ddf = dd.from_pandas(user_df, npartitions=10)
 		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
 		st_t = time.time()
-		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
-		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
+		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
+		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32")
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
 	print(f"Loaded all {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
@@ -827,7 +827,8 @@ def get_users_tokens_ddf():
 		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
 		st_t = time.time()
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
-		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32")
+		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32")
+		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(df["user_ip"]).astype("float32")
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 
 		# print(f">> user_token_df: {user_token_df.shape} => user_token_ddf...")
@@ -835,7 +836,7 @@ def get_users_tokens_ddf():
 		# user_token_ddf = user_token_ddf.assign(n=user_token_ddf['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])#.compute()
 		
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-		users_tokens_dfs.append(user_token_ddf)
+		users_tokens_dfs.append(user_token_df)
 	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.1f} s".center(180, "-"))
 	gc.collect()
 
