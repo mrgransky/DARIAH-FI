@@ -819,22 +819,23 @@ def get_users_tokens_ddf():
 	user_token_ddf_concat = user_token_ddf_concat[sorted(user_token_ddf_concat.columns)]
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_ddf_concat)} | {user_token_ddf_concat.shape}")	
 	gc.collect()
-	
+
+	# TODO: investigate with user_token_ddf_concat.index.size.compute() for nUSRs
 	user_token_ddf_concat_fname = os.path.join(args.dsPath, 
 																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_concat_"
-																						f"{user_token_ddf_concat.shape[0]}_nUSRs_x_"
-																						f"{user_token_ddf_concat.shape[1]}_nTOKs.parquet"
+																						f"XXX_nUSRs_x_"
+																						f"{len(user_token_ddf_concat.columns)}_nTOKs.parquet"
 																					)
-	print(f"Saving {type(user_token_ddf_concat)} might take a while...\{user_token_ddf_concat_fname}")
+	print(f"Saving {type(user_token_ddf_concat)} might take a while...\n{user_token_ddf_concat_fname}")
 	st_time = time.time()
 	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname)
 	print(f"Elapsed_t: {time.time-st_time:.2f} sec".center(110, " "))
-	# gc.collect()
+	gc.collect()
 	return user_token_ddf_concat 
 
 def main():
 	global fprefix, RES_DIR
-	fprefix = f"dfs_concat"
+	fprefix = f"dfs_concat" # TODO: replace it with fprefix = f"concatinated_dataframes"
 	RES_DIR = make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
@@ -845,7 +846,7 @@ def main():
 	except:
 		user_token_df = get_users_tokens_df()
 
-	print(f"USER_TOKEN PDF: {user_token_df.shape}")
+	print(f"USER_TOKEN pDF: {user_token_df.shape}")
 	print(user_token_df)
 	print("<>"*50)
 	print(user_token_df.head(50))
@@ -857,12 +858,16 @@ def main():
 		print(f"<!> [DASK] <read_parquet> {e}")
 		user_token_ddf = get_users_tokens_ddf()
 
-	print(f"USER_TOKEN DDF: {user_token_ddf.shape}")
-	print(user_token_ddf)
-	print("<>"*50)
+	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
+	# print(user_token_ddf)
+	# print("<>"*50)
 	print(user_token_ddf.head(50))
 	print("<>"*50)
-	
+	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
+		print(f"Both columns are identical")
+	else:
+		print(f"inconsistencies in columns")
+
 	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }")
 
 	return
