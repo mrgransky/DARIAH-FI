@@ -739,6 +739,8 @@ def get_users_tokens_df():
 		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
 		st_t = time.time()
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
+		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
+		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
 		user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32")
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 		users_tokens_dfs.append(user_token_df)
@@ -824,10 +826,10 @@ def get_users_tokens_ddf():
 	load_time_start = time.time()	
 	for df_file in user_df_files:
 		user_df = load_pickle(fpath=df_file)
-		print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)", end="\t")
+		print(f"<> Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
 		st_t = time.time()
 		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
-		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32")
+		# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
 		user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
 		user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 
@@ -840,12 +842,12 @@ def get_users_tokens_ddf():
 	print(f"Loaded all {len(users_tokens_dfs)} in {time.time()-load_time_start:.1f} s".center(180, "-"))
 	gc.collect()
 
-	print(f"<> Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column", end="\t")
+	print(f"<> Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column using Dask", end="\t")
 	st_t = time.time()
 	user_token_ddf_concat = dd.concat(users_tokens_dfs, axis=0).groupby("user_ip").sum().reset_index()
 	user_token_ddf_concat = user_token_ddf_concat.assign(n=user_token_ddf_concat['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])
 	user_token_ddf_concat = user_token_ddf_concat[sorted(user_token_ddf_concat.columns)]
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_ddf_concat: {user_token_df_concat.shape}")	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | user_token_ddf_concat: {user_token_df_concat.shape}")	
 	gc.collect()
 	
 	# user_token_ddf_concat_fname = os.path.join(args.dsPath, 
@@ -875,7 +877,7 @@ def main():
 
 	user_token_ddf = get_users_tokens_ddf()
 
-	print(f">> checking equal: {user_token_df.equals( user_token_ddf.compute() ) }")
+	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }")
 
 	return
 
