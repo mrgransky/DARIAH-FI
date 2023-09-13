@@ -667,7 +667,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 	try:
 		pkl = pd.read_pickle(fpath)
 	except Exception as e:
-		print(f"<!> Pandas read_pickle: {e}")
+		print(f"<!> Not a Pandas DataFrame <read_pickle> {e}")
 		with open(fpath, 'rb') as f:
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
