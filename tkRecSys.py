@@ -858,7 +858,7 @@ def get_users_tokens_ddf():
 																					)
 	print(f"Saving {type(user_token_ddf_concat)} might take a while...\n{user_token_ddf_concat_fname}")
 	st_time = time.time()
-	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname)
+	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname, engine='fastparquet')
 	print(f"Elapsed_t: {time.time-st_time:.2f} sec".center(110, " "))
 	gc.collect()
 	return user_token_ddf_concat 
@@ -886,7 +886,7 @@ def main():
 
 	try:
 		# user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet'+'/*.parquet' ) ) # TODO: without [0]
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0] )
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )
 		
 	except Exception as e:
 		print(f"<!> [DASK] <read_parquet>\n{e}")
