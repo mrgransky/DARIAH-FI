@@ -711,19 +711,20 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df():
-	print(f"Pandas DataFrame".center(120, " "))
-	BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
-	print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
-	nTOTAL_BoWs: int = 0
-	for file_ in BoWs_files:
-		print(file_)
-		m=re.search(r'_(\d+)_vocabs\.json', file_)
-		nTOTAL_BoWs += int( m.group(1) ) if m else 0
-	st_t = time.time()
-	BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
-	# print("-"*80)
-	gc.collect()
+	print(f"Pandas DataFrame".center(150, " "))
+	
+	# BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
+	# print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
+	# nTOTAL_BoWs: int = 0
+	# for file_ in BoWs_files:
+	# 	print(file_)
+	# 	m=re.search(r'_(\d+)_vocabs\.json', file_)
+	# 	nTOTAL_BoWs += int( m.group(1) ) if m else 0
+	# st_t = time.time()
+	# BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
+	# print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
+	# # print("-"*80)
+	# gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"Found {len(user_df_files)} user_df files:")
@@ -748,7 +749,7 @@ def get_users_tokens_df():
 	print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 	gc.collect()
 
-	print(f"<> Concatinating {len(users_tokens_dfs)} user_token_dfs", end="\t")
+	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_dfs", end="\t")
 	st_t = time.time()
 	# multiple lines & separately! concat + groupby
 	# user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)#.astype("float32")
@@ -763,7 +764,7 @@ def get_users_tokens_df():
 	gc.collect()
 	
 	user_token_df_concat_fname = os.path.join(args.dsPath, 
-																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_concat_"
+																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_concat_"
 																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																					)
@@ -819,13 +820,13 @@ def get_users_tokens_ddf():
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_ddf_concat)} | {user_token_ddf_concat.shape}")	
 	gc.collect()
 	
-	# user_token_ddf_concat_fname = os.path.join(args.dsPath, 
-	# 																					f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_concat_"
-	# 																					f"{user_token_ddf_concat.shape[0]}_nUSRs_x_"
-	# 																					f"{user_token_ddf_concat.shape[1]}_nTOKs.gz"
-	# 																				)
-	# save_pickle(pkl=user_token_ddf_concat, fname=user_token_ddf_concat_fname)
-	# gc.collect()
+	user_token_ddf_concat_fname = os.path.join(args.dsPath, 
+																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_concat_"
+																						f"{user_token_ddf_concat.shape[0]}_nUSRs_x_"
+																						f"{user_token_ddf_concat.shape[1]}_nTOKs.parquet"
+																					)
+	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname)
+	gc.collect()
 	return user_token_ddf_concat 
 
 def main():
@@ -837,15 +838,26 @@ def main():
 	topK=args.topTKs
 	
 	try:
-		user_token_df = load_pickle( fpath=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_concat_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		user_token_df = load_pickle( fpath=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_pdf_concat_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	except:
 		user_token_df = get_users_tokens_df()
 
-	# print(user_token_df.head(20))
-	print(f"USER_TOKEN DF: {user_token_df.shape}")
+	print(f"USER_TOKEN PDF: {user_token_df.shape}")
+	print(user_token_df)
+	print("<>"*50)
+	print(user_token_df.head(20))
 
-	user_token_ddf = get_users_tokens_ddf()
 
+	try:
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_concat_*_nUSRs_x_*_nTOKs.parquet' )[0] )
+	except:
+		user_token_ddf = get_users_tokens_ddf()
+
+	print(f"USER_TOKEN DDF: {user_token_ddf.shape}")
+	print(user_token_ddf)
+	print("<>"*50)
+	print(user_token_ddf.head(20))
+	
 	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }")
 
 	return
