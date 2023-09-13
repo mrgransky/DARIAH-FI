@@ -873,7 +873,7 @@ def main():
 	topK=args.topTKs
 	
 	try:
-		user_token_df = load_pickle( fpath=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_pdf_concat_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		user_token_df = load_pickle( fpath=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	except:
 		user_token_df = get_users_tokens_df()
 
@@ -883,8 +883,10 @@ def main():
 	print(user_token_df.head(50))
 	print("<>"*50)
 
+	print(glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' ))
+
 	try:
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_concat_*_nUSRs_x_*_nTOKs.parquet' )[0] )
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0] )
 	except Exception as e:
 		print(f"<!> [DASK] <read_parquet> {e}")
 		user_token_ddf = get_users_tokens_ddf()
