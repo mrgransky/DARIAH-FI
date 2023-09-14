@@ -894,7 +894,7 @@ def main():
 
 	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
 	# print(user_token_ddf)
-	# print("<>"*50)
+	print("<>"*50)
 	print(user_token_ddf.head(50))
 	print("<>"*50)
 	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
