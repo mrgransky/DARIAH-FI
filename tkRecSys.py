@@ -20,7 +20,7 @@ args = parser.parse_args()
 # how to run:
 # 
 
-fprefix = "DIRname_MUST_BE_RENAMED"
+fprefix = "FILE_PREFIXname_TBR"
 #RES_DIR = make_result_dir(infile=fprefix)
 make_folder(folder_name=args.dsPath)
 MODULE=60
@@ -884,7 +884,10 @@ def main():
 	print( glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
 	try:
+		print(f"Trying to read pq files of {glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
+		st_pq = time.time()
 		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
+		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
 	except Exception as e:
 		print(f"<!> [DASK] <read_parquet>\n{e}")
 		user_token_ddf = get_users_tokens_ddf()
@@ -899,9 +902,11 @@ def main():
 	else:
 		print(f"inconsistencies in columns")
 
-	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }")
-
-	return
+	eq_t = time.time()
+	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
+	print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
+	
+	# return
 
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
