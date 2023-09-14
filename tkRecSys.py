@@ -859,7 +859,7 @@ def get_users_tokens_ddf():
 	print(f"Saving {type(user_token_ddf_concat)} might take a while...\n{user_token_ddf_concat_fname}")
 	st_time = time.time()
 	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname, engine='fastparquet')
-	print(f"Elapsed_t: {time.time-st_time:.2f} sec".center(110, " "))
+	print(f"Elapsed_t: {time.time()-st_time:.2f} sec".center(110, " "))
 	gc.collect()
 	return user_token_ddf_concat 
 
