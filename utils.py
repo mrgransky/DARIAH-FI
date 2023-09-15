@@ -165,17 +165,6 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	tk_dict = dict( sorted( df_usr_tk.loc[user_idx , "user_token_interest" ].items(), key=lambda x:x[1], reverse=True ) )
 	tk_dict = {k: v for k, v in tk_dict.items() if v!=0}
 
-	"""
-	with open(f"temp_{user_idx}_raw_dict_.json", "w") as fw:
-		json.dump(df_usr_tk.loc[user_idx , "user_token_interest" ], fw, indent=4, ensure_ascii=False)
-
-	with open("temp_sorted_discending.json", "w") as fw:
-		json.dump(tk_dict, fw, indent=4, ensure_ascii=False)
-	
-	with open("temp_sorted_no0.json", "w") as fw:
-		json.dump(tk_dict, fw, indent=4, ensure_ascii=False)
-	"""
-
 	tks_name = list(tk_dict.keys())
 	tks_value_all = list(tk_dict.values())
 	
@@ -478,7 +467,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 
 	cleaned_lines = []
 
-	with open(file_path, mode="r") as f:
+	with open(file_path, mode="r", encoding="utf-8") as f:
 		for line in f:
 			# print(line)
 			matched_line = re.match(ACCESS_LOG_PATTERN, line)
@@ -633,7 +622,7 @@ def make_folder(folder_name="MUST_BE_RENAMED"):
 def save_vocab(vb, fname:str=""):
 	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
 	st_t = time.time()
-	with open(fname, "w") as fw:
+	with open(fname, mode="w", encoding="utf-8") as fw:
 		json.dump(vb, fw, indent=4, ensure_ascii=False)
 
 	fsize_dump = os.stat( fname ).st_size / 1e6
@@ -642,7 +631,7 @@ def save_vocab(vb, fname:str=""):
 def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	print(f"Loading BoWs: {fname}")
 	st_t = time.time()
-	with open(fname, "r") as fr:
+	with open(fname, mode="r", encoding="utf-8") as fr:
 		vb = json.load(fr)
 	fsize_dump = os.stat( fname ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
@@ -655,7 +644,7 @@ def save_pickle(pkl, fname:str=""):
 	if isinstance(pkl, pd.DataFrame) or isinstance(pkl, pd.Series):
 		pkl.to_pickle(path=dump_file_name)
 	else:
-		with open(dump_file_name , "wb" ) as f:
+		with open(dump_file_name , mode="wb", encoding="utf-8") as f:
 			dill.dump(pkl, f)
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
@@ -668,7 +657,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 		pkl = pd.read_pickle(fpath)
 	except Exception as e:
 		print(f"<!> Not a Pandas DataFrame <read_pickle> {e}")
-		with open(fpath, 'rb') as f:
+		with open(fpath, mode='rb', encoding="utf-8") as f:
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6

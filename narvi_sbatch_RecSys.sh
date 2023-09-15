@@ -1,17 +1,17 @@
 #!/bin/bash
 
-#SBATCH --job-name=df_concat_XY
+#SBATCH --job-name=nikeXY
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --mem=316G
+#SBATCH --mem=128G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=amd
-# # # # SBATCH --gres=gpu:rtx100:1
-# # # # SBATCH --nodes=1
-# # # # SBATCH --array=0-731
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:rtx100:1
+#SBATCH --nodes=1
+#SBATCH --array=730-731
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED @ `date`"
@@ -34,7 +34,7 @@ if [ $user == 'alijani' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 	source activate py39
 	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY"
+	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes"

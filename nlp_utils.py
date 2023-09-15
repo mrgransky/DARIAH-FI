@@ -143,12 +143,15 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza", 
 	print(f"Training TFIDF vector for {len(preprocessed_docs)} raw words/phrases/sentences, might take a while...".center(150, " "))
 	st_t = time.time()
 	# Initialize TFIDF # not time consuming...
-	tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),)
+	tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
+															min_df=5,
+															max_df=0.8,
+														)
 
 	# Fit TFIDF # TIME CONSUMING:
 	tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 
-	del raw_docs_list
+	# del raw_docs_list
 	gc.collect()
 
 	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)

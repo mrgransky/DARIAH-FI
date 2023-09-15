@@ -3,11 +3,11 @@ from utils import *
 # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
 	import nltk
-	nltk_modules = ['punkt', 
-								'averaged_perceptron_tagger', 
+	nltk_modules = ['punkt',
 								'stopwords',
 								'wordnet',
-								'omw-1.4',
+								# 'averaged_perceptron_tagger', 
+								# 'omw-1.4',
 								]
 	nltk.download(#'all',
 								nltk_modules,
