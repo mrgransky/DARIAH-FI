@@ -6,8 +6,8 @@ with HiddenPrints():
 	nltk_modules = ['punkt',
 								'stopwords',
 								'wordnet',
-								# 'averaged_perceptron_tagger', 
-								# 'omw-1.4',
+								'averaged_perceptron_tagger', 
+								'omw-1.4',
 								]
 	nltk.download(#'all',
 								nltk_modules,
