@@ -27,13 +27,14 @@ with HiddenPrints():
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
-	lang_id_config = {"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'de']}
+	lang_id_config = {"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'de', 'fr']}
 	lang_configs = {"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
 									"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 									"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
 									"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
+									"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 									}
 	stanza_multi_pipeline = MultilingualPipeline(
 			lang_id_config=lang_id_config,
