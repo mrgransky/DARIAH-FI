@@ -644,7 +644,7 @@ def save_pickle(pkl, fname:str=""):
 	if isinstance(pkl, pd.DataFrame) or isinstance(pkl, pd.Series):
 		pkl.to_pickle(path=dump_file_name)
 	else:
-		with open(dump_file_name , mode="wb", encoding="utf-8") as f:
+		with open(dump_file_name , mode="wb") as f:
 			dill.dump(pkl, f)
 
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
@@ -657,7 +657,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 		pkl = pd.read_pickle(fpath)
 	except Exception as e:
 		print(f"<!> Not a Pandas DataFrame <read_pickle> {e}")
-		with open(fpath, mode='rb', encoding="utf-8") as f:
+		with open(fpath, mode='rb') as f:
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
