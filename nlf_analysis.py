@@ -14,13 +14,13 @@ import pandas as pd
 from collections import Counter
 from natsort import natsorted
 
+
+from utils import *
+from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 import seaborn as sns
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-from utils import *
-from wordcloud import WordCloud
 
 import matplotlib
 matplotlib.use("Agg")

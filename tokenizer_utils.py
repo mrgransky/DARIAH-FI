@@ -36,7 +36,7 @@ with HiddenPrints():
 									"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 									"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 									}
-	stanza_multi_pipeline = MultilingualPipeline(
+	smp = MultilingualPipeline(
 			lang_id_config=lang_id_config,
 			lang_configs=lang_configs,
 			download_method=DownloadMethod.REUSE_RESOURCES,
@@ -126,7 +126,7 @@ def stanza_lemmatizer(docs):
 		print(f'\nstanza raw input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
-		all_ = stanza_multi_pipeline(docs)
+		all_ = smp(docs)
 		# list comprehension: slow but functional alternative
 		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
 		lemmas_list = [ re.sub(r'#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm)>=3 and len(wlm)<=32 and not re.search(r"\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ) ]
