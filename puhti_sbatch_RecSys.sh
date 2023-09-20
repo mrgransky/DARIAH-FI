@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J df_concat_XY
+#SBATCH -J nikeQ
 #SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=64G
-#SBATCH --partition=small
+#SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
 #SBATCH --nodes=1
