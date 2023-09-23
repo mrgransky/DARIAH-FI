@@ -8,9 +8,9 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=256G
-#SBATCH --partition=gpu
+#SBATCH --partition=small
 #SBATCH --time=03-00:00:00
-#SBATCH --gres=gpu:v100:1
+# # # # # SBATCH --gres=gpu:v100:1
 #SBATCH --nodes=1
 # # # # # SBATCH --array=81-82 ############## PAY ATTENTION TO RUN user_token.py ############## 
 
