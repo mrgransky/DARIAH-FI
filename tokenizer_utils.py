@@ -135,8 +135,6 @@ def stanza_lemmatizer(docs):
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		return
-	# del all_
-	# gc.collect()
 	print( lemmas_list )
 	# print(f"{f'{len(lemmas_list)} Lemma(s)':<15}Elapsed_t: {time.time()-st_t:.3f} s")
 	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} sec".center(150, "-") )
