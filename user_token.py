@@ -20,10 +20,13 @@ parser.add_argument('-odir',
 										required=True, 
 										help='output directory to save files',
 									)
-parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
+parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
+parser.add_argument('--minDocFreq', default=10, type=int)
+parser.add_argument('--maxDocFreq', default=0.8, type=float)
+
 args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
@@ -565,12 +568,12 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	try:
-		tfidf_matrix_rf = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix_RF_large.gz"))
-		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vectorizer_large.gz"))
+		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
+		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vec.gz"))
 		BoWs = load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
-		BoWs = get_cBoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR)
+		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR, MIN_DF=args.minDocFreq, MAX_DF=maxDocFreq)
 
 	# print(f"USERs DF".center(100, ' '))
 	df_inp = df_inp.dropna(axis=1, how='all') #TODO: this must be transfered before get_cBoWs()

@@ -877,11 +877,11 @@ def main():
 		user_token_df = get_users_tokens_df()
 
 	print(f"USER_TOKEN pDF: {user_token_df.shape}")
-	print(user_token_df)
-	print("<>"*50)
+	# print(user_token_df)
+	# print("<>"*50)
 	print(user_token_df.head(50))
 	print("<>"*50)
-	print( glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
+	# print( glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
 	try:
 		print(f"Trying to read pq files of {glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")

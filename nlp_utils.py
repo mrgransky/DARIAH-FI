@@ -73,7 +73,7 @@ def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"
 	# 	return lemmatizer_methods.get(lm)(cleaned)
 	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
-def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza", saveDIR: str="SAVING_DIR"):
+def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stanza", saveDIR: str="SAVING_DIR", MIN_DF: int=10, MAX_DF: float=0.8):
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 
 	print(f"{f'Extracting texts search query phrases':<50}", end="")
@@ -117,14 +117,14 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza", 
 		ltot = lque + lcol + lclp + lsnp + lcnt
 		raw_texts_list.append( ltot )
 
-	del dframe
+	# del dframe
 	gc.collect()
 
 	print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 	print(f">> creating raw_docs_list", end=" ")
 	raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
 
-	del raw_texts_list
+	# del raw_texts_list
 	gc.collect()
 
 	print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
@@ -136,16 +136,37 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza", 
 	pst = time.time()
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 	print(f"=> {f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
-
-	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vectorizer_large.gz")
-	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix_RF_large.gz")
 	
-	print(f"Training TFIDF vector for {len(preprocessed_docs)} raw words/phrases/sentences, might take a while...".center(150, " "))
+	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
+	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
+	
+	print(f"Training TFIDF vectorizer [min_df: {MIN_DF} & max_df: {MAX_DF}] for {len(preprocessed_docs)} raw docs, might take a while...".center(160, " "))
 	st_t = time.time()
+	################################################################################################################################################################
+	# max_df is used for removing terms that appear too frequently, also known as "corpus-specific stop words". For example:
+
+	#     max_df = 0.50 means "ignore terms that appear in more than 50% of the documents".
+	#     max_df = 25 means "ignore terms that appear in more than 25 documents".
+
+	# The default max_df is 1.0, which means "ignore terms that appear in more than 100% of the documents". Thus, the default setting does not ignore any terms.
+
+	# min_df is used for removing terms that appear too infrequently. For example:
+
+	#     min_df = 0.01 means "ignore terms that appear in less than 1% of the documents".
+	#     min_df = 5 means "ignore terms that appear in less than 5 documents".
+
+	# The default min_df is 1, which means "ignore terms that appear in less than 1 document". Thus, the default setting does not ignore any terms.
+	################################################################################################################################################################
+	
 	# Initialize TFIDF # not time consuming...
 	tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
-															min_df=5, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold 
-															max_df=0.5, #ignore terms that have doc_freq strictly higher than the given threshold [proportion of documents]
+															lowercase=True,
+															analyzer="word",
+															dtype="float32",
+															use_idf=True, # Enable inverse-document-frequency reweighting. If False, idf(t) = 1.
+															max_features=None, # retreive all features
+															min_df=MIN_DF, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold # removing terms appearing too infrequently
+															max_df=MAX_DF, #ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
 														)
 
 	# Fit TFIDF # TIME CONSUMING:
@@ -153,16 +174,16 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza", 
 
 	# del raw_docs_list
 	gc.collect()
+	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 
 	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 	save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
-	save_vocab(	vb=dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ), 
+	save_vocab(	vb=BOWs,
 							fname=os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 						)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 
 	feat_names = tfidf_vec.get_feature_names_out()
-	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 
 	# example:
 	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
