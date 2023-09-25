@@ -201,7 +201,7 @@ def run():
 	"""		
 	# run all log files using array in batch
 	all_queries(
-		file=args.queryLogFile,
+		file_=args.queryLogFile,
 		#ts=["14:30:00", "14:56:59"],
 	)
 
