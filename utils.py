@@ -461,7 +461,9 @@ def rest_api(params={}):
 	return SEARCH_RESULTS
 
 def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
-	file_path = os.path.join(dpath, infile)
+	# file_path = os.path.join(dpath, infile)
+	file_path = infile
+	
 	#ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\\d{3}) (.*) "([^\"]*)" "(.*?)" (.*)' # checked with all log files!
 	ACCESS_LOG_PATTERN = '(.*?) - - \[(.*?)\] "(.*?)" (\d{3}) (.*?) "([^"]*)" "(.*?)" (.*)' # optimized by chatGPT
 	#ACCESS_LOG_PATTERN = r'^(\w+) - - \[(.*?)\] "(.*?)" (\d+) (\d+) "(.*?)" "(.*?)" (\d+)$' # suggested by chatGPT
