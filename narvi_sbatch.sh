@@ -32,13 +32,14 @@ if [ $user == 'alijani' ]; then
 	echo ">> Using Narvi conda env from Anaconda..."
 	source activate py39
 	logFiles=(/lustre/sgn-data/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log) #TODO: must be adjusted!
+	dataset_path="/lustre/sgn-data/Nationalbiblioteket/datasets"
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
 	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
 fi
 
 echo "Q[$SLURM_ARRAY_TASK_ID]: ${logFiles[$SLURM_ARRAY_TASK_ID]}"
-python -u information_retrieval.py --saveDF True --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]}
+python -u information_retrieval.py --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]} --dsPath $dataset_path
 
 done_txt="SLURM JOB ENDED @ `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

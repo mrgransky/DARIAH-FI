@@ -6,7 +6,7 @@ from utils import *
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('-qlf', '--queryLogFile', required=True, type=str, help="Query log file") # smallest
-parser.add_argument('--saveDF', default=None, type=str, help='Save DataFrame in directory | Def: None')
+parser.add_argument('--dsPath', required=True, type=str, help='Save DataFrame in directory | Def: None')
 
 args = parser.parse_args()
 
@@ -123,8 +123,8 @@ def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 	print(f"Query Log File: {file_}")
 	# check if queryLogFile.dump already exist: return
 	log_file_name = file_[file_.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
-	if os.path.isfile(os.path.join(datasets_path, f"{log_file_name}.dump")):
-		print(f"{os.path.join(datasets_path, log_file_name+'.dump')} already exist, exiting...")
+	if os.path.isfile(os.path.join(args.dsPath, f"{log_file_name}.dump")):
+		print(f"{os.path.join(args.dsPath, log_file_name+'.dump')} already exist, exiting...")
 		return
 
 	
@@ -186,11 +186,10 @@ def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
 	
-	if args.saveDF:
-		save_pickle( pkl=df, fname=os.path.join( datasets_path, f'{log_file_name}.dump') )
+	save_pickle( pkl=df, fname=os.path.join( args.dsPath, f'{log_file_name}.dump') )
 
 def run():
-	make_folder(folder_name=datasets_path)
+	make_folder(folder_name=args.dsPath)
 	# all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
 	"""	
 	# run single log file	
