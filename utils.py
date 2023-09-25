@@ -132,10 +132,10 @@ usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket',
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
 # datasets_path = os.path.join( NLF_DATASET_PATH, f"datasets" )
-dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
+# dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
 # dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs_nikeXY" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
+# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
 
 # pd.set_option('display.max_rows', None)
 # pd.set_option('display.max_columns', None)

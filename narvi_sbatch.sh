@@ -8,8 +8,7 @@
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-# # # # # # SBATCH --array=3,393
-#SBATCH --array=0-1096
+#SBATCH --array=0-1096%10
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"
@@ -31,11 +30,12 @@ user="`whoami`"
 if [ $user == 'alijani' ]; then
 	echo ">> Using Narvi conda env from Anaconda..."
 	source activate py39
-	logFiles=(/lustre/sgn-data/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log) #TODO: must be adjusted!
+	logFiles=(/lustre/sgn-data/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
 	dataset_path="/lustre/sgn-data/Nationalbiblioteket/datasets"
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
 	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
+	dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
 fi
 
 echo "Q[$SLURM_ARRAY_TASK_ID]: ${logFiles[$SLURM_ARRAY_TASK_ID]}"

@@ -11,7 +11,7 @@
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=699-729%6
+#SBATCH --array=0-1096%10
 # # # # array: 730-1095 -> useless, no valuable information
 
 stars=$(printf '%*s' 100 '')
@@ -34,13 +34,15 @@ user="`whoami`"
 if [ $user == 'alijani' ]; then
 	source activate py39
 	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log) #TODO: must be adjusted!
+	dataset_path="/lustre/sgn-data/Nationalbiblioteket/datasets"
 elif [ $user == 'alijanif' ]; then
 	echo ">> Using Puhti Conda Environment..."
 	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
+	dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
 fi
 
 echo "Q[$SLURM_ARRAY_TASK_ID]: ${logFiles[$SLURM_ARRAY_TASK_ID]}"
-python -u information_retrieval.py --saveDF True --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]}
+python -u information_retrieval.py --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]} --dsPath $dataset_path
 
 done_txt="SLURM JOB ENDED @ `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
