@@ -144,7 +144,7 @@ def get_cBoWs(dframe: pd.DataFrame, fprefix: str="df_concat", lm: str="stanza", 
 	st_t = time.time()
 	# Initialize TFIDF # not time consuming...
 	tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
-															min_df=3, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold 
+															min_df=5, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold 
 															max_df=0.5, #ignore terms that have doc_freq strictly higher than the given threshold [proportion of documents]
 														)
 

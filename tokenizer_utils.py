@@ -104,7 +104,8 @@ with HiddenPrints():
 													'qamd', 'qamdd', 'saacl', 'saadf', 'zaa', 'zaan', 'zab', 'zad', 'zag', 'zai', 'zahn', 'aikx', 'ail', 'ailcimmc', 'ailcs', 'ailclte', 'ailf', 'ailifci', 'aäh', 'aår',
 													'aßtx', 'aßa', 'aßctl', 'aßfn', 'aßj', 'aßl', 'aßmt', 'aßo', 'aßs', 'aßß', 'aßä', 'aäa', 'aäaa', 'aäaau', 'aäak', 'aäaw', 'aäbi', 'aäci', 'aäd', 'aäel', 'aäe', 'aåss',
 													'aäi', 'aäj', 'aälj', 'aän', 'aär', 'aäs', 'aät', 'aäu', 'aäv', 'aäy', 'aäö', 'aåaana', 'aåad', 'aåan', 'aådt', 'aåe', 'aåg', 'aåia', 'aågo', 'aål', 'aån', 'aåmp', 'aås',
-													'aöf', 'aöjr', 'aöm', 'aön', 'aöoia', 'aöpenhamn', 'aöo', 'aöv', 'aöä', 'hing', 'hingfr', 'lihlm', 'lihn', 'prah',
+													'aöf', 'aöjr', 'aöm', 'aön', 'aöoia', 'aöpenhamn', 'aöo', 'aöv', 'aöä', 'hing', 'hingfr', 'lihlm', 'lihn', 'prah', 'vtk', 'wib', 'pif', 'puu', 'mtr', 'luutn', 'luu', 'ino',
+													'aafa', 'aafi', 'adreß', 'aßi', 'cymecxßyexb', 'deß', 'deßz', 'deßzutom', 'dfi', 'dfl', 'dfs', 'dft', 'dgr', 'dha', 'dhe', 'dhm', 'dif', 'dij', 
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))

@@ -9,7 +9,7 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 # # # # # # SBATCH --array=3,393
-#SBATCH --array=30-36
+#SBATCH --array=0-1096
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"

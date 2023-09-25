@@ -121,6 +121,13 @@ def single_query(file_="", ts=None, browser_show=False):
 
 def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 	print(f"Query Log File: {file_}")
+	# check if queryLogFile.dump already exist: return
+	log_file_name = file_[file_.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
+	if os.path.isfile(os.path.join(datasets_path, f"{log_file_name}.dump")):
+		print(f"{os.path.join(datasets_path, log_file_name+'.dump')} already exist, exiting...")
+		return
+
+	
 	st_t = time.time()
 	df = get_df_pseudonymized_logs(infile=file_, TIMESTAMP=ts)
 	print(f"DF_init Loaded in: {time.time()-st_t:.3f} sec | {df.shape}".center(100, " "))
@@ -178,8 +185,7 @@ def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 	print("-"*100)
 
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
-	log_file_name = log_file_name = file_[file_.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
-
+	
 	if args.saveDF:
 		save_pickle( pkl=df, fname=os.path.join( datasets_path, f'{log_file_name}.dump') )
 
@@ -192,10 +198,10 @@ def run():
 							#browser_show=True, 
 							#ts=["23:52:00", "23:59:59"],
 							)
-	"""
+	"""		
 	# run all log files using array in batch
 	all_queries(
-		file_=args.queryLogFile,
+		file=args.queryLogFile,
 		#ts=["14:30:00", "14:56:59"],
 	)
 
