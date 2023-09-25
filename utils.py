@@ -21,6 +21,7 @@ import string
 import time
 import logging
 import functools
+from pandas.api.types import is_datetime64_any_dtype
 
 import dask
 import numpy as np
@@ -558,8 +559,8 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print("<>"*50)
 	# print(df.timestamp.dtypes, df.prev_time.dtypes, pd.Timestamp(0).tzinfo)
 
-	assert pdtypes.is_datetime64_any_dtype(df['prev_time']), f"prev_time dtype: {df.prev_time.dtypes}"
-	assert pdtypes.is_datetime64_any_dtype(df['timestamp']), f"timestamp dtype: {df.timestamp.dtypes}"
+	assert is_datetime64_any_dtype(df['prev_time']), f"prev_time dtype: {df.prev_time.dtypes}"
+	assert is_datetime64_any_dtype(df['timestamp']), f"timestamp dtype: {df.timestamp.dtypes}"
 	
 	# print("<>"*50)
 	# print(df[["user_ip", "timestamp", "prev_time"]].head(50))
