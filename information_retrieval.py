@@ -6,7 +6,7 @@ from utils import *
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('-qlf', '--queryLogFile', required=True, type=str, help="Query log file") # smallest
-parser.add_argument('--saveDF', default=False, type=bool, help='Save DataFrame in directory | Def: False')
+parser.add_argument('--saveDF', default=None, type=str, help='Save DataFrame in directory | Def: None')
 
 args = parser.parse_args()
 
