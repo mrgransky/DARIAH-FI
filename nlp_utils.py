@@ -135,12 +135,12 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 	print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]", end="\t")
 	pst = time.time()
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
-	print(f"=> {f'Got {len(preprocessed_docs)} Document(s)':<30}Elapsed_t: {time.time()-pst:.3f} s")
+	print(f"=> {f'Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created!':<30}Elapsed_t: {time.time()-pst:.1f} s")
 	
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
 	
-	print(f"Training TFIDF vectorizer [min_df: {MIN_DF} & max_df: {MAX_DF}] for {len(preprocessed_docs)} raw docs, might take a while...".center(160, " "))
+	print(f"Training TFIDF vectorizer [min_df: {MIN_DF} & max_df: {MAX_DF}] for {len(preprocessed_docs)} raw corpus, might take a while...".center(160, " "))
 	st_t = time.time()
 	################################################################################################################################################################
 	# max_df is used for removing terms that appear too frequently, also known as "corpus-specific stop words". For example:
@@ -165,19 +165,19 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 															dtype="float32",
 															use_idf=True, # Enable inverse-document-frequency reweighting. If False, idf(t) = 1.
 															max_features=None, # retreive all features
+															max_df=MAX_DF, # ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
 															min_df=MIN_DF, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold # removing terms appearing too infrequently
-															max_df=MAX_DF, #ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
 														)
 
 	# Fit TFIDF # TIME CONSUMING:
-	tfidf_matrix_rf = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
+	tfidf_matrix = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 
 	# del raw_docs_list
 	gc.collect()
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 
 	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
-	save_pickle(pkl=tfidf_matrix_rf, fname=tfidf_rf_matrix_fpath)
+	save_pickle(pkl=tfidf_matrix, fname=tfidf_rf_matrix_fpath)
 	save_vocab(	vb=BOWs,
 							fname=os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 						)
@@ -190,7 +190,7 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 	#	   		example   is         simple     this	
 	# 0  		0.377964  0.377964   0.377964   0.377964
 
-	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)} | TFIDF: {tfidf_matrix_rf.shape}")
-	assert len(BOWs) == tfidf_matrix_rf.shape[1], f"size of vocabs: {len(BoWs)} != tfidf_matrix_rf: {tfidf_matrix_rf.shape[1]}"
+	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)} | TFIDF: {tfidf_matrix.shape}")
+	assert len(BOWs) == tfidf_matrix.shape[1], f"size of vocabs: {len(BoWs)} != tfidf_matrix: {tfidf_matrix.shape[1]}"
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs

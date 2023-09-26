@@ -24,8 +24,8 @@ parser.add_argument('--qphrase', default="Juha Sipilä", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
-parser.add_argument('--minDocFreq', default=10, type=int)
-parser.add_argument('--maxDocFreq', default=0.8, type=float)
+parser.add_argument('--minDocFreq', default=3, type=int)
+parser.add_argument('--maxDocFreq', default=0.95, type=float)
 
 args = parser.parse_args()
 # how to run:
@@ -576,11 +576,9 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR, MIN_DF=args.minDocFreq, MAX_DF=args.maxDocFreq)
 
 	# print(f"USERs DF".center(100, ' '))
-	df_inp = df_inp.dropna(axis=1, how='all') #TODO: this must be transfered before get_cBoWs()
+	df_inp = df_inp.dropna(axis=1, how='all')
 	try:
 		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
-	# except Exception as e:
-	# 	logging.exception(e)
 	except Exception as e:
 		print(f"<!> {e}")
 		df_user = get_user_df(dframe=df_inp, bow=BoWs)
@@ -593,15 +591,9 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
-	# except Exception as e:
-	# 	logging.exception(e)
 	except Exception as e:
 		print(f"<!> {e}")
 		usr_tk_spm = get_sparse_matrix(df=df_user[["user_ip", "user_token_interest"]], vb=BoWs)
-
-	if normalize_sp_mtrx:
-		#usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=0) # l2 normalize by column -> items
-		usr_tk_spm = normalize(usr_tk_spm, norm="l2", axis=1) # l2 normalize by rows -> users
 		
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
@@ -621,15 +613,19 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
-	print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
-	for iTK, vTK in enumerate(query_phrase_tk):
-		if BoWs.get(vTK):
-			users_names, users_values_total, users_values_separated = get_users_byTK(usr_tk_spm, df_user, BoWs, token=vTK)
-			plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-			plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	# print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, " "))
+	# for iTK, vTK in enumerate(query_phrase_tk):
+	# 	if BoWs.get(vTK):
+	# 		users_names, users_values_total, users_values_separated = get_users_byTK(usr_tk_spm, df_user, BoWs, token=vTK)
+	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
+	# 		plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	#cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim, cos_sim_idx = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+
+	if not torch.cuda.is_available():
+		assert cos_sim.all() == cos_sim_f.all(), f"sklearn cs != Faiss cs"
+		assert cos_sim_idx.all() == cos_sim_idx_f.all(), f"sklearn cs_idx != Faiss cs_idx"	
 
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)} "

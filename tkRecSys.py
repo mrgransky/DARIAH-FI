@@ -864,6 +864,7 @@ def get_users_tokens_ddf():
 	return user_token_ddf_concat 
 
 def main():
+	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	global fprefix, RES_DIR
 	fprefix = f"concatinated_dataframes"
 	RES_DIR = make_result_dir(infile=fprefix)
@@ -913,10 +914,11 @@ def main():
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
-	except:
+	except Exception as e:
+		print(f"<!> {e}")
 		sp_mat_rf = get_sparse_matrix(user_token_df)
 
-	plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)

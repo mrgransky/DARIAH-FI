@@ -111,7 +111,17 @@ with HiddenPrints():
 													'edd', 'edg', 'edh', 'edlt', 'edlv', 'edm', 'edsv', 'eeh', 'eei', 'eeii', 'eek', 'eel', 'eem', 'eer', 'ees', 'eet', 'eeu', 'eey', 'efa', 'efe', 'eff', 'efi', 'efo', 'efr',
 													'eft', 'efu', 'efä', 'efö', 'ega', 'ege', 'egi', 'egl', 'egn', 'egr', 'ehd', 'ehe', 'ehkk', 'ehl', 'ehn', 'ehr', 'eht', 'ehu', 'ehy', 'eia', 'eie', 'eif', 'eig', 'eii',
 													'eik', 'eil', 'eim', 'einj', 'eip', 'eir', 'eiy', 'eje', 'ejo', 'ejs', 'ejt', 'eju', 'eka', 'ekr', 'ekt', 'ekv', 'eky', 'elc', 'elel', 'eler', 'elfs', 'elj', 'elm', 'eln',
-													'elt', 'elv', 'ely', 'elö', 'emb', 'eme', 'emd', 'emt', 'emu', 'strn', 'sts', 'stsi', 'stst', 'sttj', 'sttm', 'stu',
+													'elt', 'elv', 'ely', 'elö', 'emb', 'eme', 'emd', 'emt', 'emu', 'strn', 'sts', 'stsi', 'stst', 'sttj', 'sttm', 'stu', 'nli', 'smf', 'slßo', 'sna', 'snl', 'sni', 'snk',
+													'isswi', 'issw', 'ivi', 'vksl', 'osv', 'ley', 'lfa', 'lfi', 'lfl', 'lfs', 'lft', 'lgs', 'lha', 'lho', 'lhs', 'sns', 'snt', 'snu', 'sntl', 'sof', 'sot',
+													'sotn', 'sowu', 'spee', 'spp', 'spr', 'sps', 'spt', 'sra', 'srbl', 'sri', 'srk', 'sro', 'srs', 'srä', 'ssa', 'ssb', 'sse', 'ssi', 'ssia', 'ssk', 'ssl', 'ssn', 'sso',
+													'sson', 'ssr', 'sst', 'ssta', 'sstl', 'ssu', 'ssw', 'stb', 'stc', 'stbk', 'stf', 'stg', 'sti', 'sth', 'stj', 'stl', 'stn', 'ablgt', 'abs', 'ack', 'acc', 'aca',
+													'stta', 'stte', 'stti', 'stto', 'sttu', 'stty', 'sttä', 'sttö', 'suc', 'sud', 'sug', 'aamn', 'aar', 'abb', 'abc', 'abd', 'aba', 'abn', 'abi', 'abl', 'ablg', 'abt',
+													'abu', 'ach', 'act', 'adj', 'afd', 'aff', 'afe', 'afd', 'afi', 'afl', 'afm', 'agd', 'afv', 'aftr', 'agi', 'agr', 'agn', 'agt', 'ahd', 'aha', 'aht', 'aif', 'aii',
+													'aihi', 'aiia', 'aij', 'aik', 'ais', 'aiu', 'aix', 'ajä', 'aja', 'aje', 'aji', 'anj', 'anm', 'anr', 'anp', 'öfv', 'öfr', 'åsg', 'ång', 'åkr', 'äär', 'äug',
+													'ajo', 'akccp', 'akl', 'akn', 'ako', 'alb', 'ald', 'alg', 'alh', 'allg', 'alm', 'alo', 'alw', 'alv', 'ame', 'amn', 'amä', 'amy', 'ääu', 'åby', 'åbr', 'ärd',
+													'ängf', 'zsa', 'zta', 'ztg', 'yty', 'yva', 'yvp', 'yys', 'yyt', 'ysy', 'yrn', 'yry', 'srr', 'srm', 'yrj', 'ypy', 'yni', 'ynt', 'ymy', 'ylt', 'ylh', 'yky', 'yii',
+													'yjm', 'xbo', 'xii', 'xio', 'xioo', 'xiv', 'xll', 'xlo', 'xoo', 'xsi', 'xso', 'xvi', 'xää', 'wuu', 'wuotcc', 'wuot', 'wuotc', 'wro', 'wri', 'wsa', 'wsta', 'wui',
+													'wpk', 'wol', 'wll', 'wlo', 'wmo', 'wmm', 'wno', 'wio', 'wim', 'wij', 'wiin', 'wii', 'wih', 'wid', 
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
