@@ -45,7 +45,7 @@ fi
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
-python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
 done_txt="SLURM JOB ENDED AT: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
