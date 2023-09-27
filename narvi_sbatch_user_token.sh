@@ -37,10 +37,10 @@ files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
-for mx in 0.95 0.85 0.75 0.55
+for mx in 0.9 0.8 0.7 0.6 0.5
 do
 	echo "max doc_freq: $mx"
-	for mn in 50 25 20 10 3
+	for mn in 30 15 10 5
 	do
 		echo "min doc_freq: $mn"
 		ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
