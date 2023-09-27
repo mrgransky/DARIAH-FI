@@ -881,10 +881,11 @@ def main():
 	# print(user_token_df)
 	# print("<>"*50)
 	print(user_token_df.head(50))
-	
+	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-	print(f">> {len(zero_cols)} column(s) with zero values: {zero_cols}")
-	assert len(zero_cols)!=0, f"<!> Error! There exist {len(zero_cols)} column(s) with zero values!"
+	print(f"< Sanity Check > Found {len(zero_cols)} column(s) with zero values: {zero_cols}", end="\t")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with zero values!"
 	print("<>"*50)
 	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
