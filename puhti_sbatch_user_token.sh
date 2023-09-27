@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_several_min_max_doc_freq
+#SBATCH --job-name=nikeQ_min_max_df_one
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=30G
+#SBATCH --mem=29G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
@@ -35,10 +35,12 @@ files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 # ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-for mx in 0.95 0.85 0.75 0.55
+# for mx in 0.95 0.85 0.75 0.55
+for mx in 1.0
 do
 	echo "max doc_freq: $mx"
-	for mn in 50 25 20 10 3
+	# for mn in 50 25 20 10 3
+	for mn in 1
 	do
 		echo "min doc_freq: $mn"
 		ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
