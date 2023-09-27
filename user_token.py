@@ -587,12 +587,6 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(df_user.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
 
-	# st_t = time.time()
-	# zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-	# print(f"< Sanity Check > Found {len(zero_cols)} column(s) with zero values: {zero_cols}", end="\t")
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
-	# assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with zero values!"
-	# print("<>"*50)
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
