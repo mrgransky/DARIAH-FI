@@ -41,7 +41,7 @@ do
 	for mn in 5 7 10 15 25
 	do
 		echo "min doc_freq: $mn"
-		ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_xy_$mx_max_df_$mn_min_df"
+		ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_xy_${mx}_max_df_${mn}_min_df"
 		echo "outDIR: $ddir"
 		# python -u user_token.py \
 		# 				--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
