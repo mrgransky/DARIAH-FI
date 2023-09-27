@@ -712,7 +712,6 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 
 def get_users_tokens_df():
 	print(f"Pandas DataFrame".center(150, " "))
-	
 	# BoWs_files = natsorted( glob.glob( args.dfsPath + "/nike" + "*.json" ) )
 	# print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
 	# nTOTAL_BoWs: int = 0
@@ -776,6 +775,11 @@ def get_users_tokens_df():
 																					)
 	save_pickle(pkl=user_token_df_concat, fname=user_token_df_concat_fname)
 	# gc.collect()
+	# save BoWs:
+	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
+							fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
+						)
+
 	return user_token_df_concat 
 
 def get_users_tokens_ddf():
@@ -916,6 +920,8 @@ def main():
 
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
+
+
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
