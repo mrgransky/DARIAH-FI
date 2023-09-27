@@ -882,7 +882,7 @@ def main():
 	# print("<>"*50)
 	print(user_token_df.head(50))
 	
-	zero_cols = [ col for col, is_zero in ((pkl == 0).sum() == user_token_df.shape[0]).items() if is_zero ]
+	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
 	print(f">> {len(zero_cols)} column(s) with zero values: {zero_cols}")
 	assert len(zero_cols)!=0, f"<!> Error! There exist {len(zero_cols)} column(s) with zero values!"
 	print("<>"*50)
