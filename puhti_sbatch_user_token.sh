@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeQ_several_min_max_doc_freq
-#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
+#SBATCH --job-name=nikeQ_several_min_max_doc_freq
+#SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1

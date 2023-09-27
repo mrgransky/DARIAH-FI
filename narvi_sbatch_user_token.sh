@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=nikeXY
+#SBATCH --job-name=nikeXY_several_min_max_doc_freq
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --mem=64G
+#SBATCH --mem=32G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=gpu
@@ -13,8 +13,9 @@
 #SBATCH --nodes=1
 #SBATCH --array=730-731
 
+user="`whoami`"
 stars=$(printf '%*s' 100 '')
-txt="SLURM JOB STARTED @ `date`"
+txt="$user began Slurm job: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
@@ -28,24 +29,32 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
-user="`whoami`"
 
-if [ $user == 'alijani' ]; then
-	echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
-	source activate py39
-	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
-elif [ $user == 'alijanif' ]; then
-	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
-	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-fi
+echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
+source activate py39
+files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
+# ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
-# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+for mx in 0.95 0.85 0.75 0.55
+do
+	echo "max doc_freq: $mx"
+	for mn in 50 25 20 10 3
+	do
+		echo "min doc_freq: $mn"
+		ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
+		echo "outDIR: $ddir"
+		python -u user_token.py \
+						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
+						--outDIR $ddir \
+						--lmMethod 'stanza' \
+						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+						--maxDocFreq $mx \
+						--minDocFreq $mn
+	done
+done
 
-done_txt="SLURM JOB ENDED @ `date`"
+done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
 echo "${stars// /*}"
