@@ -1,21 +1,22 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J nikeQ
-#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
+#SBATCH --job-name=df_concat_XY
+#SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=30G
-#SBATCH --partition=gpu
+#SBATCH --mem=230G
+#SBATCH --partition=small
 #SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:v100:1
-#SBATCH --array=81-82 ############## PAY ATTENTION TO RUN user_token.py ############## 
+# # # # SBATCH --gres=gpu:v100:1
+# # # # SBATCH --array=81-82
 
+user="`whoami`"
 stars=$(printf '%*s' 100 '')
-txt="SLURM JOB STARTED @ `date`"
+txt="$user began Slurm job: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
@@ -29,24 +30,11 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
-user="`whoami`"
+echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY_NEW" ########## must be adjusted! ##########
 
-if [ $user == 'alijani' ]; then
-	echo ">> Using Narvi conda env from Anaconda..."
-	source activate py39
-	ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
-	files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-elif [ $user == 'alijanif' ]; then
-	echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-	ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY_NEW"
-	files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-fi
+python -u tkRecSys.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
-echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-python -u user_token.py --inputDF ${files[$SLURM_ARRAY_TASK_ID]} --outDIR $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
-
-# python -u tkRecSys.py --dsPath $ddir --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
-
-done_txt="SLURM JOB ENDED AT: `date`"
+done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
 echo "${stars// /*}"

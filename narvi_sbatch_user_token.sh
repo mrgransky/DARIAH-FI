@@ -13,6 +13,7 @@
 #SBATCH --nodes=1
 # # # # SBATCH --array=730-731 # originall case! xy
 #SBATCH --array=628-629
+
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
 txt="$user began Slurm job: `date`"

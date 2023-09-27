@@ -132,10 +132,10 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 	raw_docs_list = list(set(raw_docs_list))
 	# print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
-	print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]", end="\t")
+	print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR] ...")
 	pst = time.time()
 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
-	print(f"=> {f'Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created!':<30}Elapsed_t: {time.time()-pst:.1f} s")
+	print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} sec")
 	
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")

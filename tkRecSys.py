@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																)
 
 parser.add_argument('-d', 
-										'--dsPath', # only available small df_concat: /scratch/project_2004072/Nationalbiblioteket/dataframes_tmp/
+										'--dfsPath', # only available small df_concat: /scratch/project_2004072/Nationalbiblioteket/dataframes_tmp/
 										type=str, 
 										required=True,
 										help='Path to directory of df_concat',
@@ -22,7 +22,7 @@ args = parser.parse_args()
 
 fprefix = "FILE_PREFIXname_TBR"
 #RES_DIR = make_result_dir(infile=fprefix)
-make_folder(folder_name=args.dsPath)
+make_folder(folder_name=args.dfsPath)
 MODULE=60
 
 # list of all weights:
@@ -172,7 +172,7 @@ def get_sparse_matrix(df):
 				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
 			)
 	print("-"*110)
-	sp_mat_user_token_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
+	sp_mat_user_token_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
 	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
 	return sparse_matrix
 
@@ -713,7 +713,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 def get_users_tokens_df():
 	print(f"Pandas DataFrame".center(150, " "))
 	
-	# BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
+	# BoWs_files = natsorted( glob.glob( args.dfsPath + "/nike" + "*.json" ) )
 	# print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
 	# nTOTAL_BoWs: int = 0
 	# for file_ in BoWs_files:
@@ -726,7 +726,7 @@ def get_users_tokens_df():
 	# # print("-"*80)
 	# gc.collect()
 
-	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
+	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"Found {len(user_df_files)} user_df files:")
 	for f in user_df_files:
 		print(f)
@@ -734,7 +734,7 @@ def get_users_tokens_df():
 	# gc.collect()
 
 	try:
-		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
+		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
 	except Exception as e:
 		print(f"<!> Load pkl <pDFs list> {e}")
 		users_tokens_dfs = list()
@@ -752,7 +752,7 @@ def get_users_tokens_df():
 			users_tokens_dfs.append(user_token_df)
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 		gc.collect()
-		usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_dfs", end="\t")
@@ -769,7 +769,7 @@ def get_users_tokens_df():
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
 	
-	user_token_df_concat_fname = os.path.join(args.dsPath, 
+	user_token_df_concat_fname = os.path.join(args.dfsPath, 
 																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
 																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
@@ -781,7 +781,7 @@ def get_users_tokens_df():
 def get_users_tokens_ddf():
 	print(f"Dask DataFrame".center(150, " "))
 
-	# BoWs_files = natsorted( glob.glob( args.dsPath + "/nike" + "*.json" ) )
+	# BoWs_files = natsorted( glob.glob( args.dfsPath + "/nike" + "*.json" ) )
 	# print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
 	# nTOTAL_BoWs: int = 0
 	# for file_ in BoWs_files:
@@ -795,7 +795,7 @@ def get_users_tokens_ddf():
 	# gc.collect()
 
 
-	user_df_files = natsorted( glob.glob( args.dsPath+'/'+'*_user_df_*_BoWs.gz' ) )
+	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"Found {len(user_df_files)} user_df files:")
 	for f in user_df_files:
 		print(f)
@@ -803,7 +803,7 @@ def get_users_tokens_ddf():
 	# gc.collect()
 
 	try:
-		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
+		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
 	except Exception as e:
 		print(f"<!> Load pkl <pDFs list> {e}")
 		users_tokens_dfs = list()
@@ -821,7 +821,7 @@ def get_users_tokens_ddf():
 			users_tokens_dfs.append(user_token_df)
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 		gc.collect()
-		usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	# users_tokens_dfs = list()
@@ -839,7 +839,7 @@ def get_users_tokens_ddf():
 	# 	users_tokens_dfs.append(user_token_df)
 	# print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
 	# gc.collect()
-	# usr_tk_pdfs_list_fname = os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+	# usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
 	# save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	print(f"[DASK] Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column", end="\t")
@@ -851,7 +851,7 @@ def get_users_tokens_ddf():
 	gc.collect()
 
 	# TODO: investigate with user_token_ddf_concat.index.size.compute() for nUSRs
-	user_token_ddf_concat_fname = os.path.join(args.dsPath, 
+	user_token_ddf_concat_fname = os.path.join(args.dfsPath, 
 																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_"
 																						f"XXX_nUSRs_x_"
 																						f"{len(user_token_ddf_concat.columns)}_nTOKs.parquet"
@@ -873,7 +873,7 @@ def main():
 	topK=args.topTKs
 	
 	try:
-		user_token_df = load_pickle( fpath=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	except:
 		user_token_df = get_users_tokens_df()
 
@@ -882,12 +882,12 @@ def main():
 	# print("<>"*50)
 	print(user_token_df.head(50))
 	print("<>"*50)
-	# print( glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
+	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
 	try:
-		print(f"Trying to read pq files of {glob.glob(args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
+		print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
 		st_pq = time.time()
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
 		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
 	except Exception as e:
 		print(f"<!> [DASK] <read_parquet>\n{e}")
@@ -913,7 +913,7 @@ def main():
 	print(f"|BoWs|: {len(BoWs)}")
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(args.dsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
 		sp_mat_rf = get_sparse_matrix(user_token_df)
