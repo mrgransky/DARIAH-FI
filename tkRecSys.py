@@ -774,12 +774,9 @@ def get_users_tokens_df():
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																					)
 	save_pickle(pkl=user_token_df_concat, fname=user_token_df_concat_fname)
-	# gc.collect()
-	# save BoWs:
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
 							fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
 						)
-
 	return user_token_df_concat 
 
 def get_users_tokens_ddf():
@@ -885,11 +882,13 @@ def main():
 	# print(user_token_df)
 	# print("<>"*50)
 	print(user_token_df.head(50))
+
 	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
 	print(f"< Sanity Check > Found {len(zero_cols)} column(s) with zero values: {zero_cols}", end="\t")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with zero values!"
+
 	print("<>"*50)
 	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
@@ -916,12 +915,8 @@ def main():
 	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
 	print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
 	
-	# return
-
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
-
-
 
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
