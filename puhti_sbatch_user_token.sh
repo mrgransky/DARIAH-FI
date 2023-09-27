@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_test
+#SBATCH --job-name=nikeQ_dependent
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -62,13 +62,13 @@ do
 	echo "max doc_freq: $mx and min doc_freq: $mn"
 	ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
 	echo "outDIR: $ddir"
-	# python -u user_token.py \
-	# 				--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
-	# 				--outDIR $ddir \
-	# 				--lmMethod 'stanza' \
-	# 				--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-	# 				--maxDocFreq $mx \
-	# 				--minDocFreq $mn
+	python -u user_token.py \
+					--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
+					--outDIR $ddir \
+					--lmMethod 'stanza' \
+					--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+					--maxDocFreq $mx \
+					--minDocFreq $mn
 done
 
 

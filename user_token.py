@@ -573,7 +573,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		BoWs = load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
-		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR, MIN_DF=args.minDocFreq, MAX_DF=args.maxDocFreq)
+		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR, MIN_DF=int(args.minDocFreq), MAX_DF=float(args.maxDocFreq))
 
 	# print(f"USERs DF".center(100, ' '))
 	df_inp = df_inp.dropna(axis=1, how='all')
