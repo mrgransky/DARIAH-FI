@@ -58,7 +58,7 @@ echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
 for mx in 0.95 0.85 0.75 0.55
 do
-	mn=$(($mx * 10))
+	mn=$((mx * 10))
 	echo "max doc_freq: $mx and min doc_freq: $mn"
 	ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
 	echo "outDIR: $ddir"
