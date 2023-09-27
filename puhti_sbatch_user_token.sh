@@ -35,25 +35,42 @@ files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 # ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-# for mx in 0.95 0.85 0.75 0.55
-for mx in 1.0
+# # for mx in 0.95 0.85 0.75 0.55
+# for mx in 1.0
+# do
+# 	echo "max doc_freq: $mx"
+# 	# for mn in 50 25 20 10 3
+# 	for mn in 1
+# 	do
+# 		echo "min doc_freq: $mn"
+# 		ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
+# 		echo "outDIR: $ddir"
+# 		python -u user_token.py \
+# 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
+# 						--outDIR $ddir \
+# 						--lmMethod 'stanza' \
+# 						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+# 						--maxDocFreq $mx \
+# 						--minDocFreq $mn
+# 	done
+# done
+
+
+for mx in 0.95 0.85 0.75 0.55
 do
-	echo "max doc_freq: $mx"
-	# for mn in 50 25 20 10 3
-	for mn in 1
-	do
-		echo "min doc_freq: $mn"
-		ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
-		echo "outDIR: $ddir"
-		python -u user_token.py \
-						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
-						--outDIR $ddir \
-						--lmMethod 'stanza' \
-						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-						--maxDocFreq $mx \
-						--minDocFreq $mn
-	done
+	mn=$(($mx * 10))
+	echo "max doc_freq: $mx and min doc_freq: $mn"
+	ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
+	echo "outDIR: $ddir"
+	# python -u user_token.py \
+	# 				--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
+	# 				--outDIR $ddir \
+	# 				--lmMethod 'stanza' \
+	# 				--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+	# 				--maxDocFreq $mx \
+	# 				--minDocFreq $mn
 done
+
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
