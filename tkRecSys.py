@@ -13,7 +13,7 @@ parser.add_argument('-d',
 										help='Path to directory of df_concat',
 									)
 parser.add_argument('-q', '--qphrase', default="Helsingin Pörssi ja Suomen Pankki", type=str)
-parser.add_argument('--lmMethod', default="stanza", type=str)
+parser.add_argument('-lm', '--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
@@ -881,6 +881,10 @@ def main():
 	# print(user_token_df)
 	# print("<>"*50)
 	print(user_token_df.head(50))
+	
+	zero_cols = [ col for col, is_zero in ((pkl == 0).sum() == user_token_df.shape[0]).items() if is_zero ]
+	print(f">> {len(zero_cols)} column(s) with zero values: {zero_cols}")
+	assert len(zero_cols)!=0, f"<!> Error! There exist {len(zero_cols)} column(s) with zero values!"
 	print("<>"*50)
 	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
