@@ -591,7 +591,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(df_user.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
 
-	with open("/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/user_token_interest_large.txt", "w", encoding="utf-8") as f:
+	with open(os.path.join(args.outDIR, f"{fprefix}_usr_tk_interest_{len(BoWs)}.txt"), "w", encoding="utf-8") as f:
 		for i in df_user.index:
 			f.write(f"idx: {i} {df_user['user_ip'][i]}")
 			f.write("\n")
