@@ -593,7 +593,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 
 	with open("/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/user_token_interest.txt", "w", encoding="utf-8") as f:
 		for i, v in enumerate(df_user["user_token_interest"]):
-			f.write(f"index: {i}")
+			f.write(f"user_index: {i}")
 			f.write("\n")
 			f.write(str(v))
 			f.write("\n")
