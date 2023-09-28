@@ -598,7 +598,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 			f.write(str(v))
 			f.write("\n")
 			f.write("\n")
-		f.write()
+		# f.write()
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
