@@ -31,9 +31,10 @@ args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-RES_DIR = make_result_dir(infile=args.inputDF)
-fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+# RES_DIR = make_result_dir(infile=args.inputDF)
 
+fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
+RES_DIR = make_result_dir(infile=fprefix)
 make_folder(folder_name=args.outDIR)
 MODULE=60
 
