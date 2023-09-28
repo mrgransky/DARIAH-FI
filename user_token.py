@@ -31,28 +31,10 @@ args = parser.parse_args()
 # how to run:
 # python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
 
-# RES_DIR = make_result_dir(infile=args.inputDF)
-
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
 make_folder(folder_name=args.outDIR)
 MODULE=60
-
-# # list of all weights:
-# weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
-# weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
-# weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
-# weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
-# weightContentPTAppearance:float = 0.005	# Did not consider initiially!
-# weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
-
-# w_list:List[float] = [weightQueryAppearance, 
-# 											weightSnippetHWAppearance,
-# 											weightSnippetAppearance,
-# 											weightContentHWAppearance,
-# 											weightContentPTAppearance,
-# 											weightContentAppearance,
-# 										]
 
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
@@ -633,7 +615,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# 		plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim_f, cos_sim_idx = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
 	if not torch.cuda.is_available():
 		assert cos_sim.all() == cos_sim_f.all(), f"sklearn cs != Faiss cs"
