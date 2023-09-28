@@ -406,7 +406,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#nwp_content_lemmas_all_list = [f"nwp_content_{i}" for i in range(len(users_list))]
 	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
-	del df_preprocessed, dframe
+	# del df_preprocessed, dframe
 	gc.collect()
 
 	user_df = pd.DataFrame(list(zip(users_list, 
