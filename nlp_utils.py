@@ -140,7 +140,7 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
 	
-	print(f"Training TFIDF vectorizer [min_df: {MIN_DF} & max_df: {MAX_DF}] for {len(preprocessed_docs)} raw corpus, might take a while...".center(160, " "))
+	print(f"Training TFIDF vectorizer [min_df[int]: {MIN_DF} & max_df[float]: {MAX_DF}] for {len(preprocessed_docs)} raw corpus, might take a while...".center(160, " "))
 	st_t = time.time()
 	################################################################################################################################################################
 	# max_df is used for removing terms that appear too frequently, also known as "corpus-specific stop words". For example:

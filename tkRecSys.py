@@ -749,7 +749,7 @@ def get_users_tokens_df():
 			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 			print(f"Elapsed_t: {time.time()-st_t:.2f} s  | {type(user_token_df)} | {user_token_df.shape}")
 
-			# sanity check for nonzeros in each cols:
+			# sanity check for nonzeros for cols:
 			st_t = time.time()
 			zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
 			print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
@@ -889,7 +889,7 @@ def main():
 	print(f"USER_TOKEN pDF: {user_token_df.shape}")
 	# print(user_token_df)
 	# print("<>"*50)
-	print(user_token_df.head(50))
+	# print(user_token_df.head(50))
 
 	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
