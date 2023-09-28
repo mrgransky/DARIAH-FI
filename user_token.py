@@ -567,6 +567,10 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
+	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
+	print( df_inp.info(memory_usage="deep", verbose=True) )
+	print(f"#"*100)
+
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
 		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vec.gz"))
@@ -586,8 +590,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f"USER_DF (detailed): {type(df_user)} | {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
-
-
+	
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
