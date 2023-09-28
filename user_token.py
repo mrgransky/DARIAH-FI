@@ -595,7 +595,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		for i, v in enumerate(df_user["user_token_interest"]):
 			f.write(f"index: {i}")
 			f.write("\n")
-			f.write(v)
+			f.write(str(v))
 			f.write("\n")
 			f.write("\n")
 		f.write()
