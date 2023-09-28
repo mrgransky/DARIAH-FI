@@ -301,7 +301,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	plt.clf()
 	plt.close(f)
 
-def get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df:pd.DataFrame, N:int=3):
+def get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df:pd.DataFrame, N: int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	print(f"\n< {N} > user(s) with max CS:", end=" ")
@@ -336,9 +336,9 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 	#return
 
-def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=25, norm_sp: bool=False):
+def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=25, norm_sp: bool=False, N: int=3):
 	sp_type = "Normalized" if norm_sp else "Original"
-	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N)
 	nTokens = len(users_tokens_df.columns)
 	for _, usr in enumerate(nUsers_with_max_cosine):
 		f, ax = plt.subplots()

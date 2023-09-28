@@ -935,18 +935,41 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 
 	#return
 
-def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, norm_sp: bool=False):
-	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
+def plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, topTKs: int=25, norm_sp: bool=False, N: int=3):
+	sp_type = "Normalized" if norm_sp else "Original"
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N)
+	nTokens = len(users_tokens_df.columns)
 	for _, usr in enumerate(nUsers_with_max_cosine):
-		tokens_names, tokens_values_total, tokens_values_separated = get_tokens_byUSR(sp_mtrx, users_tokens_df, bow, user=usr)
-		plot_tokens_by(	userIP=usr, 
-										tks_name=tokens_names, 
-										tks_value_all=tokens_values_total, 
-										tks_value_separated=tokens_values_separated, 
-										topTKs=20,
-										bow=bow,
-										norm_sp=norm_sp,
+		f, ax = plt.subplots()
+		utDF_s = users_tokens_df.loc[usr, :].sort_values(ascending=False)
+		utDF_s_positives = utDF_s[utDF_s > 0]
+		topTKs = len(utDF_s_positives) if len(utDF_s_positives) < topTKs else topTKs
+		print(f"Plotting top-{topTKs} token(s) / |TKs[ > 0.0] = {len(utDF_s_positives)}| {usr}".center(110, "-"))
+		ax.barh(list(users_tokens_df.loc[usr, :].sort_values(ascending=False).index[:topTKs]), 
+						users_tokens_df.loc[usr, :].sort_values(ascending=False).values.tolist()[:topTKs],
+						color="#0000ff",
+						height=0.4,
+					)
+
+		ax.tick_params(axis='x', labelrotation=0, labelsize=7.0)
+		ax.tick_params(axis='y', labelrotation=0, labelsize=7.0)
+		ax.set_xlabel(f'{usr} UserInterest {sp_type} Sparse Matrix', fontsize=10.0)
+		ax.invert_yaxis()  # labels read top-to-botto
+		ax.set_title(f'Top-{topTKs} Tokens / |TKs[ > 0.0] = {len(utDF_s_positives)}| {usr}', fontsize=10)
+		ax.margins(1e-2, 5e-3)
+		ax.spines[['top', 'right']].set_visible(False)
+		for container in ax.containers:
+			ax.bar_label(	container, 
+										#rotation=45, # no rotation for barh 
+										fontsize=6.0,
+										padding=1.5,
+										# fmt='%.3f', #if norm_sp else '%.2f',
+										label_type='edge',
 									)
+		ax.set_xlim(right=ax.get_xlim()[1]+5.0, auto=True)
+		plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_{usr}_{len(bow)}_BoWs_{sp_type}_SP.png" ), bbox_inches='tight')
+		plt.clf()
+		plt.close(f)
 	print(f"DONE".center(100, "-"))
 
 def plot_tokens_by(userIP, tks_name, tks_value_all, tks_value_separated, topTKs, bow, norm_sp: bool=False):
