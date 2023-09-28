@@ -567,9 +567,9 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
-	print( df_inp.info(memory_usage="deep", verbose=True) )
-	print(f"#"*100)
+	# print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
+	# print( df_inp.info(memory_usage="deep", verbose=True) )
+	# print(f"#"*100)
 
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
@@ -580,7 +580,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR, MIN_DF=int(args.minDocFreq), MAX_DF=float(args.maxDocFreq))
 
 	# print(f"USERs DF".center(100, ' '))
-	df_inp = df_inp.dropna(axis=1, how='all')
+	df_inp = df_inp.dropna(axis=1, how='all') # remove collection_query_phrase  all zeros
 	try:
 		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
@@ -590,7 +590,16 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f"USER_DF (detailed): {type(df_user)} | {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
-	
+
+	with open("/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/user_token_interest.txt", "w", encoding="utf-8") as f:
+		for i, v in enumerate(df_user["user_token_interest"]):
+			f.write(f"index: {i}")
+			f.write("\n")
+			f.write(v)
+			f.write("\n")
+			f.write("\n")
+		f.write()
+
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
