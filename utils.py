@@ -142,6 +142,22 @@ rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 # pd.set_option('display.width', 1000)
 # pd.set_option('display.max_colwidth', None)
 
+# list of all weights:
+weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
+weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
+weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
+weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
+weightContentPTAppearance:float = 0.005	# Did not consider initiially!
+weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
+
+w_list:List[float] = [weightQueryAppearance, 
+											weightSnippetHWAppearance,
+											weightSnippetAppearance,
+											weightContentHWAppearance,
+											weightContentPTAppearance,
+											weightContentAppearance,
+										]
+
 class HiddenPrints:
 	def __enter__(self):
 		self._original_stdout = sys.stdout

@@ -25,22 +25,6 @@ fprefix = "FILE_PREFIXname_TBR"
 make_folder(folder_name=args.dfsPath)
 MODULE=60
 
-# list of all weights:
-weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
-weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
-weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
-weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
-weightContentPTAppearance:float = 0.005	# Did not consider initiially!
-weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
-
-w_list:List[float] = [weightQueryAppearance, 
-											weightSnippetHWAppearance,
-											weightSnippetAppearance,
-											weightContentHWAppearance,
-											weightContentPTAppearance,
-											weightContentAppearance,
-										]
-
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
 	for tk in dframe[qcol]: # [tk1, tk2, …]
@@ -267,7 +251,7 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	# nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])
-	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N)
 
 	
 	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)

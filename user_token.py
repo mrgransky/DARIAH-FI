@@ -37,21 +37,21 @@ fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki
 make_folder(folder_name=args.outDIR)
 MODULE=60
 
-# list of all weights:
-weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
-weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
-weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
-weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
-weightContentPTAppearance:float = 0.005	# Did not consider initiially!
-weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
+# # list of all weights:
+# weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
+# weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
+# weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
+# weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
+# weightContentPTAppearance:float = 0.005	# Did not consider initiially!
+# weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
 
-w_list:List[float] = [weightQueryAppearance, 
-											weightSnippetHWAppearance,
-											weightSnippetAppearance,
-											weightContentHWAppearance,
-											weightContentPTAppearance,
-											weightContentAppearance,
-										]
+# w_list:List[float] = [weightQueryAppearance, 
+# 											weightSnippetHWAppearance,
+# 											weightSnippetAppearance,
+# 											weightContentHWAppearance,
+# 											weightContentPTAppearance,
+# 											weightContentAppearance,
+# 										]
 
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
@@ -845,7 +845,7 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 
 def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original"
-	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Query Phrase: {query_phrase} | Query Lemma(s) : {query_token}")	
+	print(f"Plotting Cosine Similarity {cos_sim.shape} | Raw Input Query Phrase: {query_phrase} | Lemma(s) : {query_token}")	
 	
 	alphas = np.ones_like(cos_sim.flatten())
 	scales = 100*np.ones_like(cos_sim.flatten())
@@ -868,9 +868,8 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
 	# nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])
-	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N=3)
+	nUsers_with_max_cosine = get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df, N)
 
-	
 	ax.scatter(x=cos_sim_idx.flatten()[:N], y=cos_sim.flatten()[:N], facecolor='none', marker="o", edgecolors="r", s=100)
 	#ax.set_xlabel('Users', fontsize=10)
 	ax.set_ylabel('Cosine Similarity', fontsize=10.0)
@@ -921,11 +920,9 @@ def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_token
 def get_nUsers_with_max(cos_sim, cos_sim_idx, users_tokens_df:pd.DataFrame, N:int=3):
 	if np.count_nonzero(cos_sim.flatten()) < N:
 		N = np.count_nonzero(cos_sim.flatten())
-	print(f"\n< {N} > user(s) with max cosine similarity:", end=" ")
-
-	topN_max_cosine = cos_sim.flatten()[:N]
-	nUsers_with_max_cosine = users_tokens_df.loc[cos_sim_idx.flatten()[:N], 'user_ip'].values.tolist()
-	print(nUsers_with_max_cosine, topN_max_cosine)
+	print(f"\n< {N} > user(s) with max CS:", end=" ")
+	nUsers_with_max_cosine = list(users_tokens_df.index[cos_sim_idx.flatten()[:N]])	
+	print(cos_sim_idx.flatten()[:N], nUsers_with_max_cosine, cos_sim.flatten()[:N], )
 	return nUsers_with_max_cosine
 
 def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_df, bow, recommended_tokens, norm_sp: bool=False):
