@@ -41,13 +41,11 @@ echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 # for mx in 1.0 0.9 0.8 0.7 0.6 0.5
 for mx in 1.0
 do
-	echo "max doc_freq: $mx"
 	# for mn in 1 3 5 10 15 30
 	for mn in 1
 	do
-		echo "min doc_freq: $mn"
 		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
-		echo "outDIR: $ddir"
+		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \

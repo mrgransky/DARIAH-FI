@@ -33,8 +33,7 @@ args = parser.parse_args()
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
-make_folder(folder_name=args.outDIR)
-MODULE=60
+# make_folder(folder_name=args.outDIR)
 
 def get_qu_phrase_raw_text(phrase_list):
 	assert len(phrase_list) == 1, f"Wrong length for {phrase_list}"
@@ -556,7 +555,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	if df_inp.shape[0] == 0:
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
-
+	make_folder(folder_name=args.outDIR)
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
 		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vec.gz"))
