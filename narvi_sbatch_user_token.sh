@@ -5,14 +5,14 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --mem=32G
+#SBATCH --mem=30G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:teslap100:1
 #SBATCH --nodes=1
 # # # # SBATCH --array=730-731 # originall case! xy
-#SBATCH --array=634-635
+#SBATCH --array=0-752
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -38,10 +38,12 @@ files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
-for mx in 1.0 0.9 0.8 0.7 0.6 0.5
+# for mx in 1.0 0.9 0.8 0.7 0.6 0.5
+for mx in 1.0
 do
 	echo "max doc_freq: $mx"
-	for mn in 1 3 5 10 15 30
+	# for mn in 1 3 5 10 15 30
+	for mn in 1
 	do
 		echo "min doc_freq: $mn"
 		ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"

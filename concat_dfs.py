@@ -17,13 +17,10 @@ parser.add_argument('-lm', '--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
-# how to run:
-# 
 
 fprefix = "FILE_PREFIXname_TBR"
-#RES_DIR = make_result_dir(infile=fprefix)
-make_folder(folder_name=args.dfsPath)
-MODULE=60
+# make_folder(folder_name=args.dfsPath)
+
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
@@ -857,10 +854,11 @@ def get_users_tokens_ddf():
 	return user_token_ddf_concat 
 
 def main():
-	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	global fprefix, RES_DIR
 	fprefix = f"concatinated_dataframes"
 	RES_DIR = make_result_dir(infile=fprefix)
+	make_folder(folder_name=args.dfsPath)
 	# print(fprefix, RES_DIR)
 	normalize_sp_mtrx = False
 	topK=args.topTKs

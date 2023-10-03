@@ -549,10 +549,13 @@ def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
 	return sparse_matrix
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
-	print(f">> Running {__file__} with {args.lmMethod.upper()} lemmatizer")
-	# print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
-	# print( df_inp.info(memory_usage="deep", verbose=True) )
-	# print(f"#"*100)
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer")
+	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
+	print( df_inp.info(memory_usage="deep", verbose=True) )
+	print(f"#"*100)
+	if df_inp.shape[0] == 0:
+		print(f"Empty DF: {df_inp.shape} => Exit...")
+		return
 
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
