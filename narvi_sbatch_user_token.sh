@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=nikeXY_several_min_max_doc_freq
+#SBATCH --job-name=nikeQ
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -34,7 +34,7 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-# ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
@@ -46,7 +46,7 @@ do
 	for mn in 1
 	do
 		echo "min doc_freq: $mn"
-		ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
+		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
 		echo "outDIR: $ddir"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
