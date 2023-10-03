@@ -31,9 +31,9 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
-dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes" ########## must be adjusted! ##########
+dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dfXY_1.0_max_df_1_min_df" ########## must be adjusted! ##########
 
-python -u tkRecSys.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
