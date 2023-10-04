@@ -894,13 +894,13 @@ def main():
 	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
 	# print(user_token_ddf)
 	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
-		print(f"Both columns are identical")
+		print(f"Both ddf & df columns are identical!")
 	else:
 		print(f"inconsistencies in columns")
 	print("<>"*50)
 
-	print(user_token_ddf.head(50))
-	print("<>"*50)
+	# print(user_token_ddf.head(50))
+	# print("<>"*50)
 	eq_t = time.time()
 	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
 	print(f"Elapsed_t: {time.time()-eq_t:.2f} s")

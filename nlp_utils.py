@@ -140,23 +140,24 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
 	
-	print(f"Training TFIDF vectorizer [min_df[int]: {MIN_DF} & max_df[float]: {MAX_DF}] for {len(preprocessed_docs)} raw corpus, might take a while...".center(160, " "))
-	st_t = time.time()
+	print(f"TfidfVectorizer [min_df[int]: {MIN_DF}, max_df[float]: {MAX_DF}], max_feat: {MAX_FEATURES}"
+				f"for {len(preprocessed_docs)} raw corpus, might take a while...".center(160, " "))
 	################################################################################################################################################################
 	# max_df is used for removing terms that appear too frequently, also known as "corpus-specific stop words". For example:
 
-	#     max_df = 0.50 means "ignore terms that appear in more than 50% of the documents".
+	#     max_df = 0.50: ignore terms that appear in more than 50% of the documents
 
 	# The default max_df is 1.0, which means "ignore terms that appear in more than 100% of the documents". Thus, the default setting does not ignore any terms.
 
 	# min_df is used for removing terms that appear too infrequently. For example:
 
-	#     min_df = 5 means "ignore terms that appear in less than 5 documents".
+	#     min_df = 5: ignore terms that appear in less than 5 documents
 
 	# The default min_df is 1, which means "ignore terms that appear in less than 1 document". Thus, the default setting does not ignore any terms.
 	################################################################################################################################################################
 	
 	# Initialize TFIDF # not time consuming...
+	st_t = time.time()
 	tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
 															lowercase=True,
 															analyzer="word",
@@ -171,7 +172,7 @@ def get_BoWs(dframe: pd.DataFrame, fprefix: str="filename_prefix", lm: str="stan
 	tfidf_matrix = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 
 	# del raw_docs_list
-	gc.collect()
+	# gc.collect()
 	BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 
 	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
