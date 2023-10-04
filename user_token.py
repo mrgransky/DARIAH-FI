@@ -24,6 +24,7 @@ parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
+parser.add_argument('--maxNumFeat', default=None, type=int)
 parser.add_argument('-maxdf', '--minDocFreq', default=3, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=0.95, type=float)
 
@@ -562,7 +563,14 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		BoWs = load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
-		BoWs = get_BoWs(dframe=df_inp, fprefix=fprefix, lm=args.lmMethod, saveDIR=args.outDIR, MIN_DF=int(args.minDocFreq), MAX_DF=float(args.maxDocFreq))
+		BoWs = get_BoWs(dframe=df_inp, 
+										fprefix=fprefix, 
+										lm=args.lmMethod, 
+										saveDIR=args.outDIR, 
+										MIN_DF=int(args.minDocFreq), 
+										MAX_DF=float(args.maxDocFreq),
+										MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
+									)
 
 	# print(f"USERs DF".center(100, ' '))
 	df_inp = df_inp.dropna(axis=1, how='all') # remove collection_query_phrase  all zeros

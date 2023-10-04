@@ -888,7 +888,7 @@ def main():
 		user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
 		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
 	except Exception as e:
-		print(f"<!> [DASK] <read_parquet>\n{e}")
+		print(f"<!> [DASK] <read_parquet> {e}")
 		user_token_ddf = get_users_tokens_ddf()
 
 	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
