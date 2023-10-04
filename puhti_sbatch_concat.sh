@@ -2,7 +2,7 @@
 
 #SBATCH --account=project_2004072
 #SBATCH --job-name=dfConCat_XY
-#SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
+#SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
@@ -12,7 +12,6 @@
 #SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:v100:1
-# # # # SBATCH --array=81-82
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')

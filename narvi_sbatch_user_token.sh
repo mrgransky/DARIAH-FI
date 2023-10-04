@@ -41,7 +41,7 @@ echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 # for mx in 1.0 0.9 0.8 0.7 0.6 0.5
 for mx in 1.0
 do
-	# for mn in 1 3 5 10 15 30
+	# for mn in 10 15 30 # 1 3 5 already done (only for max 1.0)
 	for mn in 1
 	do
 		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df" #### must be adjusted ####
