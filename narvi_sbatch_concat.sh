@@ -10,7 +10,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=amd
 #SBATCH --nodes=1
-# # # # # SBATCH --gres=gpu:teslav100:1
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
