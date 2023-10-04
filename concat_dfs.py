@@ -881,28 +881,30 @@ def main():
 	print("<>"*50)
 	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
-	# try:
-	# 	print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
-	# 	st_pq = time.time()
-	# 	user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
-	# 	print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
-	# except Exception as e:
-	# 	print(f"<!> [DASK] <read_parquet>\n{e}")
-	# 	user_token_ddf = get_users_tokens_ddf()
+	############################### DASK DataFrame ################################
+	try:
+		print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
+		st_pq = time.time()
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
+		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
+	except Exception as e:
+		print(f"<!> [DASK] <read_parquet>\n{e}")
+		user_token_ddf = get_users_tokens_ddf()
 
-	# # print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
-	# # print(user_token_ddf)
-	# if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
-	# 	print(f"Both columns are identical")
-	# else:
-	# 	print(f"inconsistencies in columns")
-	# print("<>"*50)
+	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
+	# print(user_token_ddf)
+	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
+		print(f"Both columns are identical")
+	else:
+		print(f"inconsistencies in columns")
+	print("<>"*50)
 
-	# print(user_token_ddf.head(50))
-	# print("<>"*50)
-	# eq_t = time.time()
-	# print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
-	# print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
+	print(user_token_ddf.head(50))
+	print("<>"*50)
+	eq_t = time.time()
+	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
+	print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
+	############################### DASK DataFrame ################################
 	
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")

@@ -34,7 +34,7 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes"
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" #### must be adjusted ####
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
@@ -44,7 +44,7 @@ do
 	# for mn in 1 3 5 10 15 30
 	for mn in 1
 	do
-		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
+		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df" #### must be adjusted ####
 		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
