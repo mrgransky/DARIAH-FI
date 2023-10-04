@@ -31,7 +31,7 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
 
-python -u tkRecSys.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
