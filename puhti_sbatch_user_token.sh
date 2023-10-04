@@ -47,7 +47,6 @@ do
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \
-						--maxNumFeat None \
 						--lmMethod 'stanza' \
 						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
 						--maxDocFreq $mx \
