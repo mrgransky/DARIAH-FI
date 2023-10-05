@@ -792,7 +792,7 @@ def get_users_tokens_ddf():
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
-	# gc.collect()
+	gc.collect() # TODO: check the impact on memory!
 
 	try:
 		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
@@ -815,24 +815,6 @@ def get_users_tokens_ddf():
 		gc.collect()
 		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
-
-	# users_tokens_dfs = list()
-	# load_time_start = time.time()	
-	# for df_file in user_df_files:
-	# 	print(f"[PANDAS] Loading {df_file} ...")
-	# 	user_df = load_pickle(fpath=df_file)
-	# 	print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
-	# 	st_t = time.time()
-	# 	# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
-	# 	# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
-	# 	user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-	# 	user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])		
-	# 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df)} | {user_token_df.shape}")
-	# 	users_tokens_dfs.append(user_token_df)
-	# print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
-	# gc.collect()
-	# usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
-	# save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	print(f"[DASK] Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column", end="\t")
 	st_t = time.time()
@@ -866,34 +848,36 @@ def main():
 	normalize_sp_mtrx = False
 	topK=args.topTKs
 	
-	try:
-		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
-	except Exception as e:
-		print(f"<!> user_token_df Not available! {e}")
-		user_token_df = get_users_tokens_df()
-
-	print(f"USER_TOKEN pDF: {user_token_df.shape}")
-	# print(user_token_df)
-	# print("<>"*50)
-	# print(user_token_df.head(50))
-
-	st_t = time.time()
-	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-	print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
-	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
-	print("<>"*50)
-	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
-	
-	# ############################### DASK DataFrame ################################
+	# # ############################### PANDAS DataFrame ################################
 	# try:
-	# 	print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
-	# 	st_pq = time.time()
-	# 	user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
-	# 	print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
+	# 	user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	# except Exception as e:
-	# 	print(f"<!> [DASK] <read_parquet> {e}")
-	# 	user_token_ddf = get_users_tokens_ddf()
+	# 	print(f"<!> user_token_df Not available! {e}")
+	# 	user_token_df = get_users_tokens_df()
+
+	# print(f"USER_TOKEN pDF: {user_token_df.shape}")
+	# # print(user_token_df)
+	# # print("<>"*50)
+	# # print(user_token_df.head(50))
+
+	# st_t = time.time()
+	# zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
+	# print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+	# assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
+	# print("<>"*50)
+	# # ############################### PANDAS DataFrame ################################
+	
+	############################### DASK DataFrame ################################
+	print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
+	try:
+		print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
+		st_pq = time.time()
+		user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
+		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
+	except Exception as e:
+		print(f"<!> [DASK] <read_parquet> {e}")
+		user_token_ddf = get_users_tokens_ddf()
 
 	# # print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
 	# # print(user_token_ddf)
@@ -903,13 +887,17 @@ def main():
 	# 	print(f"inconsistencies in columns")
 	# print("<>"*50)
 
-	# # print(user_token_ddf.head(50))
-	# # print("<>"*50)
+	# print(user_token_ddf.head(50))
+	# print("<>"*50)
 	# eq_t = time.time()
 	# print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
 	# print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
-	# ############################### DASK DataFrame ################################
-	
+	############################### DASK DataFrame ################################
+
+	#################################################################################
+	user_token_df = user_token_ddf #### TODO: must be removed , just checking DASK_df
+	#################################################################################
+
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
 
