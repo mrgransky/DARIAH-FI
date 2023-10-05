@@ -7,7 +7,7 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=586G
+#SBATCH --mem=986G
 #SBATCH --partition=hugemem
 #SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
