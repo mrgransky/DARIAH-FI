@@ -733,8 +733,7 @@ def get_users_tokens_df():
 			# sanity check for nonzeros for cols:
 			st_t = time.time()
 			zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-			print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
-			print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
+			print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} | Elapsed_t: {time.time()-st_t:.3f} sec".center(150, " "))
 			assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 			users_tokens_dfs.append(user_token_df)
 
@@ -865,7 +864,8 @@ def main():
 	
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
-	except:
+	except Exception as e:
+		print(f"<!> user_token_df Not available! {e}")
 		user_token_df = get_users_tokens_df()
 
 	print(f"USER_TOKEN pDF: {user_token_df.shape}")
