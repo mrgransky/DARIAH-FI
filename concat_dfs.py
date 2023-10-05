@@ -810,7 +810,7 @@ def get_users_tokens_ddf():
 			users_tokens_dfs.append(user_token_df)
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 		gc.collect()
-		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(users_tokens_dfs)}_usr_tk_pdfs_list.gz")
+		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	# users_tokens_dfs = list()
