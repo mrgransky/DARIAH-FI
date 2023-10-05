@@ -755,7 +755,7 @@ def get_users_tokens_df():
 	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ) )
 	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
-	gc.collect()
+	# gc.collect()
 	
 	user_token_df_concat_fname = os.path.join(args.dfsPath, 
 																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
@@ -881,30 +881,30 @@ def main():
 	print("<>"*50)
 	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
 	
-	############################### DASK DataFrame ################################
-	try:
-		print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
-		st_pq = time.time()
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
-		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
-	except Exception as e:
-		print(f"<!> [DASK] <read_parquet> {e}")
-		user_token_ddf = get_users_tokens_ddf()
+	# ############################### DASK DataFrame ################################
+	# try:
+	# 	print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
+	# 	st_pq = time.time()
+	# 	user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
+	# 	print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
+	# except Exception as e:
+	# 	print(f"<!> [DASK] <read_parquet> {e}")
+	# 	user_token_ddf = get_users_tokens_ddf()
 
-	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
-	# print(user_token_ddf)
-	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
-		print(f"Both ddf & df columns are identical!")
-	else:
-		print(f"inconsistencies in columns")
-	print("<>"*50)
-
-	# print(user_token_ddf.head(50))
+	# # print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
+	# # print(user_token_ddf)
+	# if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
+	# 	print(f"Both ddf & df columns are identical!")
+	# else:
+	# 	print(f"inconsistencies in columns")
 	# print("<>"*50)
-	eq_t = time.time()
-	print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
-	print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
-	############################### DASK DataFrame ################################
+
+	# # print(user_token_ddf.head(50))
+	# # print("<>"*50)
+	# eq_t = time.time()
+	# print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
+	# print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
+	# ############################### DASK DataFrame ################################
 	
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")

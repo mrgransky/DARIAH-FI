@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#SBATCH --job-name=df_ddf_concat_XY
+#SBATCH --job-name=df_concat
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --mem=264G
+#SBATCH --mem=564G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=amd
+#SBATCH --partition=normal
 #SBATCH --nodes=1
 
 user="`whoami`"
