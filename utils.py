@@ -786,3 +786,19 @@ def get_concat_df(dir_path: str):
 	gc.collect()
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}")
 	return df_concat, ndfs
+
+def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
+	# init
+	prev_avg_rec = user_token_df.iloc[0,:].copy();prev_avg_rec.iloc[:]=0
+	prev_avg_rec = prev_avg_rec.to_numpy().reshape(1, -1) # 1 x nTokens
+	print(prev_avg_rec.shape, np.all(prev_avg_rec==0.0))
+	for _, vUser in enumerate(user_token_df.index):
+		userInterest = user_token_df.loc[vUser, :].to_numpy().reshape(1, -1) # 1 x nTokens
+		if inv_doc_freq is not None:
+			userInterest = userInterest * inv_doc_freq  # tulla, saada downweighted by id
+		userInterest = normalize(userInterest, norm="l2", axis=1) # 1 x nTokens
+		update_vec = (cosine_sim.loc[vUser] * userInterest)
+		avg_rec = prev_avg_rec + update_vec
+		prev_avg_rec = avg_rec
+	avg_rec = avg_rec / np.sum(cosine_sim)
+	return avg_rec
