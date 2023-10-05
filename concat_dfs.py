@@ -711,7 +711,7 @@ def get_users_tokens_df():
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
-	# gc.collect()
+	gc.collect() # TODO: check if helps for mem error!
 
 	try:
 		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
@@ -757,13 +757,14 @@ def get_users_tokens_df():
 	# gc.collect()
 	
 	user_token_df_concat_fname = os.path.join(args.dfsPath, 
-																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
+																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
+																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
 																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																					)
 	save_pickle(pkl=user_token_df_concat, fname=user_token_df_concat_fname)
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
-							fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
+							fname=os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
 						)
 	return user_token_df_concat 
 
@@ -841,7 +842,8 @@ def get_users_tokens_ddf():
 
 	# TODO: investigate with user_token_ddf_concat.index.size.compute() for nUSRs
 	user_token_ddf_concat_fname = os.path.join(args.dfsPath, 
-																						f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_"
+																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
+																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_"
 																						f"XXX_nUSRs_x_"
 																						f"{len(user_token_ddf_concat.columns)}_nTOKs.parquet"
 																					)
@@ -1094,7 +1096,6 @@ def main():
 
 if __name__ == '__main__':
 	# os.system("clear")
-	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(170, " "))
 	main()	
-	#practice()
-	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
+	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(170, " "))
