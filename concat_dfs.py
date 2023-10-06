@@ -892,9 +892,9 @@ def main():
 	# print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
 	############################### DASK DataFrame ################################
 
-	#################################################################################
-	user_token_df = user_token_ddf #### TODO: must be removed , just checking DASK_df
-	#################################################################################
+	# #################################################################################
+	# user_token_df = user_token_ddf.copy() #### TODO: must be removed , just checking DASK_df
+	# #################################################################################
 
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
