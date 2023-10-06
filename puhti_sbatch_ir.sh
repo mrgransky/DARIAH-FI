@@ -1,16 +1,17 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH -J irQ
-#SBATCH -o /scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
+#SBATCH --job-name=irQ
+#SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=small
-#SBATCH --mem=3G
+#SBATCH --mem=9G
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=0-1096%6
+#SBATCH --cpus-per-task=1
+#SBATCH --array=0-250%6
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"
