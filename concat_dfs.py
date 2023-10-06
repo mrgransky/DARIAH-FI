@@ -846,25 +846,25 @@ def main():
 	normalize_sp_mtrx = False
 	topK=args.topTKs
 	
-	# # ############################### PANDAS DataFrame ################################
-	# try:
-	# 	user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
-	# except Exception as e:
-	# 	print(f"<!> user_token_df Not available! {e}")
-	# 	user_token_df = get_users_tokens_df()
+	# ############################### PANDAS DataFrame ################################
+	try:
+		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
+	except Exception as e:
+		print(f"<!> user_token_df Not available! {e}")
+		user_token_df = get_users_tokens_df()
 
-	# print(f"USER_TOKEN pDF: {user_token_df.shape}")
-	# # print(user_token_df)
-	# # print("<>"*50)
-	# # print(user_token_df.head(50))
-
-	# st_t = time.time()
-	# zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-	# print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
-	# assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
+	print(f"USER_TOKEN pDF: {user_token_df.shape}")
+	# print(user_token_df)
 	# print("<>"*50)
-	# # ############################### PANDAS DataFrame ################################
+	# print(user_token_df.head(50))
+
+	st_t = time.time()
+	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
+	print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
+	print("<>"*50)
+	# ############################### PANDAS DataFrame ################################
 	
 	############################### DASK DataFrame ################################
 	print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
@@ -877,13 +877,13 @@ def main():
 		print(f"<!> [DASK] <read_parquet> {e}")
 		user_token_ddf = get_users_tokens_ddf()
 
-	# # print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
-	# # print(user_token_ddf)
-	# if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
-	# 	print(f"Both ddf & df columns are identical!")
-	# else:
-	# 	print(f"inconsistencies in columns")
-	# print("<>"*50)
+	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
+	# print(user_token_ddf)
+	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
+		print(f"Both ddf & df columns are identical!")
+	else:
+		print(f"inconsistencies in columns")
+	print("<>"*50)
 
 	# print(user_token_ddf.head(50))
 	# print("<>"*50)
