@@ -3,7 +3,7 @@
 #SBATCH -J irQ
 #SBATCH -o /lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=13G
+#SBATCH --mem=3G
 #SBATCH --time=7-00:00:00
 #SBATCH --partition=normal
 #SBATCH --mail-user=farid.alijani@gmail.com
@@ -28,16 +28,9 @@ echo "${stars// /*}"
 
 user="`whoami`"
 
-if [ $user == 'alijani' ]; then
-	echo ">> Using Narvi conda env from Anaconda..."
-	source activate py39
-	logFiles=(/lustre/sgn-data/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
-	dataset_path="/lustre/sgn-data/Nationalbiblioteket/datasets"
-elif [ $user == 'alijanif' ]; then
-	echo ">> Using Puhti Conda Environment..."
-	logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
-	dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
-fi
+echo ">> Using Puhti Conda Environment..."
+logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
+dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
 
 echo "Q[$SLURM_ARRAY_TASK_ID]: ${logFiles[$SLURM_ARRAY_TASK_ID]}"
 python -u information_retrieval.py --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]} --dsPath $dataset_path

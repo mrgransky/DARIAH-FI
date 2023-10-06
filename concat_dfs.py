@@ -707,7 +707,7 @@ def get_users_tokens_df():
 	# gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	print(f"Found {len(user_df_files)} user_df files:")
+	print(f"Found {len(user_df_files)} user_df [{type(user_df_files)}] files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
@@ -718,9 +718,9 @@ def get_users_tokens_df():
 	except Exception as e:
 		print(f"<!> Load pkl <pDFs list> {e}")
 		users_tokens_dfs = list()
-		load_time_start = time.time()	
-		for df_file in user_df_files:
-			print(f"[PANDAS] Loading {df_file} ...")
+		load_time_start = time.time()
+		for df_file_idx, df_file in enumerate(user_df_files):
+			print(f"[PANDAS] Loading {df_file_idx+1}/{len(user_df_files)}: {df_file}")
 			user_df = load_pickle(fpath=df_file)
 			print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
 			st_t = time.time()
@@ -736,7 +736,6 @@ def get_users_tokens_df():
 			print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} | Elapsed_t: {time.time()-st_t:.3f} sec".center(150, " "))
 			assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 			users_tokens_dfs.append(user_token_df)
-
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 		gc.collect()
 
@@ -786,9 +785,8 @@ def get_users_tokens_ddf():
 	# # print("-"*80)
 	# gc.collect()
 
-
 	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	print(f"Found {len(user_df_files)} user_df files:")
+	print(f"Found {len(user_df_files)} user_df [{type(user_df_files)}] files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
@@ -799,9 +797,9 @@ def get_users_tokens_ddf():
 	except Exception as e:
 		print(f"<!> Load pkl <pDFs list> {e}")
 		users_tokens_dfs = list()
-		load_time_start = time.time()	
-		for df_file in user_df_files:
-			print(f"[PANDAS] Loading {df_file} ...")
+		load_time_start = time.time()
+		for df_file_idx, df_file in enumerate(user_df_files):
+			print(f"[PANDAS] Loading {df_file_idx+1}/{len(user_df_files)}: {df_file}")
 			user_df = load_pickle(fpath=df_file)
 			print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
 			st_t = time.time()
