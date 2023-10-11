@@ -125,6 +125,8 @@ clrs = ["#ff2eee",
 				"#79CDCD",
 			]
 
+
+
 usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket', 
 				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
 				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
@@ -175,10 +177,10 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 
 	#print(f"\n\n>> user_idx: {user_idx} - ")
 	
-	#tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
-	#print(tk_indeces_sorted_no_0[-50:])
-	#tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
-	#tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
+	# tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
+	# print(tk_indeces_sorted_no_0[-50:])
+	# tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
+	# tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
 	
 	tk_dict = dict( sorted( df_usr_tk.loc[user_idx , "user_token_interest" ].items(), key=lambda x:x[1], reverse=True ) )
 	tk_dict = {k: v for k, v in tk_dict.items() if v!=0}
