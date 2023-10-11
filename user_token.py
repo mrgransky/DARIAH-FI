@@ -595,6 +595,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 			f.write("\n")
 			f.write("\n")
 
+	return
+
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
@@ -1423,6 +1425,5 @@ def practice(topK=5):
 if __name__ == '__main__':
 	#os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
-	main()	
-	#practice()
+	main()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
