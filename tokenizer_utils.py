@@ -143,6 +143,8 @@ def spacy_tokenizer(sentence):
 	
 	return lematized_tokens
 
+# cache for saving
+
 @cache
 def stanza_lemmatizer(docs):
 	try:
