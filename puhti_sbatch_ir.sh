@@ -30,9 +30,8 @@ echo "${stars// /*}"
 
 user="`whoami`"
 
-source activate py39
 logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
-dataset_path="/lustre/sgn-data/Nationalbiblioteket/datasets"
+dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
 
 echo "Q[$SLURM_ARRAY_TASK_ID]: ${logFiles[$SLURM_ARRAY_TASK_ID]}"
 python -u information_retrieval.py --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]} --dsPath $dataset_path
