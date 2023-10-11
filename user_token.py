@@ -553,10 +553,13 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
 	print( df_inp.info(memory_usage="deep", verbose=True) )
 	print(f"#"*100)
+
 	if df_inp.shape[0] == 0:
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
+	
 	make_folder(folder_name=args.outDIR)
+
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
 		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vec.gz"))
@@ -591,7 +594,6 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 			f.write(str(df_user['user_token_interest'][i]))
 			f.write("\n")
 			f.write("\n")
-		# f.write()
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
