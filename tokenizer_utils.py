@@ -207,6 +207,3 @@ def nltk_lemmatizer(sentence):
 	#print( list( set( lematized_tokens ) ) )
 
 	return lematized_tokens
-
-
-## check ending
