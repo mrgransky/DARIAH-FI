@@ -935,11 +935,11 @@ def main():
 
 	st_t = time.time()
 	idf_vec = get_inv_doc_freq(user_token_df=user_token_df)
-	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 
 	st_t = time.time()
 	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
-	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
