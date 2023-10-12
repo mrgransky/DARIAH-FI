@@ -794,12 +794,15 @@ def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
 	prev_avg_rec = user_token_df.iloc[0,:].copy();prev_avg_rec.iloc[:]=0
 	prev_avg_rec = prev_avg_rec.to_numpy().reshape(1, -1) # 1 x nTokens
 	print(prev_avg_rec.shape, np.all(prev_avg_rec==0.0))
-	for _, vUser in enumerate(user_token_df.index):
+	print(type(cosine_sim.shape), cosine_sim.shape)
+	for iUser, vUser in enumerate(user_token_df.index):
 		userInterest = user_token_df.loc[vUser, :].to_numpy().reshape(1, -1) # 1 x nTokens
 		if inv_doc_freq is not None:
-			userInterest = userInterest * inv_doc_freq  # tulla, saada downweighted by id
+			userInterest = userInterest * inv_doc_freq.to_numpy().reshape(1, -1) # tulla, saada downweighted by id
 		userInterest = normalize(userInterest, norm="l2", axis=1) # 1 x nTokens
-		update_vec = (cosine_sim.loc[vUser] * userInterest)
+		# update_vec = (cosine_sim.loc[vUser] * userInterest)
+		update_vec = (cosine_sim.flatten()[iUser] * userInterest)
+		
 		avg_rec = prev_avg_rec + update_vec
 		prev_avg_rec = avg_rec
 	avg_rec = avg_rec / np.sum(cosine_sim)
