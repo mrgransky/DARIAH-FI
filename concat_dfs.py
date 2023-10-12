@@ -188,7 +188,7 @@ def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Data
 	#print(sorted_cosine_idx.flatten()[:17])
 	#print(sorted_cosine.flatten()[:17])
 	
-	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
+	# plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
 def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
@@ -218,7 +218,7 @@ def get_cs_sklearn(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.Da
 
 	# DF = pd.DataFrame(sorted_cosine)
 	# DF.to_csv("kantakirjasonni.csv")
-	plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
+	# plot_cs(sorted_cosine, sorted_cosine_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp)
 	return sorted_cosine, sorted_cosine_idx
 
 def plot_cs(cos_sim, cos_sim_idx, QU, RF, query_phrase, query_token, users_tokens_df, norm_sp=None):
@@ -942,22 +942,21 @@ def main():
 
 	print(f"Cosine Similarity (1 x nUsers): {cos_sim.shape} {type(cos_sim)} "
 				f"Allzero: {np.all(cos_sim.flatten()==0.0)} "
-				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})"
+				f"(min, max, sum): ({cos_sim.min()}, {cos_sim.max():.2f}, {cos_sim.sum():.2f})".center(160, " ")
 			)
 	
 	if np.all(cos_sim.flatten()==0.0):
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=30, norm_sp=normalize_sp_mtrx)
+	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=30, norm_sp=normalize_sp_mtrx)
 
-	nUsers, nItems = sp_mat_rf.shape
-	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))
+	# nUsers, nItems = sp_mat_rf.shape
 	#print("#"*120)
 	#cos = np.random.rand(nUsers).reshape(1, -1)
 	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
 	#avgrec = np.zeros((1, nItems))
-	prev_avgrec = np.zeros((1, nItems))
+	# prev_avgrec = np.zeros((1, nItems))
 	#print(f"> avgrec{avgrec.shape}:\n{avgrec}")
 	#print()
 	
@@ -1007,14 +1006,15 @@ def main():
 	# 		# print("-"*150)
 			
 	# avgrec = avgrec / np.sum(cos_sim)
-	avgrec = get_avg_rec(user_token_df=user_token_df, cosine_sim=cos_sim, inv_doc_freq=None)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 
+	avgrec = get_avg_rec(user_token_df=user_token_df, cosine_sim=cos_sim, inv_doc_freq=None)
+	end_t = time.time()
 	print(f"avgRecSys: {avgrec.shape} {type(avgrec)} "
 				f"Allzero: {np.all(avgrec.flatten() == 0.0)} "
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}"
 				f"@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
 			)
+	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
 
 	"""
 	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
@@ -1023,23 +1023,26 @@ def main():
 	print(avgrec.flatten()[-10:])
 	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
 	"""
-	f, ax = plt.subplots()
-	ax.scatter(	x=np.arange(len(avgrec.flatten())), 
-							y=avgrec.flatten(), 
-							facecolor="k",
-							#s=scales,
-							edgecolors='w',
-							#alpha=alphas,
-							marker=".",
-						)
-	ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
-	plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}_nitems.png" ), bbox_inches='tight')
-	plt.clf()
-	plt.close(f)
+	# f, ax = plt.subplots()
+	# ax.scatter(	x=np.arange(len(avgrec.flatten())), 
+	# 						y=avgrec.flatten(), 
+	# 						facecolor="k",
+	# 						#s=scales,
+	# 						edgecolors='w',
+	# 						#alpha=alphas,
+	# 						marker=".",
+	# 					)
+	# ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
+	# plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}_nitems.png" ), bbox_inches='tight')
+	# plt.clf()
+	# plt.close(f)
 
 	print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
-	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}")
+	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}\n")
+	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgrec, K=25))
+	print("#"*100)
+
 	st_t = time.time()
 	# all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if vidx not in np.nonzero(query_vector)[0]]
 	all_recommended_tks = list(map(list(BoWs.keys()).__getitem__, [list(BoWs.values()).index(vidx) for vidx in avgrec.flatten().argsort() if vidx not in np.nonzero(query_vector)[0]]))

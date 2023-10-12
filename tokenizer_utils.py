@@ -158,7 +158,7 @@ def stanza_lemmatizer(docs):
 		print(f"<!> Stanza Error: {e}")
 		return
 	print( lemmas_list )
-	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} se".center(150, "-") )
+	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} s".center(150, "-") )
 	return lemmas_list
 
 def trankit_lemmatizer(docs):
