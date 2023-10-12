@@ -816,9 +816,11 @@ def get_inv_doc_freq(user_token_df, ):
 	nUsers, nTokens = user_token_df.shape
 	for ci, cv in enumerate(user_token_df.columns):
 		doc_freq_term = user_token_df[cv].astype(bool).sum(axis=0) # nonzero values for each token: TK
-		numerator = np.log10(1+nUsers).astype("float32")
-		denumerator = 1+doc_freq_term
-		idf.loc[cv]= ( numerator / denumerator )#+1
+		numerator=np.log10(1+nUsers).astype("float32")
+		denumerator=1+doc_freq_term
+		res=(numerator / denumerator)#+1.0
+		res=res.astype("float32")
+		idf.loc[cv]=res
 	return idf
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
