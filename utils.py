@@ -809,3 +809,36 @@ def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
 		prev_avg_rec = avg_rec
 	avg_rec = avg_rec / np.sum(cosine_sim)
 	return avg_rec
+
+def get_inv_doc_freq(user_token_df, ):
+	print(f"inv doc freq | user_token_df: {user_token_df.shape} | {type(user_token_df)}")
+	idf=user_token_df.iloc[0,:].copy();idf.iloc[:]=0
+	nUsers, nTokens = user_token_df.shape
+	for ci, cv in enumerate(user_token_df.columns):
+		doc_freq_term = user_token_df[cv].astype(bool).sum(axis=0) # nonzero values for each token: TK
+		numerator = np.log10(1+nUsers)
+		denumerator = 1+doc_freq_term
+		idf.loc[cv]= ( numerator / denumerator )#+1
+	return idf
+
+def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
+	print(f"Customized Cosine Similarity "
+				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
+				f"| query_vec: {query_vec.shape} {type(query_vec)} "
+				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}")
+	# init
+	this_query_interest = query_vec.copy()
+	if inv_doc_freq is not None:
+		this_query_interest = this_query_interest*inv_doc_freq
+	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
+	this_query_cosines=user_token_df.iloc[:,0].copy();this_query_cosines.iloc[:]=0 # (1 x nUsers)
+	
+	for _, user_ip in enumerate(user_token_df.index):
+		this_user_interest = user_token_df.loc[user_ip] # (1x nTokens)
+		if inv_doc_freq is not None:
+			this_user_interest = this_user_interest * inv_doc_freq
+		this_user_interest_norm = np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
+		this_user_interest = (this_user_interest / this_user_interest_norm) ** 0.1 # orig: 0.1 # 1.0 at least 1 zero
+		this_user_cosine = np.sum(this_user_interest * this_query_interest) / ( 1.0 * this_query_interest_norm )
+		this_query_cosines[user_ip] = this_user_cosine
+	return this_query_cosines # (1 x nUsers)
