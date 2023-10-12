@@ -19,8 +19,6 @@ parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
 
 fprefix = "FILE_PREFIXname_TBR"
-# make_folder(folder_name=args.dfsPath)
-
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
@@ -866,35 +864,35 @@ def main():
 	print("<>"*50)
 	# ############################### PANDAS DataFrame ################################
 	
-	############################### DASK DataFrame ################################
-	print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
-	try:
-		print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
-		st_pq = time.time()
-		user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
-		print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
-	except Exception as e:
-		print(f"<!> [DASK] <read_parquet> {e}")
-		user_token_ddf = get_users_tokens_ddf()
+	# ############################### DASK DataFrame ################################
+	# print( glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet') )
+	# try:
+	# 	print(f"Trying to read pq files of {glob.glob(args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet')}")
+	# 	st_pq = time.time()
+	# 	user_token_ddf = dd.read_parquet( path=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_ddf_*_nUSRs_x_*_nTOKs.parquet' )[0], engine='fastparquet' )	
+	# 	print(f"Elapsed_t: {time.time()-st_pq:.2f} sec".center(110, " "))
+	# except Exception as e:
+	# 	print(f"<!> [DASK] <read_parquet> {e}")
+	# 	user_token_ddf = get_users_tokens_ddf()
 
-	# print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
-	# print(user_token_ddf)
-	if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
-		print(f"Both ddf & df columns are identical!")
-	else:
-		print(f"inconsistencies in columns")
-	print("<>"*50)
-
-	# print(user_token_ddf.head(50))
+	# # print(f"USER_TOKEN dDF: {user_token_ddf.shape}")
+	# # print(user_token_ddf)
+	# if Counter(list(user_token_ddf.columns)) == Counter(list(user_token_df.columns)):
+	# 	print(f"Both ddf & df columns are identical!")
+	# else:
+	# 	print(f"inconsistencies in columns")
 	# print("<>"*50)
-	# eq_t = time.time()
-	# print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
-	# print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
-	############################### DASK DataFrame ################################
 
-	# #################################################################################
-	# user_token_df = user_token_ddf.copy() #### TODO: must be removed , just checking DASK_df
-	# #################################################################################
+	# # print(user_token_ddf.head(50))
+	# # print("<>"*50)
+	# # eq_t = time.time()
+	# # print(f">> Equal? {user_token_df.equals( user_token_ddf.compute() ) }", end="\t")
+	# # print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
+	# ############################### DASK DataFrame ################################
+
+	# # #################################################################################
+	# # user_token_df = user_token_ddf.copy() #### TODO: must be removed , just checking DASK_df
+	# # #################################################################################
 
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
