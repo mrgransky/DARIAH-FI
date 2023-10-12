@@ -595,6 +595,10 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 			f.write("\n")
 			f.write("\n")
 
+	######################################################
+	# no need to continue after this!
+	# otherwise, adjustment for spm is required!
+	######################################################
 	return
 
 	try:

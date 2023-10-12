@@ -4,7 +4,7 @@
 #SBATCH --job-name=irQ
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=small
-#SBATCH --mem=3G
+#SBATCH --mem=16G
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --time=03-00:00:00
