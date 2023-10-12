@@ -816,7 +816,7 @@ def get_inv_doc_freq(user_token_df, ):
 	nUsers, nTokens = user_token_df.shape
 	for ci, cv in enumerate(user_token_df.columns):
 		doc_freq_term = user_token_df[cv].astype(bool).sum(axis=0) # nonzero values for each token: TK
-		numerator = np.log10(1+nUsers)
+		numerator = np.log10(1+nUsers).astype("float32")
 		denumerator = 1+doc_freq_term
 		idf.loc[cv]= ( numerator / denumerator )#+1
 	return idf

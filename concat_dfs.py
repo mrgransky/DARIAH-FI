@@ -933,6 +933,14 @@ def main():
 	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
 	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
+	st_t = time.time()
+	idf_vec = get_inv_doc_freq(user_token_df=user_token_df)
+	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
+
+	st_t = time.time()
+	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
+	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
+
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
@@ -949,13 +957,6 @@ def main():
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	st_t = time.time()
-	idf_vec = get_inv_doc_freq(user_token_df=user_token_df)
-	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
-
-	st_t = time.time()
-	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
-	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
 	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=30, norm_sp=normalize_sp_mtrx)
 
 	# nUsers, nItems = sp_mat_rf.shape
