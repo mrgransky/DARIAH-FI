@@ -28,7 +28,7 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
-echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
+echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_TEST" ########## must be adjusted! ##########
 
 
