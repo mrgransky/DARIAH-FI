@@ -799,11 +799,19 @@ def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
 	prev_avg_rec = user_token_df.iloc[0,:].copy();prev_avg_rec.iloc[:]=0
 	prev_avg_rec = prev_avg_rec.to_numpy().reshape(1, -1) # 1 x nTokens
 	print(type(user_token_df), user_token_df.shape, type(cosine_sim), cosine_sim.shape)
-	if isinstance(cosine_sim, np.ndarray):
-		print(f"Cosine: {type(cosine_sim)}")
+	
+	if isinstance( cosine_sim, np.ndarray ):
+		print(f"Numpy Cosine: {type(cosine_sim)}")
 		cosine_sim=cosine_sim.flatten()
 		print(f"new cosine: {cosine_sim.shape}")
-		
+	elif isinstance( cosine_sim, ( pd.DataFrame, pd.Series ) ):
+		print(f"Pandas Cosine: {type(cosine_sim)}")
+		cosine_sim=cosine_sim.to_numpy()
+		print(f"new cosine: {cosine_sim.shape}")
+	else:
+		print(f"cosine: {type(cosine_sim)} Unknown!")
+		return
+
 	for iUser, vUser in enumerate(user_token_df.index):
 		userInterest = user_token_df.loc[vUser, :].to_numpy().reshape(1, -1) # 1 x nTokens
 		if inv_doc_freq is not None:
