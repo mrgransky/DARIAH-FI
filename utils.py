@@ -799,12 +799,17 @@ def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
 	prev_avg_rec = user_token_df.iloc[0,:].copy();prev_avg_rec.iloc[:]=0
 	prev_avg_rec = prev_avg_rec.to_numpy().reshape(1, -1) # 1 x nTokens
 	print(type(user_token_df), user_token_df.shape, type(cosine_sim), cosine_sim.shape)
+	if isinstance(cosine_sim, np.ndarray):
+		print(f"Cosine: {type(cosine_sim)}")
+		cosine_sim=cosine_sim.flatten()
+		print(f"new cosine: {cosine_sim.shape}")
+		
 	for iUser, vUser in enumerate(user_token_df.index):
 		userInterest = user_token_df.loc[vUser, :].to_numpy().reshape(1, -1) # 1 x nTokens
 		if inv_doc_freq is not None:
 			userInterest = userInterest * inv_doc_freq.to_numpy().reshape(1, -1) # tulla, saada downweighted by id
 		userInterest = normalize(userInterest, norm="l2", axis=1) # 1 x nTokens
-		update_vec = (cosine_sim.flatten()[iUser] * userInterest)		
+		update_vec = (cosine_sim[iUser] * userInterest)		
 		avg_rec = prev_avg_rec + update_vec
 		prev_avg_rec = avg_rec
 	avg_rec = avg_rec / np.sum(cosine_sim)
@@ -824,7 +829,7 @@ def get_inv_doc_freq(user_token_df, ):
 	return idf
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
-	print(f"Customized Cosine Similarity "
+	print(f"Customized Cosine "
 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
 				f"| query_vec: {query_vec.shape} {type(query_vec)} "
 				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}")

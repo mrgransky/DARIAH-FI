@@ -852,8 +852,8 @@ def main():
 		user_token_df = get_users_tokens_df()
 
 	print(f"USER_TOKEN pDF: {user_token_df.shape}")
-	# print(user_token_df)
-	# print("<>"*50)
+	print(user_token_df.info(memory_usage="deep"))
+	print("<>"*50)
 	# print(user_token_df.head(50))
 
 	st_t = time.time()
