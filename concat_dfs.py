@@ -705,7 +705,7 @@ def get_users_tokens_df():
 	# gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	print(f"Found {len(user_df_files)} user_df [{type(user_df_files)}] files:")
+	print(f"Found {len(user_df_files)} user_df {type(user_df_files)} files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
@@ -718,7 +718,7 @@ def get_users_tokens_df():
 		users_tokens_dfs = list()
 		load_time_start = time.time()
 		for df_file_idx, df_file in enumerate(user_df_files):
-			print(f"[PANDAS] Loading {df_file_idx+1}/{len(user_df_files)}: {df_file}")
+			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
 			user_df = load_pickle(fpath=df_file)
 			print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
 			st_t = time.time()
