@@ -969,6 +969,7 @@ def main():
 			)
 	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgrec, K=25))
 	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
+	print("Done!".center(150,"-"))
 
 	# print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
 	# print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
