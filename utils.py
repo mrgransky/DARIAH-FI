@@ -847,5 +847,5 @@ def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None
 		this_user_interest_norm = np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
 		this_user_interest = (this_user_interest / this_user_interest_norm) ** 0.1 # orig: 0.1 # 1.0 at least 1 zero
 		this_user_cosine = np.sum(this_user_interest * this_query_interest) / ( 1.0 * this_query_interest_norm )
-		this_query_cosines[user_ip] = this_user_cosine
+		this_query_cosines[user_ip] = this_user_cosine.astype("float32")
 	return this_query_cosines # (1 x nUsers)
