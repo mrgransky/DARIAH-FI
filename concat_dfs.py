@@ -840,13 +840,13 @@ def main():
 	print(user_token_df.info(memory_usage="deep"))
 	print("<>"*50)
 	# print(user_token_df.head(50))
-	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 
 	# st_t = time.time()
 	# zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
 	# print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
 	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 	# print("<>"*50)
+	# assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 	# ############################### PANDAS DataFrame ################################
 	
 	# ############################### DASK DataFrame ################################
