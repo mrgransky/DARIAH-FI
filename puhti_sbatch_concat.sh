@@ -31,7 +31,12 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_TEST" ########## must be adjusted! ##########
 
-python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+
+for qu in 'Tampereen Seudun Työväenopisto' 'Helsingin Pörssi ja Suomen Pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
+do
+  echo "Query: $qu"
+  python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase $qu
+done
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

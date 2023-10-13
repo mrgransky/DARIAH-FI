@@ -140,21 +140,6 @@ def get_selected_content(cos_sim, cos_sim_idx, recommended_tokens, df_users_toke
 		print(user_selected_content)
 		print("+"*180)
 
-def get_sparse_matrix(df):
-	print(f"Sparse Matrix from DF: {df.shape}".center(110, '-'))
-	if df.index.inferred_type != 'string':
-		df = df.set_index('user_ip')
-	sparse_matrix = csr_matrix(df.values, dtype=np.float32) # (n_usr x n_vb)
-	print(f"{type(sparse_matrix)} (Users-Tokens): {sparse_matrix.shape} | "
-				f"{sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype} "
-				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} "
-				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
-			)
-	print("-"*110)
-	sp_mat_user_token_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
-	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
-	return sparse_matrix
-
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original" # unimportant!
 	device = "GPU" if torch.cuda.is_available() else "CPU"
@@ -855,13 +840,13 @@ def main():
 	print(user_token_df.info(memory_usage="deep"))
 	print("<>"*50)
 	# print(user_token_df.head(50))
-
-	st_t = time.time()
-	zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-	print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
-	print("<>"*50)
+
+	# st_t = time.time()
+	# zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
+	# print(f"< Sanity Check > Found {len(zero_cols)} column(s) with all zero values: {zero_cols}", end="\t")
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} sec")
+	# print("<>"*50)
 	# ############################### PANDAS DataFrame ################################
 	
 	# ############################### DASK DataFrame ################################
@@ -898,10 +883,17 @@ def main():
 	print(f"|BoWs|: {len(BoWs)}")
 
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		# load idf
+		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
+	except Exception as e:
+		print(f"<!> idf file not available {e}")
+		idf_vec = get_inv_doc_freq(user_token_df=user_token_df, lm=args.lmMethod)
+	
+	try:
+		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		sp_mat_rf = get_sparse_matrix(user_token_df)
+		sp_mat_rf = get_sparse_matrix(df=user_token_df, lm=args.lmMethod)
 
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
@@ -934,10 +926,6 @@ def main():
 	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
 	st_t = time.time()
-	idf_vec = get_inv_doc_freq(user_token_df=user_token_df)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-
-	st_t = time.time()
 	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
@@ -945,10 +933,14 @@ def main():
 	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
+	print("#"*100)
+	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
 	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgRecSys))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-
+	print("#"*100)
+	
+	print("TRADITIAN APPROACH [without IDF]".center(150,"-"))
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
@@ -967,21 +959,6 @@ def main():
 
 	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=30, norm_sp=normalize_sp_mtrx)
 
-	# nUsers, nItems = sp_mat_rf.shape
-	#print("#"*120)
-	#cos = np.random.rand(nUsers).reshape(1, -1)
-	#usr_itm = np.random.randint(100, size=(nUsers, nItems))
-	#avgrec = np.zeros((1, nItems))
-	# prev_avgrec = np.zeros((1, nItems))
-	#print(f"> avgrec{avgrec.shape}:\n{avgrec}")
-	#print()
-	
-	#print(f"> cos{cos.shape}:\n{cos}")
-	#print()
-
-	#print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
-	#print("#"*100)
-
 	st_t = time.time()
 	avgrec = get_avg_rec(user_token_df=user_token_df, cosine_sim=cos_sim, inv_doc_freq=None)
 	end_t = time.time()
@@ -990,13 +967,14 @@ def main():
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}"
 				f"@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
 			)
+	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgrec, K=25))
 	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
 
-	print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
-	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
-	print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}\n")
-	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgrec, K=25))
-	print("#"*100)
+	# print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
+	# print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
+	# print(f">> sorted_recsys:\n{np.sort(avgrec.flatten())[-25:]}\n")
+	# print("<>"*100)
+	return
 
 	st_t = time.time()
 	# all_recommended_tks = [list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in avgrec.flatten().argsort() if vidx not in np.nonzero(query_vector)[0]]

@@ -823,8 +823,9 @@ def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
 	avg_rec = avg_rec / np.sum(cosine_sim)
 	return avg_rec
 
-def get_inv_doc_freq(user_token_df, ):
+def get_inv_doc_freq(user_token_df: pd.DataFrame, lm: str="stanza"):
 	print(f"inv doc freq | user_token_df: {user_token_df.shape} | {type(user_token_df)}")
+	st_t=time.time()
 	idf=user_token_df.iloc[0,:].copy();idf.iloc[:]=0
 	nUsers, nTokens = user_token_df.shape
 	for ci, cv in enumerate(user_token_df.columns):
@@ -834,13 +835,32 @@ def get_inv_doc_freq(user_token_df, ):
 		res=(numerator / denumerator)#+1.0
 		res=res.astype("float32")
 		idf.loc[cv]=res
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
+	idf_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{lm}_idf_vec_{idf.shape[0]}_BoWs.gz")
+	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
+
+def get_sparse_matrix(df: pd.DataFrame, lm: str="stanza"):
+	print(f"Sparse Matrix from DF: {df.shape}".center(110, '-'))
+	if df.index.inferred_type != 'string':
+		df = df.set_index('user_ip')
+	sparse_matrix = csr_matrix(df.values, dtype=np.float32) # (n_usr x n_vb)
+	print(f"{type(sparse_matrix)} (Users-Tokens): {sparse_matrix.shape} | "
+				f"{sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype} "
+				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} "
+				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
+			)
+	print("-"*110)
+	user_token_spm_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{lm}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
+	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fname)
+	return sparse_matrix
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
 				f"| query_vec: {query_vec.shape} {type(query_vec)} "
-				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}")
+				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}"
+			)
 	# init
 	this_query_interest = query_vec.copy()
 	if inv_doc_freq is not None:

@@ -498,7 +498,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	return user_df
 
-def get_sparse_matrix(df: pd.DataFrame, vb: Dict[str, float]):
+def get_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	print(f"Getting Sparse Matrix from user_df: {df.shape} | len(BoWs): {len(vb)}".center(150, '-'))
 	#print(list(df.columns))
 	#print(df.dtypes)
@@ -605,7 +605,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm = get_sparse_matrix(df=df_user[["user_ip", "user_token_interest"]], vb=BoWs)
+		usr_tk_spm = get_spm(df=df_user[["user_ip", "user_token_interest"]], vb=BoWs)
 		
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
