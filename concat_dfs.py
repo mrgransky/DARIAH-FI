@@ -940,7 +940,11 @@ def main():
 	st_t = time.time()
 	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-
+	
+	st_t = time.time()
+	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
+	
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
@@ -983,27 +987,6 @@ def main():
 				f"@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
 			)
 	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
-
-	"""
-	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
-	print(avgrec.flatten()[:10])
-	print("#"*100)
-	print(avgrec.flatten()[-10:])
-	print(f"checking original [not sorted] avgRecSys".center(100, "-"))
-	"""
-	# f, ax = plt.subplots()
-	# ax.scatter(	x=np.arange(len(avgrec.flatten())), 
-	# 						y=avgrec.flatten(), 
-	# 						facecolor="k",
-	# 						#s=scales,
-	# 						edgecolors='w',
-	# 						#alpha=alphas,
-	# 						marker=".",
-	# 					)
-	# ax.set_title(f"avgRecSys: max: {avgrec.max():.5f} @(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]})")
-	# plt.savefig(os.path.join( RES_DIR, f"qu_{args.qphrase.replace(' ', '_')}_avgRecSys_{nItems}_nitems.png" ), bbox_inches='tight')
-	# plt.clf()
-	# plt.close(f)
 
 	print(f"idx:\n{avgrec.flatten().argsort()[-25:]}")
 	print([k for i in avgrec.flatten().argsort()[-25:] for k, v in BoWs.items() if v==i ] )
