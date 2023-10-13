@@ -937,14 +937,14 @@ def main():
 	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
-	print("#"*100)
+	print("<>"*100)
 	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
 	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgRecSys))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	print("#"*100)
+	print("<>"*100)
 	
-	print("TRADITIAN APPROACH [without IDF]".center(150,"-"))
+	print("TRADITIONAL APPROACH [without IDF]".center(150,"-"))
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
@@ -971,7 +971,7 @@ def main():
 				f"(min, max_@(iTK), sum): ({avgrec.min()}, {avgrec.max():.5f}"
 				f"@(iTK[{np.argmax(avgrec)}]: {list(BoWs.keys())[list(BoWs.values()).index( np.argmax(avgrec) )]}), {avgrec.sum():.2f})"
 			)
-	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgrec, K=25))
+	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgrec, K=18))
 	print(f"Elapsed_t: {end_t-st_t:.2f} s".center(140, " "))
 	print("Done!".center(150,"-"))
 
