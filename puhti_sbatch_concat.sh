@@ -35,7 +35,7 @@ dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_TEST" ##########
 for qu in 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 'Suomen pankki lainat ja talletukset' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
 do
   echo "Query: $qu"
-  python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase $qu
+  python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase "$qu"
 done
 
 done_txt="$user finished Slurm job: `date`"
