@@ -823,7 +823,7 @@ def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
 	avg_rec = avg_rec / np.sum(cosine_sim)
 	return avg_rec
 
-def get_inv_doc_freq(user_token_df: pd.DataFrame, lm: str="stanza"):
+def get_inv_doc_freq(user_token_df: pd.DataFrame, lm: str="stanza", dfs_path: str="MUST_BE_SET"):
 	print(f"inv doc freq | user_token_df: {user_token_df.shape} | {type(user_token_df)}")
 	st_t=time.time()
 	idf=user_token_df.iloc[0,:].copy();idf.iloc[:]=0
@@ -836,11 +836,11 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, lm: str="stanza"):
 		res=res.astype("float32")
 		idf.loc[cv]=res
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	idf_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{lm}_idf_vec_{idf.shape[0]}_BoWs.gz")
+	idf_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_idf_vec_{idf.shape[0]}_BoWs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
 
-def get_sparse_matrix(df: pd.DataFrame, lm: str="stanza"):
+def get_sparse_matrix(df: pd.DataFrame, lm: str="stanza", dfs_path: str="MUST_BE_SET"):
 	print(f"Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	if df.index.inferred_type != 'string':
 		df = df.set_index('user_ip')
@@ -851,7 +851,7 @@ def get_sparse_matrix(df: pd.DataFrame, lm: str="stanza"):
 				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
 			)
 	print("-"*110)
-	user_token_spm_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{lm}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
+	user_token_spm_fname = os.path.join(dfs_path, f"{fprefix}_lemmaMethod_{lm}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
 	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fname)
 	return sparse_matrix
 

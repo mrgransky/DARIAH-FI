@@ -887,13 +887,13 @@ def main():
 		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> idf file not available {e}")
-		idf_vec = get_inv_doc_freq(user_token_df=user_token_df, lm=args.lmMethod)
+		idf_vec = get_inv_doc_freq(user_token_df=user_token_df, lm=args.lmMethod, dfs_path=args.dfsPath)
 	
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		sp_mat_rf = get_sparse_matrix(df=user_token_df, lm=args.lmMethod)
+		sp_mat_rf = get_sparse_matrix(df=user_token_df, lm=args.lmMethod, dfs_path=args.dfsPath)
 
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
