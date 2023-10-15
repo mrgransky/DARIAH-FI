@@ -891,6 +891,7 @@ def main():
 																file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
 															)
 	
+	gc.collect()
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
@@ -899,6 +900,7 @@ def main():
 																	file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
 																)
 
+	gc.collect()
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
 	qu_phrase = args.qphrase
@@ -928,15 +930,18 @@ def main():
 	# 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
 	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
 	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	gc.collect()
 
 	st_t = time.time()
 	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	
+	gc.collect()
+
 	st_t = time.time()
 	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
+	gc.collect()
 	print("<>"*100)
 	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
