@@ -683,7 +683,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.1f} MB".center(150, " "))
+	print(f"Loaded in: {elpt:.1f} s | {type(pkl)} | {fsize:.1f} MB".center(150, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
