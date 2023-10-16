@@ -661,16 +661,16 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 
 def save_pickle(pkl, fname:str=""):
 	dump_file_name = fname
-	print(f"Saving {type(pkl)} might take a while...\n{dump_file_name}")
+	print(f"Saving {type(pkl)} {dump_file_name}")
 	st_t = time.time()
-	if isinstance(pkl, pd.DataFrame) or isinstance(pkl, pd.Series):
+	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
 		pkl.to_pickle(path=dump_file_name)
 	else:
 		with open(dump_file_name , mode="wb") as f:
 			dill.dump(pkl, f)
-
+	elpt = time.time()-st_t
 	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
+	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(150, " "))
 
 def load_pickle(fpath:str="unknown", dftype=None):
 	print(f"Checking for existence? {fpath}")
@@ -854,10 +854,10 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return sparse_matrix
 
 def get_df_spm(df: pd.DataFrame):
-	print(f"{type(df)} => Sparse Pandas DataFrame | memory: {df.memory_usage(index=True, deep=True).sum()/1e6} MB", end=" ")
+	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype("float32", fill_value=np.nan))
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6} MB")
+	print(f"{type(sdf)} memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | Elapsed_t: {time.time()-st_t:.2f} s ")
 	return sdf
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
