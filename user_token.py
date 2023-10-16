@@ -573,7 +573,6 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# no need to continue after this!
 	# otherwise, adjustment for spm is required!
 	######################################################
-	return
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
@@ -581,6 +580,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		print(f"<!> {e}")
 		usr_tk_spm = get_spm(df=df_user, vb=BoWs)
 		
+	return
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 	
