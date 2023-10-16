@@ -8,8 +8,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1490G
-#SBATCH --partition=hugemem_longrun
-#SBATCH --time=04-00:00:00
+#SBATCH --partition=hugemem
+#SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
 
 user="`whoami`"
