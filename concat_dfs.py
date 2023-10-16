@@ -738,15 +738,15 @@ def get_users_tokens_df():
 	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ) )
 	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
-	# gc.collect()
+	gc.collect()
 	
-	user_token_df_concat_fname = os.path.join(args.dfsPath, 
+	user_token_pdf_fname = os.path.join(args.dfsPath, 
 																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
 																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
 																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																					)
-	save_pickle(pkl=user_token_df_concat, fname=user_token_df_concat_fname)
+	save_pickle(pkl=user_token_df_concat, fname=user_token_pdf_fname)
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
 							fname=os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
 						)
