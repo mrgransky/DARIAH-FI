@@ -683,7 +683,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(150, " "))
+	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.1f} MB".center(150, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
@@ -854,8 +854,11 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return sparse_matrix
 
 def get_df_spm(df: pd.DataFrame):
-	df_spm=df.astype(pd.SparseDtype("float32", fill_value=np.nan))
-	return df_spm
+	print(f"{type(df)} => Sparse Pandas DataFrame | memory: {df.memory_usage(index=True, deep=True).sum()} bytes", end=" ")
+	st_t=time.time()
+	sdf=df.astype(pd.SparseDtype("float32", fill_value=np.nan))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s memory: {sdf.memory_usage(index=True, deep=True).sum()} bytes")
+	return sdf
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "

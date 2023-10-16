@@ -705,13 +705,11 @@ def get_users_tokens_df():
 		for df_file_idx, df_file in enumerate(user_df_files):
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
 			user_df = load_pickle(fpath=df_file)
-			print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)", end="\t")
+			print(f"[PANDAS] Unpacking nested dict of TKs & reindex cols (A, B, C, ..., Ö)", end=" ")
 			st_t = time.time()
-			# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32") # future warning
-			# user_token_df = user_df.set_index("user_ip")["user_token_interest"].apply(lambda x: pd.Series(x, dtype="object")).astype("float32") # future warning
 			user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
 			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
-			print(f"Elapsed_t: {time.time()-st_t:.2f} s  | {type(user_token_df)} | {user_token_df.shape}")
+			print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(user_token_df)} {user_token_df.shape} memory: {user_token_df.memory_usage(index=True, deep=True).sum()} bytes")
 
 			# sanity check for nonzeros for cols:
 			st_t = time.time()
