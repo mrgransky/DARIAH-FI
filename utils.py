@@ -854,10 +854,10 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return sparse_matrix
 
 def get_df_spm(df: pd.DataFrame):
-	print(f"{type(df)} => Sparse Pandas DataFrame | memory: {df.memory_usage(index=True, deep=True).sum()} bytes", end=" ")
+	print(f"{type(df)} => Sparse Pandas DataFrame | memory: {df.memory_usage(index=True, deep=True).sum()/1e6} MB", end=" ")
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype("float32", fill_value=np.nan))
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s memory: {sdf.memory_usage(index=True, deep=True).sum()} bytes")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6} MB")
 	return sdf
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
