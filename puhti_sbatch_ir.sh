@@ -29,7 +29,7 @@ echo "SLURM_TASKS_PER_NODE: $SLURM_TASKS_PER_NODE, SLURM_THREADS_PER_CORE: $SLUR
 echo "${stars// /*}"
 
 user="`whoami`"
-
+echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
 dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
 

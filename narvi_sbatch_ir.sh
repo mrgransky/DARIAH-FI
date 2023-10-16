@@ -28,9 +28,10 @@ echo "${stars// /*}"
 
 user="`whoami`"
 
-echo ">> Using Puhti Conda Environment..."
-logFiles=(/scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
-dataset_path="/scratch/project_2004072/Nationalbiblioteket/datasets"
+echo "<> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
+source activate py39
+logFiles=(/lustre/sgn-data/Nationalbiblioteket/NLF_Pseudonymized_Logs/*.log)
+dataset_path="/lustre/sgn-data/Nationalbiblioteket/datasets"
 
 echo "Q[$SLURM_ARRAY_TASK_ID]: ${logFiles[$SLURM_ARRAY_TASK_ID]}"
 python -u information_retrieval.py --queryLogFile ${logFiles[$SLURM_ARRAY_TASK_ID]} --dsPath $dataset_path
