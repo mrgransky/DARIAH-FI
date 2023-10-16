@@ -718,7 +718,9 @@ def get_users_tokens_df():
 			zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
 			print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} | Elapsed_t: {time.time()-st_t:.3f} sec".center(150, " "))
 			assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
-			users_tokens_dfs.append(user_token_df)
+			# users_tokens_dfs.append(user_token_df) # original PANDAS df
+			users_tokens_dfs.append(get_df_spm(user_token_df)) # to SparseDtype
+			
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 		gc.collect()
 

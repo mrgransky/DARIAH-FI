@@ -853,6 +853,10 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=sparse_matrix, fname=file_name)
 	return sparse_matrix
 
+def get_df_spm(df: pd.DataFrame):
+	df_spm=df.astype(pd.SparseDtype("float32", fill_value=np.nan))
+	return df_spm
+
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
