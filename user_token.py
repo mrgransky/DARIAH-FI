@@ -474,10 +474,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
 	
-	print(f"<TOTAL> user_token_interest", end="\t")
+	print(f"<TOTAL> user_token_interest", end="\t")	
 	st_t = time.time()
-	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, )
+	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, ) # {'a': 5, 'b': 2, 'd': 8.2, 'e': 6.3, 'l': 4.3, 'w': 8.5}
 	# user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=False).sort_index().to_dict(), axis=1)
+
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
 	gc.collect()
@@ -500,51 +501,24 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 def get_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	print(f"Getting Sparse Matrix from user_df: {df.shape} | len(BoWs): {len(vb)}".center(150, '-'))
-	#print(list(df.columns))
-	#print(df.dtypes)
 
-	# print( df['user_token_interest'].apply(pd.Series).head(15) )
-	# print(">"*100)
-
-	print(f">> init ZERO Sparse DF: {df.shape[0]} x {len(list(vb.keys()))}...", end=" ")
+	print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
 	st_t = time.time()
-	sparse_df = pd.DataFrame( data=np.zeros( ( df.shape[0], len( vb.keys() ) ), dtype="float32" ), 
-														columns=vb.keys(), 
-														index=df["user_ip"], 
-														dtype="float32",
-													)
+	user_token_df = pd.json_normalize(df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
+	user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
-	print(f">> .apply(pd.Series) & reindex cols (A, B, C, ..., Ö)...", end=" ")
-	st_t = time.time()
-	user_token_df = df.set_index("user_ip")["user_token_interest"].apply(pd.Series).astype("float32")
-	user_token_df = user_token_df.reindex(sorted(user_token_df.columns), axis=1)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
-
-	print(f">> combining user_token_df: {user_token_df.shape} into init ZERO Sparse DF: {sparse_df.shape}...", end=" ")
-	st_t = time.time()
-	df_new = user_token_df.combine_first(sparse_df).astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
-	# df_new = pd.concat( [df["user_ip"], df['user_token_interest'].apply(pd.Series)], axis=1).set_index("user_ip")
-
-	#print(df_new.head(15))
-	#print("<"*100)
 
 	##########################Sparse Matrix info##########################
-	sparse_matrix = csr_matrix(df_new.values, dtype=np.float32) # (n_usr x n_vb)
-	#print("#"*110)
-	#print(f"{type(sparse_matrix)} {sparse_matrix.shape} : |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}")
-	#print(f"<> Non-zeros vals: {sparse_matrix.data}")# Viewing stored data (not the zero items)
-	#print(sparse_matrix.toarray()[:25, :18])
-	#print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()}") # Counting nonzeros
-	#print("#"*110)
+	sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	print("#"*110)
+	print(f"{type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}"
+				f"{sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
+	print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()} {sparse_matrix.data}")# Viewing stored data (not the zero items)
+	# print(sparse_matrix.toarray()[:25, :18])
+	print("#"*110)
 	##########################Sparse Matrix info##########################
-	sp_mat_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{sparse_matrix.shape[1]}_BoWs.gz")
-
-	save_pickle(pkl=sparse_matrix, fname=sp_mat_user_token_fname)
-	print(f"{type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} | {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
+	user_token_spm_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
+	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fname)
 	print("-"*150)
 	return sparse_matrix
 
@@ -602,10 +576,10 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	return
 
 	try:
-		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_token_sparse_matrix_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm = get_spm(df=df_user[["user_ip", "user_token_interest"]], vb=BoWs)
+		usr_tk_spm = get_spm(df=df_user, vb=BoWs)
 		
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
