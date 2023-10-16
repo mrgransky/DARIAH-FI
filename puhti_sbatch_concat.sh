@@ -6,10 +6,10 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=890G
-#SBATCH --partition=hugemem_longrun
-#SBATCH --time=06-00:00:00
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=300G
+#SBATCH --partition=large
+#SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
 
 user="`whoami`"
