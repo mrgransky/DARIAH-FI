@@ -857,7 +857,7 @@ def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype("float32", fill_value=np.nan))
-	print(f"{type(sdf)} memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | Elapsed_t: {time.time()-st_t:.2f} s ")
+	print(f"memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | Elapsed_t: {time.time()-st_t:.1f} s ")
 	return sdf
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
