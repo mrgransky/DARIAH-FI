@@ -850,7 +850,7 @@ def get_pdf_concat_optimized(pdfs):
 	print(f"elapsed_time [groupby]{time.time()-t:>{11}.{4}f} sec")
 
 	print("<>"*50)
-	print(dfc.info(memory_usage="deep"))
+	# print(dfc.info(memory_usage="deep"))
 	print("<>"*50)
 
 	t=time.time()
