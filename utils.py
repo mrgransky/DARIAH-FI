@@ -871,7 +871,6 @@ def get_optimized_concat(pdfs):
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False})
 	print(f"elapsed_time [sum]{time.time()-t:>{15}.{4}f} sec")
 
-	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
 	print(f"elapsed_time [sort idx]{time.time()-t:>{10}.{4}f} sec")
