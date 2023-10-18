@@ -729,9 +729,9 @@ def get_users_tokens_df():
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs")
 	st_t = time.time()
 	
-	# user_token_df_concat = get_pdf_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
+	user_token_df_concat = get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
 
-	user_token_df_concat = get_pdf_concat_optimized(pdfs=users_tokens_dfs)
+	# user_token_df_concat = get_optimized_concat(pdfs=users_tokens_dfs)
 
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
