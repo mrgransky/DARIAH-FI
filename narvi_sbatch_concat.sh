@@ -5,10 +5,10 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=07-00:00:00
-#SBATCH --mem=300G
+#SBATCH --mem=128G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=amd
+#SBATCH --partition=normal
 #SBATCH --nodes=1
 
 user="`whoami`"
