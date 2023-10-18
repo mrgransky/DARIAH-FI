@@ -709,7 +709,8 @@ def get_users_tokens_df():
 			st_t = time.time()
 			user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
 			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
-			print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(user_token_df)} {user_token_df.shape} memory: {user_token_df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB")
+			print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs: {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0).sum().sum()}"
+						f" | {user_token_df.shape} memory: {user_token_df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB")
 
 			# sanity check for nonzeros for cols:
 			st_t = time.time()
@@ -729,9 +730,9 @@ def get_users_tokens_df():
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs")
 	st_t = time.time()
 	
-	user_token_df_concat = get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
+	# user_token_df_concat=get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
 
-	# user_token_df_concat = get_optimized_concat(pdfs=users_tokens_dfs)
+	user_token_df_concat=get_optimized_concat(pdfs=users_tokens_dfs)
 
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
