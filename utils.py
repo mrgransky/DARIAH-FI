@@ -838,7 +838,8 @@ def get_concat(pdfs):
 	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
 
 	t=time.time()
-	dfc=dfc.groupby("usr")#.sum()
+	# dfc=dfc.groupby(by="usr")
+	dfc=dfc.groupby(level=0)
 	print(f"elapsed_time [groupby]{time.time()-t:>{11}.{4}f} sec")
 
 	t=time.time()
