@@ -899,10 +899,10 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	# sanity check for nonzeros for cols:
 	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
-	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
+	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 	print(usr_tk_unpacked_df.info(memory_usage="deep"))
-	print("#"*80)
+	print("#"*40)
 	return usr_tk_unpacked_df
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):

@@ -8,7 +8,8 @@
 #SBATCH --mem=128G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=normal
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:teslap100:1
 #SBATCH --nodes=1
 
 user="`whoami`"
