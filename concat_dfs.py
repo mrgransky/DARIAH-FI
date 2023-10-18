@@ -705,18 +705,10 @@ def get_users_tokens_df():
 		for df_file_idx, df_file in enumerate(user_df_files):
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
 			user_df = load_pickle(fpath=df_file)
-			print(f"[PANDAS] Unpacking nested dict of TKs & reindex cols (A, B,..., Ö)", end=" ")
-			st_t = time.time()
-			user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
-			print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs: {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0).sum().sum()}"
-						f" {user_token_df.shape} memory: {user_token_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB")
+			user_token_df = get_unpacked_user_token_interest(df=user_df)
+			# user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
+			# user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 
-			# sanity check for nonzeros for cols:
-			st_t = time.time()
-			zero_cols=[col for col, is_zero in ((user_token_df==0).sum() == user_token_df.shape[0]).items() if is_zero]
-			print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
-			assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 			# users_tokens_dfs.append(user_token_df) # original PANDAS df
 			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype
 			

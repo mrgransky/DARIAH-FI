@@ -887,6 +887,24 @@ def get_df_spm(df: pd.DataFrame):
 	print(f"memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | Elapsed_t: {time.time()-st_t:.1f} s ")
 	return sdf
 
+def get_unpacked_user_token_interest(df: pd.DataFrame):
+	print(f"[PANDAS] Unpacking nested dict of TKs & reindex cols (A, B,..., Ö)...")
+	st_t = time.time()
+	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])#.astype("float32")
+	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
+	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
+	print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs: {usr_tk_unpacked_df.isna().sum().sum()} | nZeros: {(usr_tk_unpacked_df==0).sum().sum()}"
+				f" {usr_tk_unpacked_df.shape} memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB")
+
+	# sanity check for nonzeros for cols:
+	st_t = time.time()
+	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
+	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
+	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
+	print(usr_tk_unpacked_df.info(memory_usage="deep"))
+	print("#"*80)
+	return usr_tk_unpacked_df
+
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
