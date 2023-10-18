@@ -719,24 +719,20 @@ def get_users_tokens_df():
 			# users_tokens_dfs.append(user_token_df) # original PANDAS df
 			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype
 			
-		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
+		print(f"Loaded {len(users_tokens_dfs)} users_tokens_pdfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
 		gc.collect()
 
 		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	gc.collect() # TODO: check if helps for mem error!
-	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_dfs", end="\t")
+	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs", end="\t")
 	st_t = time.time()
-	# multiple lines & separately! concat + groupby
-	# user_token_df_concat = pd.concat(users_tokens_dfs, axis=0)#.astype("float32")
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
-	# gc.collect()
-	# print(f"<> user_token_dfs groupby user_ip column", end="\t")
-	# st_t = time.time()
-	# user_token_df_concat = user_token_df_concat.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))#.astype("float32")
-	user_token_df_concat = pd.concat(users_tokens_dfs, axis=0).groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ) )
-	user_token_df_concat = user_token_df_concat.reindex(columns=sorted(user_token_df_concat.columns))
+	
+	# user_token_df_concat = get_pdf_concat(dfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
+
+	user_token_df_concat = get_df_concat_optimized(dfs=users_tokens_dfs)
+
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
 	gc.collect()
 	

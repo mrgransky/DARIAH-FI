@@ -317,7 +317,7 @@ def get_search_title_issue_page(results_list):
 def get_content_title_issue_page(results_dict):
 	return f'{results_dict.get("title")}_{results_dict.get("issue")}_{results_dict.get("page")[0]}'
 
-def get_sparse_mtx(df):
+def get_sparse_mtx(df: pd.DataFrame,):
 	print(f"Sparse Matrix (USER-ITEM): {df.shape}".center(100, '-'))
 	print(list(df.columns))
 	print(df.dtypes)
@@ -632,7 +632,7 @@ def checking_(url, prms=None):
 		logging.exception(e)
 		return
 
-def make_folder(folder_name="MUST_BE_RENAMED"):
+def make_folder(folder_name:str="MUST_BE_RENAMED"):
 	# if not os.path.exists(folder_name): 
 	# 	#print(f"\n>> Creating DIR:\n{folder_name}")
 	# 	os.makedirs( folder_name )
@@ -705,27 +705,6 @@ def get_query_phrase(inp_url):
 	params = urllib.parse.parse_qs( p_url.query, keep_blank_values=True)
 	#print(parameters)
 	return params.get("query")
-
-def just_test_for_expected_results(df):
-	df_cleaned = df.dropna(axis=0, how="any", subset=["query_word"]).reset_index(drop=True)
-	print("#"*100)
-	idx = np.random.choice(df_cleaned.shape[0]+1)
-	print(f"\n>> search results of sample: {idx}")
-	
-	with pd.option_context('display.max_colwidth', 500):
-		print(df_cleaned.loc[idx, ["user_ip", "query_word", "referer"]])
-
-	one_result = df_cleaned.loc[idx, "search_results"]
-	
-	#print(json.dumps(one_result, indent=1, ensure_ascii=False))
-	for k, v in one_result.items():
-		print(k)
-		print(one_result.get(k).get("newspaper_snippet"))
-		print(len(one_result.get(k).get("newspaper_snippet_highlighted_words")), one_result.get(k).get("newspaper_snippet_highlighted_words"))
-		print()
-		print(one_result.get(k).get("newspaper_content_ocr"))
-		print(len(one_result.get(k).get("newspaper_content_ocr_highlighted_words")), one_result.get(k).get("newspaper_content_ocr_highlighted_words"))
-		print("-"*100)
 
 def clean_(docs):
 	print(f'Raw doc:\n>>{docs}<<')
@@ -853,6 +832,22 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=sparse_matrix, fname=file_name)
 	return sparse_matrix
 
+def get_pdf_concat(dfs):
+	# [TIME INEFFICIENT] for sparse pandas dataFrame
+	dfc=pd.concat(dfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
+	dfc=dfc.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ) )
+	# dfc=dfc.reindex(columns=sorted(dfc.columns))
+	return dfc
+
+def get_df_concat_optimized(dfs):
+	dfc=pd.concat(dfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
+	dfc=dfc.groupby(level=0).sum(engine="numba",
+															 engine_kwargs={'nopython': True, 'parallel': True}
+															)
+	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
+	# dfc=dfc.reindex(columns=sorted(dfc.columns))
+	return dfc.astype(pd.SparseDtype("float32", fill_value=0))
+		
 def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
