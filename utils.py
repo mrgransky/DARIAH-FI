@@ -832,15 +832,15 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=sparse_matrix, fname=file_name)
 	return sparse_matrix
 
-def get_pdf_concat(dfs):
+def get_pdf_concat(pdfs):
 	# [TIME INEFFICIENT] for sparse pandas dataFrame
-	dfc=pd.concat(dfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
+	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
 	dfc=dfc.groupby("user_ip").sum().sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ) )
 	# dfc=dfc.reindex(columns=sorted(dfc.columns))
 	return dfc
 
-def get_df_concat_optimized(dfs):
-	dfc=pd.concat(dfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
+def get_pdf_concat_optimized(pdfs):
+	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
 	dfc=dfc.groupby(level=0).sum(engine="numba",
 															 engine_kwargs={'nopython': True, 'parallel': True}
 															)
