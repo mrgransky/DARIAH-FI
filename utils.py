@@ -840,6 +840,7 @@ def get_pdf_concat(pdfs):
 	return dfc
 
 def get_pdf_concat_optimized(pdfs):
+	print(f"optimized_concat of {len(pdfs)} pandas dataframe...")
 	t=time.time()
 	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
 	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
