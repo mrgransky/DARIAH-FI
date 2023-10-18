@@ -840,12 +840,23 @@ def get_pdf_concat(pdfs):
 	return dfc
 
 def get_pdf_concat_optimized(pdfs):
+	t=time.time()
 	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
-	dfc=dfc.groupby(level=0).sum(engine="numba",
-															 engine_kwargs={'nopython': True, 'parallel': True}
-															)
+	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
+
+	t=time.time()
+	dfc=dfc.groupby(level=0)
+	print(f"elapsed_time [groupby]{time.time()-t:>{11}.{4}f} sec")
+
+	t=time.time()
+	dfc=dfc.sum(engine="numba",engine_kwargs={'nopython': True, 'parallel': True})
+	print(f"elapsed_time [sum]{time.time()-t:>{15}.{4}f} sec")
+
+	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
+	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
-	# dfc=dfc.reindex(columns=sorted(dfc.columns))
+	print(f"elapsed_time [sort idx]{time.time()-t:>{10}.{4}f} sec")
+
 	return dfc.astype(pd.SparseDtype("float32", fill_value=0))
 		
 def get_df_spm(df: pd.DataFrame):
