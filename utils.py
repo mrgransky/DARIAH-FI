@@ -833,6 +833,7 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return sparse_matrix
 
 def get_concat(pdfs):
+	print(f"SLOW_concat of {len(pdfs)} pandas dataframe...")
 	t=time.time()
 	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2, df3, ..., dfN]
 	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
