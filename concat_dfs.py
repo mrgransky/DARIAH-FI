@@ -705,12 +705,12 @@ def get_users_tokens_df():
 		for df_file_idx, df_file in enumerate(user_df_files):
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
 			user_df = load_pickle(fpath=df_file)
-			print(f"[PANDAS] Unpacking nested dict of TKs & reindex cols (A, B, C, ..., Ö)", end=" ")
+			print(f"[PANDAS] Unpacking nested dict of TKs & reindex cols (A, B,..., Ö)", end=" ")
 			st_t = time.time()
 			user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
 			user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 			print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs: {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0).sum().sum()}"
-						f" | {user_token_df.shape} memory: {user_token_df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB")
+						f" {user_token_df.shape} memory: {user_token_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB")
 
 			# sanity check for nonzeros for cols:
 			st_t = time.time()
