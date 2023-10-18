@@ -687,14 +687,14 @@ def get_users_tokens_df():
 	# BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
 	# print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
 	# # print("-"*80)
-	# gc.collect()
+	# # gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"Found {len(user_df_files)} user_df {type(user_df_files)} files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
-	gc.collect() # TODO: check if helps for mem error!
+	# gc.collect() # TODO: check if helps for mem error!
 
 	try:
 		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
@@ -706,28 +706,23 @@ def get_users_tokens_df():
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
 			user_df = load_pickle(fpath=df_file)
 			user_token_df = get_unpacked_user_token_interest(df=user_df)
-			# user_token_df = pd.json_normalize(user_df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-			# user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
 
 			# users_tokens_dfs.append(user_token_df) # original PANDAS df
 			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype
 			
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_pdfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
-		gc.collect()
+		# # gc.collect()
 
 		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
-	gc.collect() # TODO: check if helps for mem error!
+	# # gc.collect() # TODO: check if helps for mem error!
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs")
-	st_t = time.time()
-	
+	st_t = time.time()	
 	# user_token_df_concat=get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
-
 	user_token_df_concat=get_optimized_concat(pdfs=users_tokens_dfs)
-
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
-	gc.collect()
+	# gc.collect()
 	
 	user_token_pdf_fname = os.path.join(args.dfsPath, 
 																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
@@ -755,14 +750,14 @@ def get_users_tokens_ddf():
 	# BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
 	# print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
 	# # print("-"*80)
-	# gc.collect()
+	# # gc.collect()
 
 	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
 	print(f"Found {len(user_df_files)} user_df [{type(user_df_files)}] files:")
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
-	gc.collect() # TODO: check the impact on memory!
+	# gc.collect() # TODO: check the impact on memory!
 
 	try:
 		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
@@ -782,7 +777,7 @@ def get_users_tokens_ddf():
 			print(f"Elapsed_t: {time.time()-st_t:.2f} s  | {type(user_token_df)} | {user_token_df.shape}")
 			users_tokens_dfs.append(user_token_df)
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
-		gc.collect()
+		# gc.collect()
 		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
@@ -792,7 +787,7 @@ def get_users_tokens_ddf():
 	user_token_ddf_concat = user_token_ddf_concat.assign(n=user_token_ddf_concat['user_ip'].str[2:].astype(int)).set_index('user_ip').sort_values(['n']).drop(columns=['n'])
 	user_token_ddf_concat = user_token_ddf_concat[sorted(user_token_ddf_concat.columns)]
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_ddf_concat)} | {user_token_ddf_concat.shape}")	
-	gc.collect()
+	# gc.collect()
 
 	# TODO: investigate with user_token_ddf_concat.index.size.compute() for nUSRs
 	user_token_ddf_concat_fname = os.path.join(args.dfsPath, 
@@ -805,7 +800,7 @@ def get_users_tokens_ddf():
 	st_time = time.time()
 	user_token_ddf_concat.to_parquet(path=user_token_ddf_concat_fname, engine='fastparquet')
 	print(f"Elapsed_t: {time.time()-st_time:.2f} sec".center(110, " "))
-	gc.collect()
+	# gc.collect()
 	return user_token_ddf_concat 
 
 def main():
@@ -880,7 +875,7 @@ def main():
 																file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
 															)
 	
-	gc.collect()
+	# gc.collect()
 	try:
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
@@ -889,7 +884,7 @@ def main():
 																	file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
 																)
 
-	gc.collect()
+	# gc.collect()
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
 	qu_phrase = args.qphrase
@@ -919,18 +914,18 @@ def main():
 	# 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
 	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
 	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
-	gc.collect()
+	# gc.collect()
 
 	st_t = time.time()
 	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	gc.collect()
+	# gc.collect()
 
 	st_t = time.time()
 	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
-	gc.collect()
+	# gc.collect()
 	print("<>"*100)
 	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
@@ -1017,6 +1012,6 @@ def main():
 
 if __name__ == '__main__':
 	# os.system("clear")
-	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(170, " "))
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
 	main()	
-	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(170, " "))
+	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
