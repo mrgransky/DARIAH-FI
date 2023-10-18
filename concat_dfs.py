@@ -726,7 +726,7 @@ def get_users_tokens_df():
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	gc.collect() # TODO: check if helps for mem error!
-	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs", end="\t")
+	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs")
 	st_t = time.time()
 	
 	# user_token_df_concat = get_pdf_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
