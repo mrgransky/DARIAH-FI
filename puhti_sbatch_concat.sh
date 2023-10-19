@@ -5,12 +5,12 @@
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --ntasks=2
+#SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=373G
 #SBATCH --partition=large
 #SBATCH --time=03-00:00:00
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 ######SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
