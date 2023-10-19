@@ -857,11 +857,11 @@ def get_optimized_concat(pdfs):
 	print(f"optimized_concat of {len(pdfs)} pandas dataframe...")
 	t=time.time()
 	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
-	print(f"elapsed_time [concat]{time.time()-t:>{12}.{4}f} sec")
+	print(f"elapsed_time [concat]{time.time()-t:>{22}.{4}f} sec")
 
 	t=time.time()
 	dfc=dfc.groupby(level=0) #index
-	print(f"elapsed_time [groupby]{time.time()-t:>{11}.{4}f} sec")
+	print(f"elapsed_time [groupby]{time.time()-t:>{21}.{4}f} sec")
 
 	# print("<>"*50)
 	# # print(dfc.info(memory_usage="deep"))
@@ -869,11 +869,11 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False})
-	print(f"elapsed_time [sum]{time.time()-t:>{15}.{4}f} sec")
+	print(f"elapsed_time [sum]{time.time()-t:>{25}.{4}f} sec")
 
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
-	print(f"elapsed_time [sort idx]{time.time()-t:>{10}.{4}f} sec")
+	print(f"elapsed_time [sort idx]{time.time()-t:>{20}.{4}f} sec")
 
 	return dfc.astype(pd.SparseDtype("float32", fill_value=0))
 		
