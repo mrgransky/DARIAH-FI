@@ -857,33 +857,49 @@ def get_optimized_concat(pdfs):
 	print(f">> Optimized_concat of {len(pdfs)} Pandas dataframe...")
 	t=time.time()
 	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
-	print(f"elapsed_time [concat]{time.time()-t:>{52}.{4}f} sec")
+	print(f"elapsed_time [concat]{time.time()-t:>{70}.{4}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print(dfc.sparse.density)
+	print("#"*40)
 
 	t=time.time()
-	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"elapsed_time [concat] => Sparse[{dfc.sparse.density}] np.float32 {time.time()-t:>{30}.{4}f} sec")
+	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=np.nan)) # after concat, there's still NaNs
+	print(f"elapsed_time [concat] => Sparse[{dfc.sparse.density:.7f}] np.float32 {time.time()-t:>{20}.{4}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print("#"*80)
 
 	t=time.time()
 	dfc=dfc.groupby(level=0) #index
-	print(f"elapsed_time [groupby]{time.time()-t:>{51}.{4}f} sec")
+	print(f"elapsed_time [groupby]{time.time()-t:>{71}.{4}f} sec")
 
 	t=time.time()
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False})
-	print(f"elapsed_time [sum]{time.time()-t:>{55}.{4}f} sec")
+	print(f"elapsed_time [sum]{time.time()-t:>{75}.{4}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print(dfc.sparse.density)
+	print("#"*40)
 
 	t=time.time()
-	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.density}] np.float32  {time.time()-t:>{30}.{4}f} sec")
+	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0))# after sum, we get 0s
+	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.density:.7f}] np.float32  {time.time()-t:>{20}.{4}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print("-"*80)
 
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
-	print(f"elapsed_time [sort idx]{time.time()-t:>{50}.{4}f} sec")
+	print(f"elapsed_time [sort idx]{time.time()-t:>{70}.{4}f} sec")
 
-	# t=time.time()
-	# dfc=dfc.astype(pd.SparseDtype(dtype=np.float32))
-	# print(f"elapsed_time [sort_idx] => Sparse np.float32 {time.time()-t:>{50}.{4}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print(dfc.sparse.density)
+	print("#"*40)
 
-	return dfc#.astype(pd.SparseDtype(dtype=np.float32))
+	t=time.time()
+	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0)) # we still get 0s
+	print(f"elapsed_time [sort idx] => Sparse[{dfc.sparse.density:.7f}] np.float32  {time.time()-t:>{20}.{4}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print("-"*80)
+
+	return dfc
 	
 def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
