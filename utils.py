@@ -864,17 +864,17 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=np.nan)) # after concat, there's still NaNs
-	print(f"elapsed_time [concat] => Sparse[{dfc.sparse.density:.7f}] fill_value=np.float32 {time.time()-t:>{20}.{4}f} sec")
+	print(f"elapsed_time [concat] => Sparse[{dfc.sparse.density:.7f}] fill_value=np.float32 {time.time()-t:>{18}.{4}f} sec")
 	print(dfc.info(memory_usage="deep"))
 	print("#"*80)
 
 	t=time.time()
 	dfc=dfc.groupby(level=0) #index
-	print(f"elapsed_time [groupby]{time.time()-t:>{61}.{4}f} sec")
+	print(f"elapsed_time [groupby]{time.time()-t:>{60}.{4}f} sec")
 
 	t=time.time()
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False}).astype(np.float32) # original SUM dtypes: float64 (always) NOT SPARSE to get density!
-	print(f"elapsed_time [sum]{time.time()-t:>{75}.{4}f} sec")
+	print(f"elapsed_time [sum]{time.time()-t:>{65}.{4}f} sec")
 	print(dfc.info(memory_usage="deep"))
 	print()
 
