@@ -873,7 +873,7 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"elapsed_time [sum] => Sparse np.float32 {time.time()-t:>{50}.{4}f} sec")
+	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.de}] np.float32  {time.time()-t:>{50}.{4}f} sec")
 
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
