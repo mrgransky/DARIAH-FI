@@ -861,7 +861,7 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"elapsed_time [concat] => Sparse np.float32 {time.time()-t:>{50}.{4}f} sec")
+	print(f"elapsed_time [concat] => Sparse[{dfc.sparse.de}] np.float32 {time.time()-t:>{50}.{4}f} sec")
 
 	t=time.time()
 	dfc=dfc.groupby(level=0) #index
@@ -889,8 +889,7 @@ def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density}"
-				f" | Elapsed_t: {time.time()-st_t:.1f} s ")
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s | memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density}")
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
