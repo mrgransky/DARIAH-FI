@@ -721,9 +721,13 @@ def get_users_tokens_df():
 	st_t = time.time()	
 	# user_token_df_concat=get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
 	user_token_df_concat=get_optimized_concat(pdfs=users_tokens_dfs)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} | {user_token_df_concat.shape}")
-	# gc.collect()
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} {user_token_df_concat.shape}"
+				f" | memory: {user_token_df_concat.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {user_token_df_concat.sparse.density}")
 	
+	print("<>"*50)
+	print(user_token_df_concat.info(memory_usage="deep"))
+	print("<>"*50)
+
 	user_token_pdf_fname = os.path.join(args.dfsPath, 
 																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
 																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
@@ -734,6 +738,7 @@ def get_users_tokens_df():
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
 							fname=os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
 						)
+	
 	return user_token_df_concat 
 
 def get_users_tokens_ddf():
