@@ -890,7 +890,7 @@ def get_df_spm(df: pd.DataFrame):
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype(dtype=np.float32))
 	print(f"memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density}"
-				f"| Elapsed_t: {time.time()-st_t:.1f} s ")
+				f" | Elapsed_t: {time.time()-st_t:.1f} s ")
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
