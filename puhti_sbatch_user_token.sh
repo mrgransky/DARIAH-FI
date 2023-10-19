@@ -32,7 +32,7 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY"
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
