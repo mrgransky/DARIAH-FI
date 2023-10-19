@@ -863,9 +863,9 @@ def get_optimized_concat(pdfs):
 	dfc=dfc.groupby(level=0) #index
 	print(f"elapsed_time [groupby]{time.time()-t:>{11}.{4}f} sec")
 
-	print("<>"*50)
-	# print(dfc.info(memory_usage="deep"))
-	print("<>"*50)
+	# print("<>"*50)
+	# # print(dfc.info(memory_usage="deep"))
+	# print("<>"*50)
 
 	t=time.time()
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False})
