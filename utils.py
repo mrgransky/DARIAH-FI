@@ -875,8 +875,9 @@ def get_optimized_concat(pdfs):
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
 	print(f"elapsed_time [sort idx]{time.time()-t:>{20}.{4}f} sec")
 
-	return dfc.astype(pd.SparseDtype("float32", fill_value=0))
-		
+	# return dfc.astype(pd.SparseDtype("float32", fill_value=0))
+	return dfc.astype( pd.SparseDtype(dtype=np.float32,) )
+	
 def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
