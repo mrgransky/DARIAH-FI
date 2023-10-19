@@ -889,7 +889,8 @@ def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | Elapsed_t: {time.time()-st_t:.1f} s ")
+	print(f"memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density}"
+				f"| Elapsed_t: {time.time()-st_t:.1f} s ")
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
