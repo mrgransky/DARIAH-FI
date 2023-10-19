@@ -7,9 +7,9 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=1199G
-#SBATCH --partition=hugemem_longrun
-#SBATCH --time=14-00:00:00
+#SBATCH --mem=650G
+#SBATCH --partition=hugemem
+#SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
 ######SBATCH --gres=gpu:v100:1
 
@@ -30,7 +30,7 @@ echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_TEST" ########## must be adjusted! ##########
 
 for qu in 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 'Suomen pankki lainat ja talletukset' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
 do
