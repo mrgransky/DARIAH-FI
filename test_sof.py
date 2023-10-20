@@ -44,7 +44,7 @@ def load_joblib(fpath):
 
 t=time.time()
 tracemalloc.start()
-dfs=[get_rnd_df(row=int(9*i), col=int(40*i)) for i in range(1, int(9e+2))]
+dfs=[get_rnd_df(row=int(3*i), col=int(6*i)) for i in range(1, int(9e+2))]
 current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
 print(f"Current : {current_mem_dfs / (1024 * 1024):.3f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.3f} MB")  # Convert to MB
 print(f"elapsed_t dfs {time.time()-t:.2f} sec | {len(dfs)} pandas DFs")
