@@ -875,10 +875,11 @@ def get_optimized_concat(pdfs):
 	dfc=dfc.groupby(level=0) #index
 	print(f"elapsed_time [groupby]{time.time()-t:>{60}.{4}f} sec")
 
+	gc.collect() # TODO: check if helps for mem error!
+
 	t=time.time()
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False}).astype(np.float32) # original SUM dtypes: float64 (always) NOT SPARSE to get density!
 	print(f"elapsed_time [sum]{time.time()-t:>{65}.{4}f} sec")
-	gc.collect() # TODO: check if helps for mem error!
 	
 	print(dfc.info(memory_usage="deep"))
 	print()
