@@ -5,13 +5,13 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=01-00:00:00
-#SBATCH --ntasks-per-core=2
-#SBATCH --cpus-per-task=2
+#SBATCH --ntasks=4
+#SBATCH --cpus-per-task=4
 #SBATCH --mem-per-cpu=164G
 #SBATCH --partition=amd
 #SBATCH --nodes=2
-#SBATCH --threads-per-core=2
 
+# # # # # # SBATCH --threads-per-core=2
 # # # # # # SBATCH --gres=gpu:teslap100:1
 
 user="`whoami`"
