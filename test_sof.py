@@ -42,33 +42,46 @@ def load_joblib(fpath):
 	with open(fpath, mode='rb') as f:
 		return joblib.load(f) 
 
-print("#"*50)
-print(sys.maxsize)
-print("#"*50)
-
 t=time.time()
 tracemalloc.start()
-dfs=[get_rnd_df(row=int(9*i), col=int(40*i)) for i in range(1, int(1e+2))]
-current_mem, peak_mem = tracemalloc.get_traced_memory()
-print(f"Current : {current_mem / (1024 * 1024)} MB | Peak: {peak_mem / (1024 * 1024)} MB")  # Convert to MB
+dfs=[get_rnd_df(row=int(9*i), col=int(40*i)) for i in range(1, int(9e+2))]
+current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
+print(f"Current : {current_mem_dfs / (1024 * 1024):.3f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.3f} MB")  # Convert to MB
 # Stop tracing memory allocations
-tracemalloc.stop()
-print(f"elapsed_t dfs{time.time()-t:2f} sec | {len(dfs)} pandas DFs")
+print(f"elapsed_t dfs {time.time()-t:.2f} sec | {len(dfs)} pandas DFs")
+
+tracemalloc.reset_peak()
 
 # using dill
 t=time.time()
 save_dill(obj=dfs)
-print(f"elapsed_t dill save{time.time()-t:2f} sec")
+_, peak_save_dill = tracemalloc.get_traced_memory()
+print(f"Peak memory usage for dill save: {peak_save_dill / (1024 * 1024)} MB")
+print(f"elapsed_t dill save {time.time()-t:.2f} sec")
+
+tracemalloc.reset_peak()
 
 t=time.time()
 load_dill(fpath="dill_data.gz")
-print(f"elapsed_t dill load{time.time()-t:2f} sec")
+_, peak_load_dill = tracemalloc.get_traced_memory()
+print(f"Peak memory usage for dill load: {peak_load_dill / (1024 * 1024)} MB")
+print(f"elapsed_t dill load {time.time()-t:.2f} sec")
+
+tracemalloc.reset_peak()
 
 # using joblib
 t=time.time()
 save_joblib(obj=dfs)
-print(f"elapsed_t joblib save{time.time()-t:2f} sec")
+_, peak_save_joblib = tracemalloc.get_traced_memory()
+print(f"Peak memory usage for joblib save: {peak_save_joblib / (1024 * 1024)} MB")
+print(f"elapsed_t joblib save {time.time()-t:.2f} sec")
+
+tracemalloc.reset_peak()
 
 t=time.time()
 load_joblib(fpath="joblib_data.gz")
-print(f"elapsed_t joblib load{time.time()-t:2f} sec")
+_, peak_load_joblib = tracemalloc.get_traced_memory()
+print(f"Peak memory usage for joblib load: {peak_load_joblib / (1024 * 1024)} MB")
+print(f"elapsed_t joblib load {time.time()-t:.2f} sec")
+
+tracemalloc.stop()
