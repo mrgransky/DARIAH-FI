@@ -5,9 +5,9 @@
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --ntasks=10
+#SBATCH --ntasks=5
 #SBATCH --cpus-per-task=10
-#SBATCH --mem-per-cpu=10G
+#SBATCH --mem-per-cpu=20G
 #SBATCH --partition=hugemem
 #SBATCH --time=00-20:00:00
 #SBATCH --nodes=1
