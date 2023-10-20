@@ -5,10 +5,10 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=00-03:00:00
-#SBATCH --ntasks=5
+#SBATCH --ntasks=10
 #SBATCH --cpus-per-task=10
-#SBATCH --mem-per-cpu=4G
-#SBATCH --partition=amd
+#SBATCH --mem-per-cpu=8G
+#SBATCH --partition=normal
 #SBATCH --nodes=1
 
 # # # # # # SBATCH --threads-per-core=2
