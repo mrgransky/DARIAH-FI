@@ -4,11 +4,11 @@
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=01-00:00:00
+#SBATCH --time=00-03:00:00
 #SBATCH --ntasks=4
 #SBATCH --cpus-per-task=4
 #SBATCH --mem-per-cpu=164G
-#SBATCH --partition=amd
+#SBATCH --partition=test
 #SBATCH --nodes=2
 
 # # # # # # SBATCH --threads-per-core=2
