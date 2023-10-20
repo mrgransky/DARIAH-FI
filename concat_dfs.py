@@ -706,14 +706,14 @@ def get_users_tokens_df():
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
 
 			user_df = load_pickle(fpath=df_file)
-			gc.collect()
+			# gc.collect()
 
 			user_token_df = get_unpacked_user_token_interest(df=user_df)
-			gc.collect()
+			# gc.collect()
 
 			# users_tokens_dfs.append(user_token_df) # original PANDAS df
 			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype
-			gc.collect()
+			# gc.collect()
 			
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_pdfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
 		# # gc.collect()
@@ -721,7 +721,7 @@ def get_users_tokens_df():
 		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
-	gc.collect() # TODO: check if helps for mem error!
+	# gc.collect() # TODO: check if helps for mem error!
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs")
 	st_t = time.time()	
 	# user_token_df_concat=get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
