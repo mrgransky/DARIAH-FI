@@ -886,7 +886,7 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0))# after sum, we get 0s
-	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{25}.{4}f} sec")
+	print(f"elapsed_time [sum (numba)] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{22}.{4}f} sec")
 	# gc.collect() # TODO: check if helps for mem error!
 	print(dfc.info(memory_usage="deep"))
 	print("-"*100)

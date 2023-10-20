@@ -41,7 +41,7 @@ def load_joblib(fpath):
 		return joblib.load(f) 
 
 t=time.time()
-dfs=[get_rnd_df(row=int(30*i), col=int(40*i)) for i in range(1, int(1e+3))]
+dfs=[get_rnd_df(row=int(9*i), col=int(400*i)) for i in range(1, int(1e+3))]
 print(f"elapsed_t dfs{time.time()-t:2f} sec | {len(dfs)} pandas DFs")
 
 # using dill
