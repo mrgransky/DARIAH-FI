@@ -858,6 +858,8 @@ def get_optimized_concat(pdfs):
 	t=time.time()
 	dfc=pd.concat(pdfs, axis=0, sort=True) # dfs=[df1, df2,..., dfN], sort=True: sort columns
 	print(f"elapsed_time [concat]{time.time()-t:>{60}.{4}f} sec")
+	gc.collect() # TODO: check if helps for mem error!
+
 	print(dfc.info(memory_usage="deep"))
 	print(dfc.sparse.density)
 	print()
@@ -865,6 +867,7 @@ def get_optimized_concat(pdfs):
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=np.nan)) # after concat, there's still NaNs
 	print(f"elapsed_time [concat] => Sparse[{dfc.sparse.density:.7f}] fill_value=np.float32 {time.time()-t:>{16}.{4}f} sec")
+	gc.collect() # TODO: check if helps for mem error!
 	print(dfc.info(memory_usage="deep"))
 	print("#"*100)
 
@@ -875,18 +878,22 @@ def get_optimized_concat(pdfs):
 	t=time.time()
 	dfc=dfc.sum(engine="numba", engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False}).astype(np.float32) # original SUM dtypes: float64 (always) NOT SPARSE to get density!
 	print(f"elapsed_time [sum]{time.time()-t:>{65}.{4}f} sec")
+	gc.collect() # TODO: check if helps for mem error!
+	
 	print(dfc.info(memory_usage="deep"))
 	print()
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0))# after sum, we get 0s
 	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{25}.{4}f} sec")
+	gc.collect() # TODO: check if helps for mem error!
 	print(dfc.info(memory_usage="deep"))
 	print("-"*100)
 
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
 	print(f"elapsed_time [sort idx]{time.time()-t:>{60}.{4}f} sec")
+	gc.collect() # TODO: check if helps for mem error!
 
 	print(dfc.info(memory_usage="deep"))
 	print(dfc.sparse.density)
@@ -895,6 +902,7 @@ def get_optimized_concat(pdfs):
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0)) # we still get 0s
 	print(f"elapsed_time [sort idx] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{18}.{4}f} sec")
+	gc.collect() # TODO: check if helps for mem error!
 	print(dfc.info(memory_usage="deep"))
 	print("-"*100)
 
