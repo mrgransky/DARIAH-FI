@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --job-name=df_concat_XY
+#SBATCH --job-name=dfs_store_AND_df_concat_XY
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=00-03:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=10
-#SBATCH --mem-per-cpu=16G
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=700G
 #SBATCH --partition=normal
 #SBATCH --nodes=1
 
@@ -34,6 +34,11 @@ echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
 
+echo "dfs_storing..."
+python -u test_sof.py
+echo "${stars// /*}"
+
+echo "XY concat..."
 python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
 done_txt="$user finished Slurm job: `date`"
