@@ -47,7 +47,6 @@ tracemalloc.start()
 dfs=[get_rnd_df(row=int(9*i), col=int(40*i)) for i in range(1, int(9e+2))]
 current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
 print(f"Current : {current_mem_dfs / (1024 * 1024):.3f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.3f} MB")  # Convert to MB
-# Stop tracing memory allocations
 print(f"elapsed_t dfs {time.time()-t:.2f} sec | {len(dfs)} pandas DFs")
 
 tracemalloc.reset_peak()
@@ -84,4 +83,5 @@ _, peak_load_joblib = tracemalloc.get_traced_memory()
 print(f"Peak memory usage for joblib load: {peak_load_joblib / (1024 * 1024)} MB")
 print(f"elapsed_t joblib load {time.time()-t:.2f} sec")
 
+# Stop tracing memory allocations
 tracemalloc.stop()
