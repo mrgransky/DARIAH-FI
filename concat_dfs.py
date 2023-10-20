@@ -875,6 +875,10 @@ def main():
 
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
+	# # #################################################################################
+	# # some problems with pd.SparseDtype and IDF, TODO: to be resolved later!
+	# # #################################################################################
+	return
 
 	try:
 		# load idf
