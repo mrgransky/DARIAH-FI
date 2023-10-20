@@ -36,7 +36,7 @@ def load_joblib(fpath)
 	with open(fpath, mode='rb') as f:
 		return joblib.load(f) 
 
-dfs=[get_rnd_df(row=int(20*i), col=int(40*i)) for i in range(1e+3)]
+dfs=[get_rnd_df(row=int(20*i), col=int(40*i)) for i in range(1e+4)]
 
 # using dill
 save_dill(obj=dfs)
