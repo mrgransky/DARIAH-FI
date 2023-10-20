@@ -17,7 +17,7 @@ def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
 									dtype=pd.SparseDtype(dtype=np.float32), # sparse: memory efficient xxx but SUPER SLOW xxx
 							)
 	df.index.name='usr'
-	print(f"elapsed_t: {time.time():.2f} sec")
+	print(f"elapsed_t: {time.time()-t:.2f} sec")
 	return df
 
 df1=get_rnd_df(row=int(1e+3), col=int(2e+3)) # resembles my real data
