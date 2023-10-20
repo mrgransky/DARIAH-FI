@@ -22,9 +22,6 @@ def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
 	# print(f"elapsed_t: {time.time()-t:.2f} sec")
 	return df
 
-df1=get_rnd_df(row=int(1e+3), col=int(2e+3)) # resembles my real data
-df2=get_rnd_df(row=int(1e+3), col=int(2e+3)) # resembles my real data
-
 def save_dill(obj):
 	with open('dill_data.gz', 'wb') as f:
 		dill.dump(obj, f)
@@ -32,7 +29,6 @@ def save_dill(obj):
 def load_dill(fpath):
 	with open(fpath, mode='rb') as f:
 		return dill.load(f) 
-
 
 def save_joblib(obj):
 	with open('joblib_data.gz', 'wb') as f:
@@ -44,7 +40,7 @@ def load_joblib(fpath):
 
 t=time.time()
 tracemalloc.start()
-dfs=[get_rnd_df(row=int(3*i), col=int(6*i)) for i in range(1, int(9e+2))]
+dfs=[get_rnd_df(row=int(3*i), col=int(4*i)) for i in range(1, int(9e+2))]
 current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
 print(f"Current : {current_mem_dfs / (1024 * 1024):.3f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.3f} MB")  # Convert to MB
 print(f"elapsed_t dfs {time.time()-t:.2f} sec | {len(dfs)} pandas DFs")
