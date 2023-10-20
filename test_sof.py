@@ -24,7 +24,7 @@ def save_dill(obj):
 	with open('dill_data.gz', 'wb') as f:
 		dill.dump(obj, f)
 
-def load_dill(fpath)
+def load_dill(fpath):
 	with open(fpath, mode='rb') as f:
 		return dill.load(f) 
 
@@ -33,7 +33,7 @@ def save_joblib(obj):
 	with open('joblib_data.gz', 'wb') as f:
 		joblib.dump(obj, f)
 
-def load_joblib(fpath)
+def load_joblib(fpath):
 	with open(fpath, mode='rb') as f:
 		return joblib.load(f) 
 
