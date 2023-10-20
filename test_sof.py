@@ -1,5 +1,6 @@
 import dill
 import joblib
+import time
 
 import pandas as pd
 import numpy as np
@@ -36,12 +37,24 @@ def load_joblib(fpath)
 	with open(fpath, mode='rb') as f:
 		return joblib.load(f) 
 
+t=time.time()
 dfs=[get_rnd_df(row=int(20*i), col=int(40*i)) for i in range(1e+4)]
+print(f"elapsed_t dfs{time.time()-t:2f} sec")
 
 # using dill
+t=time.time()
 save_dill(obj=dfs)
+print(f"elapsed_t dill save{time.time()-t:2f} sec")
+
+t=time.time()
 load_dill(fpath="dill_data.gz")
+print(f"elapsed_t dill load{time.time()-t:2f} sec")
 
 # using joblib
+t=time.time()
 save_joblib(obj=dfs)
+print(f"elapsed_t joblib save{time.time()-t:2f} sec")
+
+t=time.time()
 load_joblib(fpath="joblib_data.gz")
+print(f"elapsed_t joblib load{time.time()-t:2f} sec")
