@@ -8,7 +8,7 @@
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=32G
-#SBATCH --partition=test
+#SBATCH --partition=amd
 #SBATCH --nodes=2
 
 # # # # # # SBATCH --threads-per-core=2
