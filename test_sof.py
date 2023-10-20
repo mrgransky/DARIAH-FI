@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 
 def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
+	print(f"[r, c]: [{row}, {col}]", end="\t")
+	t=time.time()
 	np.random.seed(0)
 	d=np.random.randint(low=0, high=10, size=(row,col)).astype(np.float32)
 	d[d < 3] = np.nan
@@ -15,6 +17,7 @@ def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
 									dtype=pd.SparseDtype(dtype=np.float32), # sparse: memory efficient xxx but SUPER SLOW xxx
 							)
 	df.index.name='usr'
+	print(f"elapsed_t: {time.time():.2f} sec")
 	return df
 
 df1=get_rnd_df(row=int(1e+3), col=int(2e+3)) # resembles my real data
