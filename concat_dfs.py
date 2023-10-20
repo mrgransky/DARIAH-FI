@@ -875,11 +875,19 @@ def main():
 
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
+	
+	try:
+		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
+	except Exception as e:
+		print(f"<!> {e}")
+		sp_mat_rf = get_sparse_matrix(df=user_token_df,
+																	file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
+																)
+
 	# # #################################################################################
 	# # some problems with pd.SparseDtype and IDF, TODO: to be resolved later!
 	# # #################################################################################
 	return
-
 	try:
 		# load idf
 		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
@@ -889,14 +897,6 @@ def main():
 																file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
 															)
 	
-	# gc.collect()
-	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
-	except Exception as e:
-		print(f"<!> {e}")
-		sp_mat_rf = get_sparse_matrix(df=user_token_df,
-																	file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
-																)
 
 	# gc.collect()
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
