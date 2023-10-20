@@ -10,7 +10,7 @@
 #SBATCH --mem-per-cpu=8G
 #SBATCH --partition=large
 #SBATCH --time=00-16:00:00
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 ######SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
