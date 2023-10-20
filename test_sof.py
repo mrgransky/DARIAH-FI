@@ -1,12 +1,14 @@
 import dill
 import joblib
 import time
+import sys
+import tracemalloc
 
 import pandas as pd
 import numpy as np
 
 def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
-	print(f"[r, c]: [{row}, {col}]", end="\t")
+	# print(f"[r, c]: [{row}, {col}]", end="\t")
 	t=time.time()
 	np.random.seed(0)
 	d=np.random.randint(low=0, high=10, size=(row,col)).astype(np.float32)
@@ -17,7 +19,7 @@ def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
 									dtype=pd.SparseDtype(dtype=np.float32), # sparse: memory efficient xxx but SUPER SLOW xxx
 							)
 	df.index.name='usr'
-	print(f"elapsed_t: {time.time()-t:.2f} sec")
+	# print(f"elapsed_t: {time.time()-t:.2f} sec")
 	return df
 
 df1=get_rnd_df(row=int(1e+3), col=int(2e+3)) # resembles my real data
@@ -40,8 +42,17 @@ def load_joblib(fpath):
 	with open(fpath, mode='rb') as f:
 		return joblib.load(f) 
 
+print("#"*50)
+print(sys.maxsize)
+print("#"*50)
+
 t=time.time()
-dfs=[get_rnd_df(row=int(9*i), col=int(40*i)) for i in range(1, int(1e+3))]
+tracemalloc.start()
+dfs=[get_rnd_df(row=int(9*i), col=int(40*i)) for i in range(1, int(1e+2))]
+current_mem, peak_mem = tracemalloc.get_traced_memory()
+print(f"Current : {current_mem / (1024 * 1024)} MB | Peak: {peak_mem / (1024 * 1024)} MB")  # Convert to MB
+# Stop tracing memory allocations
+tracemalloc.stop()
 print(f"elapsed_t dfs{time.time()-t:2f} sec | {len(dfs)} pandas DFs")
 
 # using dill
