@@ -880,7 +880,7 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0))# after sum, we get 0s
-	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{16}.{4}f} sec")
+	print(f"elapsed_time [sum] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{25}.{4}f} sec")
 	print(dfc.info(memory_usage="deep"))
 	print("-"*100)
 
@@ -894,7 +894,7 @@ def get_optimized_concat(pdfs):
 
 	t=time.time()
 	dfc=dfc.astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0)) # we still get 0s
-	print(f"elapsed_time [sort idx] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{20}.{4}f} sec")
+	print(f"elapsed_time [sort idx] => Sparse[{dfc.sparse.density:.7f}] fill_value=0.0  {time.time()-t:>{18}.{4}f} sec")
 	print(dfc.info(memory_usage="deep"))
 	print("-"*100)
 
