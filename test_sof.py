@@ -75,8 +75,8 @@ def get_df_concat_optimized(dfs):
 	return dfc
 
 t=time.time()
-df1=get_rnd_df(row=int(2e2), col=int(1e6))
-df2=get_rnd_df(row=int(3e2), col=int(2e6))
+df1=get_rnd_df(row=np.random.randint(low=3e3, high=5e3), col=p.random.randint(low=1e6, high=3e6))
+df1=get_rnd_df(row=np.random.randint(low=2e3, high=4e3), col=p.random.randint(low=1e5, high=1e6))
 print(f"elapsed_t x2_dfs {time.time()-t:.2f} sec {df1.shape} & {df2.shape}")
 
 df_concat_opt=get_df_concat_optimized(dfs=[df1, df2])
