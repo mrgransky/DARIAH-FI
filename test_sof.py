@@ -16,7 +16,7 @@ def get_rnd_df(row:int=10, col:int=7): # generate random Sparse Pandas dataframe
 	df=pd.DataFrame(data=d,
 									index=[f"ip{i}" for i in np.random.choice(range(max(row, 10)), row, replace=False) ],
 									columns=[f"col_{c}" for c in np.random.choice(range(max(col, 10)), col, replace=False) ],
-									dtype=pd.SparseDtype(dtype=np.float32), # sparse: memory efficient xxx but SUPER SLOW xxx
+									dtype=pd.SparseDtype(dtype=np.float32),
 							)
 	df.index.name='usr'
 	# print(f"elapsed_t: {time.time()-t:.2f} sec")
@@ -40,7 +40,7 @@ def load_joblib(fpath):
 
 t=time.time()
 tracemalloc.start()
-dfs=[get_rnd_df(row=int(5*i), col=int(20*i)) for i in range(1, int(1e+3))]
+dfs=[get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=3e6)) for _ in range(int(1e+3))] # 1000 DFs
 current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
 print(f"Current : {current_mem_dfs / (1024 * 1024):.2f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.2f} MB")
 print(f"elapsed_t dfs {time.time()-t:.2f} sec for listing {len(dfs)} Pandas DFs")
