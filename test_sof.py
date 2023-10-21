@@ -38,6 +38,7 @@ def load_joblib(fpath):
 		return joblib.load(f) 
 
 def get_df_concat_optimized(dfs):
+	print(f">> concat {len(dfs)} pandas dataframes(s), might take a while..")
 	t=time.time()
 	dfc=pd.concat(dfs, axis=0, sort=True).astype(pd.SparseDtype(dtype=np.float32)) # dfs=[df1, df2,..., dfN], sort=True: sort columns
 	print(f"elapsed_time [concat+float32]{time.time()-t:>{30}.{1}f} sec")
@@ -76,8 +77,8 @@ def get_df_concat_optimized(dfs):
 
 t=time.time()
 df1=get_rnd_df(row=np.random.randint(low=2e3, high=4e3), col=np.random.randint(low=1e6, high=3e6))
-df2=get_rnd_df(row=np.random.randint(low=2e3, high=5e3), col=np.random.randint(low=1e5, high=1e6))
-print(f"elapsed_t x2_dfs {time.time()-t:.2f} sec {df1.shape} & {df2.shape}")
+df2=get_rnd_df(row=np.random.randint(low=2e3, high=5e3), col=np.random.randint(low=1e6, high=2e6))
+print(f"elapsed_t x2_dfs {time.time()-t:.1f} sec {df1.shape} & {df2.shape}")
 
 df_concat_opt=get_df_concat_optimized(dfs=[df1, df2])
 print( df_concat_opt.info(memory_usage="deep") )
