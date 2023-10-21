@@ -689,12 +689,15 @@ def get_users_tokens_df():
 	# # print("-"*80)
 	# # gc.collect()
 
-	user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	print(f"Found {len(user_df_files)} user_df {type(user_df_files)} files:")
+
+	# TODO: check if helper fcn works! => remove if yes!
+	# user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
+	# print(f"Found {len(user_df_files)} user_df {type(user_df_files)} files:")
+	user_df_files=get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz')
+	
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
-	# gc.collect() # TODO: check if helps for mem error!
 
 	try:
 		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
@@ -718,7 +721,7 @@ def get_users_tokens_df():
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_pdfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
 		# # gc.collect()
 
-		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
+		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	# gc.collect() # TODO: check if helps for mem error!
@@ -734,14 +737,14 @@ def get_users_tokens_df():
 	print("<>"*50)
 
 	user_token_pdf_fname = os.path.join(args.dfsPath, 
-																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
+																						f"{fprefix}_"
 																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
 																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																					)
 	save_pickle(pkl=user_token_df_concat, fname=user_token_pdf_fname)
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
-							fname=os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
+							fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
 						)
 	
 	return user_token_df_concat 
@@ -788,7 +791,7 @@ def get_users_tokens_ddf():
 			users_tokens_dfs.append(user_token_df)
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_dfs in {time.time()-load_time_start:.1f} sec".center(180, "-"))
 		# gc.collect()
-		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_x_{len(users_tokens_dfs)}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
+		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
 
 	print(f"[DASK] Concatinating {len(users_tokens_dfs)} users_tokens_dfs & GroupBy user_ip column", end="\t")
@@ -801,7 +804,7 @@ def get_users_tokens_ddf():
 
 	# TODO: investigate with user_token_ddf_concat.index.size.compute() for nUSRs
 	user_token_ddf_concat_fname = os.path.join(args.dfsPath, 
-																						f"{fprefix}_x_{len(users_tokens_dfs)}_"
+																						f"{fprefix}_"
 																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_ddf_"
 																						f"XXX_nUSRs_x_"
 																						f"{len(user_token_ddf_concat.columns)}_nTOKs.parquet"
@@ -815,8 +818,9 @@ def get_users_tokens_ddf():
 
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
-	global fprefix, RES_DIR
-	fprefix = f"concatinated_dataframes"
+	global fprefix, RES_DIR	
+	fprefix = f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_dfs"
+	print(f"fprefix: {fprefix}")
 	RES_DIR = make_result_dir(infile=fprefix)
 	make_folder(folder_name=args.dfsPath)
 	# print(fprefix, RES_DIR)
