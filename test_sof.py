@@ -70,17 +70,21 @@ def get_df_concat_optimized(dfs):
 	print(dfc.info(memory_usage="deep"))
 	print("<>"*35)
 
-	tracemalloc.stop()
+	tracemalloc.reset_peak()
 	
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) )).astype(pd.SparseDtype(dtype=np.float32, fill_value=0.0))
 	print(f"elapsed_time [sort_idx+float32]{time.time()-t:>{28}.{1}f} sec")
+	print(f"Current : {current_mem / (1024 * 1024):.2f} MB | Peak: {peak_mem / (1024 * 1024):.2f} MB")  # Convert to MB     
+	print(dfc.info(memory_usage="deep"))
+	print("<>"*35)
+	tracemalloc.stop()
 
 	return dfc
 
 t=time.time()
-df1=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=2e6))
-df2=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=2e6))
+df1=get_rnd_df(row=np.random.randint(low=2e3, high=5e3), col=np.random.randint(low=1e6, high=4e6))
+df2=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=5e6))
 print(f"elapsed_t x2_dfs {time.time()-t:.1f} sec {df1.shape} & {df2.shape}")
 
 df_concat_opt=get_df_concat_optimized(dfs=[df1, df2])
