@@ -42,9 +42,12 @@ def get_df_concat_optimized(dfs):
 	t=time.time()
 	dfc=pd.concat(dfs, axis=0, sort=True).astype(pd.SparseDtype(dtype=np.float32)) # dfs=[df1, df2,..., dfN], sort=True: sort columns
 	print(f"elapsed_time [concat+float32]{time.time()-t:>{30}.{1}f} sec")
+	print(dfc.info(memory_usage="deep"))
 	print("<>"*35)
 
+	t=time.time()
 	dfc=dfc.groupby(level=0)
+	print(f"elapsed_time [groupby]{time.time()-t:>{41}.{4}f} sec")
 
 	t=time.time()
 	tracemalloc.start()
@@ -76,8 +79,8 @@ def get_df_concat_optimized(dfs):
 	return dfc
 
 t=time.time()
-df1=get_rnd_df(row=np.random.randint(low=2e3, high=4e3), col=np.random.randint(low=1e6, high=3e6))
-df2=get_rnd_df(row=np.random.randint(low=2e3, high=5e3), col=np.random.randint(low=1e6, high=2e6))
+df1=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=2e6))
+df2=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=2e6))
 print(f"elapsed_t x2_dfs {time.time()-t:.1f} sec {df1.shape} & {df2.shape}")
 
 df_concat_opt=get_df_concat_optimized(dfs=[df1, df2])
