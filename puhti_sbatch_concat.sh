@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=df_concat_x14
+#SBATCH --job-name=df_concat_x10
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=40
 #SBATCH --mem-per-cpu=37G
 #SBATCH --partition=hugemem
-#SBATCH --time=00-10:00:00
+#SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
 ######SBATCH --gres=gpu:v100:1
 
@@ -30,7 +30,7 @@ echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x14" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x10" ########## must be adjusted! ##########
 
 
 echo "dfs_list storing..."
