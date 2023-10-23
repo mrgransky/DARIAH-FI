@@ -34,11 +34,11 @@ echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
 
-echo "dfs_storing..."
+echo "dfs_list storing..."
 python -u test_sof.py
 echo "${stars// /*}"
 
-echo "XY concat..."
+echo "DFs concat..."
 python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
 
 done_txt="$user finished Slurm job: `date`"

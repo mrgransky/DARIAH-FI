@@ -92,7 +92,7 @@ print( df_concat_opt.info(memory_usage="deep") )
 
 t=time.time()
 tracemalloc.start()
-dfs=[get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=3e6)) for _ in range(int(1e+3))] # 1000 DFs
+dfs=[get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=2e6)) for _ in range(int(1e+3))] # 1000 DFs
 current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
 print(f"Current : {current_mem_dfs / (1024 * 1024):.2f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.2f} MB")
 print(f"elapsed_t dfs {time.time()-t:.2f} sec for listing {len(dfs)} Pandas DFs")
