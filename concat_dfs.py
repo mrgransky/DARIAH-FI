@@ -816,17 +816,32 @@ def get_users_tokens_ddf():
 	# gc.collect()
 	return user_token_ddf_concat 
 
+def run():
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
+	make_folder(folder_name=args.dfsPath)
+	assert len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
+
+	global fprefix, RES_DIR
+	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' ))}_SPMs"
+	RES_DIR = make_result_dir(infile=fprefix)
+	print(fprefix, RES_DIR)
+
+
+
+
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
+	make_folder(folder_name=args.dfsPath)
+	
 	global fprefix, RES_DIR	
 	fprefix = f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_dfs"
-	print(f"fprefix: {fprefix}")
+
 	RES_DIR = make_result_dir(infile=fprefix)
-	make_folder(folder_name=args.dfsPath)
-	# print(fprefix, RES_DIR)
+	print(fprefix, RES_DIR)
+
 	normalize_sp_mtrx = False
 	topK=args.topTKs
-	
+
 	# ############################### PANDAS DataFrame ################################
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
@@ -873,25 +888,23 @@ def main():
 	# # print(f"Elapsed_t: {time.time()-eq_t:.2f} s")
 	# ############################### DASK DataFrame ################################
 
-	# # #################################################################################
-	# # user_token_df = user_token_ddf.copy() #### TODO: must be removed , just checking DASK_df
-	# # #################################################################################
-
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
 	
-	# try:
-	# 	sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
-	# except Exception as e:
-	# 	print(f"<!> {e}")
-	# 	sp_mat_rf = get_sparse_matrix(df=user_token_df,
-	# 																spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
-	# 															)
-	
+	try:
+		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
+	except Exception as e:
+		print(f"<!> {e}")
+		sp_mat_rf = get_sparse_matrix(df=user_token_df,
+																	spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
+																)
+
+	return
+
+
 	# # #################################################################################
 	# # some problems with pd.SparseDtype and IDF, TODO: to be resolved later!
 	# # #################################################################################
-	return
 	try:
 		# load idf
 		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
@@ -1031,5 +1044,6 @@ def main():
 if __name__ == '__main__':
 	# os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
-	main()	
+	# main()
+	run()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))

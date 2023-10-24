@@ -837,11 +837,7 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero vals|: {sparse_matrix.count_nonzero()} "
 				f"| {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
 	##########################Sparse Matrix info##########################
-	
-	# spm_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(vb)}_BoWs.gz")
-	# spm_rows_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(vb)}_BoWs.gz")
-	# spm_cols_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(vb)}_BoWs.gz")
-	
+		
 	save_pickle(pkl=sparse_matrix, fname=spm_fname)
 	save_pickle(pkl=list(user_token_df.index), fname=spm_rows_fname)
 	save_pickle(pkl=list(user_token_df.columns), fname=spm_cols_fname)
@@ -964,11 +960,16 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	print(usr_tk_unpacked_df.info(memory_usage="deep"))
 	return usr_tk_unpacked_df
 
-def get_df_files(fpath:str="MUST_BE_DEFINED"):
+def get_df_files(fpath: str="MUST_BE_DEFINED"):
 	df_files = natsorted( glob.glob( fpath ) )
 	print(f"Found {len(df_files)} Pandas DataFrame {type(df_files)} files:")
 	return df_files
-	
+
+def get_spm_files(fpath: str="MUST_BE_DEFINED"):
+	spm_files = natsorted( glob.glob( fpath ) )
+	print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
+	return spm_files
+
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
