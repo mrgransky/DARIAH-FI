@@ -4,14 +4,14 @@
 #SBATCH --job-name=irQ
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --partition=small
-#SBATCH --mem=12G
+#SBATCH --mem=13G
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --cpus-per-task=1
-#SBATCH --array=251-500%10
+#SBATCH --array=351-600%10
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"
