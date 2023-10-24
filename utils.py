@@ -820,15 +820,7 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
 	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
-
-	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
-	# st_t = time.time()
-	# user_token_df = pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"]).astype("float32")
-	# user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=df["user_ip"])
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
 	user_token_df = get_unpacked_user_token_interest(df=df)
-	
 	##########################Sparse Matrix info##########################
 	if user_token_df.isnull().values.any():
 		t=time.time()
