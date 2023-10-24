@@ -500,7 +500,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	return user_df
 
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} | len(BoWs): {len(vb)}")
+	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
 
 	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
 	# st_t = time.time()
@@ -524,7 +524,7 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	print(f"Elapsed_t: {time.time()-t:.2f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero vals|: {sparse_matrix.count_nonzero()} "
-				f"{(sparse_matrix.data.nbytes+sparse_matrix.indptr.nbytes+sparse_matrix.indices.nbytes)/1e6:.4f} MB")
+				f"size: {len(pickle.dumps(sparse_matrix))} bytes")
 	# print(sparse_matrix.toarray()[:25, :18])
 	##########################Sparse Matrix info##########################
 	user_token_spm_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(vb)}_BoWs.gz")
