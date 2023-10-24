@@ -500,7 +500,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	return user_df
 
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"Getting Sparse Matrix from (detailed) user_df: {df.shape} | len(BoWs): {len(vb)}")
+	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} | len(BoWs): {len(vb)}")
 
 	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
 	# st_t = time.time()
@@ -514,11 +514,11 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	if user_token_df.isnull().values.any():
 		t=time.time()
 		print(f">> Found {user_token_df.isna().sum().sum()} NaNs => 0.0", end="\t")
-		user_token_df=user_token_df.fillna(value=0.0).astype(np.float)
+		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
 		print(f"Elapsed_t: {time.time()-t:.2f} sec ")
 
 	print( user_token_df.info(memory_usage="deep") )
-	print(f"SciPy Sparse Matrix of user_token_df: {user_token_df.shape} | nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0.0).sum().sum()}".center(150, ' '))
+	print(f"=> Sparse Matrix user_token_df: {user_token_df.shape} | nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0.0).sum().sum()}".center(150, ' '))
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
