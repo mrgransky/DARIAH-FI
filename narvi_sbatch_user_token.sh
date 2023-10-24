@@ -4,15 +4,15 @@
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=02-00:00:00
-#SBATCH --mem=256G
+#SBATCH --time=01-00:00:00
+#SBATCH --mem=192G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=normal
 #SBATCH --nodes=1
-# # # # SBATCH --array=730-731 # originall case! xy
-####SBATCH --gres=gpu:teslap100:1
-#SBATCH --array=0-100
+#SBATCH --array=751-752 # originall case! xy
+#####SBATCH --gres=gpu:teslap100:1
+#####SBATCH --array=0-100
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -34,7 +34,7 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" #### must be adjusted ####
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" #### must be adjusted ####
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
