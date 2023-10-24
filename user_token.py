@@ -511,7 +511,7 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	user_token_df = get_unpacked_user_token_interest(df=df)
 	
 	##########################Sparse Matrix info##########################
-	print(f"SciPy Sparse Matrix of user_token_df: {user_token_df.shape}".center(150, ' '))
+	print(f"SciPy Sparse Matrix of user_token_df: {user_token_df.shape} | nNaNs: {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0).sum().sum()}".center(150, ' '))
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
