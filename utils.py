@@ -922,7 +922,7 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
-	print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs: {usr_tk_unpacked_df.isna().sum().sum()} | nZeros: {(usr_tk_unpacked_df==0).sum().sum()}"
+	print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()} | nZeros: {(usr_tk_unpacked_df==0.0).sum().sum()}"
 				f" {usr_tk_unpacked_df.shape} memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB")
 
 	# sanity check for nonzeros for cols:
