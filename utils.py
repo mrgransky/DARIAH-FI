@@ -939,7 +939,6 @@ def get_df_files(fpath:str="MUST_BE_DEFINED"):
 	print(f"Found {len(df_files)} Pandas DataFrame {type(df_files)} files:")
 	return df_files
 	
-
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "

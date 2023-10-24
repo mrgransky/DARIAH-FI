@@ -499,15 +499,17 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	return user_df
 
-def get_spm(df: pd.DataFrame, vb: Dict[str, float]):
+def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	print(f"Getting Sparse Matrix from user_df: {df.shape} | len(BoWs): {len(vb)}".center(150, '-'))
 
-	print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
-	st_t = time.time()
-	user_token_df = pd.json_normalize(df["user_token_interest"]).set_index(user_df["user_ip"]).astype("float32")
-	user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=user_df["user_ip"])
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
+	# st_t = time.time()
+	# user_token_df = pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"]).astype("float32")
+	# user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=df["user_ip"])
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 
+	user_token_df = get_unpacked_user_token_interest(df=df)
+	
 	##########################Sparse Matrix info##########################
 	sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	print("#"*110)
@@ -569,17 +571,17 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 			f.write("\n")
 			f.write("\n")
 
+	try:
+		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
+	except Exception as e:
+		print(f"<!> {e}")
+		usr_tk_spm = get_scipy_spm(df=df_user, vb=BoWs)
+		
 	######################################################
 	# no need to continue after this!
 	# otherwise, adjustment for spm is required!
 	######################################################
 
-	try:
-		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
-	except Exception as e:
-		print(f"<!> {e}")
-		usr_tk_spm = get_spm(df=df_user, vb=BoWs)
-		
 	return
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
