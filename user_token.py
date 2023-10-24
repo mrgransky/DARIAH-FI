@@ -517,14 +517,14 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	print(f"Elapsed_t: {time.time()-t:.2f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
-	print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()} {sparse_matrix.data}")# Viewing stored data (not the zero items)
+	print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()} {sparse_matrix.data.nbytes/1e6:.3f} MB")# Viewing stored data (not the zero items)
 	# print(sparse_matrix.toarray()[:25, :18])
 	##########################Sparse Matrix info##########################
 	user_token_spm_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
 	user_token_spm_rows_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{sparse_matrix.shape[1]}_BoWs.gz")
 	user_token_spm_cols_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{sparse_matrix.shape[1]}_BoWs.gz")
 	
-	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fname)
+	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fileName)
 	save_pickle(pkl=list(user_token_df.index), fname=user_token_spm_rows_fileName)
 	save_pickle(pkl=list(user_token_df.columns), fname=user_token_spm_cols_fileName)
 
