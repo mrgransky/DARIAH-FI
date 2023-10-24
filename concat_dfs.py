@@ -819,14 +819,25 @@ def get_users_tokens_ddf():
 def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
-	print(len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )))
-
+	print(len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )), 
+				len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), 
+				len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )),
+			)
 	assert len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
 
 	global fprefix, RES_DIR
 	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))}_SPMs"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
+
+	try:
+		# load
+		usr_tk_spm = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm_usrNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
+	except Exception as e:
+		print(f"<!> {e}")
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_users_tokens_spm()
 
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
@@ -1041,6 +1052,6 @@ def main():
 if __name__ == '__main__':
 	# os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
-	# main()
-	run()
+	main()
+	# run()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))

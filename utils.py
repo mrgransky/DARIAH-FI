@@ -967,8 +967,24 @@ def get_df_files(fpath: str="MUST_BE_DEFINED"):
 
 def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	spm_files = natsorted( glob.glob( fpath ) )
-	print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
+	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
+
+def get_users_tokens_spm():
+	# Concatenate the matrices
+	rownames_all,row_reverseindex=np.unique(rownames1+rownames2,return_inverse=True)
+	row_reverseindex1=row_reverseindex[0:len(rownames1)]
+	row_reverseindex2=row_reverseindex[len(rownames1):]
+	colnames_all,col_reverseindex=np.unique(colnames1+colnames2,return_inverse=True)
+	col_reverseindex1=col_reverseindex[0:len(colnames1)]
+	col_reverseindex2=col_reverseindex[len(colnames1):]
+	print(rownames_all, colnames_all)
+	newmatrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
+	# Copy the values of the first matrix into the new one
+	newmatrix[np.ix_(row_reverseindex1,col_reverseindex1)]=matrix1
+	# Add the values of the second matrix into the new one
+	newmatrix[np.ix_(row_reverseindex2,col_reverseindex2)]+=matrix2
+	return newmatrix, rownames_all, colnames_all
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
