@@ -500,7 +500,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	return user_df
 
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"Getting Sparse Matrix from (detailed) user_df: {df.shape} | len(BoWs): {len(vb)}".center(150, '-'))
+	print(f"Getting Sparse Matrix from (detailed) user_df: {df.shape} | len(BoWs): {len(vb)}")
 
 	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
 	# st_t = time.time()
@@ -511,11 +511,10 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	user_token_df = get_unpacked_user_token_interest(df=df)
 	
 	##########################Sparse Matrix info##########################
-	print(f"SciPy Sparse Matrix of user_token_df: {user_token_df.shape}".center(150, '-'))
+	print(f"SciPy Sparse Matrix of user_token_df: {user_token_df.shape}".center(150, ' '))
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	
 	print(f"Elapsed_t: {time.time()-t:.2f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
 	print(f"<> |Non-zero vals|: {sparse_matrix.count_nonzero()} {sparse_matrix.data}")# Viewing stored data (not the zero items)
