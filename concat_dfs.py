@@ -819,17 +819,14 @@ def get_users_tokens_ddf():
 def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
-	print(len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )))
+	print(len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )))
 
-	assert len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
+	assert len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
 
 	global fprefix, RES_DIR
 	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' ))}_SPMs"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
-
-
-
 
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
@@ -894,16 +891,14 @@ def main():
 	print(f"|BoWs|: {len(BoWs)}")
 	
 	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
+		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
 		sp_mat_rf = get_sparse_matrix(df=user_token_df,
-																	spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
+																	spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"),
 																)
 
 	return
-
-
 	# # #################################################################################
 	# # some problems with pd.SparseDtype and IDF, TODO: to be resolved later!
 	# # #################################################################################
