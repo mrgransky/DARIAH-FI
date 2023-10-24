@@ -6,9 +6,9 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=155G
-#SBATCH --partition=small
+#SBATCH --partition=large
 #SBATCH --time=01-00:00:00
 #SBATCH --nodes=1
 #SBATCH --array=0-100
