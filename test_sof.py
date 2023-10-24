@@ -82,19 +82,20 @@ def get_df_concat_optimized(dfs):
 
 	return dfc
 
-t=time.time()
-df1=get_rnd_df(row=np.random.randint(low=2e3, high=5e3), col=np.random.randint(low=1e6, high=4e6))
-df2=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=5e6))
-print(f"elapsed_t x2_dfs {time.time()-t:.1f} sec {df1.shape} & {df2.shape}")
+# t=time.time()
+# df1=get_rnd_df(row=np.random.randint(low=2e3, high=5e3), col=np.random.randint(low=1e6, high=4e6))
+# df2=get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=5e6))
+# print(f"elapsed_t x2_dfs {time.time()-t:.1f} sec {df1.shape} & {df2.shape}")
 
-df_concat_opt=get_df_concat_optimized(dfs=[df1, df2])
-print( df_concat_opt.info(memory_usage="deep") )
+# df_concat_opt=get_df_concat_optimized(dfs=[df1, df2])
+# print( df_concat_opt.info(memory_usage="deep") )
 
 t=time.time()
 tracemalloc.start()
-dfs=[get_rnd_df(row=np.random.randint(low=2e3, high=3e3), col=np.random.randint(low=1e6, high=2e6)) for _ in range(int(1e+3))] # 1000 DFs
+
+dfs=[get_rnd_df(row=np.random.randint(low=1e3, high=25e2), col=np.random.randint(low=5e5, high=15e5)) for _ in range(int(7e+2))] # 1000 DFs
 current_mem_dfs, peak_mem_dfs = tracemalloc.get_traced_memory()
-print(f"Current : {current_mem_dfs / (1024 * 1024):.2f} MB | Peak: {peak_mem_dfs / (1024 * 1024):.2f} MB")
+print(f"Current Mem : {current_mem_dfs / (1024 * 1024):.2f} MB | Peak Mem: {peak_mem_dfs / (1024 * 1024):.2f} MB")
 print(f"elapsed_t dfs {time.time()-t:.2f} sec for listing {len(dfs)} Pandas DFs")
 
 tracemalloc.reset_peak()
