@@ -919,7 +919,7 @@ def get_df_spm(df: pd.DataFrame):
 def get_unpacked_user_token_interest(df: pd.DataFrame):
 	print(f"[PANDAS: {pd.__version__}] Unpacking nested dict of TKs for df: {df.shape} & reindex cols (A, B,..., Ö)...")
 	st_t = time.time()
-	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])#.astype("float32")
+	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
 	print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs: {usr_tk_unpacked_df.isna().sum().sum()} | nZeros: {(usr_tk_unpacked_df==0).sum().sum()}"

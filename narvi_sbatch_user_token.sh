@@ -5,7 +5,7 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=02-00:00:00
-#SBATCH --mem=333G
+#SBATCH --mem=256G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=normal
