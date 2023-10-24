@@ -10,9 +10,9 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=normal
 #SBATCH --nodes=1
-#SBATCH --array=751-752 # originall case! xy
+#####SBATCH --array=751-752 # originall case! xy
 #####SBATCH --gres=gpu:teslap100:1
-#####SBATCH --array=0-100
+#SBATCH --array=0-350
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -34,7 +34,7 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" #### must be adjusted ####
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" #### must be adjusted ####
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 

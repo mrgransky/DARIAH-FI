@@ -818,7 +818,46 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=idf, fname=file_name)
 	return idf
 
-def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
+def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
+	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
+
+	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
+	# st_t = time.time()
+	# user_token_df = pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"]).astype("float32")
+	# user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=df["user_ip"])
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+
+	user_token_df = get_unpacked_user_token_interest(df=df)
+	
+	##########################Sparse Matrix info##########################
+	if user_token_df.isnull().values.any():
+		t=time.time()
+		print(f">> Found {user_token_df.isna().sum().sum()} NaNs => 0.0", end=" ")
+		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
+		print(f"Elapsed_t: {time.time()-t:.2f} sec ")
+
+	print( user_token_df.info(memory_usage="deep") )
+	print(f"Converting to Sparse Matrix: user_token_df: {user_token_df.shape} | nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
+	t=time.time()
+	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	print(f"Elapsed_t: {time.time()-t:.1f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
+				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero vals|: {sparse_matrix.count_nonzero()} "
+				f"| {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
+	##########################Sparse Matrix info##########################
+	
+	# spm_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(vb)}_BoWs.gz")
+	# spm_rows_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(vb)}_BoWs.gz")
+	# spm_cols_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(vb)}_BoWs.gz")
+	
+	save_pickle(pkl=sparse_matrix, fname=spm_fname)
+	save_pickle(pkl=list(user_token_df.index), fname=spm_rows_fname)
+	save_pickle(pkl=list(user_token_df.columns), fname=spm_cols_fname)
+
+	print("-"*150)
+	return sparse_matrix, list(user_token_df.index), list(user_token_df.columns)
+
+def get_sparse_matrix(df: pd.DataFrame, spm_fname: str="SPM_fname"):
 	print(f"Sparse Matrix from DF: {df.shape}".center(110, '-'))
 	if df.index.inferred_type != 'string':
 		df = df.set_index('user_ip')
@@ -829,7 +868,7 @@ def get_sparse_matrix(df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 				f"|Non-zero vals|: {sparse_matrix.count_nonzero()}"
 			)
 	print("-"*110)
-	save_pickle(pkl=sparse_matrix, fname=file_name)
+	save_pickle(pkl=sparse_matrix, fname=spm_fname)
 	return sparse_matrix
 
 def get_concat(pdfs):

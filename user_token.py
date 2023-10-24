@@ -499,44 +499,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	return user_df
 
-def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
-	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
-
-	# print(f"[PANDAS] Unpacking nested dict of tokens & reindex cols (A, B, C, ..., Ö)")
-	# st_t = time.time()
-	# user_token_df = pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"]).astype("float32")
-	# user_token_df = user_token_df.reindex(columns=sorted(user_token_df.columns), index=df["user_ip"])
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
-	user_token_df = get_unpacked_user_token_interest(df=df)
-	
-	##########################Sparse Matrix info##########################
-	if user_token_df.isnull().values.any():
-		t=time.time()
-		print(f">> Found {user_token_df.isna().sum().sum()} NaNs => 0.0", end=" ")
-		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
-		print(f"Elapsed_t: {time.time()-t:.2f} sec ")
-
-	print( user_token_df.info(memory_usage="deep") )
-	print(f"Converting to Sparse Matrix: user_token_df: {user_token_df.shape} | nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
-	t=time.time()
-	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	print(f"Elapsed_t: {time.time()-t:.1f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
-				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero vals|: {sparse_matrix.count_nonzero()} "
-				f"| {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
-	##########################Sparse Matrix info##########################
-	user_token_spm_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(vb)}_BoWs.gz")
-	user_token_spm_rows_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(vb)}_BoWs.gz")
-	user_token_spm_cols_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(vb)}_BoWs.gz")
-	
-	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fileName)
-	save_pickle(pkl=list(user_token_df.index), fname=user_token_spm_rows_fileName)
-	save_pickle(pkl=list(user_token_df.columns), fname=user_token_spm_cols_fileName)
-
-	print("-"*150)
-	return sparse_matrix, list(user_token_df.index), list(user_token_df.columns)
-
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer")
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
@@ -590,8 +552,12 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames = get_scipy_spm(df=df_user, vb=BoWs)
-		
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_scipy_spm(	df=df_user, 
+																																				vb=BoWs, 
+																																				spm_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
+																																				spm_rows_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"),
+																																				spm_cols_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
+																																			)
 	######################################################
 	# no need to continue after this!
 	# otherwise, adjustment for spm is required!

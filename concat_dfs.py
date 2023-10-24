@@ -880,14 +880,14 @@ def main():
 	BoWs = { c: i for i, c in enumerate(user_token_df.columns) }
 	print(f"|BoWs|: {len(BoWs)}")
 	
-	try:
-		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
-	except Exception as e:
-		print(f"<!> {e}")
-		sp_mat_rf = get_sparse_matrix(df=user_token_df,
-																	file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
-																)
-
+	# try:
+	# 	sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
+	# except Exception as e:
+	# 	print(f"<!> {e}")
+	# 	sp_mat_rf = get_sparse_matrix(df=user_token_df,
+	# 																spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"),
+	# 															)
+	
 	# # #################################################################################
 	# # some problems with pd.SparseDtype and IDF, TODO: to be resolved later!
 	# # #################################################################################
