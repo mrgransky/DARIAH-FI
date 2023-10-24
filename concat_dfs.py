@@ -819,6 +819,8 @@ def get_users_tokens_ddf():
 def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
+	print(len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )))
+
 	assert len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
 
 	global fprefix, RES_DIR
