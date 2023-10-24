@@ -522,9 +522,9 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	print(f"Elapsed_t: {time.time()-t:.2f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
+	print(f"Elapsed_t: {time.time()-t:.1f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero vals|: {sparse_matrix.count_nonzero()} "
-				f"size: {len(pickle.dumps(sparse_matrix))} bytes")
+				f"| {len(pickle.dumps(sparse_matrix))/1e6:.3f} MB")
 	# print(sparse_matrix.toarray()[:25, :18])
 	##########################Sparse Matrix info##########################
 	user_token_spm_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(vb)}_BoWs.gz")
