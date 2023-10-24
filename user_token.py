@@ -511,7 +511,9 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	user_token_df = get_unpacked_user_token_interest(df=df)
 	
 	##########################Sparse Matrix info##########################
-	sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	
 	print("#"*110)
 	print(f"{type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} |tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]}"
 				f"{sparse_matrix.toarray().nbytes} | {sparse_matrix.toarray().dtype}")
@@ -519,10 +521,16 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	# print(sparse_matrix.toarray()[:25, :18])
 	print("#"*110)
 	##########################Sparse Matrix info##########################
-	user_token_spm_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
+	user_token_spm_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{sparse_matrix.shape[1]}_BoWs.gz")
+	user_token_spm_rows_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{sparse_matrix.shape[1]}_BoWs.gz")
+	user_token_spm_cols_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{sparse_matrix.shape[1]}_BoWs.gz")
+	
 	save_pickle(pkl=sparse_matrix, fname=user_token_spm_fname)
+	save_pickle(pkl=list(user_token_df.index), fname=user_token_spm_rows_fileName)
+	save_pickle(pkl=list(user_token_df.columns), fname=user_token_spm_cols_fileName)
+
 	print("-"*150)
-	return sparse_matrix
+	return sparse_matrix, list(user_token_df.index), list(user_token_df.columns)
 
 def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer")
@@ -573,9 +581,11 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 
 	try:
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm_usrNames = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm = get_scipy_spm(df=df_user, vb=BoWs)
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames = get_scipy_spm(df=df_user, vb=BoWs)
 		
 	######################################################
 	# no need to continue after this!

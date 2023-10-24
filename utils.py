@@ -33,7 +33,7 @@ from natsort import natsorted
 from collections import Counter
 from typing import List, Set, Dict, Tuple
 
-from scipy.sparse import csr_matrix, coo_matrix
+from scipy.sparse import csr_matrix, coo_matrix, lil_matrix
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
