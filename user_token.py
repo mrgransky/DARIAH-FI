@@ -521,11 +521,10 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float]):
 	print(f"Converting to Sparse Matrix: user_token_df: {user_token_df.shape} | nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} | nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
+	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	print(f"Elapsed_t: {time.time()-t:.1f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape} "
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero vals|: {sparse_matrix.count_nonzero()} "
-				f"| {len(pickle.dumps(sparse_matrix))/1e6:.3f} MB | {sparse_matrix.data.nbytes} bytes(?) | {sum([sys.getsizeof(i) for i in sparse_matrix.data])} ?")
-	# print(sparse_matrix.toarray()[:25, :18])
+				f"| {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
 	##########################Sparse Matrix info##########################
 	user_token_spm_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_{len(vb)}_BoWs.gz")
 	user_token_spm_rows_fileName = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(vb)}_BoWs.gz")
