@@ -802,18 +802,18 @@ def run():
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
 	
-	##############################################For Double checking with 2 DFs#####################################################
-	try:
-		concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
-	except Exception as e:
-		print(f"<!> user_token_df Not available! {e}")
-		concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
-																					prefix_fname=f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs",
-																				)
-	print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
-	print(concat_df_U_x_T.info(memory_usage="deep"))
-	print("<>"*50)
-	##############################################For Double checking with 2 DFs#####################################################
+	# ##############################################For Double checking with 2 DFs#####################################################
+	# try:
+	# 	concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
+	# except Exception as e:
+	# 	print(f"<!> user_token_df Not available! {e}")
+	# 	concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
+	# 																				prefix_fname=f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs",
+	# 																			)
+	# print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
+	# print(concat_df_U_x_T.info(memory_usage="deep"))
+	# print("<>"*50)
+	# ##############################################For Double checking with 2 DFs#####################################################
 
 	spm_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	spm_users_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
