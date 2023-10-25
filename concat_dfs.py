@@ -850,6 +850,10 @@ def run():
 																																							spm_rows_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
 																																							spm_cols_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz',
 																																						)
+	print(type(usr_tk_spm), usr_tk_spm.shape)
+	print(type(usr_tk_spm_usrNames), len(usr_tk_spm_usrNames))
+	print(type(usr_tk_spm_tokNames), len(usr_tk_spm_tokNames))
+	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)

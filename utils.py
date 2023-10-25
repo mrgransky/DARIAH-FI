@@ -976,7 +976,7 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 	print(len(SPMs))
 	print("#"*100)
 	# return None, None, None
-
+	t=time.time()
 	ROWs=list()
 	COLs=list()
 	for idx, val in enumerate(SPMs):
@@ -1011,6 +1011,7 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 			current_row_idx+=len(rownames)
 			current_col_idx+=len(colnames)
 			print("#"*50)        
+
 	return newmatrix, rownames_all, colnames_all
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
