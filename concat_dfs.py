@@ -804,7 +804,7 @@ def run():
 	
 	##############################################For Double checking with 2 DFs#####################################################
 	try:
-		concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
+		concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> user_token_df Not available! {e}")
 		concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
