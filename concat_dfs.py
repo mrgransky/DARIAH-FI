@@ -830,7 +830,12 @@ def run():
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
 
-	user_token_df = get_users_tokens_df()
+	try:
+		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
+	except Exception as e:
+		print(f"<!> user_token_df Not available! {e}")
+		user_token_df = get_users_tokens_df()
+
 	print(f"USER_TOKEN pDF: {user_token_df.shape}")
 	print(user_token_df.info(memory_usage="deep"))
 	print("<>"*50)
