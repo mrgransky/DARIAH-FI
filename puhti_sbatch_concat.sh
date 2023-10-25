@@ -6,10 +6,10 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=350G
-#SBATCH --partition=small
-#SBATCH --time=00-13:59:59
+#SBATCH --cpus-per-task=2
+#SBATCH --mem-per-cpu=188G
+#SBATCH --partition=large
+#SBATCH --time=00-08:59:59
 #SBATCH --nodes=1
 ######SBATCH --gres=gpu:v100:1
 
