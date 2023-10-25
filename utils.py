@@ -984,7 +984,6 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 			ROWs.extend(rownames)
 			COLs.extend(colnames)
 	print(f"(ROWs, COLs): ({len(ROWs)}, {len(COLs)})")
-
 	rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)    
 	colnames_all,col_reverseindex=np.unique(COLs,return_inverse=True)
 	newmatrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)

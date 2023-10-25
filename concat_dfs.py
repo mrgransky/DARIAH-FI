@@ -840,13 +840,20 @@ def run():
 	print(user_token_df.info(memory_usage="deep"))
 	print("<>"*50)
 
-	usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
-																																							spm_rows_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
-																																							spm_cols_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz',
-																																						)
-	print(type(usr_tk_spm), usr_tk_spm.shape)
-	print(type(usr_tk_spm_usrNames), len(usr_tk_spm_usrNames))
-	print(type(usr_tk_spm_tokNames), len(usr_tk_spm_tokNames))
+	try:
+		# load
+		usr_tk_spm=load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*_SPMs*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )[0] )
+		usr_tk_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_SPMs*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )[0])
+		usr_tk_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_SPMs*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )[0])
+	except Exception as e:
+		print(f"<!> {e}")
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
+																																								spm_rows_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
+																																								spm_cols_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz',
+																																							)
+	print(type(usr_tk_spm), usr_tk_spm.shape) # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
+	print(type(usr_tk_spm_usrNames), len(usr_tk_spm_usrNames)) # <class 'numpy.ndarray'> (nUsers,)
+	print(type(usr_tk_spm_tokNames), len(usr_tk_spm_tokNames)) # <class 'numpy.ndarray'> (nTokens,)
 
 	print(f">> dfs concat and spm are equal?", end="\t")
 	print(np.all(usr_tk_spm.toarray()==user_token_df.values))
