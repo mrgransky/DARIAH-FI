@@ -846,7 +846,7 @@ def run():
 	# 																																							spm_cols_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ,
 	# 																																						)
 
-	usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+f'{fprefix}_*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
+	usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
 																																							spm_rows_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
 																																							spm_cols_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ,
 																																						)

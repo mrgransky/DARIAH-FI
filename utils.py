@@ -975,7 +975,8 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 	SPMs=[(spm, spm_uname, spm_tkname) for spm, spm_uname, spm_tkname in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
 	print(SPMs)
 	print("#"*100)
-	return
+	return None, None, None
+
 	ROWs=list()
 	COLs=list()
 	for idx, val in enumerate(SPMs):
