@@ -843,6 +843,9 @@ def run():
 	spm_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )
 	spm_users_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )
 	spm_tokens_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )
+	print(spm_files_path)
+	print(spm_users_names_files_path)
+	print(spm_tokens_names_files_path)
 
 	try:
 		concat_spm_U_x_T=load_pickle( fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz' )[0] )
@@ -851,7 +854,7 @@ def run():
 	except Exception as e:
 		print(f"<!> {e}")
 		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_concat(
-			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath,spm_usr_fpath,spm_tk_fpath in zip(get_spm_files(fpath=spm_files_path),get_spm_files(fpath=spm_users_names_files_path),get_spm_files(fpath=spm_tokens_names_files_path))],
+			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath,spm_usr_fpath,spm_tk_fpath in zip(spm_files_path, spm_users_names_files_path, spm_tokens_names_files_path)],
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
