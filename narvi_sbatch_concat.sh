@@ -7,7 +7,7 @@
 #SBATCH --time=00-23:59:59
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=498G
+#SBATCH --mem-per-cpu=490G
 #SBATCH --partition=amd
 #SBATCH --nodes=1
 
