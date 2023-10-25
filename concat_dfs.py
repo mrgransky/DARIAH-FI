@@ -737,11 +737,11 @@ def get_users_tokens_df():
 	print("<>"*50)
 
 	user_token_pdf_fname = os.path.join(args.dfsPath, 
-																						f"{fprefix}_"
-																						f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
-																						f"{user_token_df_concat.shape[0]}_nUSRs_x_"
-																						f"{user_token_df_concat.shape[1]}_nTOKs.gz"
-																					)
+																			f"{fprefix}_"
+																			f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
+																			f"{user_token_df_concat.shape[0]}_nUSRs_x_"
+																			f"{user_token_df_concat.shape[1]}_nTOKs.gz"
+																		)
 	save_pickle(pkl=user_token_df_concat, fname=user_token_pdf_fname)
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
 							fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
@@ -829,23 +829,6 @@ def run():
 	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))}_SPMs"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
-	# print(args.dfsPath+'/'+f'{fprefix}_*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
-	# print(args.dfsPath+'/'+f'{fprefix}_*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
-	# print(args.dfsPath+'/'+f'{fprefix}_*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
-	# print(f"<>"*100)
-
-	# try:
-	# 	# load
-	# 	usr_tk_spm = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
-	# 	usr_tk_spm_usrNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
-	# 	usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))
-	# except Exception as e:
-	# 	print(f"<!> {e}")
-	# 	usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+f'{fprefix}_*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
-	# 																																							spm_rows_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
-	# 																																							spm_cols_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ,
-	# 																																						)
-
 	usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
 																																							spm_rows_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
 																																							spm_cols_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz',
@@ -853,6 +836,13 @@ def run():
 	print(type(usr_tk_spm), usr_tk_spm.shape)
 	print(type(usr_tk_spm_usrNames), len(usr_tk_spm_usrNames))
 	print(type(usr_tk_spm_tokNames), len(usr_tk_spm_tokNames))
+
+	user_token_df = get_users_tokens_df()
+	print(f"USER_TOKEN pDF: {user_token_df.shape}")
+	print(user_token_df.info(memory_usage="deep"))
+	print("<>"*50)
+	print(f">> dfs concat and spm are equal?", end="\t")
+	print(np.all(usr_tk_spm.toarray()==user_token_df.values))
 	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
