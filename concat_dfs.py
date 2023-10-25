@@ -838,8 +838,10 @@ def run():
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
-	print(f">> dfs concat and spm are equal?", end="\t")
-	print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values))
+	t=time.time()
+	print(f">> dfs concat and spm are equal?", end=" ")
+	print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values), end=" ")
+	print(f"Elapsed_t: {time.time()-t:.2f} sec")
 	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
