@@ -970,7 +970,7 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
 
-def get_user_token_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
 	# SPMs=[(load_pickle(fpath=spm_path), load_pickle(fpath=spm_uname_path), load_pickle(fpath=spm_tkname_path)) for spm_path, spm_uname_path, spm_tkname_path in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
 	print(len(SPMs))

@@ -831,30 +831,30 @@ def run():
 	print(fprefix, RES_DIR)
 	
 	try:
-		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		concat_df_U_x_T=load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	except Exception as e:
 		print(f"<!> user_token_df Not available! {e}")
-		user_token_df = get_users_tokens_df()
+		concat_df_U_x_T = get_users_tokens_df()
 
-	print(f"USER_TOKEN pDF: {user_token_df.shape}")
-	print(user_token_df.info(memory_usage="deep"))
+	print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
+	print(concat_df_U_x_T.info(memory_usage="deep"))
 	print("<>"*50)
 
 	spm_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )
 	spm_users_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )
 	spm_tokens_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )
-	print(spm_files_path)
-	print(spm_users_names_files_path)
-	print(spm_tokens_names_files_path)
+	# print(spm_files_path)
+	# print(spm_users_names_files_path)
+	# print(spm_tokens_names_files_path)
 
 	try:
-		concat_spm_U_x_T=load_pickle( fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz' )[0] )
-		concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz' )[0] )
-		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz' )[0] )
+		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
+		concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
+		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> {e}")
-		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_concat(
-			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath,spm_usr_fpath,spm_tk_fpath in zip(spm_files_path, spm_users_names_files_path, spm_tokens_names_files_path)],
+		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
+			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(spm_files_path, spm_users_names_files_path, spm_tokens_names_files_path)],
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
@@ -864,7 +864,7 @@ def run():
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
 	print(f">> dfs concat and spm are equal?", end="\t")
-	print(np.all(usr_tk_spm.toarray()==user_token_df.values))
+	print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values))
 	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
