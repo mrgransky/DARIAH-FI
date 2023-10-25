@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --job-name=dfs_store_AND_df_concat_XY
+#SBATCH --job-name=spm_concat
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --time=07-00:00:00
+#SBATCH --time=01-23:59:59
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=700G
@@ -32,11 +32,11 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
-dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
+dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes" ########## must be adjusted! ##########
 
-echo "dfs_list storing..."
-python -u test_sof.py
-echo "${stars// /*}"
+# echo "dfs_list storing..."
+# python -u test_sof.py
+# echo "${stars// /*}"
 
 echo "DFs concat..."
 python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
