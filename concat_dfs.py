@@ -837,10 +837,11 @@ def run():
 		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"),
-																																								spm_rows_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"), 
-																																								spm_cols_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
+																																								spm_rows_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
+																																								spm_cols_fname=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ,
 																																							)
+
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
