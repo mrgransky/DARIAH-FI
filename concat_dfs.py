@@ -823,7 +823,7 @@ def run():
 				len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), 
 				len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )),
 			)
-	assert len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
+	assert len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
 
 	global fprefix, RES_DIR
 	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))}_SPMs"
