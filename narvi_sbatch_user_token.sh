@@ -1,18 +1,18 @@
 #!/bin/bash
 
-#SBATCH --job-name=nikeXY
+#SBATCH --job-name=nikeQ
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=01-00:00:00
-#SBATCH --mem=130G
+#SBATCH --mem=150G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=normal
 #SBATCH --nodes=1
-#SBATCH --array=751-752 # originall case! xy
-#####SBATCH --gres=gpu:teslap100:1
-###SBATCH --array=0-85
+#SBATCH --array=0-200
+######SBATCH --gres=gpu:teslap100:1
+######SBATCH --array=751-752 # originall case! xy
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
