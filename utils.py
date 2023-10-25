@@ -1012,9 +1012,9 @@ def get_user_token_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str="fi
 			print("#"*50)
 	print(f"Elapsed_t: {time.time()-t:.2f} sec")
 
-	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape{0}}_nUSRs_x_{newmatrix.shape{1}}_nTOKs.gz")
-	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape{0}}_nUSRs.gz")
-	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_token_names_{newmatrix.shape{1}}_nTOKs.gz")
+	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
+	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape[0]}_nUSRs.gz")
+	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_token_names_{newmatrix.shape[1]}_nTOKs.gz")
 
 	save_pickle(pkl=newmatrix, fname=spm_fname)
 	save_pickle(pkl=rownames_all, fname=spm_rows_fname)
