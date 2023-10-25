@@ -973,7 +973,7 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
 	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
 	SPMs=[(load_pickle(fpath=spm_path), load_pickle(fpath=spm_uname_path), load_pickle(fpath=spm_tkname_path)) for spm_path, spm_uname_path, spm_tkname_path in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
-	print(len(SPMs), SPMs)
+	print(len(SPMs))
 	print("#"*100)
 	return None, None, None
 
