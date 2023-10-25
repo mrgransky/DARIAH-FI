@@ -829,6 +829,12 @@ def run():
 	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))}_SPMs"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
+
+	user_token_df = get_users_tokens_df()
+	print(f"USER_TOKEN pDF: {user_token_df.shape}")
+	print(user_token_df.info(memory_usage="deep"))
+	print("<>"*50)
+
 	usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
 																																							spm_rows_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
 																																							spm_cols_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz',
@@ -837,10 +843,6 @@ def run():
 	print(type(usr_tk_spm_usrNames), len(usr_tk_spm_usrNames))
 	print(type(usr_tk_spm_tokNames), len(usr_tk_spm_tokNames))
 
-	user_token_df = get_users_tokens_df()
-	print(f"USER_TOKEN pDF: {user_token_df.shape}")
-	print(user_token_df.info(memory_usage="deep"))
-	print("<>"*50)
 	print(f">> dfs concat and spm are equal?", end="\t")
 	print(np.all(usr_tk_spm.toarray()==user_token_df.values))
 	
