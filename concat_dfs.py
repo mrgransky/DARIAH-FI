@@ -834,11 +834,13 @@ def run():
 		# load
 		usr_tk_spm = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
 		usr_tk_spm_usrNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
-		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
+		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_users_tokens_spm()
-
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"),
+																																								spm_rows_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"), 
+																																								spm_cols_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
+																																							)
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
@@ -905,7 +907,7 @@ def main():
 		sp_mat_rf = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		sp_mat_rf = get_sparse_matrix(df=user_token_df,
+		sp_mat_rf = get_spm_user_token(df=user_token_df,
 																	spm_fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"),
 																)
 
@@ -1052,6 +1054,6 @@ def main():
 if __name__ == '__main__':
 	# os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
-	main()
-	# run()
+	# main()
+	run()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))

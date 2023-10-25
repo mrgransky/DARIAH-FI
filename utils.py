@@ -845,8 +845,8 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 	print("-"*150)
 	return sparse_matrix, list(user_token_df.index), list(user_token_df.columns)
 
-def get_sparse_matrix(df: pd.DataFrame, spm_fname: str="SPM_fname"):
-	print(f"Sparse Matrix from DF: {df.shape}".center(110, '-'))
+def get_spm_user_token(df: pd.DataFrame, spm_fname: str="SPM_fname"):
+	print(f"Sparse Matrix from Pandas DF: {df.shape}".center(110, '-'))
 	if df.index.inferred_type != 'string':
 		df = df.set_index('user_ip')
 	sparse_matrix = csr_matrix(df.values, dtype=np.float32) # (n_usr x n_vb)
@@ -962,7 +962,7 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 
 def get_df_files(fpath: str="MUST_BE_DEFINED"):
 	df_files = natsorted( glob.glob( fpath ) )
-	print(f"Found {len(df_files)} Pandas DataFrame {type(df_files)} files:")
+	print(f"Found {len(df_files)} Pandas DataFrame {type(df_files)} files")
 	return df_files
 
 def get_spm_files(fpath: str="MUST_BE_DEFINED"):
@@ -970,20 +970,46 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
 
-def get_users_tokens_spm():
-	# Concatenate the matrices
-	rownames_all,row_reverseindex=np.unique(rownames1+rownames2,return_inverse=True)
-	row_reverseindex1=row_reverseindex[0:len(rownames1)]
-	row_reverseindex2=row_reverseindex[len(rownames1):]
-	colnames_all,col_reverseindex=np.unique(colnames1+colnames2,return_inverse=True)
-	col_reverseindex1=col_reverseindex[0:len(colnames1)]
-	col_reverseindex2=col_reverseindex[len(colnames1):]
-	print(rownames_all, colnames_all)
+def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
+	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
+	SPMs=[(spm, spm_uname, spm_tkname) for spm, spm_uname, spm_tkname in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
+	print(SPMs)
+	print("#"*100)
+	return
+	ROWs=list()
+	COLs=list()
+	for idx, val in enumerate(SPMs):
+			matrix, rownames, colnames=val
+			ROWs.extend(rownames)
+			COLs.extend(colnames)
+	#print(ROWs)
+	#print(COLs)
+	rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)    
+	colnames_all,col_reverseindex=np.unique(COLs,return_inverse=True)
 	newmatrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
-	# Copy the values of the first matrix into the new one
-	newmatrix[np.ix_(row_reverseindex1,col_reverseindex1)]=matrix1
-	# Add the values of the second matrix into the new one
-	newmatrix[np.ix_(row_reverseindex2,col_reverseindex2)]+=matrix2
+	#print(newmatrix.shape)
+	#print(rownames_all, row_reverseindex)
+	#print(colnames_all, col_reverseindex)
+	#print()
+	current_row_idx=0
+	current_col_idx=0
+	current_matrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
+	for idx, val in enumerate(SPMs):
+			matrix, rownames, colnames=val
+			#print(idx, len(rownames), len(colnames), )
+			#print(current_row_idx, current_col_idx)
+			#print(matrix.shape)
+			if idx==len(SPMs)-1:
+					row_reverseindex_i=row_reverseindex[current_row_idx:]
+					col_reverseindex_i=col_reverseindex[current_col_idx:]
+			else:
+					row_reverseindex_i=row_reverseindex[current_row_idx: current_row_idx+len(rownames)]
+					col_reverseindex_i=col_reverseindex[current_col_idx: current_col_idx+len(colnames)]
+			#print(row_reverseindex_i, col_reverseindex_i)
+			newmatrix[np.ix_(row_reverseindex_i,col_reverseindex_i)]+=matrix
+			current_row_idx+=len(rownames)
+			current_col_idx+=len(colnames)
+			#print("#"*50)        
 	return newmatrix, rownames_all, colnames_all
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
