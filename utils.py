@@ -921,8 +921,6 @@ def get_optimized_concat(pdfs):
 	t=time.time()
 	dfc=dfc.sort_index(key=lambda x: ( x.to_series().str[2:].astype(int) ))
 	print(f"elapsed_time [sort idx]{time.time()-t:>{60}.{4}f} sec")
-	# gc.collect() # TODO: check if helps for mem error!
-
 	print(dfc.info(memory_usage="deep"))
 	print(dfc.sparse.density)
 	print()
@@ -940,7 +938,7 @@ def get_df_spm(df: pd.DataFrame):
 	print(f"{type(df)} memory: {df.memory_usage(index=True, deep=True).sum()/1e9:.3f} GB => Sparse Pandas DataFrame", end=" ")
 	st_t=time.time()
 	sdf=df.astype(pd.SparseDtype(dtype=np.float32))
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s | memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density}")
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s | memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density:.6f}")
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):

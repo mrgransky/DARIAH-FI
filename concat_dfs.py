@@ -681,7 +681,7 @@ def get_users_tokens_df(save_dir: str="saving_directory", prefix_fname: str="pre
 		print(f)
 	print("<>"*80)
 	try:
-		users_tokens_dfs=load_pickle(fpath=glob.glob(save_dir+'/'+'*_usr_tk_pdfs_list.gz')[0])
+		users_tokens_dfs=load_pickle(fpath=glob.glob(save_dir+'/'+'*_PDFs*_usr_tk_pdfs_list.gz')[0])
 	except Exception as e:
 		print(f"<!> Load pkl <pDFs list> {e}")
 		users_tokens_dfs=list()
@@ -838,8 +838,8 @@ def run():
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
-	# print(f">> dfs concat and spm are equal?", end="\t")
-	# print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values))
+	print(f">> dfs concat and spm are equal?", end="\t")
+	print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values))
 	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
