@@ -5,13 +5,13 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=01-00:00:00
-#SBATCH --mem=100G
+#SBATCH --mem=119G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=normal
+#SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --array=0-300
-######SBATCH --gres=gpu:teslap100:1
+#SBATCH --array=100-800
+#SBATCH --gres=gpu:teslav100:1
 ######SBATCH --array=751-752 # originall case! xy
 
 user="`whoami`"
