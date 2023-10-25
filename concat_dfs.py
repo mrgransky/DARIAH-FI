@@ -674,79 +674,51 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	plt.close(f)
 	print(">> Done!")
 
-def get_users_tokens_df():
+def get_users_tokens_df(save_dir: str="saving_directory", prefix_fname: str="prefix_file_name", lm: str=args.lmMethod):
 	print(f"Pandas DataFrame".center(150, " "))
-	# BoWs_files = natsorted( glob.glob( args.dfsPath + "/nike" + "*.json" ) )
-	# print(f"<> Loading and Merging {len(BoWs_files)} BoWs:")
-	# nTOTAL_BoWs: int = 0
-	# for file_ in BoWs_files:
-	# 	print(file_)
-	# 	m=re.search(r'_(\d+)_vocabs\.json', file_)
-	# 	nTOTAL_BoWs += int( m.group(1) ) if m else 0
-	# st_t = time.time()
-	# BoWs_merged = {k: i for i, k in enumerate(sorted(set().union(*(set(d) for d in [load_vocab(fname=fn) for fn in BoWs_files ] ) ) ) ) }
-	# print(f"Loaded all {len(BoWs_files)} BoWs in {time.time()-st_t:.2f} s |nUNQ_vocab(s)|: {len(BoWs_merged)} |nTOTAL_vocab(s)|: {nTOTAL_BoWs}".center(150, " "))
-	# # print("-"*80)
-	# # gc.collect()
-
-
-	# TODO: check if helper fcn works! => remove if yes!
-	# user_df_files = natsorted( glob.glob( args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ) )
-	# print(f"Found {len(user_df_files)} user_df {type(user_df_files)} files:")
-	user_df_files=get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz')
-	
+	user_df_files=get_df_files(fpath=save_dir+'/'+'*_user_df_*_BoWs.gz')
 	for f in user_df_files:
 		print(f)
 	print("<>"*80)
-
 	try:
-		users_tokens_dfs = load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_usr_tk_pdfs_list.gz' )[0]  )
+		users_tokens_dfs=load_pickle(fpath=glob.glob(save_dir+'/'+'*_usr_tk_pdfs_list.gz')[0])
 	except Exception as e:
 		print(f"<!> Load pkl <pDFs list> {e}")
-		users_tokens_dfs = list()
-		load_time_start = time.time()
+		users_tokens_dfs=list()
+		load_time_start=time.time()
 		for df_file_idx, df_file in enumerate(user_df_files):
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
-
 			user_df = load_pickle(fpath=df_file)
-			# gc.collect()
-
 			user_token_df = get_unpacked_user_token_interest(df=user_df)
-			# gc.collect()
-
 			# users_tokens_dfs.append(user_token_df) # original PANDAS df
-			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype
-			# gc.collect()
-			
+			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype			
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_pdfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
-		# # gc.collect()
-
-		usr_tk_pdfs_list_fname = os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_pdfs_list.gz")
+		usr_tk_pdfs_list_fname = os.path.join(save_dir, f"{prefix_fname}_lemmaMethod_{lm}_usr_tk_pdfs_list.gz")
 		save_pickle(pkl=users_tokens_dfs, fname=usr_tk_pdfs_list_fname)
-
-	# gc.collect() # TODO: check if helps for mem error!
 	print(f"[PANDAS] chain concatination of {len(users_tokens_dfs)} user_token_pdfs")
-	st_t = time.time()	
+	st_t = time.time()
 	# user_token_df_concat=get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
 	user_token_df_concat=get_optimized_concat(pdfs=users_tokens_dfs)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} {user_token_df_concat.shape}"
-				f" | memory: {user_token_df_concat.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {user_token_df_concat.sparse.density}")
-	
+				f" | memory: {user_token_df_concat.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB"
+				f" | sparsity: {user_token_df_concat.sparse.density}"
+			)
 	print("<>"*50)
 	print(user_token_df_concat.info(memory_usage="deep"))
 	print("<>"*50)
 
-	user_token_pdf_fname = os.path.join(args.dfsPath, 
-																			f"{fprefix}_"
+	user_token_pdf_fname = os.path.join(save_dir,
+																			f"{prefix_fname}_"
 																			f"lemmaMethod_{args.lmMethod}_USERs_TOKENs_pdf_"
 																			f"{user_token_df_concat.shape[0]}_nUSRs_x_"
 																			f"{user_token_df_concat.shape[1]}_nTOKs.gz"
 																		)
 	save_pickle(pkl=user_token_df_concat, fname=user_token_pdf_fname)
 	save_vocab(	vb={ c: i for i, c in enumerate(user_token_df_concat.columns) },
-							fname=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json"),
-						)
-	
+							fname=os.path.join(save_dir, 
+																f"{prefix_fname}_lemmaMethod_{args.lmMethod}_{len(user_token_df_concat.columns)}_concatVBs.json",
+																),
+					)
 	return user_token_df_concat 
 
 def get_users_tokens_ddf():
@@ -830,19 +802,23 @@ def run():
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
 	
+	##############################################For Double checking with 2 DFs#####################################################
 	try:
-		concat_df_U_x_T=load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> user_token_df Not available! {e}")
-		concat_df_U_x_T = get_users_tokens_df()
-
+		concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
+																					prefix_fname=f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs",
+																				)
 	print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
 	print(concat_df_U_x_T.info(memory_usage="deep"))
 	print("<>"*50)
+	##############################################For Double checking with 2 DFs#####################################################
 
-	spm_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )
-	spm_users_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )
-	spm_tokens_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )
+	spm_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
+	spm_users_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
+	spm_tokens_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
+
 	# print(spm_files_path)
 	# print(spm_users_names_files_path)
 	# print(spm_tokens_names_files_path)
@@ -858,20 +834,19 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
-
 	print(type(concat_spm_U_x_T), concat_spm_U_x_T.shape) # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
-	print(f">> dfs concat and spm are equal?", end="\t")
-	print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values))
+	# print(f">> dfs concat and spm are equal?", end="\t")
+	# print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values))
 	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
 	
 	global fprefix, RES_DIR	
-	fprefix = f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_dfs"
+	fprefix = f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs"
 
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
@@ -884,7 +859,7 @@ def main():
 		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	except Exception as e:
 		print(f"<!> user_token_df Not available! {e}")
-		user_token_df = get_users_tokens_df()
+		user_token_df = get_users_tokens_df(save_dir=args.dfsPath, prefix_fname=fprefix)
 
 	print(f"USER_TOKEN pDF: {user_token_df.shape}")
 	print(user_token_df.info(memory_usage="deep"))
