@@ -688,8 +688,8 @@ def get_users_tokens_df(save_dir: str="saving_directory", prefix_fname: str="pre
 		load_time_start=time.time()
 		for df_file_idx, df_file in enumerate(user_df_files):
 			print(f"[PANDAS] Loading [{df_file_idx+1}/{len(user_df_files)}]: {df_file}")
-			user_df = load_pickle(fpath=df_file)
-			user_token_df = get_unpacked_user_token_interest(df=user_df)
+			user_df=load_pickle(fpath=df_file)
+			user_token_df=get_unpacked_user_token_interest(df=user_df)
 			# users_tokens_dfs.append(user_token_df) # original PANDAS df
 			users_tokens_dfs.append(get_df_spm(df=user_token_df)) # to SparseDtype			
 		print(f"Loaded {len(users_tokens_dfs)} users_tokens_pdfs in {time.time()-load_time_start:.1f} s".center(180, "-"))
@@ -701,7 +701,7 @@ def get_users_tokens_df(save_dir: str="saving_directory", prefix_fname: str="pre
 	user_token_df_concat=get_optimized_concat(pdfs=users_tokens_dfs)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} {user_token_df_concat.shape}"
 				f" | memory: {user_token_df_concat.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB"
-				f" | sparsity: {user_token_df_concat.sparse.density}"
+				f" | sparsity: {user_token_df_concat.sparse.density:.6f}"
 			)
 	print("<>"*50)
 	print(user_token_df_concat.info(memory_usage="deep"))
