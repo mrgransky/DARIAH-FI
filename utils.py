@@ -983,12 +983,12 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 			matrix, rownames, colnames=val
 			ROWs.extend(rownames)
 			COLs.extend(colnames)
-	#print(ROWs)
-	#print(COLs)
+	print(f"(ROWs, COLs): ({len(ROWs)}, {len(COLs)})")
+
 	rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)    
 	colnames_all,col_reverseindex=np.unique(COLs,return_inverse=True)
 	newmatrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
-	#print(newmatrix.shape)
+	print(newmatrix.shape)
 	#print(rownames_all, row_reverseindex)
 	#print(colnames_all, col_reverseindex)
 	#print()
@@ -997,9 +997,9 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 	current_matrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
 	for idx, val in enumerate(SPMs):
 			matrix, rownames, colnames=val
-			#print(idx, len(rownames), len(colnames), )
-			#print(current_row_idx, current_col_idx)
-			#print(matrix.shape)
+			print(idx, len(rownames), len(colnames), )
+			print(current_row_idx, current_col_idx)
+			print(matrix.shape)
 			if idx==len(SPMs)-1:
 					row_reverseindex_i=row_reverseindex[current_row_idx:]
 					col_reverseindex_i=col_reverseindex[current_col_idx:]
@@ -1010,7 +1010,7 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 			newmatrix[np.ix_(row_reverseindex_i,col_reverseindex_i)]+=matrix
 			current_row_idx+=len(rownames)
 			current_col_idx+=len(colnames)
-			#print("#"*50)        
+			print("#"*50)        
 	return newmatrix, rownames_all, colnames_all
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
