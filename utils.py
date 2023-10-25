@@ -970,9 +970,9 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
 
-def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
+def get_user_token_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
-	SPMs=[(load_pickle(fpath=spm_path), load_pickle(fpath=spm_uname_path), load_pickle(fpath=spm_tkname_path)) for spm_path, spm_uname_path, spm_tkname_path in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
+	# SPMs=[(load_pickle(fpath=spm_path), load_pickle(fpath=spm_uname_path), load_pickle(fpath=spm_tkname_path)) for spm_path, spm_uname_path, spm_tkname_path in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
 	print(len(SPMs))
 	print("#"*100)
 	# return None, None, None
@@ -1009,8 +1009,17 @@ def get_sparse_user_token(spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_r
 			newmatrix[np.ix_(row_reverseindex_i,col_reverseindex_i)]+=matrix
 			current_row_idx+=len(rownames)
 			current_col_idx+=len(colnames)
-			print("#"*50)        
+			print("#"*50)
 	print(f"Elapsed_t: {time.time()-t:.2f} sec")
+
+	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape{0}}_nUSRs_x_{newmatrix.shape{1}}_nTOKs.gz")
+	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape{0}}_nUSRs.gz")
+	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_token_names_{newmatrix.shape{1}}_nTOKs.gz")
+
+	save_pickle(pkl=newmatrix, fname=spm_fname)
+	save_pickle(pkl=rownames_all, fname=spm_rows_fname)
+	save_pickle(pkl=colnames_all, fname=spm_cols_fname)
+
 	return newmatrix, rownames_all, colnames_all
 
 def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):

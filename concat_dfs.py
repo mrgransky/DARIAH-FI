@@ -819,9 +819,9 @@ def get_users_tokens_ddf():
 def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
-	print(len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )), 
-				len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), 
-				len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )),
+	print(len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )), 
+				len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )), 
+				len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )),
 			)
 	assert len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' ))==len(get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' ))
 
@@ -829,6 +829,7 @@ def run():
 	fprefix = f"concatinated_{len(get_spm_files(fpath=args.dfsPath+'/'+'*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' ))}_SPMs"
 	RES_DIR = make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
+	
 
 	try:
 		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*dfs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
@@ -840,17 +841,22 @@ def run():
 	print(user_token_df.info(memory_usage="deep"))
 	print("<>"*50)
 
+	spm_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )
+	spm_users_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )
+	spm_tokens_names_files_path = get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )
+
 	try:
-		# load
-		usr_tk_spm=load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*_SPMs*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz' )[0] )
-		usr_tk_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_SPMs*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz' )[0])
-		usr_tk_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+'*_SPMs*_USERs_TOKENs_spm_token_names_*_BoWs.gz' )[0])
+		spm_U_x_T=load_pickle( fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz' )[0] )
+		spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz' )[0] )
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_sparse_user_token(	spm_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz',
-																																								spm_rows_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz',
-																																								spm_cols_fname=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz',
-																																							)
+		spm_U_x_T, spm_usrNames, spm_tokNames=get_user_token_concat(
+			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath,spm_usr_fpath,spm_tk_fpath in zip(get_spm_files(fpath=spm_files_path),get_spm_files(fpath=spm_users_names_files_path),get_spm_files(fpath=spm_tokens_names_files_path))]
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		)
+
 	print(type(usr_tk_spm), usr_tk_spm.shape) # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
 	print(type(usr_tk_spm_usrNames), len(usr_tk_spm_usrNames)) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(usr_tk_spm_tokNames), len(usr_tk_spm_tokNames)) # <class 'numpy.ndarray'> (nTokens,)
@@ -873,7 +879,7 @@ def main():
 
 	# ############################### PANDAS DataFrame ################################
 	try:
-		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
+		user_token_df = load_pickle( fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz' )[0] )
 	except Exception as e:
 		print(f"<!> user_token_df Not available! {e}")
 		user_token_df = get_users_tokens_df()
