@@ -868,7 +868,7 @@ def run():
 	print(f"QueryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} ) "
-				f" {[f"idx[{qi}]: {concat_spm_tokNames[qi]}" for qi, qv in enumerate(query_vector.flatten())]}"
+				f" {[f'idx[{qi}]: {concat_spm_tokNames[qi]}' for qi, qv in enumerate(query_vector.flatten())]}"
 			)
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
