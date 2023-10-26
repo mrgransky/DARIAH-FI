@@ -859,7 +859,7 @@ def run():
 
 	qu_phrase=args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print(f"Input Query Phrase(s): < {qu_phrase} > containing {len(query_phrase_tk)} lemma(s): {query_phrase_tk}".center(110, " "))
+	print(f"Input Query Phrase(s): < {qu_phrase} > containing {len(query_phrase_tk)} lemma(s): {query_phrase_tk}".center(150, " "))
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
 															mat_col=concat_spm_tokNames, 
@@ -889,7 +889,7 @@ def run():
 											)
 	
 	print("<>"*80)
-	print(f"Recommendation Result:\nRaw Query Phrase: {qu_phrase}\n")
+	print(f"Recommendation Result:\nRaw Query Phrase: < {qu_phrase} >\n")
 	st_t = time.time()
 	print(get_topK_tokens(mat=concat_spm_U_x_T, 
 												mat_rows=concat_spm_usrNames,

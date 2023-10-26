@@ -1066,7 +1066,7 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
-	print(f"Getting customized cosine".center(100, " "))
+	print(f"Getting customized cosine".center(150, "-"))
 	print(f"spMtx: {type(mat)} {mat.shape} "
 				f"quVec: {query_vec.shape} {type(query_vec)} "
 				f"idfVec: {inv_doc_freq.shape} {type(inv_doc_freq)}"
@@ -1098,12 +1098,12 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 		this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
 		this_user_cosine=np.sum(this_user_interest*this_query_interest)/(1.0*this_query_interest_norm )
 		this_query_cosines[0, ui]=this_user_cosine.astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s {this_query_cosines.shape} {type(this_query_cosines)} byte [count]: {this_query_cosines.nbytes/1e6:.2f} MB".center(100, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {this_query_cosines.shape} {type(this_query_cosines)} byte [count]: {this_query_cosines.nbytes/1e6:.2f} MB".center(150, "-"))
 	return this_query_cosines # (1 x nUsers)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 	# init
-	print(f"Getting avgRecSysVec (1 x nItems)".center(110, " "))
+	print(f"Getting avgRecSysVec (1 x nItems)".center(150, " "))
 	print(f"spMtx {type(mat)} {mat.shape}")
 	print(f"Cosine: {type(cosine_sim)} {cosine_sim.shape}")
 	if inv_doc_freq is not None:
@@ -1128,7 +1128,7 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 		avg_rec = prev_avg_rec + update_vec # (1 x nTokens) + (1 x nTokens)
 		prev_avg_rec = avg_rec # (1 x nTokens)
 	avg_rec = avg_rec / np.sum(cosine_sim) # (1 x nTokens)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(110, " "))	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(150, " "))	
 	return avg_rec
 
 def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=15):
