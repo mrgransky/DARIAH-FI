@@ -1066,17 +1066,18 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
-	print(f"Customized Cosine "
-				f"| sparse mtx: {mat.shape} {type(mat)} "
-				f"| query_vec: {query_vec.shape} {type(query_vec)} "
-				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}"
+	print(f"Getting customized cosine "
+				f"spMtx: {type(mat)} {mat.shape} "
+				f"quVec: {query_vec.shape} {type(query_vec)} "
+				f"idfVec: {inv_doc_freq.shape} {type(inv_doc_freq)}"
 			)
 	# init
-	print(type(mat), mat.shape)
-	print(type(mat_rows), mat_rows.shape)
-	print(type(mat_cols), mat_cols.shape)
-	print(type(query_vec), query_vec.shape)
-	print(type(inv_doc_freq), inv_doc_freq.shape)
+	# print(type(mat), mat.shape)
+	# print(type(mat_rows), mat_rows.shape)
+	# print(type(mat_cols), mat_cols.shape)
+	# print(type(query_vec), query_vec.shape)
+	# print(type(inv_doc_freq), inv_doc_freq.shape)
+	st_t = time.time()
 	this_query_interest = query_vec.flatten().copy()    
 	if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
 		# print("changing type..")
@@ -1097,16 +1098,19 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 		this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
 		this_user_cosine=np.sum(this_user_interest*this_query_interest)/(1.0*this_query_interest_norm )
 		this_query_cosines[0, ui]=this_user_cosine.astype("float32")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {this_query_cosines.shape} {type(this_query_cosines)} {this_query_cosines.nbytes/1e6:.2f} MB")
 	return this_query_cosines # (1 x nUsers)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 	# init
+	print(f"avgRecSysVec (1 x nItems): spMtx (nUsers x nTokens): {mat.shape}".center(110. " "))
+	st_t = time.time()
 	prev_avg_rec=np.zeros((1, mat.shape[1]), dtype=np.float32) # 1 x nTokens
-	print(type(mat), mat.shape)
-	print(type(mat_rows), mat_rows.shape)
-	print(type(mat_cols), mat_cols.shape)
-	print(type(cosine_sim), cosine_sim.shape)
-	print(type(inv_doc_freq), inv_doc_freq.shape)
+	# print(type(mat), mat.shape)
+	# print(type(mat_rows), mat_rows.shape)
+	# print(type(mat_cols), mat_cols.shape)
+	# print(type(cosine_sim), cosine_sim.shape)
+	# print(type(inv_doc_freq), inv_doc_freq.shape)
 	for iUser, vUser in enumerate(mat_rows):
 		#print(iUser, vUser, np.count_nonzero(mat.getrowview(iUser).toarray().flatten()))
 		userInterest=mat.getrowview(iUser).toarray().flatten() # (nTokens,) flatten
@@ -1120,6 +1124,7 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 		avg_rec = prev_avg_rec + update_vec # (1 x nTokens) + (1 x nTokens)
 		prev_avg_rec = avg_rec # (1 x nTokens)
 	avg_rec = avg_rec / np.sum(cosine_sim) # (1 x nTokens)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(110. " "))	
 	return avg_rec
 
 def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=12):

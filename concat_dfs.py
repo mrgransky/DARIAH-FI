@@ -866,41 +866,36 @@ def run():
 															tokenized_qu_phrases=query_phrase_tk,
 														)
 	print(f"QueryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
-				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
-				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} ) "
-				f" {[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
+				f"|NonZeros|: {np.count_nonzero(query_vector)} "
+				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
+				f"{[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
 			)
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
-	st_t = time.time()
 	ccs=get_costumized_cosine_similarity(mat=concat_spm_U_x_T,
 																			 mat_rows=concat_spm_usrNames, 
 																			 mat_cols=concat_spm_tokNames, 
 																			 query_vec=query_vector, 
 																			 inv_doc_freq=idf_vec,
 																			)
-	print( ccs.shape, type(ccs), ccs.nbytes/1e6)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 
-	st_t = time.time()
 	avgRecSys=get_avg_rec(mat=concat_spm_U_x_T,
 												mat_rows=concat_spm_usrNames,
 												mat_cols=concat_spm_tokNames,
 												cosine_sim=ccs, 
 												inv_doc_freq=idf_vec,
 											)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
 	print("<>"*100)
 	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
 	print(get_topK_tokens(mat=concat_spm_U_x_T, 
-											mat_rows=concat_spm_usrNames,
-											mat_cols=concat_spm_tokNames,
-											avgrec=avgRecSys,
-										 )
+												mat_rows=concat_spm_usrNames,
+												mat_cols=concat_spm_tokNames,
+												avgrec=avgRecSys,
+											)
 		 )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	print("<>"*100)
