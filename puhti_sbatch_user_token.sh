@@ -1,17 +1,17 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeXY
+#SBATCH --job-name=nikeQ
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=122G
-#SBATCH --partition=small
+#SBATCH --mem=165G
+#SBATCH --partition=gpu
 #SBATCH --time=01-00:00:00
 #SBATCH --nodes=1
-#SBATCH --array=519-520
+#SBATCH --array=0-600
 # # # # # SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
@@ -32,7 +32,7 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY"
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
