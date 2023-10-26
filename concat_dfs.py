@@ -834,7 +834,7 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
-	print(type(concat_spm_U_x_T), concat_spm_U_x_T.shape) # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
+	print(f"{type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
