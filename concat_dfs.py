@@ -868,8 +868,6 @@ def run():
 	print(f"<> queryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
-				f"TK(s): {[list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
-				# f"TK(s): {[k for idx in np.nonzero(query_vector)[0] for k, v in BoWs.items() if v==idx]}"
 			)
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
