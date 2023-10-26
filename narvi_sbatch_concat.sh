@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --job-name=spm_concat
+#SBATCH --job-name=spm_concat_all_qu
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=06-23:59:59
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=450G
+#SBATCH --mem-per-cpu=199G
 #SBATCH --partition=amd
 #SBATCH --nodes=1
 
@@ -39,7 +39,12 @@ dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes" ########## must be adju
 # echo "${stars// /*}"
 
 echo "DFs concat..."
-python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase 'Helsingin Pörssi ja Suomen Pankki'
+for qu in 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 
+# for qu in 'Tampereen seudun työväenopisto' 
+do
+	echo "Query: $qu"
+	python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase "$qu"
+done
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
