@@ -1103,7 +1103,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 	# init
-	print(f"avgRecSysVec (1 x nItems): spMtx (nUsers x nTokens): {mat.shape}".center(110. " "))
+	print(f"avgRecSysVec (1 x nItems): spMtx (nUsers x nTokens): {mat.shape}".center(110, " "))
 	st_t = time.time()
 	prev_avg_rec=np.zeros((1, mat.shape[1]), dtype=np.float32) # 1 x nTokens
 	# print(type(mat), mat.shape)
@@ -1124,7 +1124,7 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 		avg_rec = prev_avg_rec + update_vec # (1 x nTokens) + (1 x nTokens)
 		prev_avg_rec = avg_rec # (1 x nTokens)
 	avg_rec = avg_rec / np.sum(cosine_sim) # (1 x nTokens)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(110. " "))	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(110, " "))	
 	return avg_rec
 
 def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=12):
