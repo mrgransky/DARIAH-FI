@@ -1067,9 +1067,9 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
 	print(f"Getting customized cosine".center(150, "-"))
-	print(f"spMtx: {type(mat)} {mat.shape} "
-				f"quVec: {query_vec.shape} {type(query_vec)} "
-				f"idfVec: {inv_doc_freq.shape} {type(inv_doc_freq)}"
+	print(f"spMtx {type(mat)} {mat.shape} "
+				f"quVec {query_vec.shape} {type(query_vec)} "
+				f"IDF {inv_doc_freq.shape} {type(inv_doc_freq)}"
 			)
 	# init
 	# print(type(mat), mat.shape)
@@ -1105,9 +1105,9 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 	# init
 	print(f"Getting avgRecSysVec (1 x nItems)".center(150, " "))
 	print(f"spMtx {type(mat)} {mat.shape}")
-	print(f"Cosine: {type(cosine_sim)} {cosine_sim.shape}")
+	print(f"Cosine {type(cosine_sim)} {cosine_sim.shape}")
 	if inv_doc_freq is not None:
-		print(f"IDF: {type(inv_doc_freq)} {inv_doc_freq.shape}")
+		print(f"IDF {type(inv_doc_freq)} {inv_doc_freq.shape}")
 	st_t = time.time()
 	prev_avg_rec=np.zeros((1, mat.shape[1]), dtype=np.float32) # 1 x nTokens
 	# print(type(mat), mat.shape)

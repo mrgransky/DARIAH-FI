@@ -855,17 +855,18 @@ def run():
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
 									)
-	print(f"IDF: {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
+	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
 
 	qu_phrase=args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print(f"Input Query Phrase(s): < {qu_phrase} > containing {len(query_phrase_tk)} lemma(s): {query_phrase_tk}".center(150, " "))
+	print("<>"*85)
+	print(f"Input Query Phrase(s): < {qu_phrase} > containing {len(query_phrase_tk)} lemma(s) {query_phrase_tk}".center(150, " "))
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
 															mat_col=concat_spm_tokNames, 
 															tokenized_qu_phrases=query_phrase_tk,
 														)
-	print(f"quVec: {type(query_vector)} {query_vector.shape} Allzero? {np.all(query_vector==0.0)}\n"
+	print(f"quVec {type(query_vector)} {query_vector.shape} Allzero? {np.all(query_vector==0.0)}\n"
 				f"|NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
 				f"{[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
