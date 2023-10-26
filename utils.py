@@ -818,7 +818,7 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=idf, fname=file_name)
 	return idf
 
-def get_idf(mat, file_name: str="MUST_BE_SET"):
+def get_idf(mat, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	print(f"Inverse document frequency for {type(mat)} {mat.shape}", end=" ")
 	st_t=time.time()
 	nUsers, nTokens = mat.shape
