@@ -848,12 +848,13 @@ def run():
 	
 	try:
 		# load idf
-		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
+		idf_vec=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> idf file not available {e}")
-		idf_vec = get_idf(mat=concat_spm_U_x_T,
-											file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
-										)
+		idf_vec=get_idf(mat=concat_spm_U_x_T,
+										save_dir=args.dfsPath,
+										prefix_fname=fprefix,
+									)
 	return
 	# gc.collect()
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)

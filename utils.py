@@ -829,7 +829,8 @@ def get_idf(mat, file_name: str="MUST_BE_SET"):
 	res = (numerator / denumerator)#+1.0
 	idf = res.astype("float32")
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-	save_pickle(pkl=idf, fname=file_name)
+	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
+	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
 		
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
