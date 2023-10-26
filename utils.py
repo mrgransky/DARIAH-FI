@@ -1066,6 +1066,11 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
+	print(f"Customized Cosine "
+				f"| sparse mtx: {mat.shape} {type(mat)} "
+				f"| query_vec: {query_vec.shape} {type(query_vec)} "
+				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}"
+			)
 	# init
 	print(type(mat), mat.shape)
 	print(type(mat_rows), mat_rows.shape)
@@ -1074,7 +1079,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 	print(type(inv_doc_freq), inv_doc_freq.shape)
 	this_query_interest = query_vec.flatten().copy()    
 	if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
-		print("changing type..")
+		# print("changing type..")
 		this_query_interest = this_query_interest*np.squeeze(np.asarray(inv_doc_freq))
 	#print(type(this_query_interest), this_query_interest.shape)
 	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
