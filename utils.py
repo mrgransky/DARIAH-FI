@@ -683,7 +683,7 @@ def load_pickle(fpath:str="unknown", dftype=None):
 			pkl = dill.load(f)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loaded in: {elpt:.1f} s | {type(pkl)} | {fsize:.1f} MB".center(150, " "))
+	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(130, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
@@ -1056,3 +1056,11 @@ def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None
 		this_user_cosine = np.sum(this_user_interest * this_query_interest) / ( 1.0 * this_query_interest_norm )
 		this_query_cosines[user_ip] = this_user_cosine.astype("float32")
 	return this_query_cosines # (1 x nUsers)
+
+def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"]):
+	query_vector=np.zeros((1, mat.shape[1]), dtype=np.float32)
+	query_vector[0, list(np.in1d(mat_col, tokenized_qu_phrases).nonzero()[0])]=1
+	print(query_vector.shape, query_vector.dtype, np.count_nonzero(query_vector))
+	#print(np.argsort(tempquery.flatten())[-len(query_words):])
+	print(np.where(query_vector.flatten()!=0)[0])
+	return query_vector

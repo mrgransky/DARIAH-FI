@@ -855,31 +855,27 @@ def run():
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
 									)
-	return
-	# gc.collect()
-	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	print(f"IDF: {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
 
 	qu_phrase = args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
-
-	query_vector = np.zeros(len(BoWs))
-	for qutk in query_phrase_tk:
-		# print(qutk, BoWs.get(qutk))
-		if BoWs.get(qutk):
-			query_vector[BoWs.get(qutk)] += 1.0
-
+	query_vector=get_query_vec(	mat=concat_spm_U_x_T, 
+															mat_row=concat_spm_usrNames, 
+															mat_col=concat_spm_tokNames, 
+															tokenized_qu_phrases=["åbo", "akademi"],
+														)
 	print(f"<> queryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
 				f"TK(s): {[list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
 				# f"TK(s): {[k for idx in np.nonzero(query_vector)[0] for k, v in BoWs.items() if v==idx]}"
 			)
-
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
+	return
 	# print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
 	# for iTK, vTK in enumerate(query_phrase_tk):
 	# 	if BoWs.get(vTK):
