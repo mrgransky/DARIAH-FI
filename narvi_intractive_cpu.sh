@@ -5,4 +5,4 @@
 # OR ...
 # $ source puhti_intractive_cpu.sh
 
-srun -J cpu_intractive  --partition=normal --time=00-09:59:59 --mem=165G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
+srun -J cpu_intractive  --partition=normal --time=00-09:59:59 --mem=100G --ntasks=1 --cpus-per-task=1 --pty /bin/bash -i
