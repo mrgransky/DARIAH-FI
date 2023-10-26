@@ -1060,7 +1060,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"]):
 	query_vector=np.zeros((1, mat.shape[1]), dtype=np.float32)
 	query_vector[0, list(np.in1d(mat_col, tokenized_qu_phrases).nonzero()[0])]=1
-	print(query_vector.shape, query_vector.dtype, np.count_nonzero(query_vector), np.where(query_vector.flatten()!=0)[0])
+	# print(query_vector.shape, query_vector.dtype, np.count_nonzero(query_vector), np.where(query_vector.flatten()!=0)[0])
 	#print(np.argsort(tempquery.flatten())[-len(query_words):])
 	# print(np.where(query_vector.flatten()!=0)[0])
 	return query_vector

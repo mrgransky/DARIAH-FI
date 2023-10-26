@@ -834,7 +834,7 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
-	print(f"{type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
+	print(f"{type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # lil_matrix (nUsers, nTokens)
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
@@ -859,13 +859,13 @@ def run():
 
 	qu_phrase=args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
-	query_vector=get_query_vec(	mat=concat_spm_U_x_T, 
+	print(f"Input Query Phrase(s): < {qu_phrase} > containing {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
+	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
 															mat_col=concat_spm_tokNames, 
 															tokenized_qu_phrases=query_phrase_tk,
 														)
-	print(f"QueryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
+	print(f"quVec: {type(query_vector)} {query_vector.shape} Allzero? {np.all(query_vector==0.0)} "
 				f"|NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
 				f"{[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
@@ -888,8 +888,8 @@ def run():
 												inv_doc_freq=idf_vec,
 											)
 	
-	print("<>"*100)
-	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
+	print("<>"*80)
+	print(f"Recommendation Result:\nRaw Query Phrase: {qu_phrase}\n")
 	st_t = time.time()
 	print(get_topK_tokens(mat=concat_spm_U_x_T, 
 												mat_rows=concat_spm_usrNames,
@@ -898,7 +898,7 @@ def run():
 											)
 		 )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	print("<>"*100)
+	print("<>"*80)
 
 	
 def main():
