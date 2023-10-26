@@ -867,7 +867,7 @@ def run():
 														)
 	print(f"<> queryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
-				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
+				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} ) "
 			)
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
@@ -895,9 +895,9 @@ def run():
 	print("<>"*100)
 	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
-	print(get_topK_tokens(mat=sp_mat_pkl, 
-											mat_rows=sp_row_pkl,
-											mat_cols=sp_col_pkl,
+	print(get_topK_tokens(mat=concat_spm_U_x_T, 
+											mat_rows=concat_spm_usrNames,
+											mat_cols=concat_spm_tokNames,
 											avgrec=avgRecSys,
 										 )
 		 )
