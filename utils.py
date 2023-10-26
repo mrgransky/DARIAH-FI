@@ -767,40 +767,40 @@ def get_concat_df(dir_path: str):
 	gc.collect()
 	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {df_concat.shape}")
 	return df_concat, ndfs
+		
+# def get_topK_tokens(usr_tk_df, avgrec, K=12):
+# 	return [usr_tk_df.columns[iTK] for iTK in avgrec.flatten().argsort()[-K:]]
 
-def get_topK_tokens(usr_tk_df, avgrec, K=12):
-	return [usr_tk_df.columns[iTK] for iTK in avgrec.flatten().argsort()[-K:]]
+# def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
+# 	nUsers, nItems = user_token_df.shape
+# 	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))
+# 	# init
+# 	prev_avg_rec = user_token_df.iloc[0,:].copy();prev_avg_rec.iloc[:]=0
+# 	prev_avg_rec = prev_avg_rec.to_numpy().reshape(1, -1) # 1 x nTokens
+# 	print(type(user_token_df), user_token_df.shape, type(cosine_sim), cosine_sim.shape)
 
-def get_avg_rec(user_token_df, cosine_sim, inv_doc_freq=None):
-	nUsers, nItems = user_token_df.shape
-	print(f"avgRecSysVec (1 x nItems) | nUsers: {nUsers} | nItems: {nItems}".center(120, " "))
-	# init
-	prev_avg_rec = user_token_df.iloc[0,:].copy();prev_avg_rec.iloc[:]=0
-	prev_avg_rec = prev_avg_rec.to_numpy().reshape(1, -1) # 1 x nTokens
-	print(type(user_token_df), user_token_df.shape, type(cosine_sim), cosine_sim.shape)
+# 	if isinstance( cosine_sim, np.ndarray ):
+# 		print(f"Numpy Cosine: {type(cosine_sim)} => flatten...")
+# 		cosine_sim=cosine_sim.flatten()
+# 		print(f"new cosine: {cosine_sim.shape}")
+# 	elif isinstance( cosine_sim, ( pd.DataFrame, pd.Series ) ):
+# 		print(f"Pandas Cosine: {type(cosine_sim)} => to_numpy()...")
+# 		cosine_sim=cosine_sim.to_numpy()
+# 		print(f"new cosine: {cosine_sim.shape}")
+# 	else:
+# 		print(f"cosine: {type(cosine_sim)} Unknown!")
+# 		return
 
-	if isinstance( cosine_sim, np.ndarray ):
-		print(f"Numpy Cosine: {type(cosine_sim)} => flatten...")
-		cosine_sim=cosine_sim.flatten()
-		print(f"new cosine: {cosine_sim.shape}")
-	elif isinstance( cosine_sim, ( pd.DataFrame, pd.Series ) ):
-		print(f"Pandas Cosine: {type(cosine_sim)} => to_numpy()...")
-		cosine_sim=cosine_sim.to_numpy()
-		print(f"new cosine: {cosine_sim.shape}")
-	else:
-		print(f"cosine: {type(cosine_sim)} Unknown!")
-		return
-
-	for iUser, vUser in enumerate(user_token_df.index):
-		userInterest = user_token_df.loc[vUser, :].to_numpy().reshape(1, -1) # 1 x nTokens
-		if inv_doc_freq is not None:
-			userInterest = userInterest * inv_doc_freq.to_numpy().reshape(1, -1) # tulla, saada downweighted by idf
-		userInterest = normalize(userInterest, norm="l2", axis=1) # 1 x nTokens
-		update_vec = (cosine_sim[iUser] * userInterest)		
-		avg_rec = prev_avg_rec + update_vec
-		prev_avg_rec = avg_rec
-	avg_rec = avg_rec / np.sum(cosine_sim)
-	return avg_rec
+# 	for iUser, vUser in enumerate(user_token_df.index):
+# 		userInterest = user_token_df.loc[vUser, :].to_numpy().reshape(1, -1) # 1 x nTokens
+# 		if inv_doc_freq is not None:
+# 			userInterest = userInterest * inv_doc_freq.to_numpy().reshape(1, -1) # tulla, saada downweighted by idf
+# 		userInterest = normalize(userInterest, norm="l2", axis=1) # 1 x nTokens
+# 		update_vec = (cosine_sim[iUser] * userInterest)		
+# 		avg_rec = prev_avg_rec + update_vec
+# 		prev_avg_rec = avg_rec
+# 	avg_rec = avg_rec / np.sum(cosine_sim)
+# 	return avg_rec
 
 def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	print(f"inv doc freq | user_token_df: {user_token_df.shape} | {type(user_token_df)}")
@@ -1057,39 +1057,6 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 # 		this_query_cosines[user_ip] = this_user_cosine.astype("float32")
 # 	return this_query_cosines # (1 x nUsers)
 
-def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
-	print(f"Customized Cosine "
-				f"| user_token_df: {mat.shape} {type(mat)} "
-				f"| query_vec: {query_vec.shape} {type(query_vec)} "
-				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}"
-			)
-	# init
-	print(type(mat), type(mat_rows), type(mat_cols), )
-	print(mat.shape, mat_rows.shape, mat_cols.shape, query_vec.shape, inv_doc_freq.shape)
-	print(type(query_vec), query_vec.shape)
-	print(type(inv_doc_freq), inv_doc_freq.shape)
-	this_query_interest = query_vec.flatten().copy()
-	if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
-			print("changing type..")
-			this_query_interest = this_query_interest*np.squeeze(np.asarray(inv_doc_freq))
-	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
-	this_query_cosines=np.zeros((1, mat.shape[0]), dtype=np.float32) # 1 x nUsers
-	print(this_query_cosines.nbytes/1e6)
-	for ui, uv in enumerate(mat_rows):
-			this_user_interest = mat[ui, :] # (1 x nTokens)
-			#print(this_user_interest)
-			if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
-					#print("changing type..")
-					this_user_interest=this_user_interest*np.squeeze(np.asarray(inv_doc_freq))
-			this_user_interest_norm=np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
-			this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
-			this_user_cosine=np.sum(this_user_interest*this_query_interest)/(1.0*this_query_interest_norm )
-			#print(this_user_cosine, type(this_user_cosine), this_user_cosine.dtype)
-			this_query_cosines[0, ui]=this_user_cosine.astype("float32")
-	print(this_query_cosines.nbytes/1e6)
-	#print(sum([sys.getsizeof(i) for i in this_query_cosines.data])/1e6, this_query_cosines.toarray().nbytes/1e6)
-	return this_query_cosines # (1 x nUsers)
-
 def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"]):
 	query_vector=np.zeros((1, mat.shape[1]), dtype=np.float32)
 	query_vector[0, list(np.in1d(mat_col, tokenized_qu_phrases).nonzero()[0])]=1
@@ -1097,3 +1064,58 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	#print(np.argsort(tempquery.flatten())[-len(query_words):])
 	print(np.where(query_vector.flatten()!=0)[0])
 	return query_vector
+
+def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
+	# init
+	print(type(mat), mat.shape)
+	print(type(mat_rows), mat_rows.shape)
+	print(type(mat_cols), mat_cols.shape)
+	print(type(query_vec), query_vec.shape)
+	print(type(inv_doc_freq), inv_doc_freq.shape)
+	this_query_interest = query_vec.flatten().copy()    
+	if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
+		print("changing type..")
+		this_query_interest = this_query_interest*np.squeeze(np.asarray(inv_doc_freq))
+	#print(type(this_query_interest), this_query_interest.shape)
+	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
+	this_query_cosines=np.zeros((1, mat.shape[0]), dtype=np.float32) # 1 x nUsers
+	for ui, uv in enumerate(mat_rows):
+		#print(ui, uv, np.count_nonzero(mat.getrowview(ui).toarray().flatten()))
+		this_user_interest=mat.getrowview(ui).toarray().flatten() # (nTokens,) flatten
+		#print(type(this_user_interest), this_user_interest.shape)
+		if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
+			#print("changing type..")
+			this_user_interest=this_user_interest*np.squeeze(np.asarray(inv_doc_freq))
+		#print(type(this_user_interest), this_user_interest.shape)
+		#print()
+		this_user_interest_norm=np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
+		this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
+		this_user_cosine=np.sum(this_user_interest*this_query_interest)/(1.0*this_query_interest_norm )
+		this_query_cosines[0, ui]=this_user_cosine.astype("float32")
+	return this_query_cosines # (1 x nUsers)
+
+def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
+	# init
+	prev_avg_rec=np.zeros((1, mat.shape[1]), dtype=np.float32) # 1 x nTokens
+	print(type(mat), mat.shape)
+	print(type(mat_rows), mat_rows.shape)
+	print(type(mat_cols), mat_cols.shape)
+	print(type(cosine_sim), cosine_sim.shape)
+	print(type(inv_doc_freq), inv_doc_freq.shape)
+	for iUser, vUser in enumerate(mat_rows):
+		#print(iUser, vUser, np.count_nonzero(mat.getrowview(iUser).toarray().flatten()))
+		userInterest=mat.getrowview(iUser).toarray().flatten() # (nTokens,) flatten
+		#print(userInterest.shape)
+		if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
+			#print("change typing...")
+			userInterest = userInterest*np.squeeze(np.asarray(inv_doc_freq)) # (nTokens,) flatten
+		#print(userInterest.shape)
+		userInterest = normalize(userInterest.reshape(1,-1), norm="l2", axis=1) # MUST be (1 x nTokens)
+		update_vec = (cosine_sim[0, iUser] * userInterest) # (1 x nTokens)
+		avg_rec = prev_avg_rec + update_vec # (1 x nTokens) + (1 x nTokens)
+		prev_avg_rec = avg_rec # (1 x nTokens)
+	avg_rec = avg_rec / np.sum(cosine_sim) # (1 x nTokens)
+	return avg_rec
+
+def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=12):
+	return [mat_cols[iTK] for iTK in avgrec.flatten().argsort()[-K:]]

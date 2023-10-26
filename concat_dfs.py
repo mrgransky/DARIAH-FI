@@ -880,17 +880,27 @@ def run():
 																			 query_vec=query_vector, 
 																			 inv_doc_freq=idf_vec,
 																			)
+	print( ccs.shape, type(ccs), ccs.nbytes/1e6)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 
 	st_t = time.time()
-	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
+	avgRecSys=get_avg_rec(mat=concat_spm_U_x_T,
+												mat_rows=concat_spm_usrNames,
+												mat_cols=concat_spm_tokNames,
+												cosine_sim=ccs, 
+												inv_doc_freq=idf_vec,
+											)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	
-	# gc.collect()
 	print("<>"*100)
 	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
 	st_t = time.time()
-	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgRecSys))
+	print(get_topK_tokens(mat=sp_mat_pkl, 
+											mat_rows=sp_row_pkl,
+											mat_cols=sp_col_pkl,
+											avgrec=avgRecSys,
+										 )
+		 )
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	print("<>"*100)
 
