@@ -834,14 +834,77 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
-	print(f"{type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
+	print(f"{type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # <class 'scipy.sparse._lil.lil_matrix'> (nUsers, nTokens)
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
+	return
+
+	############################ only works with x2 files ############################
 	# t=time.time()
 	# print(f">> dfs concat and spm are equal?", end=" ")
 	# print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values), end=" ")
 	# print(f"Elapsed_t: {time.time()-t:.2f} sec")
+	############################ only works with x2 files ############################
+	
+	try:
+		# load idf
+		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
+	except Exception as e:
+		print(f"<!> idf file not available {e}")
+		idf_vec = get_inv_doc_freq(	user_token_df=user_token_df,
+																file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
+															)
+	
+	# gc.collect()
+	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+
+	qu_phrase = args.qphrase
+	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
+	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
+
+	query_vector = np.zeros(len(BoWs))
+	for qutk in query_phrase_tk:
+		# print(qutk, BoWs.get(qutk))
+		if BoWs.get(qutk):
+			query_vector[BoWs.get(qutk)] += 1.0
+
+	print(f"<> queryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
+				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
+				f"@ idx(s): {np.nonzero(query_vector)[0]} ) "
+				f"TK(s): {[list(BoWs.keys())[list(BoWs.values()).index(vidx)] for vidx in np.nonzero(query_vector)[0]]}"
+				# f"TK(s): {[k for idx in np.nonzero(query_vector)[0] for k, v in BoWs.items() if v==idx]}"
+			)
+
+	if np.all( query_vector==0.0 ):
+		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		return
+
+	# print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
+	# for iTK, vTK in enumerate(query_phrase_tk):
+	# 	if BoWs.get(vTK):
+	# 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
+	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
+	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	# gc.collect()
+
+	st_t = time.time()
+	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
+	# gc.collect()
+
+	st_t = time.time()
+	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
+	
+	# gc.collect()
+	print("<>"*100)
+	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
+	st_t = time.time()
+	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgRecSys))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
+	print("<>"*100)
+
 	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
