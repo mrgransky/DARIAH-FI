@@ -838,7 +838,6 @@ def run():
 	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
 	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
 
-	return
 
 	############################ only works with x2 files ############################
 	# t=time.time()
@@ -852,10 +851,10 @@ def run():
 		idf_vec = load_pickle(fpath=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> idf file not available {e}")
-		idf_vec = get_inv_doc_freq(	user_token_df=user_token_df,
-																file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
-															)
-	
+		idf_vec = get_idf(mat=concat_spm_U_x_T,
+											file_name=os.path.join(args.dfsPath, f"{fprefix}_lemmaMethod_{args.lmMethod}_idf_vec_{len(BoWs)}_BoWs.gz"),
+										)
+	return
 	# gc.collect()
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 

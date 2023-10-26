@@ -818,6 +818,20 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=idf, fname=file_name)
 	return idf
 
+def get_idf(mat, file_name: str="MUST_BE_SET"):
+	print(f"Inverse document frequency for {type(mat)} {mat.shape}", end=" ")
+	st_t=time.time()
+	nUsers, nTokens = mat.shape
+	#doc_freq_term=np.count_nonzero(mat.toarray(), axis=0) # 1 x nTokens
+	doc_freq_term=np.sum(mat>0, axis=0) # 1 x nTokens
+	numerator = np.log10(1+nUsers).astype("float32") # integer
+	denumerator = 1+doc_freq_term # 1 x nTokens
+	res = (numerator / denumerator)#+1.0
+	idf = res.astype("float32")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	save_pickle(pkl=idf, fname=file_name)
+	return idf
+		
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
 	print(f"SciPy Sparse Matrix: (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
 	user_token_df = get_unpacked_user_token_interest(df=df)
