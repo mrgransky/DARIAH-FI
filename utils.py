@@ -1034,27 +1034,60 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 
 	return newmatrix, rownames_all, colnames_all
 
-def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
+# def get_costumized_cosine_similarity(user_token_df, query_vec, inv_doc_freq=None):
+# 	print(f"Customized Cosine "
+# 				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
+# 				f"| query_vec: {query_vec.shape} {type(query_vec)} "
+# 				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}"
+# 			)
+# 	# init
+# 	this_query_interest = query_vec.copy()
+# 	if inv_doc_freq is not None:
+# 		this_query_interest = this_query_interest*inv_doc_freq
+# 	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
+# 	this_query_cosines=user_token_df.iloc[:,0].copy();this_query_cosines.iloc[:]=0 # (1 x nUsers)
+	
+# 	for _, user_ip in enumerate(user_token_df.index):
+# 		this_user_interest = user_token_df.loc[user_ip] # (1x nTokens)
+# 		if inv_doc_freq is not None:
+# 			this_user_interest = this_user_interest * inv_doc_freq
+# 		this_user_interest_norm = np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
+# 		this_user_interest = (this_user_interest / this_user_interest_norm) ** 0.1 # orig: 0.1 # 1.0 at least 1 zero
+# 		this_user_cosine = np.sum(this_user_interest * this_query_interest) / ( 1.0 * this_query_interest_norm )
+# 		this_query_cosines[user_ip] = this_user_cosine.astype("float32")
+# 	return this_query_cosines # (1 x nUsers)
+
+def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
-				f"| user_token_df: {user_token_df.shape} {type(user_token_df)} "
+				f"| user_token_df: {mat.shape} {type(mat)} "
 				f"| query_vec: {query_vec.shape} {type(query_vec)} "
 				f"| idf: {inv_doc_freq.shape} {type(inv_doc_freq)}"
 			)
 	# init
-	this_query_interest = query_vec.copy()
-	if inv_doc_freq is not None:
-		this_query_interest = this_query_interest*inv_doc_freq
+	print(type(mat), type(mat_rows), type(mat_cols), )
+	print(mat.shape, mat_rows.shape, mat_cols.shape, query_vec.shape, inv_doc_freq.shape)
+	print(type(query_vec), query_vec.shape)
+	print(type(inv_doc_freq), inv_doc_freq.shape)
+	this_query_interest = query_vec.flatten().copy()
+	if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
+			print("changing type..")
+			this_query_interest = this_query_interest*np.squeeze(np.asarray(inv_doc_freq))
 	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
-	this_query_cosines=user_token_df.iloc[:,0].copy();this_query_cosines.iloc[:]=0 # (1 x nUsers)
-	
-	for _, user_ip in enumerate(user_token_df.index):
-		this_user_interest = user_token_df.loc[user_ip] # (1x nTokens)
-		if inv_doc_freq is not None:
-			this_user_interest = this_user_interest * inv_doc_freq
-		this_user_interest_norm = np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
-		this_user_interest = (this_user_interest / this_user_interest_norm) ** 0.1 # orig: 0.1 # 1.0 at least 1 zero
-		this_user_cosine = np.sum(this_user_interest * this_query_interest) / ( 1.0 * this_query_interest_norm )
-		this_query_cosines[user_ip] = this_user_cosine.astype("float32")
+	this_query_cosines=np.zeros((1, mat.shape[0]), dtype=np.float32) # 1 x nUsers
+	print(this_query_cosines.nbytes/1e6)
+	for ui, uv in enumerate(mat_rows):
+			this_user_interest = mat[ui, :] # (1 x nTokens)
+			#print(this_user_interest)
+			if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
+					#print("changing type..")
+					this_user_interest=this_user_interest*np.squeeze(np.asarray(inv_doc_freq))
+			this_user_interest_norm=np.sqrt( np.sum(this_user_interest**2) ) + 1e-18 # to avoid zero division
+			this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
+			this_user_cosine=np.sum(this_user_interest*this_query_interest)/(1.0*this_query_interest_norm )
+			#print(this_user_cosine, type(this_user_cosine), this_user_cosine.dtype)
+			this_query_cosines[0, ui]=this_user_cosine.astype("float32")
+	print(this_query_cosines.nbytes/1e6)
+	#print(sum([sys.getsizeof(i) for i in this_query_cosines.data])/1e6, this_query_cosines.toarray().nbytes/1e6)
 	return this_query_cosines # (1 x nUsers)
 
 def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"]):

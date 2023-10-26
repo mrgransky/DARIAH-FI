@@ -857,13 +857,13 @@ def run():
 									)
 	print(f"IDF: {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
 
-	qu_phrase = args.qphrase
+	qu_phrase=args.qphrase
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T, 
 															mat_row=concat_spm_usrNames, 
 															mat_col=concat_spm_tokNames, 
-															tokenized_qu_phrases=["åbo", "akademi"],
+															tokenized_qu_phrases=query_phrase_tk,
 														)
 	print(f"<> queryVec: {query_vector.shape} Allzero: {np.all(query_vector==0.0)} "
 				f"( |NonZeros|: {np.count_nonzero(query_vector)} "
@@ -873,19 +873,14 @@ def run():
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
-	return
-	# print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
-	# for iTK, vTK in enumerate(query_phrase_tk):
-	# 	if BoWs.get(vTK):
-	# 		users_names, users_values_total, users_values_separated = get_users_byTK(sp_mat_rf, user_token_df, BoWs, token=vTK)
-	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-	# 		plot_usersInterest_by(token=vTK, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, norm_sp=normalize_sp_mtrx)
-	# gc.collect()
-
 	st_t = time.time()
-	ccs = get_costumized_cosine_similarity(user_token_df=user_token_df, query_vec=query_vector, inv_doc_freq=idf_vec)
+	ccs=get_costumized_cosine_similarity(mat=concat_spm_U_x_T,
+																			 mat_rows=concat_spm_usrNames, 
+																			 mat_cols=concat_spm_tokNames, 
+																			 query_vec=query_vector, 
+																			 inv_doc_freq=idf_vec,
+																			)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	# gc.collect()
 
 	st_t = time.time()
 	avgRecSys = get_avg_rec(user_token_df=user_token_df, cosine_sim=ccs, inv_doc_freq=idf_vec)
