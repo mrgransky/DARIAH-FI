@@ -997,8 +997,12 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 			ROWs.extend(rownames)
 			COLs.extend(colnames)
 	# print(f"(ROWs, COLs): ({len(ROWs)}, {len(COLs)})")
-	rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)
+
+	#rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)# ip1, ip11, ip2, ip24, ip3, ...
+	_,ii,row_reverseindex=np.unique([int(x[2:]) for x in ROWs],return_index=True,return_inverse=True)
+	rownames_all=np.array(ROWs)[ii]
 	colnames_all,col_reverseindex=np.unique(COLs,return_inverse=True)
+
 	newmatrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
 	# print(newmatrix.shape)
 	#print(rownames_all, row_reverseindex)
