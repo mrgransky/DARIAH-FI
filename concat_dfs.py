@@ -806,19 +806,19 @@ def run():
 		print(sp_mtx_rows)
 		print(sp_mtx_cols)
 		print("-"*190)
-		
-	# ##############################################For Double checking with 2 DFs#####################################################
-	# try:
-	# 	concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
-	# except Exception as e:
-	# 	print(f"<!> user_token_df Not available! {e}")
-	# 	concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
-	# 																				prefix_fname=f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs",
-	# 																			)
-	# print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
-	# print(concat_df_U_x_T.info(memory_usage="deep"))
-	# print("<>"*50)
-	# ##############################################For Double checking with 2 DFs#####################################################
+	
+	##############################################For Double checking with 2 DFs#####################################################
+	try:
+		concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
+	except Exception as e:
+		print(f"<!> user_token_df Not available! {e}")
+		concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
+																					prefix_fname=f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs",
+																				)
+	print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
+	print(concat_df_U_x_T.info(memory_usage="deep"))
+	print("<>"*50)
+	##############################################For Double checking with 2 DFs#####################################################
 
 	spm_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	spm_users_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
@@ -843,13 +843,17 @@ def run():
 	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape}") # <class 'numpy.ndarray'> (nUsers,)
 	print(f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}") # <class 'numpy.ndarray'> (nTokens,)
 
+	print(concat_spm_usrNames[:10])
+	print("*"*50)
+	print(concat_spm_tokNames[:10])
+	print("*"*50)
 
-	############################ only works with x2 files ############################
-	# t=time.time()
-	# print(f">> dfs concat and spm are equal?", end=" ")
-	# print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values), end=" ")
-	# print(f"Elapsed_t: {time.time()-t:.2f} sec")
-	############################ only works with x2 files ############################
+	########################### only works with x2 files ############################
+	t=time.time()
+	print(f">> dfs concat and spm are equal?", end=" ")
+	print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values), end=" ")
+	print(f"Elapsed_t: {time.time()-t:.2f} sec")
+	########################### only works with x2 files ############################
 	
 	try:
 		# load idf
