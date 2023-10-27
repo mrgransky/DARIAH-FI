@@ -1013,7 +1013,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 	current_matrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
 	for idx, val in enumerate(SPMs):
 			matrix, rownames, colnames=val
-			print(f"SPM[{idx+1}/{len(SPMs)}] {matrix.shape} |nUsers|: {len(rownames)} |nTokens|: {len(colnames)}", )
+			print(f"SPM {idx+1}/{len(SPMs)} {matrix.shape} {str(rownames[:5])} | {str(colnames[:5])}")
 			# print(current_row_idx, current_col_idx)
 			if idx==len(SPMs)-1:
 					row_reverseindex_i=row_reverseindex[current_row_idx:]
