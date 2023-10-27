@@ -4,7 +4,7 @@ import time
 import tracemalloc
 import pandas as pd
 import numpy as np
-
+from scipy.sparse import csr_matrix, coo_matrix, vstack, hstack, csr_array, lil_matrix
 
 sp_mtx=lil_matrix((int(7e8), int(8e9)), dtype=np.float32)
 sa[:int(1e4), :int(1e6)] = np.random.rand(int(1e4), int(1e6)).astype(np.float32)
