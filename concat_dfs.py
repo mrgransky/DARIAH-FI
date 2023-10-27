@@ -800,12 +800,6 @@ def run():
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
 	RES_DIR=make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
-	for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
-		print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
-		print(sp_mtx)
-		print(sp_mtx_rows)
-		print(sp_mtx_cols)
-		print("-"*180)
 	
 	##############################################For Double checking with 2 DFs#####################################################
 	try:
@@ -820,6 +814,13 @@ def run():
 	print("<>"*50)
 	##############################################For Double checking with 2 DFs#####################################################
 
+	for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
+		print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
+		print(sp_mtx)
+		print(sp_mtx_rows)
+		print(sp_mtx_cols)
+		print("-"*180)
+	
 	spm_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	spm_users_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	spm_tokens_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
@@ -843,8 +844,8 @@ def run():
 	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape}") # <class 'numpy.ndarray'> (nUsers,)
 	print(f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}") # <class 'numpy.ndarray'> (nTokens,)
 
-	print(concat_spm_usrNames[:10])
 	print("*"*50)
+	print(concat_spm_usrNames[:10])
 	print(concat_spm_tokNames[:10])
 	print("*"*50)
 
