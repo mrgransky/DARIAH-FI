@@ -7,9 +7,10 @@ import numpy as np
 from scipy.sparse import csr_matrix, coo_matrix, vstack, hstack, csr_array, lil_matrix
 
 sp_mtx=lil_matrix((int(7e8), int(8e9)), dtype=np.float32)
-sa[:int(1e4), :int(1e6)] = np.random.rand(int(1e4), int(1e6)).astype(np.float32)
-print(type(sa), sa.shape, sum([sys.getsizeof(i) for i in sa.data])/1e6)
-print(sa[0, :].toarray().flatten())
+sp_mtx[:int(1e4), :int(1e6)] = np.random.rand(int(1e4), int(1e6)).astype(np.float32)
+print(type(sp_mtx), sp_mtx.shape, sum([sys.getsizeof(i) for i in sp_mtx.data])/1e6)
+print(sp_mtx[0, :].toarray().flatten())
+print( np.all(sa[0, :].toarray().flatten()==sa.getrowview(0).toarray().flatten()) )
 
 
 # def save_dill(obj):
