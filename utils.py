@@ -828,7 +828,7 @@ def get_idf(mat, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	denumerator = 1+doc_freq_term # 1 x nTokens
 	res = (numerator / denumerator)#+1.0
 	idf = res.astype("float32")
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(idf)} byte[count]: {idf.nbytes/1e6:.2f} MB")
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf

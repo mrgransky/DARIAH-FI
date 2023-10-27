@@ -834,9 +834,9 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
-	print(f"{type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # lil_matrix (nUsers, nTokens)
-	print(type(concat_spm_usrNames), concat_spm_usrNames.shape) # <class 'numpy.ndarray'> (nUsers,)
-	print(type(concat_spm_tokNames), concat_spm_tokNames.shape) # <class 'numpy.ndarray'> (nTokens,)
+	print(f"sp_mtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # lil_matrix (nUsers, nTokens)
+	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape}") # <class 'numpy.ndarray'> (nUsers,)
+	print(f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}") # <class 'numpy.ndarray'> (nTokens,)
 
 
 	############################ only works with x2 files ############################
@@ -857,10 +857,10 @@ def run():
 									)
 	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
 
-	qu_phrase=args.qphrase
-	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print("<>"*85)
-	print(f"Input Query Phrase(s): < {qu_phrase} > containing {len(query_phrase_tk)} lemma(s) {query_phrase_tk}".center(150, " "))
+	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
+	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
+	print(f"{len(query_phrase_tk)} lemma(s) Found: {query_phrase_tk}")
+
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
 															mat_col=concat_spm_tokNames, 
@@ -872,7 +872,7 @@ def run():
 				f"{[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
 			)
 	if np.all( query_vector==0.0 ):
-		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
 	ccs=get_costumized_cosine_similarity(mat=concat_spm_U_x_T,
@@ -890,7 +890,7 @@ def run():
 											)
 	
 	print("<>"*80)
-	print(f"Recommendation Result:\nRaw Query Phrase: < {qu_phrase} >\n")
+	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\n")
 	st_t = time.time()
 	print(get_topK_tokens(mat=concat_spm_U_x_T, 
 												mat_rows=concat_spm_usrNames,
@@ -989,9 +989,8 @@ def main():
 	# gc.collect()
 	# plot_heatmap_sparse(sp_mat_rf, user_token_df, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
 
-	qu_phrase = args.qphrase
-	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
-	print(f"<> Raw Input Query Phrase:\t{qu_phrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
+	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
+	print(f"<> Raw Input Query Phrase:\t{args.qphrase}\tcontains {len(query_phrase_tk)} lemma(s):\t{query_phrase_tk}")
 
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:
@@ -1007,7 +1006,7 @@ def main():
 			)
 
 	if np.all( query_vector==0.0 ):
-		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
 	# print(f"Getting users of {np.count_nonzero(query_vector)} token(s) / |QUE_TK|: {len(query_phrase_tk)}".center(120, "-"))
@@ -1029,15 +1028,15 @@ def main():
 	
 	# gc.collect()
 	print("<>"*100)
-	print(f"Raw Query Phrase: {qu_phrase} Recommendation Result:")
+	print(f"Raw Query Phrase: {args.qphrase} Recommendation Result:")
 	st_t = time.time()
 	print(get_topK_tokens(usr_tk_df=user_token_df, avgrec=avgRecSys))
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	print("<>"*100)
 	
 	print("TRADITIONAL APPROACH [without IDF]".center(150,"-"))
-	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), qu_phrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, sp_mat_rf.toarray(), args.qphrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, sp_mat_rf.toarray(), args.qphrase, query_phrase_tk, user_token_df, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
 	if not torch.cuda.is_available():
 		assert cos_sim.all() == cos_sim_f.all(), f"sklearn cs != Faiss cs"
@@ -1049,7 +1048,7 @@ def main():
 			)
 	
 	if np.all(cos_sim.flatten()==0.0):
-		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
+		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
 	# plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=sp_mat_rf, users_tokens_df=user_token_df, bow=BoWs, topTKs=30, norm_sp=normalize_sp_mtrx)
