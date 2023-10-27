@@ -805,7 +805,7 @@ def run():
 		print(sp_mtx)
 		print(sp_mtx_rows)
 		print(sp_mtx_cols)
-		print("-"*190)
+		print("-"*180)
 	
 	##############################################For Double checking with 2 DFs#####################################################
 	try:
