@@ -801,11 +801,11 @@ def run():
 	RES_DIR=make_result_dir(infile=fprefix)
 	print(fprefix, RES_DIR)
 	for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
-		print(f"file[{idx+1}/{len(sp_mtx_files)}]")
+		print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
 		print(sp_mtx)
 		print(sp_mtx_rows)
 		print(sp_mtx_cols)
-		print("-"*120)
+		print("-"*190)
 		
 	# ##############################################For Double checking with 2 DFs#####################################################
 	# try:
