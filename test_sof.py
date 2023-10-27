@@ -10,7 +10,7 @@ sp_mtx=lil_matrix((int(7e8), int(8e9)), dtype=np.float32)
 sp_mtx[:int(1e4), :int(1e6)] = np.random.rand(int(1e4), int(1e6)).astype(np.float32)
 print(type(sp_mtx), sp_mtx.shape, sum([sys.getsizeof(i) for i in sp_mtx.data])/1e6)
 print(sp_mtx[0, :].toarray().flatten())
-print( np.all(sa[0, :].toarray().flatten()==sa.getrowview(0).toarray().flatten()) )
+print( np.all(sp_mtx[0, :].toarray().flatten()==sp_mtx.getrowview(0).toarray().flatten()) )
 
 
 # def save_dill(obj):
