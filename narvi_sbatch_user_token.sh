@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --array=100-800
+#SBATCH --array=0-800
 #SBATCH --gres=gpu:teslav100:1
 ######SBATCH --array=751-752 # originall case! xy
 
