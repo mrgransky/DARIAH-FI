@@ -45,28 +45,28 @@ print( np.all(sp_mtx[0, :].toarray().flatten()==sp_mtx.getrowview(0).toarray().f
 # 	print(f"elapsed_t: {time.time()-t:.2f} sec")
 # 	return df
 
-# def get_concat(dfs):
-# 	print(f">> concat {len(dfs)} pandas dataframes(s), might take a while..")
-# 	t=time.time()
-# 	dfc=pd.concat(dfs, axis=0, sort=True).astype(pd.SparseDtype(dtype=np.float32)) # dfs=[df1, df2,..., dfN], sort=True: sort columns
-# 	print(f"elapsed_time [concat+float32]{time.time()-t:>{30}.{1}f} sec")
-# 	print(dfc.info(memory_usage="deep"))
-# 	print("<>"*35)
+def get_concat(dfs):
+	print(f">> concat {len(dfs)} pandas dataframes(s), might take a while..")
+	t=time.time()
+	dfc=pd.concat(dfs, axis=0, sort=True).astype(pd.SparseDtype(dtype=np.float32)) # dfs=[df1, df2,..., dfN], sort=True: sort columns
+	print(f"elapsed_time [concat+float32]{time.time()-t:>{30}.{1}f} sec")
+	print(dfc.info(memory_usage="deep"))
+	print("<>"*35)
 
-# 	t=time.time()
-# 	dfc=dfc.groupby(level=0)
-# 	print(f"elapsed_time [groupby]{time.time()-t:>{41}.{4}f} sec")
+	t=time.time()
+	dfc=dfc.groupby(level=0)
+	print(f"elapsed_time [groupby]{time.time()-t:>{41}.{4}f} sec")
 
-# 	t=time.time()
-# 	tracemalloc.start()
-# 	dfc=dfc.sum(engine="numba", # <<=== saves a lot of time using NUMBA engine!
-# 							engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False},
-# 							)#.astype(pd.SparseDtype(dtype=np.float32,fill_value=0.0,))
-# 	current_mem, peak_mem = tracemalloc.get_traced_memory()
-# 	print(f"elapsed_time [sum]{time.time()-t:>{41}.{1}f} sec")
-# 	print(f"Current : {current_mem / (1024 * 1024):.2f} MB | Peak: {peak_mem / (1024 * 1024):.2f} MB")  # Convert to MB 
-# 	print(dfc.info(memory_usage="deep"))
-# 	print("<>"*35)
+	t=time.time()
+	tracemalloc.start()
+	dfc=dfc.sum(engine="numba", # <<=== saves a lot of time using NUMBA engine!
+							engine_kwargs={'nopython': True, 'parallel': True, 'nogil': False},
+							)#.astype(pd.SparseDtype(dtype=np.float32,fill_value=0.0,))
+	current_mem, peak_mem = tracemalloc.get_traced_memory()
+	print(f"elapsed_time [sum]{time.time()-t:>{41}.{1}f} sec")
+	print(f"Current : {current_mem / (1024 * 1024):.2f} MB | Peak: {peak_mem / (1024 * 1024):.2f} MB")  # Convert to MB 
+	print(dfc.info(memory_usage="deep"))
+	print("<>"*35)
 	
 # 	tracemalloc.reset_peak()
 

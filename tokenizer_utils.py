@@ -62,13 +62,12 @@ with HiddenPrints():
 													'åbq', 'ordf', 'cuw', 'nrh', 'mmtw', 'crt', 'csök', 'hcrr', 'nvri', 'disp', 'ocll', 'rss',
 													'dii', 'hii', 'hij', 'stt', 'gsj', 'ådg', 'phj', 'nnw', 'wnw', 'nne', 'sij', 'apt', 'iit', 'juu', 'lut',
 													'afg', 'ank', 'fnb', 'ffc', 'oju', 'kpk', 'kpkm', 'kpkk', 'krs', 'prs', 'osk', 'rka', 'rnu', 'wsw', 'kic',
-													'aabcd', 'aabc', 'aabcli', ''  'lop', 'chr', 'lli', 'lhyww', 'ttll', 'lch', 'lcg', 'lcf', 'lcfv', 'nsö', 'chp', 'pll', 'jvk',
 													'atm', 'vmrc', 'swc', 'fjijcn', 'hvmv', 'arb', 'inr', 'cch', 'msk', 'msn', 'tlc', 'vjj', 'jgk', 'mlk',
 													'ffllil', 'adr', 'bea', 'ret', 'inh', 'vrk', 'ang', 'hra', 'nit', 'arr', 'jai', 'enk', 'bjb', 'iin', 'llä',
 													'kka', 'tta', 'avu', 'nbl', 'drg', 'sek', 'wrw', 'tjk', 'jssjl', 'ing', 'scn', 'joh', 'yhd', 'uskc', 'enda',
 													'tyk', 'wbl', 'vvichmann', 'okt', 'yht', 'akt', 'nti', 'mgl', 'vna', 'anl', 'lst', 'hku', 'wllss','ebf', 
 													'jan', 'febr', 'aug', 'sept', 'lok', 'nov', 'dec', 
-													'jfe', 'ifc', 'flfl', 'bml', 'zibi', 'ibb', 'bbß', 'sfr', 'yjet', 'stm', 'imk', 'sotmt', 'oslfesfl', 'anoth', 'vmo', 'uts',
+													'jfe', 'ifc', 'flfl', 'bml', 'zibi', 'ibb', 'bbß', 'sfr', 'yjet', 'stm', 'imk', 'sotmt', 'oslfesfl', 'anoth', 'vmo', 'uts', 'aabber', 'aabf', 'aabb',
 													'mmik', 'pytmkn', 'ins', 'ifk', 'vii', 'ikl', 'lan', 'trt', 'lpu', 'ijj', 'ave', 'lols', 'nyl', 'tav', 'ohoj', 'kph', 'answ', 'ansv', 'anw', 'anv',
 													'ver', 'jit', 'sed', 'sih','ltd', 'aan', 'exc', 'tle', 'xjl', 'iti', 'tto', 'otp', 'xxi', 'ing', 'fti', 'fjg', 'fjfj', 'ann', 'ansk', 'ant',
 													'mag', 'jnjejn', 'rvff', 'ast', 'lbo', 'otk', 'mcf', 'prc', 'vak', 'tif', 'nso', 'jyv','jjli', 'ent', 'edv', 'fjiwsi', 'alns', 'andr', 'anf',
@@ -127,7 +126,10 @@ with HiddenPrints():
 													'arn', 'ars', 'arth', 'aru', 'arvl', 'arw', 'ary', 'asfa', 'asew', 'asp', 'assr', 'asst', 'asw', 'asz', 'atf', 'atg', 'atk', 'atl', 'ats', 'atn', 'atr', 'atv',
 													'auk', 'aui', 'aul', 'aum', 'aun', 'auo', 'aut', 'avd', 'avb', 'avl', 'avo', 'avs', 'awa', 'awi', 'awo', 'awu', 'awsw', 'ayt', 'ar', 'axi', 'ayd', 'bab', 'balf',
 													'banl', 'bankpl', 'bba', 'bbi', 'bbl', 'bbo', 'bbä', 'bdn', 'beb', 'bef', 'beh', 'behr', 'behm', 'beij', 'bej', 'bek', 'bekv', 'bel', 'bfi', 'bff', 'bfl', 'bft',
-													'bia', 'bex', 'bhrci', 'bib', 'bibi', 'bii', 'iea', 'ёск', 'aaba', 'aabel', 'aabcdefghi', 'aabakkc', 'aabelinp',
+													'bia', 'bex', 'bhrci', 'bib', 'bibi', 'bii', 'iea', 'ёск', 'aaba', 'aabcdefghi', 'aabakkc', 'aaballu', 'aabaimv', 'aabaffe', 'aabbergetleatern', 'aablta', 'aaby',
+													'aabakkc', 'aabi', 'aabg', 'aabotr', 'aabo', 'aabelinp', 'aabel', 'aabeli', 'aabelinp', 'aabe', 'aabclt', 'aabcnra', 'aabbe', 'aabu', 'aache', 'aacce', 'aaca',
+													'aabcd', 'aabc', 'aabcli', 'aabcl', 'lop', 'chr', 'lli', 'lhyww', 'ttll', 'lch', 'lcg', 'lcf', 'lcfv', 'nsö', 'chp', 'pll', 'jvk', 'aach', 'aacfca', 'aabra',
+													'aabol', 'aabittaisitii', 'aabenras', 'aabne', 'aabj', 'aabram'
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
