@@ -16,17 +16,18 @@ import json
 import argparse
 import datetime
 import glob
-# import webbrowser
 import string
 import time
 import logging
 import functools
 from pandas.api.types import is_datetime64_any_dtype
 
-import dask
 import numpy as np
 import pandas as pd
+import numba as nb
+
 import dask.dataframe as dd
+import dask
 # Numpy: 1.25.2 Pandas: 2.1.0 Dask: 2023.9.1 # September 2023
 
 from natsort import natsorted
@@ -168,6 +169,13 @@ class HiddenPrints:
 	def __exit__(self, exc_type, exc_val, exc_tb):
 		sys.stdout.close()
 		sys.stdout = self._original_stdout
+
+@nb.jit(nopython=True)
+def numba_exponentiation(array, exponent):
+  result = np.empty_like(array)
+  for i in range(array.size):
+    result[i] = array[i] ** exponent
+  return result
 
 def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	matrix = sp_mtrx.toarray()
