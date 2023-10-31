@@ -6,12 +6,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=11G
+#SBATCH --mem-per-cpu=13G
 #SBATCH --partition=small
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=752-1000
+#SBATCH --array=1001-1200
 #########SBATCH --array=641-890%10
 
 stars=$(printf '%*s' 100 '')
