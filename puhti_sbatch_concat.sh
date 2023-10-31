@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spm_concat_xy_sorted_idx
+#SBATCH --job-name=spm_concat_x251
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=489G
-#SBATCH --partition=hugemem
-#SBATCH --time=00-18:00:00
+#SBATCH --mem-per-cpu=889G
+#SBATCH --partition=hugemem_longrun
+#SBATCH --time=14-00:00:00
 ######SBATCH --gres=gpu:v100:1
 
 user="`whoami`"

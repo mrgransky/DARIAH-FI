@@ -1084,60 +1084,59 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 	# print(type(mat_cols), mat_cols.shape)
 	# print(type(query_vec), query_vec.shape)
 	# print(type(inv_doc_freq), inv_doc_freq.shape)
-
 	this_query_interest = query_vec.flatten().copy()
 	if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
-		print("changing type..")
+		# print("changing type..")
 		this_query_interest = this_query_interest*np.squeeze(np.asarray(inv_doc_freq))
 	#print(type(this_query_interest), this_query_interest.shape)
 	this_query_interest_norm = np.sqrt( np.sum(this_query_interest**2) )
 	#this_query_cosines=np.zeros((1, mat.shape[0]), dtype=np.float32) # 1 x nUsers
 	this_query_cosines=np.zeros_like(mat_rows, dtype=np.float32) # (nUsers,)
 	for ui, uv in enumerate(mat_rows):
-		print(ui, uv)
+		# print(ui, uv)
 		#print( mat.getrowview(ui).toarray().flatten() )
 		#print( mat[ui, :].toarray().flatten() )
 		#print( np.all(mat[ui, :].toarray().flatten()==mat.getrowview(ui).toarray().flatten()) )
 		#assert np.all( mat[ui, :].toarray().flatten()==mat.getrowview(ui).toarray().flatten() ), f"check 2 approaches"
 		#print( np.count_nonzero(mat.getrowview(ui).toarray().flatten()) )
 		#print()
-		t0=time.time()
+		# t0=time.time()
 		#this_user_interest=mat.getrowview(ui).toarray().flatten() # (nTokens,) flatten
 		this_user_interest=mat[ui, :].toarray().flatten() # (nTokens,) flatten
-		print(time.time()-t0, type(this_user_interest), this_user_interest.shape)
-		print("-"*70)
+		# print(time.time()-t0, type(this_user_interest), this_user_interest.shape)
+		# print("-"*70)
 
-		t1=time.time()
+		# t1=time.time()
 		if inv_doc_freq is not None and isinstance( inv_doc_freq, np.matrix ):
 			#print("changing type..")
 			this_user_interest=this_user_interest*np.squeeze(np.asarray(inv_doc_freq))
-		print(time.time()-t1, type(this_user_interest), this_user_interest.shape)
-		print("="*70)
+		# print(time.time()-t1, type(this_user_interest), this_user_interest.shape)
+		# print("="*70)
 
-		t2=time.time()
+		# t2=time.time()
 		this_user_interest_norm=(np.sqrt(np.sum(this_user_interest**2))+1e-18).astype("float32")# avoid zero division
 		#this_user_interest_norm=np.add(np.sqrt(np.sum(this_user_interest**2)), 1e-18, dtype=np.float32)# avoid zero division
-		print(time.time()-t2, type(this_user_interest_norm), this_user_interest_norm)
-		print("#"*60)
+		# print(time.time()-t2, type(this_user_interest_norm), this_user_interest_norm)
+		# print("#"*60)
 		
-		t3=time.time()
+		# t3=time.time()
 		# this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
 		# this_user_interest=np.power((this_user_interest/this_user_interest_norm), 0.1) # orig: 0.1 # 1.0 at least 1 zero
 		this_user_interest=numba_exponentiation((this_user_interest/this_user_interest_norm), 0.1)
-		print(time.time()-t3, type(this_user_interest), this_user_interest.shape)
-		print("%"*70)
+		# print(time.time()-t3, type(this_user_interest), this_user_interest.shape)
+		# print("%"*70)
 		
-		t4=time.time()
+		# t4=time.time()
 		this_user_cosine=np.sum(this_user_interest*this_query_interest) / this_query_interest_norm
-		print(time.time()-t4, type(this_user_cosine), this_user_cosine)
-		print("<>"*40)
+		# print(time.time()-t4, type(this_user_cosine), this_user_cosine)
+		# print("<>"*40)
 		
-		t5=time.time()
+		# t5=time.time()
 		#this_query_cosines[0, ui]=this_user_cosine.astype("float32")
 		this_query_cosines[ui]=this_user_cosine#.astype("float32")
-		print(time.time()-t5, type(this_query_cosines), this_query_cosines.shape)
-		print("*"*70)
-		print()
+		# print(time.time()-t5, type(this_query_cosines), this_query_cosines.shape)
+		# print("*"*70)
+		# print()
 	
 	#return this_query_cosines # (1 x nUsers)
 	return this_query_cosines.reshape(1,-1) # (1 x nUsers)
