@@ -1115,21 +1115,21 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 		print("="*70)
 
 		t2=time.time()
-		#this_user_interest_norm=(np.sqrt(np.sum(this_user_interest**2))+1e-18).astype("float32")# avoid zero division
-		this_user_interest_norm=np.add(np.sqrt(np.sum(this_user_interest**2)), 1e-18, dtype=np.float32)# avoid zero division
+		this_user_interest_norm=(np.sqrt(np.sum(this_user_interest**2))+1e-18).astype("float32")# avoid zero division
+		#this_user_interest_norm=np.add(np.sqrt(np.sum(this_user_interest**2)), 1e-18, dtype=np.float32)# avoid zero division
 		print(time.time()-t2, type(this_user_interest_norm), this_user_interest_norm)
 		print("#"*60)
 		
 		t3=time.time()
-		this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
-		#this_user_interest=np.power((this_user_interest/this_user_interest_norm), 0.1) # orig: 0.1 # 1.0 at least 1 zero
-		# this_user_interest=numba_exponentiation((this_user_interest/this_user_interest_norm), 0.1)
+		# this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
+		# this_user_interest=np.power((this_user_interest/this_user_interest_norm), 0.1) # orig: 0.1 # 1.0 at least 1 zero
+		this_user_interest=numba_exponentiation((this_user_interest/this_user_interest_norm), 0.1)
 		print(time.time()-t3, type(this_user_interest), this_user_interest.shape)
 		print("%"*70)
 		
 		t4=time.time()
 		this_user_cosine=np.sum(this_user_interest*this_query_interest) / this_query_interest_norm
-		print(time.time()-t4, type(this_user_cosine), this_user_cosine.shape)
+		print(time.time()-t4, type(this_user_cosine), this_user_cosine)
 		print("<>"*40)
 		
 		t5=time.time()
