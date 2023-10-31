@@ -889,7 +889,7 @@ def run():
 																			 mat_rows=concat_spm_usrNames, 
 																			 mat_cols=concat_spm_tokNames, 
 																			 query_vec=query_vector, 
-																			 inv_doc_freq=idf_vec,
+																			 idf_vec=idf_vec,
 																			)
 
 	avgRecSys=get_avg_rec(mat=concat_spm_U_x_T,
