@@ -1076,10 +1076,10 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec):
-	print(f"Customized Cosine "
+	print(f"Optimized CS "
 				f"spMtx {mat.shape} {type(mat)} "
 				f"quVec {query_vec.shape} {type(query_vec)} "
-				f"idf {idf_vec.shape} {type(idf_vec)}".center(180, " ")
+				f"idf {idf_vec.shape} {type(idf_vec)}".center(200, " ")
 			)
 	st_t=time.time()
 	###################################### Implemented with Jaakko ###################################### 
@@ -1142,6 +1142,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 	# 	# print(time.time()-t5, type(this_query_cosines), this_query_cosines.shape)
 	# 	# print("*"*70)
 	# 	# print()
+	# return this_query_cosines.reshape(1,-1) # (1 x nUsers)
 	###################################### Implemented with Jaakko ###################################### 
 	quInterest=query_vec.flatten()*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
 	quInterestNorm=np.linalg.norm(quInterest) # float
@@ -1151,9 +1152,8 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		usrInterestNorm=(np.linalg.norm(usrInterest)+1e-18).astype("float32") # float
 		usrInterest=numba_exponentiation((usrInterest/usrInterestNorm), 0.1)
 		cs[ui]=np.sum(usrInterest*quInterest) / quInterestNorm
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} => MUST BE (1 x nUsers) => reshape")
 	return cs.reshape(1,-1) # (1 x nUsers)
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(this_query_cosines)} {this_query_cosines.shape} => MUST BE (1 x nUsers) => reshape")
-	return this_query_cosines.reshape(1,-1) # (1 x nUsers)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 	# init
