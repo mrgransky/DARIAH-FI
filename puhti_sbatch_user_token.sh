@@ -7,12 +7,12 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=165G
+#SBATCH --mem=155G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:v100:1
-#SBATCH --array=251-500
+#SBATCH --array=501-750
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
