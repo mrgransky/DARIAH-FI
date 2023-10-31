@@ -1078,6 +1078,12 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
+	print(f"Customized Cosine "
+				f"| spMtx {mat.shape} {type(mat)} "
+				f"| query_vec {query_vec.shape} {type(query_vec)} "
+				f"| idf {inv_doc_freq.shape} {type(inv_doc_freq)}"
+			)
+	st_t=time.time()
 	# init
 	# print(type(mat), mat.shape)
 	# print(type(mat_rows), mat_rows.shape)
@@ -1137,10 +1143,9 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc
 		# print(time.time()-t5, type(this_query_cosines), this_query_cosines.shape)
 		# print("*"*70)
 		# print()
-	
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(this_query_cosines)} {this_query_cosines.shape} => MUST BE (1 x nUsers) => reshape")
 	#return this_query_cosines # (1 x nUsers)
 	return this_query_cosines.reshape(1,-1) # (1 x nUsers)
-
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, inv_doc_freq=None):
 	# init
