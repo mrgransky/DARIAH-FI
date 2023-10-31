@@ -1079,9 +1079,9 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 
 def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, inv_doc_freq=None):
 	print(f"Customized Cosine "
-				f"| spMtx {mat.shape} {type(mat)} "
-				f"| query_vec {query_vec.shape} {type(query_vec)} "
-				f"| idf {inv_doc_freq.shape} {type(inv_doc_freq)}"
+				f"spMtx {mat.shape} {type(mat)} "
+				f"quVec {query_vec.shape} {type(query_vec)} "
+				f"idf {inv_doc_freq.shape} {type(inv_doc_freq)}".center(180, " ")
 			)
 	st_t=time.time()
 	# init

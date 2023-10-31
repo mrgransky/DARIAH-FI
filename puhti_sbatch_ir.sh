@@ -11,7 +11,7 @@
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=501-751
+#SBATCH --array=752-1002
 #########SBATCH --array=641-890%10
 
 stars=$(printf '%*s' 100 '')
