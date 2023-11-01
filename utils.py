@@ -1145,7 +1145,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 	# return this_query_cosines.reshape(1,-1) # (1 x nUsers)
 	###################################### Implemented with Jaakko ######################################
 	t0=time.time()
-	quInterest=query_vec.flatten()*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
+	quInterest=np.squeeze(query_vec)*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
 	print(f"quInterest: {time.time()-t0:.4f} s {type(quInterest)} {quInterest.shape}")
 	t1=time.time()
 	quInterestNorm=np.linalg.norm(quInterest)#.astype("float32") # float
@@ -1155,7 +1155,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		print(ui, uv)
 		loop_st_t=time.time()
 		t1=time.time()
-		usrInterest=mat[ui, :].toarray().flatten()*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
+		usrInterest=np.squeeze(mat[ui, :].toarray())*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)=>(nTokens,)
 		print(f"usrInterest {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape} allZero {np.all(usrInterest==0)}")
 
 		t1=time.time()
@@ -1187,7 +1187,7 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec=None):
 		#userInterest=mat.getrowview(iUser).toarray().flatten() # (nTokens,) flatten
 		#userInterest = userInterest*np.squeeze(np.asarray(idf_vec)) # (nTokens,) flatten
 		t0=time.time()
-		userInterest=mat[iUser, :].toarray().flatten()*np.squeeze(np.asarray(idf_vec)) #(nTokens,)x(nTokens,)
+		userInterest=np.squeeze(mat[iUser, :].toarray())*np.squeeze(np.asarray(idf_vec)) #(nTokens,)x(nTokens,)
 		print(f"userInterest {time.time()-t0:.4f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
 
 		t0=time.time()
