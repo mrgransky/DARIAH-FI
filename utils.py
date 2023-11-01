@@ -168,7 +168,7 @@ class HiddenPrints:
 		sys.stdout.close()
 		sys.stdout = self._original_stdout
 
-@nb.jit(nopython=True, parallel=True, fastmath=True, num_threads=8)
+@nb.jit(nopython=True, parallel=True, fastmath=True)
 def numba_exponentiation(array, exponent=1e-1):
 	res=np.empty_like(array, dtype=np.float32)
 	for i in nb.prange(array.size):
