@@ -1164,7 +1164,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		
 		t1=time.time()
 		usrInterest=numba_exponentiation((usrInterest/usrInterestNorm), 0.1)
-		print(f"numba_exponentiation {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
+		print(f"numba(^0.1) {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
 		
 		t1=time.time()
 		cs[ui]=np.sum(usrInterest*quInterest) / quInterestNorm
