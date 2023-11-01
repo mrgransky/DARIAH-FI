@@ -169,7 +169,7 @@ class HiddenPrints:
 		sys.stdout = self._original_stdout
 
 @nb.jit(nopython=True,parallel=True,fastmath=True,nogil=True)
-def numba_exponentiation(array, exponent=1e-1):
+def numba_exp(array, exponent=1e-1):
 	res=np.empty_like(array, dtype=np.float32)
 	for i in nb.prange(array.size):
 		res[i] = array[i] ** exponent
@@ -1127,7 +1127,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 	# 	# t3=time.time()
 	# 	# this_user_interest=(this_user_interest/this_user_interest_norm)**0.1 # orig: 0.1 # 1.0 at least 1 zero
 	# 	# this_user_interest=np.power((this_user_interest/this_user_interest_norm), 0.1) # orig: 0.1 # 1.0 at least 1 zero
-	# 	this_user_interest=numba_exponentiation((this_user_interest/this_user_interest_norm), 0.1)
+	# 	this_user_interest=numba_exp((this_user_interest/this_user_interest_norm), 0.1)
 	# 	# print(time.time()-t3, type(this_user_interest), this_user_interest.shape)
 	# 	# print("%"*70)
 		
@@ -1163,11 +1163,12 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		print(f"usrInterestNorm {time.time()-t1:.4f} s {type(usrInterestNorm)} {usrInterestNorm:.4f}")
 		
 		t1=time.time()
-		usrInterest=numba_exponentiation((usrInterest/usrInterestNorm), 0.1)
+		#usrInterest=numba_exp((usrInterest/usrInterestNorm), 0.1) # 0.0637s 16cpu
+		usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)),exponent=0.1)
 		print(f"numba(^0.1) {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
 		
 		t1=time.time()
-		cs[ui]=np.sum(usrInterest*quInterest) / quInterestNorm
+		cs[ui]=np.sum(usrInterest*quInterest) * (1/quInterestNorm)
 		print(f"cs[{ui}] {time.time()-t1:.4f} s {type(cs)} {cs.shape}")
 		loop_end_t=time.time()
 		print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
@@ -1202,7 +1203,7 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec=None):
 		
 		prev_avg_rec=avg_rec # (1 x nTokens)
 		print()
-	avg_rec = avg_rec / np.sum(cosine_sim) # (1 x nTokens)
+	avg_rec*=(1/np.sum(cosine_sim)) # (1 x nTokens)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(150, " "))	
 	return avg_rec
 
