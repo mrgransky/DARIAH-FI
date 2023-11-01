@@ -1153,7 +1153,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 	cs=np.zeros_like(mat_rows, dtype=np.float32) # (nUsers,)    
 	for ui,uv in enumerate(mat_rows):
 		print(ui, uv)
-
+		loop_st_t=time.time()
 		t1=time.time()
 		usrInterest=mat[ui, :].toarray().flatten()*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
 		print(f"usrInterest {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape} allZero {np.all(usrInterest==0)}")
@@ -1169,7 +1169,8 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		t1=time.time()
 		cs[ui]=np.sum(usrInterest*quInterest) / quInterestNorm
 		print(f"cs[{ui}] {time.time()-t1:.4f} s {type(cs)} {cs.shape}")
-
+		loop_end_t=time.time()
+		print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.2f} sec")
 		print()
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} => MUST BE (1 x nUsers)".center(100, " "))
 	return cs.reshape(1,-1) # (1 x nUsers)
