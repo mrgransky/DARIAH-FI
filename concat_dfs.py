@@ -789,7 +789,7 @@ def get_users_tokens_ddf():
 	return user_token_ddf_concat 
 
 def run():
-	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer with {nb.get_num_threads()} CPU core(s)")
 	make_folder(folder_name=args.dfsPath)
 	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
@@ -911,7 +911,6 @@ def run():
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	print("<>"*80)
 
-	
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer ...")
 	make_folder(folder_name=args.dfsPath)
