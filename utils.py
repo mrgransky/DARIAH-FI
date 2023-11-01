@@ -1186,7 +1186,7 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec=None):
 		#userInterest=mat.getrowview(iUser).toarray().flatten() # (nTokens,) flatten
 		#userInterest = userInterest*np.squeeze(np.asarray(idf_vec)) # (nTokens,) flatten
 		t0=time.time()
-		userInterest=mat[ui, :].toarray().flatten()*np.squeeze(np.asarray(idf_vec)) #(nTokens,)x(nTokens,)
+		userInterest=mat[iUser, :].toarray().flatten()*np.squeeze(np.asarray(idf_vec)) #(nTokens,)x(nTokens,)
 		print(f"userInterest {time.time()-t0:.4f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
 
 		t0=time.time()
