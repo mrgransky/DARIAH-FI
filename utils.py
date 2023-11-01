@@ -168,7 +168,7 @@ class HiddenPrints:
 		sys.stdout.close()
 		sys.stdout = self._original_stdout
 
-@nb.jit(nopython=True, parallel=True)
+@nb.jit(nopython=True, parallel=True, fastmath=True, num_threads=8)
 def numba_exponentiation(array, exponent=1e-1):
 	res=np.empty_like(array, dtype=np.float32)
 	for i in nb.prange(array.size):
@@ -1170,7 +1170,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		cs[ui]=np.sum(usrInterest*quInterest) / quInterestNorm
 		print(f"cs[{ui}] {time.time()-t1:.4f} s {type(cs)} {cs.shape}")
 		loop_end_t=time.time()
-		print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.2f} sec")
+		print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
 		print()
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} => MUST BE (1 x nUsers)".center(100, " "))
 	return cs.reshape(1,-1) # (1 x nUsers)
