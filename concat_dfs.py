@@ -896,7 +896,7 @@ def run():
 												mat_rows=concat_spm_usrNames,
 												mat_cols=concat_spm_tokNames,
 												cosine_sim=ccs, 
-												inv_doc_freq=idf_vec,
+												idf_vec=idf_vec,
 											)
 	
 	print("<>"*80)
