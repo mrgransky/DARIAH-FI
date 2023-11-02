@@ -884,13 +884,13 @@ def run():
 	usrNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
 	print(f"Elapsed_t: {time.time()-usrNorm_st_t:.2f} s {type(usrNorms)} {usrNorms.shape} {usrNorms.dtype}")
 	
-	ccs=get_costumized_cosine_similarity(mat=concat_spm_U_x_T,
-																			 mat_rows=concat_spm_usrNames, 
-																			 mat_cols=concat_spm_tokNames, 
-																			 query_vec=query_vector, 
-																			 idf_vec=idf_vec,
-																			 matNorm=usrNorms,
-																			)
+	ccs=get_optimized_cs(	mat=concat_spm_U_x_T,
+												mat_rows=concat_spm_usrNames, 
+												mat_cols=concat_spm_tokNames, 
+												query_vec=query_vector, 
+												idf_vec=idf_vec,
+												matNorm=usrNorms,
+											)
 
 	avgRecSys=get_avg_rec(mat=concat_spm_U_x_T,
 												mat_rows=concat_spm_usrNames,

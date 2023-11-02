@@ -1017,8 +1017,8 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	# print(np.where(query_vector.flatten()!=0)[0])
 	return query_vector
 
-def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
-	print(f"Optimized Cosine Similarity".center(100, " "))
+def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
+	print(f"Optimized Cosine Similarity".center(150, " "))
 	print(f"spMtx {mat.shape} {type(mat)}")
 	print(f"quVec {query_vec.shape} {type(query_vec)} {query_vec.dtype}")
 	print(f"IDF {idf_vec.shape} {type(idf_vec)} {idf_vec.dtype}")
@@ -1050,8 +1050,8 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		#print(f"usrInterestNorm {time.time()-t1:.4f} s {type(usrInterestNorm)} {usrInterestNorm:.4f}")
 		
 		#t1=time.time()
-		#usrInterest=(usrInterest*(1/usrInterestNorm))**0.1 # ~0.37 s sec
-		usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)),exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
+		usrInterest=(usrInterest*(1/usrInterestNorm))**0.1 # seems faster
+		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)),exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
 		#print(f"numba(^0.1) {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
 		
 		#t1=time.time()
@@ -1060,7 +1060,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		#loop_end_t=time.time()
 		#print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
 		#print()
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} {cs.dtype}")
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} {cs.dtype}".center(100, " "))
 	return cs#.reshape(1,-1) # (nUsers,)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec, matNorm):
