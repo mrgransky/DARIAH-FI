@@ -828,13 +828,14 @@ def run():
 			prefix_fname=fprefix,
 		)
 	print(f"sp_mtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # lil_matrix (nUsers, nTokens)
-	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape}") # <class 'numpy.ndarray'> (nUsers,)
-	print(f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}") # <class 'numpy.ndarray'> (nTokens,)
+	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} " # <class 'numpy.ndarray'> (nUsers,)
+				f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}",# <class 'numpy.ndarray'> (nTokens,)
+			)
 
-	print("*"*80)
-	print(concat_spm_usrNames[:10])
-	print(concat_spm_tokNames[:8])
-	print("*"*80)
+	# print("*"*80)
+	# print(concat_spm_usrNames[:10])
+	# print(concat_spm_tokNames[:8])
+	# print("*"*80)
 
 	# ##############################################For Double checking with 2 DFs#####################################################
 	# try:
