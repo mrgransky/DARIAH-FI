@@ -10,9 +10,9 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --array=0-750
+#SBATCH --array=0-732
 #SBATCH --gres=gpu:teslap100:1
-######SBATCH --array=751-752 # originall case! xy
+######SBATCH --array=730-731 # nikeX, nikeY
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
