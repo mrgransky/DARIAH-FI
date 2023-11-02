@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spm_xy_all_queries_printed_elapsed_t
+#SBATCH --job-name=spm_xy_all_queries
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -9,7 +9,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=49G
-#SBATCH --partition=small
+#SBATCH --partition=large
 #SBATCH --time=00-02:00:00
 ######SBATCH --gres=gpu:v100:1
 
