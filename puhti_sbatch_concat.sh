@@ -9,7 +9,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=49G
-#SBATCH --partition=small
+#SBATCH --partition=hugemem
 #SBATCH --time=00-02:00:00
 ######SBATCH --gres=gpu:v100:1
 
