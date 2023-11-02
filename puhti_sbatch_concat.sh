@@ -9,7 +9,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=55G
-#SBATCH --partition=hugemem
+#SBATCH --partition=large
 #SBATCH --time=03-00:00:00
 
 user="`whoami`"
