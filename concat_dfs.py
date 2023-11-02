@@ -789,7 +789,7 @@ def get_users_tokens_ddf():
 	return user_token_ddf_concat 
 
 def run():
-	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer with {nb.get_num_threads()} CPU core(s)")
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	make_folder(folder_name=args.dfsPath)
 	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
@@ -799,37 +799,30 @@ def run():
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
 	RES_DIR=make_result_dir(infile=fprefix)
-	print(fprefix, RES_DIR)
+	# print(fprefix, RES_DIR)
 	
-	for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
-		print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
-		print(sp_mtx)
-		print(sp_mtx_rows)
-		print(sp_mtx_cols)
-		print("-"*180)
+	# for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
+	# 	print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
+	# 	print(sp_mtx)
+	# 	print(sp_mtx_rows)
+	# 	print(sp_mtx_cols)
+	# 	print("-"*180)
 	
-	spm_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
-	spm_users_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
-	spm_tokens_names_files_path=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
-
-	# print(spm_files_path)
-	# print(spm_users_names_files_path)
-	# print(spm_tokens_names_files_path)
-
 	try:
 		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
 		concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
 		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> {e}")
-		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
-			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(spm_files_path, spm_users_names_files_path, spm_tokens_names_files_path)],
-			save_dir=args.dfsPath,
-			prefix_fname=fprefix,
-		)
+		with HiddenPrints():
+			concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
+				SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files)],
+				save_dir=args.dfsPath,
+				prefix_fname=fprefix,
+			)
 	print(f"sp_mtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} byte size[count]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # lil_matrix (nUsers, nTokens)
-	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} " # <class 'numpy.ndarray'> (nUsers,)
-				f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}",# <class 'numpy.ndarray'> (nTokens,)
+	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
+				f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"	# <class 'numpy.ndarray'> (nTokens,)
 			)
 
 	# print("*"*80)
@@ -866,7 +859,7 @@ def run():
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
 									)
-	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
+	# print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
 
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
