@@ -1060,7 +1060,7 @@ def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
 		#loop_end_t=time.time()
 		#print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
 		#print()
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} {cs.dtype}".center(150, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, " "))
 	return cs#.reshape(1,-1) # (nUsers,)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec, matNorm):
