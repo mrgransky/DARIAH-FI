@@ -8,9 +8,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=50G
-#SBATCH --partition=small
+#SBATCH --mem=150G
+#SBATCH --partition=large
 #SBATCH --time=03-00:00:00
+######SBATCH --mem-per-cpu=50G
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
