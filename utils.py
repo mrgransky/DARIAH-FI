@@ -1148,7 +1148,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 	quInterest=np.squeeze(query_vec)*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
 	print(f"quInterest: {time.time()-t0:.4f} s {type(quInterest)} {quInterest.shape}")
 	t1=time.time()
-	quInterestNorm=np.linalg.norm(quInterest)#.astype("float32") # float
+	quInterestNorm=np.linalg.norm(quInterest) # float32
 	print(f"quInterestNorm: {time.time()-t1:.4f} s {type(quInterestNorm)} {quInterestNorm:.4f}")
 	cs=np.zeros_like(mat_rows, dtype=np.float32) # (nUsers,)    
 	for ui,uv in enumerate(mat_rows):
@@ -1159,7 +1159,7 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 		print(f"usrInterest {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape} allZero {np.all(usrInterest==0)}")
 
 		t1=time.time()
-		usrInterestNorm=(np.linalg.norm(usrInterest)+np.float32(1e-18))#.astype("float32") # float32
+		usrInterestNorm=(np.linalg.norm(usrInterest)+np.float32(1e-18)) # float32
 		print(f"usrInterestNorm {time.time()-t1:.4f} s {type(usrInterestNorm)} {usrInterestNorm:.4f}")
 		
 		t1=time.time()

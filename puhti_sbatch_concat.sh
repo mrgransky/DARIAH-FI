@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spm_concat_x251
+#SBATCH --job-name=spm_xy_all_queries_printed_elapsed_t
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem-per-cpu=81G
-#SBATCH --partition=hugemem_longrun
-#SBATCH --time=14-00:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --mem-per-cpu=49G
+#SBATCH --partition=interactive
+#SBATCH --time=00-02:00:00
 ######SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
@@ -30,7 +30,7 @@ echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x251" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
 
 # echo "DFs concat..."
 for qu in 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto'
