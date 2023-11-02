@@ -1144,35 +1144,35 @@ def get_costumized_cosine_similarity(mat, mat_rows, mat_cols, query_vec, idf_vec
 	# 	# print()
 	# return this_query_cosines.reshape(1,-1) # (1 x nUsers)
 	###################################### Implemented with Jaakko ######################################
-	t0=time.time()
+	# t0=time.time()
 	quInterest=np.squeeze(query_vec)*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
-	print(f"quInterest: {time.time()-t0:.4f} s {type(quInterest)} {quInterest.shape}")
-	t1=time.time()
+	# print(f"quInterest: {time.time()-t0:.4f} s {type(quInterest)} {quInterest.shape}")
+	# t1=time.time()
 	quInterestNorm=np.linalg.norm(quInterest) # float32
-	print(f"quInterestNorm: {time.time()-t1:.4f} s {type(quInterestNorm)} {quInterestNorm:.4f}")
+	# print(f"quInterestNorm: {time.time()-t1:.4f} s {type(quInterestNorm)} {quInterestNorm:.4f}")
 	cs=np.zeros_like(mat_rows, dtype=np.float32) # (nUsers,)    
 	for ui,uv in enumerate(mat_rows):
-		print(ui, uv)
-		loop_st_t=time.time()
-		t1=time.time()
+		# print(ui, uv)
+		# loop_st_t=time.time()
+		# t1=time.time()
 		usrInterest=np.squeeze(mat[ui, :].toarray())*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)=>(nTokens,)
-		print(f"usrInterest {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape} allZero {np.all(usrInterest==0)}")
+		# print(f"usrInterest {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape} allZero {np.all(usrInterest==0)}")
 
-		t1=time.time()
+		# t1=time.time()
 		usrInterestNorm=(np.linalg.norm(usrInterest)+np.float32(1e-18)) # float32
-		print(f"usrInterestNorm {time.time()-t1:.4f} s {type(usrInterestNorm)} {usrInterestNorm:.4f}")
+		# print(f"usrInterestNorm {time.time()-t1:.4f} s {type(usrInterestNorm)} {usrInterestNorm:.4f}")
 		
-		t1=time.time()
+		# t1=time.time()
 		#usrInterest=numba_exp((usrInterest/usrInterestNorm), 0.1) # 0.0637s 16cpu
 		usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)),exponent=0.1)
-		print(f"numba(^0.1) {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
+		# print(f"numba(^0.1) {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
 		
-		t1=time.time()
+		# t1=time.time()
 		cs[ui]=np.sum(usrInterest*quInterest) * (1/quInterestNorm)
-		print(f"cs[{ui}] {time.time()-t1:.4f} s {type(cs)} {cs.shape}")
+		# print(f"cs[{ui}] {time.time()-t1:.4f} s {type(cs)} {cs.shape}")
 		loop_end_t=time.time()
-		print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
-		print()
+		# print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
+		# print()
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.shape} => MUST BE (1 x nUsers)".center(100, " "))
 	return cs#.reshape(1,-1) # (1 x nUsers)
 
@@ -1208,32 +1208,33 @@ def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec=None):
 	# return avg_rec
 	prev_avg_rec=np.zeros_like(mat_cols, dtype=np.float32)# (nTokens,)
 	for iUser,vUser in enumerate(mat_rows):
-		print(iUser, vUser)
-		loop_st_t=time.time()
+		# print(iUser, vUser)
+		# loop_st_t=time.time()
 	
-		t0=time.time()
+		# t0=time.time()
 		userInterest=np.squeeze(mat[iUser, :].toarray())*np.squeeze(np.asarray(idf_vec)) #(nTokens,)x(nTokens,)
-		print(f"userInterest {time.time()-t0:.4f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
+		# print(f"userInterest {time.time()-t0:.4f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
 
-		t0=time.time()
+		# t0=time.time()
 		userInterestNorm=(np.linalg.norm(userInterest)+np.float32(1e-18))#.astype("float32") # float
-		print(f"userInterestNorm {time.time()-t0:.4f} s {type(userInterestNorm)} {userInterestNorm}")
+		# print(f"userInterestNorm {time.time()-t0:.4f} s {type(userInterestNorm)} {userInterestNorm}")
 		
-		t0=time.time()
+		# t0=time.time()
 		userInterest*=(1/userInterestNorm) # (nTokens,)
-		print(f"userInterest[Normed] {time.time()-t0:.4f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
+		# print(f"userInterest[Normed] {time.time()-t0:.4f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
 		
-		t0=time.time()
+		# t0=time.time()
 		update_vec=cosine_sim[iUser] * userInterest # (nTokens,)
-		print(f"update_vec {time.time()-t0:.4f} s {type(update_vec)} {update_vec.shape} allZero {np.all(update_vec==0)}")
+		# print(f"update_vec {time.time()-t0:.4f} s {type(update_vec)} {update_vec.shape} allZero {np.all(update_vec==0)}")
 		
 		avg_rec=prev_avg_rec + update_vec # (1 x nTokens) + (1 x nTokens)
 		prev_avg_rec=avg_rec # (1 x nTokens)
 		loop_end_t=time.time()
-		print(f"loop elapsed_t: {iUser} {vUser} {loop_end_t-loop_st_t:.3f} sec")
-		print()
+		# print(f"loop elapsed_t: {iUser} {vUser} {loop_end_t-loop_st_t:.3f} sec")
+		# print()
 	
 	avg_rec*=(1/np.sum(cosine_sim)) # (1 x nTokens)
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.shape}".center(150, " "))	
 	return avg_rec.reshape(1, -1)
 
 def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=15):
