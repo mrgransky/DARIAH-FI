@@ -7,9 +7,9 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=62G
-#SBATCH --partition=hugemem_longrun
+#SBATCH --partition=large
 #SBATCH --time=05-00:00:00
 
 user="`whoami`"
