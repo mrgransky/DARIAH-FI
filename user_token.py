@@ -527,7 +527,10 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 									)
 
 	# print(f"USERs DF".center(100, ' '))
+	print(f">> Remove columns with all zeros: {df_inp.columns[(df_inp==0).all()]}", end=" ")
+	t0=time.time()
 	df_inp = df_inp.dropna(axis=1, how='all') # remove collection_query_phrase  all zeros
+	print(f"Elapsed_t: {time.time()-t0:.2f} sec")
 	try:
 		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:

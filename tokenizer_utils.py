@@ -130,7 +130,7 @@ with HiddenPrints():
 													'aabakkc', 'aabi', 'aabg', 'aabotr', 'aabo', 'aabelinp', 'aabel', 'aabeli', 'aabelinp', 'aabe', 'aabclt', 'aabcnra', 'aabbe', 'aabu', 'aache', 'aacce', 'aaca',
 													'aabcd', 'aabc', 'aabcli', 'aabcl', 'lop', 'chr', 'lli', 'lhyww', 'ttll', 'lch', 'lcg', 'lcf', 'lcfv', 'nsö', 'chp', 'pll', 'jvk', 'aach', 'aacfca', 'aabra',
 													'aabol', 'aabittaisitii', 'aabenras', 'aabne', 'aabj', 'aabram', 'tipn', 'cfr', 'pltt', 'vpl', 'pustl', 'cbsa', 'alj', 'aall', 'efo', 'efr', 'luu', 'ino',
-													 'qal', 'qam', 'dta',
+													 'qal', 'qam', 'dta', 'itft',
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
