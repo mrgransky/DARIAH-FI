@@ -806,7 +806,7 @@ def get_idf(mat, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 		
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
 	print(f"SciPy SparseMtx (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
-	user_token_df = get_unpacked_user_token_interest(df=df)
+	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 	##########################Sparse Matrix info##########################
 	if user_token_df.isnull().values.any():
 		t=time.time()
@@ -819,7 +819,7 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	print(f"Elapsed_t: {time.time()-t:.1f} sec {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape}\n"
+	print(f"Elapsed_t: {time.time()-t:.1f} s {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape}\n"
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero(s)|: {sparse_matrix.count_nonzero()} "
 				f"byte[count]: {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
 	##########################Sparse Matrix info##########################
@@ -933,10 +933,10 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
-	print(f"Elapsed_t: {time.time()-st_t:.1f} sec | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
 				f" | nZeros: {(usr_tk_unpacked_df==0.0).sum().sum()}"
-				f" | {usr_tk_unpacked_df.shape} memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB")
-
+				f" | {usr_tk_unpacked_df.shape} memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB"
+			)
 	# sanity check for nonzeros for cols:
 	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
@@ -1018,7 +1018,7 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
-	print(f"Optimized Cosine Similarity".center(150, " "))
+	print(f"Optimized Cosine Similarity (1 x nUsers={mat.shape[0]})".center(150, " "))
 	print(f"spMtx {mat.shape} {type(mat)}")
 	print(f"quVec {query_vec.shape} {type(query_vec)} {query_vec.dtype}")
 	print(f"IDF {idf_vec.shape} {type(idf_vec)} {idf_vec.dtype}")
@@ -1064,7 +1064,7 @@ def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
 	return cs#.reshape(1,-1) # (nUsers,)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec, matNorm):
-	print(f"Getting avgRecSysVec (1 x nItems)".center(150, " "))
+	print(f"Getting avgRecSysVec (1 x nTokens={mat.shape[1]})".center(150, " "))
 	print(f"spMtx {type(mat)} {mat.shape}")
 	print(f"Cosine {type(cosine_sim)} {cosine_sim.shape}")
 	print(f"IDF {type(idf_vec)} {idf_vec.shape}")
