@@ -284,7 +284,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		sn_list = df_preprocessed['search_results_snippets'].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['search_results_snippets_tklm'] = sn_list
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=sn_list, fname=snFile)
 
 	print(f"\n>> Getting {cntFile} ...")	
@@ -296,7 +296,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		cntLMs = df_preprocessed["nwp_content_ocr_text"].map(lambda raw_snt: get_lemmatized_cnt(sentences=raw_snt, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
 		df_preprocessed['nwp_content_ocr_text_tklm'] = cntLMs
-		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(100, " "))
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=cntLMs, fname=cntFile)
 	
 	print(f"\n>> Getting {sqFile} ...")	
@@ -319,7 +319,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		snHW_list = df_preprocessed["search_results_hw_snippets"].map(lambda lst: get_lemmatized_snHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['search_results_hw_snippets_tklm'] = snHW_list
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=snHW_list, fname=snHWFile)
 	
 	print(f"\n>> Getting {cntHWFile} ...")	
@@ -331,7 +331,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['nwp_content_ocr_text_hw_tklm'] = cntHW_list
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=cntHW_list, fname=cntHWFile)
 
 	print(f"\n>> Getting {cntPTFile} ...")	
@@ -343,12 +343,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = cntPT_list
-		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
 	print(f"Input_DF: {dframe.shape} => DF_preprocessed: {df_preprocessed.shape}".center(110, "-"))
 	print( df_preprocessed.info( verbose=True, memory_usage="deep") )
-	print("<>"*60)
+	print("<>"*50)
 
 	print(f">> Getting initial user_df from DF_preprocessed: {df_preprocessed.shape}", end=" ")
 	st_t = time.time()
@@ -592,8 +592,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
 	# 		plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
 
-	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
-	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user, norm_sp=normalize_sp_mtrx) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
+	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 
 	if not torch.cuda.is_available():
 		assert cos_sim.all() == cos_sim_f.all(), f"sklearn cs != Faiss cs"
