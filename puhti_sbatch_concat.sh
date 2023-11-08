@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=128G
 #SBATCH --partition=small
-#SBATCH --time=03-00:00:00
+#SBATCH --time=01-10:00:00
 ######SBATCH --mem-per-cpu=50G
 
 user="`whoami`"
