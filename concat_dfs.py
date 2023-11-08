@@ -794,19 +794,22 @@ def run():
 	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
-	print(len(sp_mtx_files), len(sp_mtx_rows_files), len(sp_mtx_cols_files))
-	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length"
+	print(f"Found {len(sp_mtx_files)} spMtx files " 
+				f"{len(sp_mtx_rows_files)} spMtx rows(users) "
+				f"{len(sp_mtx_cols_files)} spMtx columns(tokens)"
+			)
+	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
 	RES_DIR=make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
 	
-	# for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
-	# 	print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
-	# 	print(sp_mtx)
-	# 	print(sp_mtx_rows)
-	# 	print(sp_mtx_cols)
-	# 	print("-"*180)
+	for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
+		print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
+		print(sp_mtx)
+		print(sp_mtx_rows)
+		print(sp_mtx_cols)
+		print("-"*180)
 	
 	try:
 		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
@@ -825,11 +828,6 @@ def run():
 				f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"	# <class 'numpy.ndarray'> (nTokens,)
 			)
 
-	# print("*"*80)
-	# print(concat_spm_usrNames[:10])
-	# print(concat_spm_tokNames[:8])
-	# print("*"*80)
-
 	# ##############################################For Double checking with 2 DFs#####################################################
 	# try:
 	# 	concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
@@ -841,14 +839,13 @@ def run():
 	# print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
 	# print(concat_df_U_x_T.info(memory_usage="deep"))
 	# print("<>"*50)
-	# ##############################################For Double checking with 2 DFs#####################################################
-
 	# ########################### only works with x2 files ############################
 	# t=time.time()
 	# print(f">> dfs concat and spm are equal?", end=" ")
 	# print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values), end=" ")
 	# print(f"Elapsed_t: {time.time()-t:.2f} sec")
 	# ########################### only works with x2 files ############################
+	# ##############################################For Double checking with 2 DFs#####################################################
 	
 	try:
 		# load idf

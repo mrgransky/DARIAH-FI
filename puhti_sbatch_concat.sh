@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spm_concat_x251
+#SBATCH --job-name=spMtx_x732_concatenation
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=61G
-#SBATCH --partition=large
-#SBATCH --time=01-00:00:00
+#SBATCH --mem=500G
+#SBATCH --partition=hugemem_longrun
+#SBATCH --time=14-00:00:00
 ######SBATCH --mem-per-cpu=50G
 
 user="`whoami`"
@@ -19,6 +19,7 @@ txt="$user began Slurm job: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 # echo "${stars// /*}"
+clear
 echo "CPUS/NODE: $SLURM_JOB_CPUS_PER_NODE, MEM/NODE(--mem): $SLURM_MEM_PER_NODE"
 echo "HOST: $SLURM_SUBMIT_HOST @ $SLURM_JOB_ACCOUNT, CLUSTER: $SLURM_CLUSTER_NAME, Partition: $SLURM_JOB_PARTITION"
 echo "JOBname: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, WRK_DIR: $SLURM_SUBMIT_DIR"
