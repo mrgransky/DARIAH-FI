@@ -140,7 +140,7 @@ with HiddenPrints():
 													'aadolf', 'aadolfa', 'aadolffi', 'aadolfi', 'aadolfin', 'aadolfink', 'aadiiri', 'aabcpk', 'aabcu', 'aabwl', 'aaccid', 'aabtek', 'acjg', 'aahanno',
 													'aacdmo', 'aadgl', 'aadll', 'aadnmukko', 'aem', 'aaem', 'aadu', 'aaduaa', 'aadvlkae', 'aadwmn', 'aadä', 'aaea', 'aaeac', 'aaee', 'aaeie',  'aahc', 'aahcm',
 													'aaeka', 'aadol', 'aaeeva', 'aacti', 'aaclo', 'aacnos', 'aaca', 'abm', 'abmi', 'aabmi', 'aabmsp', 'aacla', 'aadalsg', 'aadof', 'aadr', 'aadru', 'ahtcc', 'ahtci', 'ahtb',
-													'aahß', 'aaia', 'aaiani', 'aaie', 'aaiia', 'aaifi', 'aaifn', 'aaiel', 'aaiio', 'aaiitj', 'aaija', 'aaikslla', 'aaila', 'aaile', 'aaili', 'aaeb',
+													'aahß', 'aaia', 'aaiani', 'aaie', 'aaiia', 'aaifi', 'aaifn', 'aaiel', 'aaiio', 'aaiitj', 'aaija', 'aaikslla', 'aaila', 'aaile', 'aaili', 'aaeb', 'jbmä',
 													'aair', 'aairp', 'aaiu', 'aaiuatw', 'aaiumwmm', 'aaiuu', 'aaiuub', 'aaiv', 'aaiyy', 'aaizo', 'aaiß', 'aajala', 'aajja', 'aajmf', 'aajne', 'ablqu', 'abmnkd', 'abnn',
 													'abnu', 'aboa', 'aboae', 'aboas', 'aboba', 'abobo', 'abobsen', 'abodefgb', 'abodetgh', 'abol', 'abor', 'abot', 'abpe', 'aabp', 'abp', 'abq', 'abv', 'abrh', 'abrg',
 													'abta', 'absä', 'abwaf', 'abzu', 'abßbf', 'acb', 'acbe', 'accii', 'accilltl', 'acd', 'ace', 'acdi', 'acfh', 'acfa', 'acfh', 'acgna', 'acgu', 'achr', 'aci', 'acht',
