@@ -881,7 +881,7 @@ def run():
 	# print(f"Scipy userNorm:", end=" ")
 	# usrNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
 	print(f"Customized_user_norms: ", end=" ")
-	usrNorms=get_customized_user_norms(spMtx=concat_spm_U_x_T, spMtx_rows=concat_spm_usrNames, idf_vec=idf_vec,) # (nUsers,) ~3.5 min
+	usrNorms=get_customized_user_norms(spMtx=concat_spm_U_x_T, spMtx_rows=concat_spm_usrNames, idf_vec=idf_vec,) # (nUsers,) ~200 sec
 	print(f"Elapsed_t: {time.time()-usrNorm_st_t:.2f} s {type(usrNorms)} {usrNorms.shape} {usrNorms.dtype}")
 	
 	ccs=get_optimized_cs(	mat=concat_spm_U_x_T,

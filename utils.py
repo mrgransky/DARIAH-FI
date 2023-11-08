@@ -1027,7 +1027,7 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
-	print(f"Optimized Cosine Similarity (1 x nUsers={mat.shape[0]})".center(150, " "))
+	print(f"Optimized Cosine Similarity (1 x nUsers={mat.shape[0]})".center(150, "-"))
 	print(f"spMtx {mat.shape} {type(mat)}")
 	print(f"quVec {query_vec.shape} {type(query_vec)} {query_vec.dtype}")
 	print(f"IDF {idf_vec.shape} {type(idf_vec)} {idf_vec.dtype}")
@@ -1069,7 +1069,7 @@ def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
 		#loop_end_t=time.time()
 		#print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
 		#print()
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, "-"))
 	return cs#.reshape(1,-1) # (nUsers,)
 
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec, matNorm):
