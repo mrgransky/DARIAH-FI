@@ -817,12 +817,13 @@ def run():
 		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> {e}")
-		with HiddenPrints():
-			concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
-				SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files)],
-				save_dir=args.dfsPath,
-				prefix_fname=fprefix,
-			)
+		# with HiddenPrints():
+		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
+			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files)],
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		)
+
 	print(f"sp_mtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.dtype} {concat_spm_U_x_T.shape} byte size[count] {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e6:.2f} MB") # lil_matrix (nUsers, nTokens)
 	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
 				f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"	# <class 'numpy.ndarray'> (nTokens,)
