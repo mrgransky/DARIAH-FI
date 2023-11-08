@@ -7,8 +7,8 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=500G
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=400G
 #SBATCH --partition=hugemem_longrun
 #SBATCH --time=14-00:00:00
 ######SBATCH --mem-per-cpu=50G
@@ -19,7 +19,7 @@ txt="$user began Slurm job: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 # echo "${stars// /*}"
-clear
+# clear
 echo "CPUS/NODE: $SLURM_JOB_CPUS_PER_NODE, MEM/NODE(--mem): $SLURM_MEM_PER_NODE"
 echo "HOST: $SLURM_SUBMIT_HOST @ $SLURM_JOB_ACCOUNT, CLUSTER: $SLURM_CLUSTER_NAME, Partition: $SLURM_JOB_PARTITION"
 echo "JOBname: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, WRK_DIR: $SLURM_SUBMIT_DIR"
