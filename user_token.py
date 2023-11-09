@@ -24,7 +24,7 @@ parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
-parser.add_argument('--maxNumFeat', default=None, type=int) # default: None => all retrieved tokens extracted!
+parser.add_argument('--maxNumFeat', default=None) # default: None => all retrieved tokens extracted!
 parser.add_argument('-maxdf', '--minDocFreq', default=1, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 
