@@ -8,7 +8,7 @@
 #SBATCH --mem=108G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=gpu
+#SBATCH --partition=amdgpu
 #SBATCH --nodes=1
 #SBATCH --array=0-1
 #SBATCH --gres=gpu:teslav100:1
@@ -34,9 +34,9 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" #### must be adjusted ####
-#maxNumFeatures=$(( 10**6 - 0 )) # 1e+6
-maxNumFeatures=-1
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" #### must be adjusted ####
+maxNumFeatures=$(( 2.0 * 10**6 )) # 1e+6
+# maxNumFeatures=-1
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
