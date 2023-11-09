@@ -11,7 +11,7 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --array=0-1
-#SBATCH --gres=gpu:teslap100:1
+#SBATCH --gres=gpu:teslav100:1
 ######SBATCH --array=730-731 # nikeX, nikeY
 
 user="`whoami`"
@@ -47,7 +47,7 @@ do
 	for mn in 1
 	do
 		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df" #### must be adjusted ####
-		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir"
+		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir | maxNumFeat: $maxNumFeatures"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \
@@ -56,7 +56,7 @@ do
 						--maxDocFreq $mx \
 						--minDocFreq $mn \
 						--maxNumFeat $maxNumFeatures \
-						
+
 	done
 done
 
