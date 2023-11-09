@@ -514,6 +514,7 @@ def main():
 		return
 	print(f">>args.maxNumFeat: {args.maxNumFeat}")
 	if args.maxNumFeat is not None:
+		print("HEEEEREEEEE.....")
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	make_folder(folder_name=args.outDIR)
 	return
