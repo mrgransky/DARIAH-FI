@@ -515,7 +515,7 @@ def main():
 	print(f">>args.maxNumFeat: {args.maxNumFeat}")
 	if args.maxNumFeat:
 		args.outDIR+=f"maxNumFeatures_{args.maxNumFeat}"
-	make_folder(folder_name=output_directory)
+	make_folder(folder_name=args.outDIR)
 	return
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
