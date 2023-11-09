@@ -645,7 +645,7 @@ def make_folder(folder_name:str="MUST_BE_RENAMED"):
 	try:
 		os.makedirs( folder_name )
 	except Exception as e:
-		print(f"<!> {e}")
+		print(f"<!> {folder_name} already exists\n{e}")
 
 def save_vocab(vb, fname:str=""):
 	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
