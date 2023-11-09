@@ -53,7 +53,7 @@ do
 						--outDIR $ddir \
 						--lmMethod 'stanza' \
 						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-						--maxNumFeat $maxNumFeatures \
+						--maxNumFeat ${maxNumFeatures} \
 						--maxDocFreq $mx \
 						--minDocFreq $mn
 	done
