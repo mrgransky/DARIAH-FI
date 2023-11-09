@@ -513,14 +513,14 @@ def main():
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
 
-	print(f">>RAW args.maxNumFeat: {args.maxNumFeat}")
+	# print(f">>RAW args.maxNumFeat: {args.maxNumFeat}")
 	args.maxNumFeat=None if args.maxNumFeat==-1 else int(args.maxNumFeat)
-	print(f">>Corrected: args.maxNumFeat: {args.maxNumFeat}")
+	# print(f">>Corrected: args.maxNumFeat: {args.maxNumFeat}")
 	if args.maxNumFeat:
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	
 	make_folder(folder_name=args.outDIR)
-	return
+	# return
 	
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
