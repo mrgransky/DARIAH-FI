@@ -54,7 +54,9 @@ do
 						--lmMethod 'stanza' \
 						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
 						--maxDocFreq $mx \
-						--minDocFreq $mn
+						--minDocFreq $mn \
+						--maxNumFeat $maxNumFeatures \
+						
 	done
 done
 
