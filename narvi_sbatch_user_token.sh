@@ -35,6 +35,7 @@ echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
 ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" #### must be adjusted ####
+#maxNumFeatures=$(expr $(1.2+6))
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
@@ -45,12 +46,13 @@ do
 	for mn in 1
 	do
 		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df" #### must be adjusted ####
-		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir"
+		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir max_number_features: $maxNumFeatures"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \
 						--lmMethod 'stanza' \
 						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+						--maxNumFeat $maxNumFeatures \
 						--maxDocFreq $mx \
 						--minDocFreq $mn
 	done

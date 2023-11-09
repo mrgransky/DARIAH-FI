@@ -24,7 +24,7 @@ parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
-parser.add_argument('--maxNumFeat', default=None, type=int)
+parser.add_argument('--maxNumFeat', default=None, type=int) # default: None => all retrieved tokens extracted!
 parser.add_argument('-maxdf', '--minDocFreq', default=1, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 
@@ -499,8 +499,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	
 	return user_df
 
-def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", topK: int=5, normalize_sp_mtrx=False, ):
+def main():
+	qu_phrase=args.qphrase
+	topK=5
+
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer")
+	df_inp=load_pickle(fpath=args.inputDF)
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
 	print( df_inp.info(memory_usage="deep", verbose=True) )
 	print(f"#"*100)
@@ -508,9 +512,11 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	if df_inp.shape[0] == 0:
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
-	
-	make_folder(folder_name=args.outDIR)
-
+	print(f">>args.maxNumFeat: {args.maxNumFeat}")
+	if args.maxNumFeat:
+		args.outDIR+=f"maxNumFeatures_{args.maxNumFeat}"
+	make_folder(folder_name=output_directory)
+	return
 	try:
 		tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
 		tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vec.gz"))
@@ -568,7 +574,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 
 	return
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
-	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, norm_sp=normalize_sp_mtrx, ifb_log10=False)
+	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, ifb_log10=False)
 	
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
@@ -589,8 +595,8 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	# for iTK, vTK in enumerate(query_phrase_tk):
 	# 	if BoWs.get(vTK):
 	# 		users_names, users_values_total, users_values_separated = get_users_byTK(usr_tk_spm, df_user, BoWs, token=vTK)
-	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-	# 		plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	# 		plot_users_by(token=vTK, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs)
+	# 		plot_usersInterest_by(token=vTK, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs)
 
 	cos_sim, cos_sim_idx = get_cs_sklearn(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
 	cos_sim_f, cos_sim_idx_f = get_cs_faiss(query_vector, usr_tk_spm.toarray(), qu_phrase, query_phrase_tk, df_user) # qu_ (nItems,) => (1, nItems) -> cos: (1, nUsers)
@@ -608,7 +614,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 		print(f"Sorry, We couldn't find similar results to >> {Fore.RED+Back.WHITE}{qu_phrase}{Style.RESET_ALL} << in our database! Search again!")
 		return
 
-	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
+	plot_tokens_by_max(cos_sim, cos_sim_idx, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs)
 	#return
 	nUsers, nItems = usr_tk_spm.shape
 	print(f"avgRecSysVec (1 x nItems) | nUsers={nUsers} |nItems={nItems}".center(120, " "))
@@ -713,14 +719,14 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	get_selected_content(cos_sim, cos_sim_idx, topK_recommended_tokens, df_user)
 	#print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(120, " "))
 	"""
-	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, usr_tk_spm, df_user, BoWs, recommended_tokens=topK_recommended_tokens, norm_sp=normalize_sp_mtrx)
+	get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, usr_tk_spm, df_user, BoWs, recommended_tokens=topK_recommended_tokens)
 
 	print(f"Getting users of {len(topK_recommended_tokens)} tokens of top-{topK} RecSys".center(120, "-"))
 	for ix, tkv in enumerate(topK_recommended_tokens):
 		users_names, users_values_total, users_values_separated = get_users_byTK(usr_tk_spm, df_user, BoWs, token=tkv)
 		
-		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs, norm_sp=normalize_sp_mtrx )
-		plot_usersInterest_by(token=tkv, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs, norm_sp=normalize_sp_mtrx)
+		plot_users_by(token=tkv, usrs_name=users_names, usrs_value_all=users_values_total, usrs_value_separated=users_values_separated, topUSRs=15, bow=BoWs)
+		plot_usersInterest_by(token=tkv, sp_mtrx=usr_tk_spm, users_tokens_df=df_user, bow=BoWs)
 	
 	print(f"DONE".center(100, "-"))
 	print()
@@ -736,7 +742,7 @@ def run(df_inp: pd.DataFrame, qu_phrase: str="This is my sample query phrase!", 
 	print()
 	print(f"Implicit Feedback Recommendation: {f'Unique Users: {nUsers} vs. Tokenzied word Items: {nItems}'}".center(150,'-'))
 
-	plot_tokens_distribution(usr_tk_spm, df_user, query_vector, avgrec, BoWs, norm_sp=normalize_sp_mtrx, topK=topK)
+	plot_tokens_distribution(usr_tk_spm, df_user, query_vector, avgrec, BoWs, topK=topK)
 
 def get_cs_faiss(QU, RF, query_phrase: str, query_token, users_tokens_df:pd.DataFrame, norm_sp=None):
 	sp_type = "Normalized" if norm_sp else "Original" # unimportant!
@@ -1345,46 +1351,6 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	plt.clf()
 	plt.close(f)
 	print(">> Done!")
-
-def main():
-	df_raw = load_pickle(fpath=args.inputDF)
-	# analyze_df(df=df_raw, fname=__file__)
-	run(df_inp=df_raw, qu_phrase=args.qphrase, normalize_sp_mtrx=args.normSP, topK=args.topTKs)
-
-def practice(topK=5):
-	nUsers = 5
-	nItems = 11
-	cos = np.random.rand(nUsers).reshape(1, -1)
-	usr_itm = np.random.randint(100, size=(nUsers, nItems))
-	avgrec = np.zeros((1,nItems))
-	print(f"> avgrec{avgrec.shape}:\n{avgrec}")
-	print()
-	
-	print(f"> cos{cos.shape}:\n{cos}")
-	print()
-
-	print(f"> user-item{usr_itm.shape}:\n{usr_itm}")
-	print("#"*100)
-
-	for iUser in range(nUsers):
-		print(f"USER: {iUser}")
-		userInterest = usr_itm[iUser, :]
-		print(f"<> userInterest{userInterest.shape}:\n{userInterest}")
-		userInterest = userInterest / np.linalg.norm(userInterest)
-		print(f"<> userInterest_norm{userInterest.shape}:\n{userInterest}")
-		print(f"cos[{iUser}]: {cos[0, iUser]}")
-		print(f"<> avgrec (B4):{avgrec.shape}\n{avgrec}")
-		avgrec = avgrec + cos[0, iUser] * userInterest
-		print(f"<> avgrec (After):{avgrec.shape}\n{avgrec}")
-		print()
-
-	print(f"-"*100)
-	avgrec = avgrec / np.sum(cos)
-	print(f"avgrec:{avgrec.shape}\n{avgrec}")
-	topk_matches_idx_avgRecSys = avgrec.flatten().argsort()
-	topk_matches_avgRecSys = np.sort(avgrec.flatten())
-
-	print(f"top-{topK} idx: {topk_matches_idx_avgRecSys}\ntop-{topK} res: {topk_matches_avgRecSys}")
 
 if __name__ == '__main__':
 	#os.system("clear")

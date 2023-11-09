@@ -44,7 +44,7 @@ do
 	for mn in 1
 	do
 		# ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
-		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir"
+		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir max_number_features: $maxNumFeatures"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \
