@@ -11,7 +11,7 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --array=0-1
-#SBATCH --gres=gpu:teslav100:1
+#SBATCH --gres=gpu:teslap100:1
 ######SBATCH --array=730-731 # nikeX, nikeY
 
 user="`whoami`"

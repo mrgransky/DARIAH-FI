@@ -513,9 +513,9 @@ def main():
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
 
-	# print(f">>RAW args.maxNumFeat: {args.maxNumFeat}")
+	print(f">>RAW args.maxNumFeat: {args.maxNumFeat}")
 	args.maxNumFeat=None if args.maxNumFeat==-1 else int(args.maxNumFeat)
-	# print(f">>Corrected: args.maxNumFeat: {args.maxNumFeat}")
+	print(f">>Corrected: args.maxNumFeat: {args.maxNumFeat}")
 	if args.maxNumFeat:
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	
