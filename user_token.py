@@ -513,8 +513,8 @@ def main():
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
 	print(f">>args.maxNumFeat: {args.maxNumFeat}")
-	if args.maxNumFeat:
-		args.outDIR+=f"maxNumFeatures_{args.maxNumFeat}"
+	if args.maxNumFeat is not None:
+		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	make_folder(folder_name=args.outDIR)
 	return
 	try:
