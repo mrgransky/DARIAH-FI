@@ -883,13 +883,13 @@ def run():
 	print(f"Customized_user_norms...", end="\t")
 	usrNorms=get_customized_user_norms(spMtx=concat_spm_U_x_T, spMtx_rows=concat_spm_usrNames, idf_vec=idf_vec,) # (nUsers,) ~200 sec
 	print(f"Elapsed_t: {time.time()-usrNorm_st_t:.2f} s {type(usrNorms)} {usrNorms.shape} {usrNorms.dtype}")
-	
-	ccs=get_optimized_cs(	mat=concat_spm_U_x_T,
-												mat_rows=concat_spm_usrNames, 
-												mat_cols=concat_spm_tokNames, 
+	# spMtx, spMtx_rows, spMtx_cols, query_vec, idf_vec, spMtx_norm
+	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
+												spMtx_rows=concat_spm_usrNames, 
+												spMtx_cols=concat_spm_tokNames, 
 												query_vec=query_vector, 
 												idf_vec=idf_vec,
-												matNorm=usrNorms, # must be adjusted, accordingly!
+												spMtx_norm=usrNorms, # must be adjusted, accordingly!
 											)
 
 	avgRecSys=get_avg_rec(mat=concat_spm_U_x_T,
