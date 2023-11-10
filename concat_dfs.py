@@ -878,7 +878,7 @@ def run():
 															mat_col=concat_spm_tokNames, 
 															tokenized_qu_phrases=query_phrase_tk,
 														)
-	print(f"quVec {type(query_vector)} {query_vector.shape} Allzero? {np.all(query_vector==0.0)}\n"
+	print(f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape} Allzero? {np.all(query_vector==0.0)}\n"
 				f"|NonZeros|: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
 				f"{[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"

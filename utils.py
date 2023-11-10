@@ -1066,7 +1066,7 @@ def get_optimized_cs(spMtx, spMtx_rows, spMtx_cols, query_vec, idf_vec, spMtx_no
 def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec, matNorm):
 	print(f"Getting avgRecSysVec (1 x nTokens={mat.shape[1]})".center(150, " "))
 	print(f"<spMtx> {type(mat)} {mat.shape} {mat.dtype}")
-	print(f"<Cosine> {type(cosine_sim)} {cosine_sim.shape} {cos_sim.dtype}")
+	print(f"<Cosine> {type(cosine_sim)} {cosine_sim.shape} {cosine_sim.dtype}")
 	print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
 	st_t = time.time()
 	# init
