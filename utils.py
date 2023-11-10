@@ -957,8 +957,8 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 
 def get_customized_user_norms(spMtx, spMtx_rows, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# print(f"Scipy userNorm:", end=" ")
-	# usrNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
-	print(f"Customized_user_norms...", end="\t")
+	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
+	print(f"Customized Users Norm", end="\t")
 		
 	t0=time.time()
 	uNorms=np.zeros_like(spMtx_rows, dtype=np.float32)# (nUsers,)
@@ -967,7 +967,7 @@ def get_customized_user_norms(spMtx, spMtx_rows, idf_vec, save_dir: str="savin_d
 		nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
 		userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
 		uNorms[ui]=np.linalg.norm(userInterest)
-	print(f"Elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}")
+	print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~215 sec
 	usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(uNorms)}_nUSRs.gz")
 	save_pickle(pkl=uNorms, fname=usrNorm_fname)
 	return uNorms

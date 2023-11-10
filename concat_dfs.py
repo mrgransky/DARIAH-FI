@@ -858,7 +858,6 @@ def run():
 										prefix_fname=fprefix,
 									)
 	# print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
-	
 	try:
 		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
 	except Exception as e:
@@ -868,7 +867,7 @@ def run():
 																				idf_vec=idf_vec,
 																				save_dir=args.dfsPath,
 																				prefix_fname=fprefix,
-																			) # (nUsers,) ~215 sec
+																			) # (nUsers,) 
 
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
