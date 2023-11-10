@@ -958,8 +958,7 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 def get_customized_user_norms(spMtx, spMtx_rows, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# print(f"Scipy userNorm:", end=" ")
 	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
-	print(f"Customized Users Norm", end="\t")
-		
+	print(f"Customized Users Norm", end=" ")
 	t0=time.time()
 	uNorms=np.zeros_like(spMtx_rows, dtype=np.float32)# (nUsers,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
