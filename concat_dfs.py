@@ -861,13 +861,13 @@ def run():
 	try:
 		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
 	except Exception as e:
-		print(f"<!> {e}")
-		usrNorms=get_customized_user_norms(	spMtx=concat_spm_U_x_T, 
-																				spMtx_rows=concat_spm_usrNames, 
-																				idf_vec=idf_vec,
-																				save_dir=args.dfsPath,
-																				prefix_fname=fprefix,
-																			) # (nUsers,) 
+		print(f"<!> usrNorm file not found!\n{e}")
+		usrNorms=get_idfed_users_norm(spMtx=concat_spm_U_x_T, 
+																	spMtx_rows=concat_spm_usrNames, 
+																	idf_vec=idf_vec,
+																	save_dir=args.dfsPath,
+																	prefix_fname=fprefix,
+																) # (nUsers,) 
 
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)

@@ -955,7 +955,7 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
 
-def get_customized_user_norms(spMtx, spMtx_rows, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+def get_idfed_users_norm(spMtx, spMtx_rows, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# print(f"Scipy userNorm:", end=" ")
 	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
 	print(f"Customized Users Norm", end=" ")
