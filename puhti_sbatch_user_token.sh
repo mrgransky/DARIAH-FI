@@ -34,24 +34,28 @@ echo "${stars// /*}"
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes"
+# maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
+maxNumFeatures=-1
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
-# for mx in 0.95 0.85 0.75 0.55
+# for mx in 1.0 0.9 0.8 0.7 0.6 0.5
 for mx in 1.0
 do
-	# for mn in 50 25 20 10 3
+	# for mn in 10 15 30 # 1 3 5 already done (only for max 1.0)
 	for mn in 1
 	do
-		# ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
-		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir max_number_features: $maxNumFeatures"
+		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df" #### must be adjusted ####
+		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir | maxNumFeat: $maxNumFeatures"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \
 						--lmMethod 'stanza' \
 						--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
 						--maxDocFreq $mx \
-						--minDocFreq $mn
+						--minDocFreq $mn \
+						--maxNumFeat $maxNumFeatures \
+
 	done
 done
 
