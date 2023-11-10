@@ -150,14 +150,14 @@ with HiddenPrints():
 													'afnftfl', 'afp', 'afowfa', 'afpo', 'afrt', 'afsfvm', 'afsg', 'afsk', 'afst', 'aftbl', 'aftc', 'aftfa', 'aftfld', 'aftfl', 'aftl', 'aftni', 'aftp', 'aftpnf', 'aftti', 'afttcacr',
 													'afttm', 'aftx', 'afty', 'afuf', 'afuntci', 'afuwa', 'afz', 'afä', 'agb', 'agbmr', 'agc', 'agcr', 'agct', 'agctll', 'agcutcr', 'agcn', 'agfcl', 'agft', 'agf', 'agj', 'agjl',
 													'agjls', 'aglksr', 'aglxvä', 'agrr', 'ags', 'agsb', 'agsjm', 'agsk', 'agsm', 'agtl', 'agtm', 'ahc', 'ahcs', 'aaim', 'aim', 'aaini', 'aain', 'aio','aaioaj', 'aaionk', 'aagmt', 'aabaife',
-													'aafl', 'aage', 'aaftc', 'aafsr', 'aaent', 'aaen', 'aacmak', 'aacoßi', 'aade', 'aadho', 'aadltu', 'aadev', 'aaenklo', 'aaesßgo', 'aaberrci', 'aadarr', 'adar', 'aabox'
+													'aafl', 'aage', 'aaftc', 'aafsr', 'aaent', 'aaen', 'aacmak', 'aacoßi', 'aade', 'aadho', 'aadltu', 'aadev', 'aaenklo', 'aaesßgo', 'aaberrci', 'aadarr', 'adar', 'aabox', 'aabllff',
 													'abca', 'abcd', 'abcde', 'abcdefgb', 'abcdefgh', 'aabcdefgh', 'aabcdefghi', 'aabcdefghij', 'abedefgb', 'abedefgh', 'abedetgb', 'abrn', 'abro', 'absa', 'aczi', 'acz', 'aabiergh',
 													'aabbau', 'aabba', 'aabbad', 'aabbe', 'aabbergetleatern', 'aabber', 'aabb', 'aabbs', 'aabbsk', 'aabbss', 'aabbsa', 'aabbsaa', 'aabbt', 'aabberg', 'aabbl', 'aabbmbi', 'aabbo', 'aabbd', 
 													'aabakkc', 'aabad', 'aaba', 'aabakkc', 'aaballu', 'aabasdigas', 'aabaimv', 'aabait', 'aabaja', 'aabauiu', 'aabasfoe', 'aabab', 'aababflaa', 'aaberg', 'aabete', 'aabnn', 'aabsl',
 													'aabalf', 'aabf', 'aabffl', 'aabfd', 'abbd', 'abbi', 'abbm', 'abbo', 'abbor', 'aabend', 'aabara', 'aabca', 'aabcabiibi', 'aabani', 'aabitfu', 'aaßaa', 'aabama', 'aabava', 'adamjo', 
 													'aabafs', 'aabafli', 'aabaffccii', 'aabaffe', 'aabenta', 'aabakko', 'aabate', 'ablgs', 'abma', 'accls', 'achb', 'achccx', 'achcfjo', 'acrjljl', 'acrma', 'acte', 'acxn', 'acßyn', 
 													'aabenjaa', 'aaband', 'aabanv', 'aabattu', 'aabejbro', 'aabaek', 'aabala', 'aabebkramlare', 'aabenraag', 'aabenraagi', 'aabaljoki', 'aett', 'aetl', 'aaeto', 'aabojiobtb',
-													'aabatjec', 'aabcnras', 'aaballan', 'aabdatonta', 'aatl', 'aatnu', 'aatlnt', 'aabaatl', 'aabcbm', 'aabci', 'aabekatt', 'aabeq', 'aabfo', 'aabfos', 'acä', 'adalrnina',
+													'aabatjec', 'aabcnras', 'aaballan', 'aabdatonta', 'aatl', 'aatnu', 'aatlnt', 'aabaatl', 'aabcbm', 'aabci', 'aabekatt', 'aabeq', 'aabfo', 'aabfos', 'acä', 'adalrnina', 'aabmwwb',
 													'aahu', 'ahu', 'ahv', 'aahvi', 'aahv', 'aahve', 'ahw', 'ahö', 'aaiami', 'aaho', 'aahi', 'aahopf', 'aahoagglg', 'aaiaiea', 'aiai', 'aaiamlac', 'aaiant', 'aaica', 'aic', 'aabdoo',
 													'aaisji', 'aaku', 'aalanotf', 'aalbcrse', 'aial', 'aiao', 'aiar', 'aias', 'aaielswa', 'aibli', 'aibtt', 'aicetv', 'aict', 'aicm', 'aicu', 'aicmallc', 'aicßa', 'aabrcnn',
 													'aäaau', 'aabaau', 'aaeaau', 'aau', 'aauhunln', 'aaujo', 'aaukk', 'aaul', 'aaun', 'aaua', 'aave', 'aawa', 'aawi', 'aawasa', 'aawo', 'aaws', 'aawu', 'aawwi', 'aclv', 'adcm',
@@ -170,7 +170,7 @@ with HiddenPrints():
 													'ahm', 'aahmhmnßumrumhaammhmnn', 'aahmtkse', 'ahmff', 'ahme', 'aiig', 'aiif', 'aiik', 'aiie', 'aiit', 'aiirli', 'aiio', 'aiji', 'aijj', 'ailpg', 'ainc', 'aacxabixb', '',
 													'sbte', 'bbens', 'bfebj', 'rsbok', '"^[azäöü].+mäßig$"', 'aaboe', 'aabo', 'aaboam', 'aaboah', 'aabmzr', 'aabz', 'aacu', 'aabellap', 'aacie', 'ahtci', 'ahtb', 'aabni',
 													'taißa', 'aads', 'aadsk', 'ads', 'adw', 'adwcni', 'aacxala', 'aabia', 'aabio', 'aabi', 'aabil', 'aabittaisitii', 'aabika', 'aabk', 'aababvaav', 'aabq', 'aabßaa', 'aaboth',
-													'aabehbhahiihiibmbif', 'aabelja', 'aabe', 'aablkko', 'aabll', 'aabllsj', 'aablta', 'aabl', 'aabctj', 'aabgl',
+													'aabehbhahiihiibmbif', 'aabelja', 'aabe', 'aablkko', 'aabll', 'aabllsj', 'aablta', 'aabl', 'aabctj', 'aabgl', 'aabaflbi', 'aabmv', 'aabrr', 'aabsbhhw', 'aabesjtti',
 													]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
