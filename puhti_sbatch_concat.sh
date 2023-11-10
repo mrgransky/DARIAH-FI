@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spMtx_x251_concat
+#SBATCH --job-name=spMtx_x732_concat
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=73G
-#SBATCH --partition=interactive 
-#SBATCH --time=01-10:00:00
+#SBATCH --mem=372G
+#SBATCH --partition=large 
+#SBATCH --time=03-00:00:00
 ######SBATCH --mem-per-cpu=50G
 
 user="`whoami`"
@@ -19,7 +19,6 @@ txt="$user began Slurm job: `date`"
 ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 # echo "${stars// /*}"
-# clear
 echo "CPUS/NODE: $SLURM_JOB_CPUS_PER_NODE, MEM/NODE(--mem): $SLURM_MEM_PER_NODE"
 echo "HOST: $SLURM_SUBMIT_HOST @ $SLURM_JOB_ACCOUNT, CLUSTER: $SLURM_CLUSTER_NAME, Partition: $SLURM_JOB_PARTITION"
 echo "JOBname: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, WRK_DIR: $SLURM_SUBMIT_DIR"
@@ -29,21 +28,15 @@ echo "CPUS_ON_NODE: $SLURM_CPUS_ON_NODE, CPUS/TASK: $SLURM_CPUS_PER_TASK, MEM/CP
 echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
-
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x251" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" ########## must be adjusted! ##########
 
-# echo "DFs concat..."
 for qu in 'TAMPEREEN TEHDAS' 'Juha Sipilä Sahalahti' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
 # for qu in 'Tampereen seudun työväenopisto' 
 do
   echo "Query: $qu"
   python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase "$qu"
 done
-
-# echo "DFs_list storing..."
-# python -u test_sof.py
-# echo "${stars// /*}"
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
