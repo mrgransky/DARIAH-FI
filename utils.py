@@ -1026,49 +1026,33 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	# print(np.where(query_vector.flatten()!=0)[0])
 	return query_vector
 
-def get_optimized_cs(mat, mat_rows, mat_cols, query_vec, idf_vec, matNorm):
-	print(f"Optimized Cosine Similarity (1 x nUsers={mat.shape[0]})".center(150, "-"))
-	print(f"spMtx {mat.shape} {type(mat)}")
-	print(f"quVec {query_vec.shape} {type(query_vec)} {query_vec.dtype}")
-	print(f"IDF {idf_vec.shape} {type(idf_vec)} {idf_vec.dtype}")
+def get_optimized_cs(spMtx, spMtx_rows, spMtx_cols, query_vec, idf_vec, spMtx_norm):
+	print(f"Optimized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(150, "-"))
+	print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
+	print(f"<spMtx[Rows]> {type(spMtx_rows)} len: {len(spMtx_rows)}")
+	print(f"<spMtx[Cols]> {type(spMtx_cols)} len: {len(spMtx_cols)}")
+	print(f"<quVec> {type(query_vec)} {query_vec.shape} {query_vec.dtype}")
+	print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
 	st_t=time.time()
-	#t0=time.time()
 	quInterest=np.squeeze(query_vec)*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
-	#print(f"quInterest: {time.time()-t0:.4f} s {type(quInterest)} {quInterest.shape}")
-
-	#t1=time.time()
-	quInterestNorm=np.linalg.norm(quInterest)#.astype("float32") # float
-	#print(f"quInterestNorm: {time.time()-t1:.4f} s {type(quInterestNorm)} {quInterestNorm:.4f}")
-	
+	quInterestNorm=np.linalg.norm(quInterest)#.astype("float32") # float	
 	idx_nonzeros=np.nonzero(quInterest)#[1]
-	#print(idx_nonzeros)
-	cs=np.zeros_like(mat_rows, dtype=np.float32) # (nUsers,)
+	cs=np.zeros_like(spMtx_rows, dtype=np.float32) # (nUsers,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
-	quInterest_nonZeros=quInterest[idx_nonzeros]*(1/quInterestNorm)
-	
-	for ui,uv in enumerate(mat_rows): # ip1, ip2, ..., ipN
-		#print(ui, uv)
-		#loop_st_t=time.time()
-		#t1=time.time()
-		#idx_nonzeros=np.nonzero(mat[ui, :])[1] # not necessary!
-		usrInterest=np.squeeze(mat[ui, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] # 1 x len(idx[1])
-		#print(f"usrInterest {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape} allZero {np.all(usrInterest==0)}")
+	quInterest_nonZeros=quInterest[idx_nonzeros]*(1/quInterestNorm)	
+	for ui,_ in enumerate(spMtx_rows): # ip1, ip2, ..., ipN
+		usrInterest=np.squeeze(spMtx[ui, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] # 1 x len(idx[1])
+		usrInterestNorm=spMtx_norm[ui]+np.float32(1e-18)# float32
 
-		#t1=time.time()
-		usrInterestNorm=matNorm[ui]+np.float32(1e-18)# float32
-		#print(f"usrInterestNorm {time.time()-t1:.4f} s {type(usrInterestNorm)} {usrInterestNorm:.4f}")
-		
-		#t1=time.time()
+		usrInterest_noNorms=usrInterest # added Nov 10th
+		temp_cs_multiplier=np.sum(usrInterest_noNorms*quInterest_nonZeros) # added Nov 10th
+
 		usrInterest=(usrInterest*(1/usrInterestNorm))**0.1 # seems faster
-		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)),exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
-		#print(f"numba(^0.1) {time.time()-t1:.4f} s {type(usrInterest)} {usrInterest.shape}")
-		
-		#t1=time.time()
+		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)), exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
 		cs[ui]=np.sum(usrInterest*quInterest_nonZeros)# * (1/quInterestNorm)
-		#print(f"cs[{ui}] {time.time()-t1:.4f} s {cs.shape} {cs.dtype}")
-		#loop_end_t=time.time()
-		#print(f"loop elapsed_t: {ui} {uv} {loop_end_t-loop_st_t:.3f} sec")
-		#print()
+		
+		cs[ui]*=temp_cs_multiplier # added Nov 10th
+	
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, "-"))
 	return cs#.reshape(1,-1) # (nUsers,)
 
