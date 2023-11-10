@@ -858,6 +858,17 @@ def run():
 										prefix_fname=fprefix,
 									)
 	# print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
+	
+	try:
+		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
+	except Exception as e:
+		print(f"<!> {e}")
+		usrNorms=get_customized_user_norms(	spMtx=concat_spm_U_x_T, 
+																				spMtx_rows=concat_spm_usrNames, 
+																				idf_vec=idf_vec,
+																				save_dir=args.dfsPath,
+																				prefix_fname=fprefix,
+																			) # (nUsers,) ~215 sec
 
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
@@ -877,13 +888,6 @@ def run():
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
 
-	usrNorm_st_t=time.time()
-	# print(f"Scipy userNorm:", end=" ")
-	# usrNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
-	print(f"Customized_user_norms...", end="\t")
-	usrNorms=get_customized_user_norms(spMtx=concat_spm_U_x_T, spMtx_rows=concat_spm_usrNames, idf_vec=idf_vec,) # (nUsers,) ~200 sec
-	print(f"Elapsed_t: {time.time()-usrNorm_st_t:.2f} s {type(usrNorms)} {usrNorms.shape} {usrNorms.dtype}")
-	# spMtx, spMtx_rows, spMtx_cols, query_vec, idf_vec, spMtx_norm
 	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
 												spMtx_rows=concat_spm_usrNames, 
 												spMtx_cols=concat_spm_tokNames, 
