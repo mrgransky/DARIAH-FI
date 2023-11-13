@@ -648,7 +648,7 @@ def make_folder(folder_name:str="MUST_BE_RENAMED"):
 		print(f"<!> {folder_name} already exists\n{e}")
 
 def save_vocab(vb, fname:str=""):
-	print(f"<<=!=>> Saving {len(vb)} BoWs:\n{fname}")
+	print(f"Saving {len(vb)} BoWs {fname}")
 	st_t = time.time()
 	with open(fname, mode="w", encoding="utf-8") as fw:
 		json.dump(vb, fw, indent=4, ensure_ascii=False)
@@ -666,16 +666,15 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	return vb
 
 def save_pickle(pkl, fname:str=""):
-	dump_file_name = fname
-	print(f"Saving {type(pkl)} {dump_file_name}")
+	print(f"Saving {type(pkl)} {pkl.dtype}\n{fname}")
 	st_t = time.time()
 	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
-		pkl.to_pickle(path=dump_file_name)
+		pkl.to_pickle(path=fname)
 	else:
-		with open(dump_file_name , mode="wb") as f:
+		with open(fname , mode="wb") as f:
 			dill.dump(pkl, f)
 	elpt = time.time()-st_t
-	fsize_dump = os.stat( dump_file_name ).st_size / 1e6
+	fsize_dump = os.stat( fname ).st_size / 1e6
 	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(150, " "))
 
 def load_pickle(fpath:str="unknown", dftype=None):

@@ -852,7 +852,7 @@ def run():
 		# load idf
 		idf_vec=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
 	except Exception as e:
-		print(f"<!> idf file not available {e}")
+		print(f"<!> idf file not available! {e}")
 		idf_vec=get_idf(mat=concat_spm_U_x_T,
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
@@ -862,7 +862,7 @@ def run():
 	try:
 		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
 	except Exception as e:
-		print(f"<!> usrNorm file not found!\n{e}")
+		print(f"<!> usrNorm file not found! {e}")
 		usrNorms=get_idfed_users_norm(spMtx=concat_spm_U_x_T, 
 																	spMtx_rows=concat_spm_usrNames, 
 																	idf_vec=idf_vec,
