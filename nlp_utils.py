@@ -174,16 +174,17 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 
 		# Fit TFIDF # TIME CONSUMING:
 		tfidf_matrix = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
-
+		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
+		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
+		save_pickle(pkl=tfidf_matrix, fname=tfidf_rf_matrix_fpath)
+	
+	print(f">> Creating [sorted] BoWs: (token: idx) TFID: {type(tfidf_matrix)} {tfidf_matrix.dtype} {tfidf_matrix.shape}")
 	# BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	BOWs = {k: int(v) for k, v in sorted(tfidf_vec.vocabulary_.items(), key=lambda item: item[1])} # ascending
 
-	save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
-	save_pickle(pkl=tfidf_matrix, fname=tfidf_rf_matrix_fpath)
 	save_vocab(	vb=BOWs,
 							fname=os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_{len(tfidf_vec.vocabulary_)}_vocabs.json"),
 						)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 
 	feat_names = tfidf_vec.get_feature_names_out()
 
