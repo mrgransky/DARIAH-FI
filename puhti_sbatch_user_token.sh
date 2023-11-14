@@ -8,11 +8,11 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=89G
+#SBATCH --mem=85G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
-#SBATCH --array=251-501
+#SBATCH --array=333-583
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')

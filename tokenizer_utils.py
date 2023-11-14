@@ -208,13 +208,13 @@ with HiddenPrints():
 
 	with open('meaning_less_lemmas.txt', 'r') as file:
 		my_custom_stopwords=[line.strip() for line in file]
-	print(f"len(my_custom_stopwords): {len(my_custom_stopwords)}")
 
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
 	#print(f"Unique Stopwords: {len(UNQ_STW)} | {type(UNQ_STW)}\n{UNQ_STW}")
 	all_words_list = list()
 	all_lemmas_list = list()
+print(f"len(my_custom_stopwords): {len(my_custom_stopwords)}")
 
 def spacy_tokenizer(sentence):
 	sentences = sentence.lower()
