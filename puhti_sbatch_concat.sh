@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=573G
 #SBATCH --partition=hugemem_longrun 
-#SBATCH --time=04-00:00:00
+#SBATCH --time=14-00:00:00
 ######SBATCH --mem-per-cpu=50G
 
 user="`whoami`"
