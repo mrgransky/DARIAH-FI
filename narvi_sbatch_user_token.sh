@@ -47,7 +47,7 @@ do
 	for mn in 1
 	do
 		# ddir="/lustre/sgn-data/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df" #### must be adjusted ####
-		echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir | maxNumFeat: $maxNumFeatures"
+		echo "max doc_freq $mx | min doc_freq $mn | maxNumFeat: $maxNumFeatures | outDIR $ddir"
 		python -u user_token.py \
 						--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
 						--outDIR $ddir \
