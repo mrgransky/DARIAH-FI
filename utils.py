@@ -790,12 +790,12 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return idf
 
 def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
-	print(f"Inverse document frequency for {type(spMtx)} {spMtx.shape} {spMtx.dtype}", end=" ")
+	print(f"Inverse document frequency for {type(spMtx)} {spMtx.shape} {spMtx.dtype}".center(150, " "))
 	st_t=time.time()
 	nUsers, _ = spMtx.shape
 	doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
 	idf=np.log10(1 + nUsers) / (1.0 + doc_freq_term)
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(idf)} {idf.shape} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB")
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(idf)} {idf.shape} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB".center(150, " "))
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
@@ -1033,8 +1033,6 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm):
 	print(f"Optimized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(150, "-"))
 	print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
-	print(f"<spMtx[Rows]> {type(spMtx_rows)} len: {len(spMtx_rows)}")
-	print(f"<spMtx[Cols]> {type(spMtx_cols)} len: {len(spMtx_cols)}")
 	print(f"<quVec> {type(query_vec)} {query_vec.shape} {query_vec.dtype}")
 	print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
 	st_t=time.time()
