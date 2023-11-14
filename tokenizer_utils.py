@@ -44,6 +44,9 @@ with HiddenPrints():
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
 
+def spacy_tokenizer(docs):
+	return None
+
 @cache
 def stanza_lemmatizer(docs):
 	try:
