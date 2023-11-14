@@ -790,7 +790,7 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return idf
 
 def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
-	print(f"Inverse document frequency for {type(mat)} {mat.shape}", end=" ")
+	print(f"Inverse document frequency for {type(spMtx)} {spMtx.shape} {spMtx.dtype}", end=" ")
 	st_t=time.time()
 	nUsers, _ = spMtx.shape
 	doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
