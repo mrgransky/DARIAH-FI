@@ -2347,6 +2347,7 @@ aabcn
 aabcnra
 aabcnras
 aaballan
+aabda
 aabdatonta
 aabcbm
 aabci
@@ -3455,3 +3456,9 @@ aabolo
 "passé"
 aabrp
 aabjömi
+aabv
+aabxri
+aabui
+aabrontr
+aabneh
+aabare
