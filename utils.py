@@ -666,7 +666,7 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	return vb
 
 def save_pickle(pkl, fname:str=""):
-	print(f"Saving {type(pkl)} {pkl.dtype}\n{fname}")
+	print(f"Saving {type(pkl)} {fname}")
 	st_t = time.time()
 	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
 		pkl.to_pickle(path=fname)

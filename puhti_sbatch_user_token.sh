@@ -12,7 +12,7 @@
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --gres=gpu:v100:1
-#SBATCH --array=333-583
+#SBATCH --array=251-501
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
