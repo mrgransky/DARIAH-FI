@@ -789,15 +789,12 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	save_pickle(pkl=idf, fname=file_name)
 	return idf
 
-def get_idf(mat, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	print(f"Inverse document frequency for {type(mat)} {mat.shape}", end=" ")
 	st_t=time.time()
-	nUsers, nTokens = mat.shape
-	#doc_freq_term=np.count_nonzero(mat.toarray(), axis=0) # 1 x nTokens
-	doc_freq_term=np.float32(np.sum(mat>0, axis=0)) # 1 x nTokens
-	numerator = np.log10(1+nUsers) # integer
-	denumerator= np.float32(1.0)+doc_freq_term # 1 x nTokens
-	idf = (numerator * (1/denumerator))#+1.0	
+	nUsers, _ = spMtx.shape
+	doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
+	idf=np.log10(1 + nUsers) / (1.0 + doc_freq_term)
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(idf)} {idf.shape} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB")
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
@@ -954,14 +951,15 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
 
-def get_idfed_users_norm(spMtx, spMtx_rows, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+def get_idfed_users_norm(spMtx, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# print(f"Scipy userNorm:", end=" ")
 	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
 	print(f"Customized Users Norm", end=" ")
 	t0=time.time()
-	uNorms=np.zeros_like(spMtx_rows, dtype=np.float32)# (nUsers,)
+	nUsers, _ = spMtx.shape
+	uNorms=np.zeros(nUsers, dtype=np.float32)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
-	for ui,_ in enumerate(spMtx_rows):
+	for ui in range(nUsers):
 		nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
 		userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
 		uNorms[ui]=np.linalg.norm(userInterest)
@@ -1032,7 +1030,7 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	# print(np.where(query_vector.flatten()!=0)[0])
 	return query_vector
 
-def get_optimized_cs(spMtx, spMtx_rows, spMtx_cols, query_vec, idf_vec, spMtx_norm):
+def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm):
 	print(f"Optimized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(150, "-"))
 	print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
 	print(f"<spMtx[Rows]> {type(spMtx_rows)} len: {len(spMtx_rows)}")
@@ -1040,69 +1038,44 @@ def get_optimized_cs(spMtx, spMtx_rows, spMtx_cols, query_vec, idf_vec, spMtx_no
 	print(f"<quVec> {type(query_vec)} {query_vec.shape} {query_vec.dtype}")
 	print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
 	st_t=time.time()
+	nUsers, _ = spMtx.shape
 	quInterest=np.squeeze(query_vec)*np.squeeze(np.asarray(idf_vec))#(nTokens,)x(nTokens,)
 	quInterestNorm=np.linalg.norm(quInterest)#.astype("float32") # float	
 	idx_nonzeros=np.nonzero(quInterest)#[1]
-	cs=np.zeros_like(spMtx_rows, dtype=np.float32) # (nUsers,)
+	cs=np.zeros(nUsers, dtype=np.float32) # (nUsers,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
 	quInterest_nonZeros=quInterest[idx_nonzeros]*(1/quInterestNorm)	
-	for ui,_ in enumerate(spMtx_rows): # ip1, ip2, ..., ipN
+	for ui in range(nUsers): # ip1, ip2, ..., ipN
 		usrInterest=np.squeeze(spMtx[ui, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] # 1 x len(idx[1])
-		usrInterestNorm=spMtx_norm[ui]+np.float32(1e-18)# float32
+		usrInterestNorm=spMtx_norm[ui]+1e-18
 
 		usrInterest_noNorms=usrInterest # added Nov 10th
 		temp_cs_multiplier=np.sum(usrInterest_noNorms*quInterest_nonZeros) # added Nov 10th
 
 		usrInterest=(usrInterest*(1/usrInterestNorm))**0.1 # seems faster
 		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)), exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
-		cs[ui]=np.sum(usrInterest*quInterest_nonZeros)# * (1/quInterestNorm)
 
+		cs[ui]=np.sum(usrInterest*quInterest_nonZeros)
 		cs[ui]*=temp_cs_multiplier # added Nov 10th
-	
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, "-"))
-	return cs#.reshape(1,-1) # (nUsers,)
+	return cs # (nUsers,)
 
-def get_avg_rec(mat, mat_rows, mat_cols, cosine_sim, idf_vec, matNorm):
-	print(f"Getting avgRecSysVec (1 x nTokens={mat.shape[1]})".center(150, " "))
-	print(f"<spMtx> {type(mat)} {mat.shape} {mat.dtype}")
+def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
+	print(f"Getting avgRecSysVec (1 x nTokens={spMtx.shape[1]})".center(150, " "))
+	print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
 	print(f"<Cosine> {type(cosine_sim)} {cosine_sim.shape} {cosine_sim.dtype}")
 	print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
 	st_t = time.time()
-	# init
-	prev_avg_rec=np.zeros_like(mat_cols, dtype=np.float32)# (nTokens,)
-	avg_rec=np.zeros_like(mat_cols, dtype=np.float32)# (nTokens,)
+	nUsers, nTokens= spMtx.shape
+	avg_rec=np.zeros(nTokens, dtype=np.float32)# (nTokens,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
-	for iUser,vUser in enumerate(mat_rows):
-		#loop_st_t=time.time()
-		idx_nonzeros=np.nonzero(mat[iUser, :])[1] # necessary!
-		#print(iUser, vUser, len(idx_nonzeros))
-		#t0=time.time()
-		userInterest=np.squeeze(mat[iUser, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] #(nTokens,)x(nTokens,)
-		#userInterest=np.squeeze(mat[iUser, :].toarray())*idf_squeezed #(nTokens,)x(nTokens,)
-		#print(f"userInterest {time.time()-t0:.5f} s {type(userInterest)} {userInterest.shape}")
-		#t0=time.time()
-		userInterestNorm=matNorm[iUser]+np.float32(1e-18)# float32
-		#print(f"userInterestNorm {time.time()-t0:.5f} s {type(userInterestNorm)} {userInterestNorm}")
-		
-		#t0=time.time()
+	for ui in range(nUsers):
+		nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
+		userInterest=np.squeeze(spMtx[ui, nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
+		userInterestNorm=spMtx_norm[ui]+1e-18
 		userInterest*=(1/userInterestNorm) # (nTokens,)
-		#print(f"userInterest[Normed] {time.time()-t0:.6f} s {type(userInterest)} {userInterest.shape} allZero {np.all(userInterest==0)}")
-		
-		#t0=time.time()
-		#update_vec=(cosine_sim[0, iUser] * userInterest.reshape(1,-1)) # (1 x nTokens)
-		update_vec=cosine_sim[iUser] * userInterest # (nTokens,)
-		# print(f"update_vec {time.time()-t0:.6f} s {update_vec.dtype} {update_vec.shape}"
-		# 			f" allZero {np.all(update_vec==0)}"
-		# 			f" |nonZero(s)|: {len(idx_nonzeros)}"
-		# 		 )
-		
-		#t0=time.time()
-		avg_rec[idx_nonzeros]=prev_avg_rec[idx_nonzeros] + update_vec # (nTokens,) + (len(idx_nonzeros),)
-		#print(f"avg_rec[+] {time.time()-t0:.5f} s {type(avg_rec)} {avg_rec.shape}")
-		prev_avg_rec=avg_rec # (1 x nTokens)
-		#loop_end_t=time.time()
-		#print(f"loop elapsed_t: {iUser} {vUser} {loop_end_t-loop_st_t:.6f} sec")
-		#print()
+		update_vec=cosine_sim[ui]*userInterest # (nTokens,)
+		avg_rec[nonzero_idxs]+=update_vec # (nTokens,) + (len(idx_nonzeros),)
 	avg_rec*=(1/np.sum(cosine_sim))# (nTokens,)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, " "))	
 	return avg_rec.reshape(1, -1)

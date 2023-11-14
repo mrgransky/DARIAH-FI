@@ -853,7 +853,7 @@ def run():
 		idf_vec=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> idf file not available! {e}")
-		idf_vec=get_idf(mat=concat_spm_U_x_T,
+		idf_vec=get_idf(spMtx=concat_spm_U_x_T,
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
 									)
@@ -864,7 +864,6 @@ def run():
 	except Exception as e:
 		print(f"<!> usrNorm file not found! {e}")
 		usrNorms=get_idfed_users_norm(spMtx=concat_spm_U_x_T, 
-																	spMtx_rows=concat_spm_usrNames, 
 																	idf_vec=idf_vec,
 																	save_dir=args.dfsPath,
 																	prefix_fname=fprefix,
@@ -890,21 +889,16 @@ def run():
 		return
 
 	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
-												spMtx_rows=concat_spm_usrNames, 
-												spMtx_cols=concat_spm_tokNames, 
 												query_vec=query_vector, 
 												idf_vec=idf_vec,
 												spMtx_norm=usrNorms, # must be adjusted, accordingly!
 											)
 
-	avgRecSys=get_avg_rec(mat=concat_spm_U_x_T,
-												mat_rows=concat_spm_usrNames,
-												mat_cols=concat_spm_tokNames,
+	avgRecSys=get_avg_rec(spMtx=concat_spm_U_x_T,
 												cosine_sim=ccs, 
 												idf_vec=idf_vec,
-												matNorm=usrNorms,
+												spMtx_norm=usrNorms,
 											)
-	
 	print("<>"*80)
 	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\n")
 	st_t = time.time()
