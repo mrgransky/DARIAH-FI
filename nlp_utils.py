@@ -193,7 +193,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 	#	   		example   is         simple     this	
 	# 0  		0.377964  0.377964   0.377964   0.377964
 
-	print(f"Features: {feat_names.shape} | {type(feat_names)} | BoWs: {len(BOWs)} | {type(BOWs)} | TFIDF: {tfidf_matrix.shape}")
+	print(f"Features: {type(feat_names)} {feat_names.dtype} {feat_names.shape}  BoWs: {len(BOWs)} {type(BOWs)} TFIDF: {tfidf_matrix.shape}")
 	assert len(BOWs) == tfidf_matrix.shape[1], f"size of vocabs: {len(BoWs)} != tfidf_matrix: {tfidf_matrix.shape[1]}"
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs

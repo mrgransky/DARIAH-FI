@@ -523,8 +523,6 @@ def main():
 	# return
 	
 	try:
-		# tfidf_matrix = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_matrix.gz"))
-		# tfidf_vec = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_tfidf_vec.gz"))
 		BoWs=load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
