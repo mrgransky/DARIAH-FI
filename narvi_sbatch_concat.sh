@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=spm_xy_5e5_complementary_all_queries
+#SBATCH --job-name=spm_xy_5e5_all_queries
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
