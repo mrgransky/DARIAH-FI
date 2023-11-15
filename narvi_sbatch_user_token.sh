@@ -30,7 +30,6 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
-
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
@@ -39,7 +38,6 @@ maxNumFeatures=$(awk -v x="1.1e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2
 # maxNumFeatures=-1
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
-
 # for mx in 1.0 0.9 0.8 0.7 0.6 0.5
 for mx in 1.0
 do
