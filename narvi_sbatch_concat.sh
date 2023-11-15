@@ -5,14 +5,11 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=00-23:59:59
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=49G
-#SBATCH --partition=amd
 #SBATCH --nodes=1
-
-# # # # # # SBATCH --threads-per-core=2
-# # # # # # SBATCH --gres=gpu:teslap100:1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=80G
+#SBATCH --partition=amd
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -34,12 +31,7 @@ echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
 
-# echo "dfs_list storing..."
-# python -u test_sof.py
-# echo "${stars// /*}"
-
-echo "DFs concat..."
-for qu in 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 
+for qu in 'Economical Crisis in Finland' 'Global Warming' 'Helsingin Kaupunginteatteri' 'Suomen pankki lainat ja talletukset' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 
 # for qu in 'Tampereen seudun työväenopisto' 
 do
 	echo "Query: $qu"
