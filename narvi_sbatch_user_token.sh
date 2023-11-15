@@ -5,12 +5,12 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=03-12:00:00
-#SBATCH --mem=77G
+#SBATCH --mem=64G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:rtx100:1
+#SBATCH --gres=gpu:teslav100:1
 #SBATCH --array=3-732
 #########SBATCH --array=730-731 # nikeX, nikeY
 
