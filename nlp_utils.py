@@ -8,7 +8,7 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
-	print(len(vb), len(lst), lst)
+	print(len(vb), len(lst), wg, lst)
 	result_vb: Dict[str, float]={}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		# print(vtk)
@@ -28,8 +28,8 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 		else:
 			print(f"initialize with ZERO")
 			result_vb[vtk] = 0.0
-		print("-"*100)
-	#print(f"{dframe.user_ip}".center(50, '-'))
+		print()
+	print(json.dumps(result_vb, indent=2, ensure_ascii=False))
 	return result_vb
 
 def get_raw_sqp(phrase_list):
