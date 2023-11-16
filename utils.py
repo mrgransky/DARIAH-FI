@@ -801,16 +801,16 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	return idf
 		
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
-	print(f"SciPy SparseMtx (detailed) user_df: {df.shape} |BoWs|: {len(vb)}")
-	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
+	print(f"SciPy SparseMtx (detailed) user_df: {df.shape} |BoWs|: {len(vb)}".center(120, " "))
+	user_token_df=get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 	##########################Sparse Matrix info##########################
 	if user_token_df.isnull().values.any():
 		t=time.time()
-		print(f">> Found {user_token_df.isna().sum().sum()} NaNs => 0.0", end=" ")
+		print(f">>> Converting {user_token_df.isna().sum().sum()} NaNs to 0.0", end="\t")
 		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
-		print(f"Elapsed_t: {time.time()-t:.2f} sec ")
+		print(f"Elapsed_t: {time.time()-t:.2f} sec")
 
-	print( user_token_df.info(memory_usage="deep") )
+	# print( user_token_df.info(memory_usage="deep") )
 	print(f"Converting to spMtx user_token_df: {user_token_df.shape} nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()}, nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
@@ -924,21 +924,24 @@ def get_df_spm(df: pd.DataFrame):
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
-	print(f"[PANDAS: {pd.__version__}] Unpacking nested dict of TKs Pandas DF: {df.shape} & reindex cols (A, B,..., Ö)...")
+	print(f"<> PANDAS: {pd.__version__} Unpacking nested dict of TKs Pandas DF: {df.shape} & reindex cols (A, B,..., Ö)".center(150, " "))
 	st_t = time.time()
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
+	print(f"\tElapsed_t: {time.time()-st_t:.1f} s {usr_tk_unpacked_df.shape}" 
+				f" | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
 				f" | nZeros: {(usr_tk_unpacked_df==0.0).sum().sum()}"
-				f" | {usr_tk_unpacked_df.shape} memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB"
+				f" | memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB"
 			)
 	# sanity check for nonzeros for cols:
 	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
 	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
+	print("-"*80)
 	print(usr_tk_unpacked_df.info(memory_usage="deep"))
+	print("-"*80)
 	return usr_tk_unpacked_df
 
 def get_df_files(fpath: str="MUST_BE_DEFINED"):

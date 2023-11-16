@@ -8,7 +8,7 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
-	# print(len(vb), len(lst), lst)
+	print(len(vb), len(lst), lst)
 	result_vb: Dict[str, float]={}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		# print(vtk)
@@ -17,6 +17,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			print(f"{vtk} not found! => pass...")
 			continue
 			# pass
+		print(f"...HELOOOOOO after continue with {vtk}...")
 		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
 			# print(f"{vtk} Found!")
 			prev = result_vb.get(vtk)
