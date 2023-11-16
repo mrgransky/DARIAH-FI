@@ -17,7 +17,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			print(f"{vtk} not found! => pass...")
 			continue
 			# pass
-		print(f"...HELOOOOOO after continue with < {vtk} > ...")
+		# print(f"...HELOOOOOO after continue with < {vtk} > ...")
 		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
 			# print(f"{vtk} Found!")
 			prev = result_vb.get(vtk)
@@ -28,7 +28,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 		else:
 			print(f"initialize with ZERO")
 			result_vb[vtk] = 0.0
-		print()
+		# print()
 	print(json.dumps(result_vb, indent=2, ensure_ascii=False))
 	return result_vb
 
