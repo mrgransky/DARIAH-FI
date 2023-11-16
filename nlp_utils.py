@@ -11,7 +11,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	print(len(vb), len(lst), lst)
 	result_vb: Dict[str, float]={}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
-		print(vtk)
+		# print(vtk)
 		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
 			# return
 			print(f"{vtk} not found! => pass...")
