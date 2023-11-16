@@ -29,6 +29,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			print(f"initialize with wg={wg} for < {vtk} >")
 			result_vb[vtk]=wg
 		# print()
+	print(f"result_vb {type(result_vb)} {len(result_vb)}")
 	print(json.dumps(result_vb, indent=2, ensure_ascii=False))
 	return result_vb
 
@@ -50,6 +51,7 @@ def get_total_user_token_interest(df: pd.DataFrame):
 		+Counter(dict_usrInt_cnt_tk)
 	)
 	result=dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
+	print(f"result_vb {type(result)} {len(result)}")
 	print(json.dumps(result, indent=2, ensure_ascii=False))
 	return result
 
