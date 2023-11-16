@@ -129,24 +129,6 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	
 	return updated_vocab
 
-def get_total_user_token_interest(df: pd.DataFrame):
-	df = df.dropna()
-	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict()
-	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict()
-	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict()
-	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict()
-	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict()
-	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict()
-	r = dict(
-		Counter(dict_usrInt_qu_tk)
-		+Counter(dict_usrInt_sn_hw_tk)
-		+Counter(dict_usrInt_sn_tk)
-		+Counter(dict_usrInt_cnt_hw_tk)
-		+Counter(dict_usrInt_cnt_pt_tk)
-		+Counter(dict_usrInt_cnt_tk)
-	)
-	return dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
-
 def get_newspaper_content(lemmatized_content, vb:Dict[str, int], wg:float=weightContentAppearance):
 	updated_vb = dict.fromkeys(vb.keys(), [0, 0])
 	# lemmatized_content = [[tk1, tk2, tk3, ...], [tk1, tk2, ...], [tk1, ...], ...]
@@ -381,11 +363,11 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec | {user_df.shape}")
 
-	print("*"*160)
+	print("*"*80)
 	print( user_df.info( verbose=True, memory_usage="deep") )
-	print("*"*160)
+	print("*"*80)
 
-	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
+	print(f"Implicit feedback initial user_df {type(user_df)} {user_df.shape}".center(120, " "))
 	imf_st_t = time.time()
 	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
 	try:

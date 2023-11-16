@@ -26,11 +26,32 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
 			#print(vtk, wg, result_vb[vtk])
 		else:
-			print(f"initialize with ZERO")
-			result_vb[vtk] = 0.0
+			print(f"initialize with wg={wg} for < {vtk} >")
+			result_vb[vtk]=wg
 		# print()
 	print(json.dumps(result_vb, indent=2, ensure_ascii=False))
 	return result_vb
+
+def get_total_user_token_interest(df: pd.DataFrame):
+	print(f"Total USR-TOK interest df {df.shape} nNaNs: {df.isnull().values.any()}: {df.isna().sum().sum()}")
+	df = df.dropna()
+	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict()
+	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict()
+	dict_usrInt_sn_tk = dict(Counter(df.usrInt_sn_tk)) if "usrInt_sn_tk" in df else dict()
+	dict_usrInt_cnt_hw_tk = dict(Counter(df.usrInt_cnt_hw_tk)) if "usrInt_cnt_hw_tk" in df else dict()
+	dict_usrInt_cnt_pt_tk = dict(Counter(df.usrInt_cnt_pt_tk)) if "usrInt_cnt_pt_tk" in df else dict()
+	dict_usrInt_cnt_tk = dict(Counter(df.usrInt_cnt_tk)) if "usrInt_cnt_tk" in df else dict()
+	r = dict(
+		Counter(dict_usrInt_qu_tk)
+		+Counter(dict_usrInt_sn_hw_tk)
+		+Counter(dict_usrInt_sn_tk)
+		+Counter(dict_usrInt_cnt_hw_tk)
+		+Counter(dict_usrInt_cnt_pt_tk)
+		+Counter(dict_usrInt_cnt_tk)
+	)
+	result=dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
+	print(json.dumps(result, indent=2, ensure_ascii=False))
+	return result
 
 def get_raw_sqp(phrase_list):
 	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1! Now: {len(phrase_list)}"
