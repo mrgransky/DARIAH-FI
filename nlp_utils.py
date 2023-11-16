@@ -14,7 +14,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 		# print(vtk)
 		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
 			# return
-			print(f"{vtk} not found! => pass...")
+			print(f"{vtk} not found! => continue...")
 			continue
 			# pass
 		# print(f"...HELOOOOOO after continue with < {vtk} > ...")
