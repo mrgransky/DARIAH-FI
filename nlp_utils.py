@@ -8,7 +8,7 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
-	print(len(vb), len(lst), lst)
+	# print(len(vb), len(lst), lst)
 	result_vb: Dict[str, float]={}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		# print(vtk)
