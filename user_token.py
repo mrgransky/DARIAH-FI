@@ -381,12 +381,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec | {user_df.shape}")
 
+	print("*"*160)
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("*"*160)
 
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
-
 	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
 	try:
 		load_pickle(fpath=users_df_detailed_fname)
