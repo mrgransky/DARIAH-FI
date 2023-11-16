@@ -12,8 +12,9 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
 			# return
-			# pass
-			continue
+			print(f"{vtk} not found! => pass...")
+			# continue
+			pass
 		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
 			prev = result_vb.get(vtk)
 			curr = prev + wg
@@ -22,6 +23,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 			#print(vtk, wg, result_vb[vtk])
 		else:
 			result_vb[vtk] = 0.0
+		
 	#print(f"{dframe.user_ip}".center(50, '-'))
 	return result_vb
 

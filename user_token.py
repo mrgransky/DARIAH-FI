@@ -345,7 +345,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		nwp_content_hw_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_hw_tklm"].notnull()]["nwp_content_ocr_text_hw_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		
-		# comment for speedup:
+		# time consuming...
 		search_results_snippets_tokens_list.append( [ tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		search_results_snippets_raw_texts_list.append( [ sent for sentences in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if sentences for sent in sentences if sent ] )
 	
@@ -354,15 +354,6 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		nwp_content_lemmas_all_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
 		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
 		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
-
-		#print("#"*150)
-
-	# uncomment for speedup:
-	#nwp_content_lemmas_all_list = [f"nwp_content_{i}" for i in range(len(users_list))]
-	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
-
-	# del df_preprocessed, dframe
-	# gc.collect()
 
 	user_df = pd.DataFrame(list(zip(users_list, 
 																	search_query_phrase_tokens_list, 
@@ -391,7 +382,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec | {user_df.shape}")
 
 	print( user_df.info( verbose=True, memory_usage="deep") )
-	print("-"*100)
+	print("*"*160)
 
 	print(f"Adding implicit feedback to initial user_df {type(user_df)} | {user_df.shape}, might take a while...")
 	imf_st_t = time.time()
