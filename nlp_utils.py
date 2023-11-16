@@ -162,7 +162,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		
 		# Initialize TFIDF # not time consuming...
 		st_t = time.time()
-		tfidf_vec = TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
+		tfidf_vec=TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
 																lowercase=True,
 																analyzer="word",
 																dtype="float32",
@@ -173,7 +173,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 															)
 
 		# Fit TFIDF # TIME CONSUMING:
-		tfidf_matrix = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
+		tfidf_matrix=tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix, fname=tfidf_rf_matrix_fpath)

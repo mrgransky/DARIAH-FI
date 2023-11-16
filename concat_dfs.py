@@ -794,8 +794,8 @@ def run():
 	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
-	print(f"Found {len(sp_mtx_files)} spMtx files " 
-				f"{len(sp_mtx_rows_files)} spMtx rows(users) "
+	print(f"Found {len(sp_mtx_files)} spMtx files | " 
+				f"{len(sp_mtx_rows_files)} spMtx rows(users) | "
 				f"{len(sp_mtx_cols_files)} spMtx columns(tokens)"
 			)
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
@@ -872,7 +872,7 @@ def run():
 	print("-"*150)
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
-	print(f"{len(query_phrase_tk)} lemma(s) Found: {query_phrase_tk}")
+	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
 
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
@@ -899,7 +899,7 @@ def run():
 												idf_vec=idf_vec,
 												spMtx_norm=usrNorms,
 											)
-	print("<>"*80)
+	# print("<>"*80)
 	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\n")
 	st_t = time.time()
 	print(get_topK_tokens(mat=concat_spm_U_x_T, 

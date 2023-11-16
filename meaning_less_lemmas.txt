@@ -59,6 +59,7 @@ arb
 tel
 fkhi
 oii
+oik
 rji
 ynn
 eene
@@ -307,6 +308,9 @@ nti
 mgl
 vna
 anl
+lrö
+lsa
+lsaa
 lst
 hku
 wllss
@@ -4229,3 +4233,10 @@ eree
 erf
 erg
 erh
+ales
+wal
+knlniln
+kkop
+kwapf
+nnmiimr
+vucdsv

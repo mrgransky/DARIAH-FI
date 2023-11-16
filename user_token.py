@@ -46,19 +46,6 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_agg_tk_apr_orig(lst: List[str], wg: float, vb: Dict[str, int]):
-	result_vb: Dict[str, float] = dict.fromkeys(vb.keys(), 0.0)
-	# result_vb: Dict[str, float] = {}
-	for _, vtk in enumerate(lst): # [tk1, tk2, …]
-		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
-			prev = result_vb.get(vtk)
-			curr = prev + wg
-			result_vb[vtk] = curr
-			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
-			#print(vtk, wg, result_vb[vtk])
-	#print(f"{dframe.user_ip}".center(50, '-'))
-	return result_vb
-
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	result_vb: Dict[str, float] = {}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
@@ -526,7 +513,7 @@ def main():
 		BoWs=load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
-		BoWs = get_BoWs(dframe=df_inp, 
+		BoWs=get_BoWs(dframe=df_inp, 
 										saveDIR=args.outDIR,
 										fprefix=fprefix, 
 										lm=args.lmMethod, 
@@ -541,10 +528,10 @@ def main():
 	df_inp = df_inp.dropna(axis=1, how='all') # remove collection_query_phrase  all zeros
 	print(f"Elapsed_t: {time.time()-t0:.2f} sec")
 	try:
-		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
+		df_user=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		df_user = get_user_df(dframe=df_inp, bow=BoWs)
+		df_user=get_user_df(dframe=df_inp, bow=BoWs)
 
 	print(f"USER_DF (detailed): {type(df_user)} | {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
@@ -559,9 +546,9 @@ def main():
 			f.write("\n")
 
 	try:
-		usr_tk_spm = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
-		usr_tk_spm_usrNames = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
-		usr_tk_spm_tokNames = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
+		usr_tk_spm=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm_usrNames=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
+		usr_tk_spm_tokNames=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
 	except Exception as e:
 		print(f"<!> {e}")
 		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_scipy_spm(	df=df_user, 
