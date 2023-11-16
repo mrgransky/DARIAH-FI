@@ -15,10 +15,10 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
 			# return
 			print(f"{vtk} not found! => pass...")
-			# continue
-			pass
+			continue
+			# pass
 		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
-			print(f"{vtk} Found!")
+			# print(f"{vtk} Found!")
 			prev = result_vb.get(vtk)
 			curr = prev + wg
 			result_vb[vtk] = curr
