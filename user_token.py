@@ -46,22 +46,6 @@ def get_snippet_raw_text(search_results_list):
 	snippets_list = [sent for sn in search_results_list if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text")] # ["sentA", "sentB", "sentC"]
 	return ' '.join(snippets_list)
 
-def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
-	result_vb: Dict[str, float] = {}
-	for _, vtk in enumerate(lst): # [tk1, tk2, …]
-		if vb.get(vtk) is None:
-			return
-		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
-			prev = result_vb.get(vtk)
-			curr = prev + wg
-			result_vb[vtk] = curr
-			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
-			#print(vtk, wg, result_vb[vtk])
-		else:
-			result_vb[vtk] = 0.0
-	#print(f"{dframe.user_ip}".center(50, '-'))
-	return result_vb
-
 def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
 	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
@@ -141,7 +125,7 @@ def get_agg_allTKs_apr(dframe, weights: List[float], vb: Dict[str, int]):
 	# gc.collect()
 
 	del dframe, weights, vb
-	gc.collect()
+	# gc.collect()
 	
 	return updated_vocab
 
@@ -258,6 +242,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	cntHWFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents_hw.gz")
 	cntPTFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_content_pt.gz")
 	cntFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_contents.gz")
+
 	dframe = dframe.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df_preprocessed = dframe.copy()
 	print(f">> Preparing df_preprocessed [initial]: {df_preprocessed.shape}")
@@ -377,7 +362,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	#search_results_snippets_tokens_list = [f"snippet_{i}" for i in range(len(users_list))]
 
 	# del df_preprocessed, dframe
-	gc.collect()
+	# gc.collect()
 
 	user_df = pd.DataFrame(list(zip(users_list, 
 																	search_query_phrase_tokens_list, 
@@ -420,37 +405,37 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		st_t = time.time()
 		user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		gc.collect()
+		# gc.collect()
 		
 		print(f"usrInt_sn_hw_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		gc.collect()
+		# gc.collect()
 
 		print(f"usrInt_sn_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		gc.collect()
+		# gc.collect()
 
 		print(f"usrInt_cnt_hw_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		gc.collect()
+		# gc.collect()
 
 		print(f"usrInt_cnt_pt_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		gc.collect()
+		# gc.collect()
 
 		print(f"usrInt_cnt_tk", end="\t")
 		st_t = time.time()
 		user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		gc.collect()
+		# gc.collect()
 
 		# user_df = user_df.drop(['qu_tokens', 'snippets_hw_token', 'snippets_token', 'nwp_content_lemma_all', 'nwp_content_pt_token', 'nwp_content_hw_token'], errors="ignore", axis=1)
 		print( user_df.info( verbose=True, memory_usage="deep") )
@@ -467,17 +452,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	# user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=False).sort_index().to_dict(), axis=1)
 
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-
-	gc.collect()
-
-	# print(f"selected_content", end=" ")
-	# st_t = time.time()
-	# user_df["selected_content"] = user_df["nwp_content_lemma_separated"].map(lambda l_of_l: get_newspaper_content(l_of_l, vb=bow, wg=weightContentAppearance) if l_of_l else np.nan, na_action="ignore")
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-	# gc.collect()
-
 	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} s | {user_df.shape}".center(150, "-"))
-
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
 
@@ -537,13 +512,13 @@ def main():
 	print(df_user.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
 
-	with open(os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_interest_{len(BoWs)}.txt"), "w", encoding="utf-8") as f:
-		for i in df_user.index:
-			f.write(f"idx: {i} {df_user['user_ip'][i]}")
-			f.write("\n")
-			f.write(str(df_user['user_token_interest'][i]))
-			f.write("\n")
-			f.write("\n")
+	# with open(os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_interest_{len(BoWs)}.txt"), "w", encoding="utf-8") as f:
+	# 	for i in df_user.index:
+	# 		f.write(f"idx: {i} {df_user['user_ip'][i]}")
+	# 		f.write("\n")
+	# 		f.write(str(df_user['user_token_interest'][i]))
+	# 		f.write("\n")
+	# 		f.write("\n")
 
 	try:
 		usr_tk_spm=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))

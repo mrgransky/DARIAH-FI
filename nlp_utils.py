@@ -7,6 +7,24 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											"stanza": stanza_lemmatizer,
 											}
 
+def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
+	result_vb: Dict[str, float] = {}
+	for _, vtk in enumerate(lst): # [tk1, tk2, …]
+		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
+			# return
+			# pass
+			continue
+		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
+			prev = result_vb.get(vtk)
+			curr = prev + wg
+			result_vb[vtk] = curr
+			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
+			#print(vtk, wg, result_vb[vtk])
+		else:
+			result_vb[vtk] = 0.0
+	#print(f"{dframe.user_ip}".center(50, '-'))
+	return result_vb
+
 def get_raw_sqp(phrase_list):
 	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1! Now: {len(phrase_list)}"
 	phrase = phrase_list[0]
@@ -116,9 +134,9 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		raw_texts_list = list()
 		for n, g in dframe.groupby("user_ip"):
 			users_list.append(n)
-			lque = [phrases for phrases in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(phrases) > 0 ] # ["global warming", "econimic crisis", "", ]
-			lcol = [phrases for phrases in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
-			lclp = [phrases for phrases in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(phrases) > 0] # ["", "", "", ...]
+			lque = [ph for ph in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(ph) > 0 ] # ["global warming", "econimic crisis", "", ]
+			lcol = [ph for ph in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
+			lclp = [ph for ph in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["", "", "", ...]
 
 			lsnp = [sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 			lcnt = [sent for sent in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sent ] # ["", "", "", ...]
