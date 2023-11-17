@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=spm_xy_5e5_all_queries
+#SBATCH --job-name=spm_xy_all_queries
 #SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%N_%n_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=80G
+#SBATCH --mem=364G
 #SBATCH --partition=amd
 
 user="`whoami`"
@@ -29,7 +29,7 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
-dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY_maxNumFeatures_500000" ########## must be adjusted! ##########
+dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" ########## must be adjusted! ##########
 
 for qu in 'Economical Crisis in Finland' 'Global Warming' 'Helsingin Kaupunginteatteri' 'Suomen pankki lainat ja talletukset' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 
 # for qu in 'Tampereen seudun työväenopisto' 
