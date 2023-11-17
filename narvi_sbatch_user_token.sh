@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#SBATCH --job-name=nikeQ_XY_check
-#SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
+#SBATCH --job-name=nikeXY
+#SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_1e6_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=00-02:00:00
-#SBATCH --mem=264G
+#SBATCH --mem=164G
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=amd
+#SBATCH --partition=normal
 #SBATCH --nodes=1
 ####SBATCH --gres=gpu:teslav100:1
 ####SBATCH --array=3-732
@@ -33,9 +33,9 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY" #### must be adjusted ####
-# maxNumFeatures=$(awk -v x="1.1e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
-maxNumFeatures=-1
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY_maxNumFeatures_1000000" #### must be adjusted ####
+maxNumFeatures=$(awk -v x="1.1e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
+# maxNumFeatures=-1
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 # for mx in 1.0 0.9 0.8 0.7 0.6 0.5
