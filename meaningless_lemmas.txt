@@ -2223,6 +2223,7 @@ bcem
 bcero
 bcgraf
 bch
+cha
 bcha
 bci
 bcij
@@ -4459,3 +4460,8 @@ addj
 adhac
 adftp
 adhnnhnrn
+occi
+ocii
+pol
+hrforsj
+ule
