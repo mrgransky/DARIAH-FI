@@ -39,7 +39,7 @@ with HiddenPrints():
 													)
 	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ", "X"]
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
-	with open('meaning_less_lemmas.txt', 'r') as file_:
+	with open('meaningless_lemmas.txt', 'r') as file_:
 		my_custom_stopwords=[line.strip() for line in file_]
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
