@@ -34,7 +34,7 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	return result_vb
 
 def get_total_user_token_interest(df: pd.DataFrame):
-	print(f"Total USR-TOK interest df {df.shape} nNaNs: {df.isnull().values.any()}: {df.isna().sum().sum()}")
+	print(f"Total USR-TOK interest of {df.user_ip} nNaNs({df.isnull().values.any()}): {df.isna().sum().sum()}")
 	df = df.dropna()
 	dict_usrInt_qu_tk = dict(Counter(df.usrInt_qu_tk)) if "usrInt_qu_tk" in df else dict()
 	dict_usrInt_sn_hw_tk = dict(Counter(df.usrInt_sn_hw_tk)) if "usrInt_sn_hw_tk" in df else dict()
@@ -51,7 +51,7 @@ def get_total_user_token_interest(df: pd.DataFrame):
 		+Counter(dict_usrInt_cnt_tk)
 	)
 	result=dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
-	print(f"result_vb {type(result)} {len(result)}")
+	print(f"Total VOCAB {df.user_ip} {type(result)} {len(result)}")
 	print(json.dumps(result, indent=2, ensure_ascii=False))
 	return result
 

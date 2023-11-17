@@ -370,6 +370,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"Implicit feedback initial user_df {type(user_df)} {user_df.shape}".center(120, " "))
 	imf_st_t = time.time()
 	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
+
+	# customized_vocab: Dict[str, float]={}
+
 	try:
 		load_pickle(fpath=users_df_detailed_fname)
 	except Exception as e:
@@ -415,11 +418,10 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print("#"*80)
 
 		save_pickle(pkl=user_df, fname=users_df_detailed_fname)
-	
+		
+	print(f"Adding <TOTAL> user_token_interest to user_df: {user_df.shape}")	
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
-	
-	print(f"<TOTAL> user_token_interest", end="\t")	
 	st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, ) # {'a': 5, 'b': 2, 'd': 8.2, 'e': 6.3, 'l': 4.3, 'w': 8.5}
 	# user_df["user_token_interest"]=user_df[["usrInt_qu_tk", "usrInt_sn_hw_tk", "usrInt_sn_tk", "usrInt_cnt_hw_tk", "usrInt_cnt_pt_tk", "usrInt_cnt_tk"]].apply(lambda x: x.dropna().apply(pd.Series).sum(numeric_only=False).sort_index().to_dict(), axis=1)
@@ -481,7 +483,7 @@ def main():
 		print(f"<!> {e}")
 		df_user=get_user_df(dframe=df_inp, bow=BoWs)
 
-	print(f"USER_DF (detailed): {type(df_user)} | {df_user.shape}")
+	print(f"USER_DF (detailed + user_token_interest): {type(df_user)} {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
 	print("<>"*50)
 
