@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=nikeQ_XY_check
-#SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_11e5_%a_%N_%n_%j_%A.out
+#SBATCH --output=/lustre/sgn-data/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%n_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --time=00-02:00:00
