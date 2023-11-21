@@ -811,7 +811,7 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 		print(f"Elapsed_t: {time.time()-t:.2f} sec")
 
 	# print( user_token_df.info(memory_usage="deep") )
-	print(f"Converting to spMtx user_token_df: {user_token_df.shape} nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()}, nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
+	print(f"Getting spMtx user_token_df: {user_token_df.shape} nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()}, nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
@@ -819,12 +819,10 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero(s)|: {sparse_matrix.count_nonzero()} "
 				f"byte[count]: {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
 	##########################Sparse Matrix info##########################
-		
+	print("-"*120)
 	save_pickle(pkl=sparse_matrix, fname=spm_fname)
 	save_pickle(pkl=list(user_token_df.index), fname=spm_rows_fname)
 	save_pickle(pkl=list(user_token_df.columns), fname=spm_cols_fname)
-
-	print("-"*150)
 	return sparse_matrix, list(user_token_df.index), list(user_token_df.columns)
 
 def get_spm_user_token(df: pd.DataFrame, spm_fname: str="SPM_fname"):
@@ -929,7 +927,7 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
-	print(f"\tElapsed_t: {time.time()-st_t:.1f} s {usr_tk_unpacked_df.shape}" 
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {usr_tk_unpacked_df.shape}" 
 				f" | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
 				f" | nZeros: {(usr_tk_unpacked_df==0.0).sum().sum()}"
 				f" | memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB"
@@ -939,9 +937,9 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
 	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
-	print("-"*80)
+	print("-"*70)
 	print(usr_tk_unpacked_df.info(memory_usage="deep"))
-	print("-"*80)
+	print("-"*70)
 	return usr_tk_unpacked_df
 
 def get_df_files(fpath: str="MUST_BE_DEFINED"):
