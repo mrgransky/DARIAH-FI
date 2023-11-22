@@ -72,8 +72,8 @@ recys_label.pack(pady=20)
 search_button = tk.Button(root, text="Recommend Me!", padx=75, command=recSys_cb)
 search_button.pack(pady=20)
 
-close_button = tk.Button(root, text="Exit", command=lambda: close_window())
-close_button.pack(pady=20)
+exit_btn = tk.Button(root, text="Exit", command=lambda: close_window())
+exit_btn.pack(pady=20)
 
 countdown_label = tk.Label(root, text="")
 countdown_label.pack(pady=10)
