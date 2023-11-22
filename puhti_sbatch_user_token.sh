@@ -8,10 +8,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=299G
-#SBATCH --partition=small
+#SBATCH --mem=499G
+#SBATCH --partition=hugemem
 #SBATCH --time=03-00:00:00
-#SBATCH --array=0-255
+#SBATCH --array=256-560
 ####SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
@@ -58,23 +58,6 @@ do
 
 	done
 done
-
-# ### dependent ###
-# # for mn in 1 3 5 7 10
-# for mn in 1
-# do
-# 	# mx=$(echo "scale=2; $mn/10" | bc)
-# 	mx=1.0
-# 	# ddir="/scratch/project_2004072/Nationalbiblioteket/dfXY_${mx}_max_df_${mn}_min_df"
-# 	echo "max doc_freq $mx | min doc_freq $mn | outDIR $ddir"
-# 	python -u user_token.py \
-# 					--inputDF ${files[$SLURM_ARRAY_TASK_ID]} \
-# 					--outDIR $ddir \
-# 					--lmMethod 'stanza' \
-# 					--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-# 					--maxDocFreq $mx \
-# 					--minDocFreq $mn
-# done
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
