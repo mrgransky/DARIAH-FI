@@ -8,10 +8,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=373G
-#SBATCH --partition=small
-#SBATCH --time=01-00:00:00
-#SBATCH --array=367-370
+#SBATCH --mem=374G
+#SBATCH --partition=large
+#SBATCH --time=00-23:59:00
+#SBATCH --array=367-369
 ####SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
