@@ -11,7 +11,7 @@
 #SBATCH --mem=399G
 #SBATCH --partition=hugemem_longrun
 #SBATCH --time=00-23:59:00
-#SBATCH --array=367-369
+#SBATCH --array=367-368
 ####SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
