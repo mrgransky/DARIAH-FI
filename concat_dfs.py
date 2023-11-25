@@ -816,7 +816,7 @@ def run():
 		concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
 		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
 	except Exception as e:
-		print(f"<!> Error! No SPM files found! {e}")
+		print(f"<!> No SPM concat files found! {e} Generating in progress...")
 		### no print:
 		with HiddenPrints():
 			concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
