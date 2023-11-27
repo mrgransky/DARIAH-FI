@@ -977,14 +977,15 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 	t=time.time()
 	ROWs=list()
 	COLs=list()
+	print(f">> Creating ROWs & COLs", end="\t")
 	for idx, val in enumerate(SPMs):
 			matrix, rownames, colnames=val
 			ROWs.extend(rownames)
 			COLs.extend(colnames)
-	# print(f"(ROWs, COLs): ({len(ROWs)}, {len(COLs)})")
+	print(f"(ROWs, COLs): ({len(ROWs)}, {len(COLs)})")
 
 	#rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)# ip1, ip11, ip2, ip24, ip3, ...
-	_,ii,row_reverseindex=np.unique([int(x[2:]) for x in ROWs],return_index=True,return_inverse=True)
+	_,ii,row_reverseindex=np.unique([int(x[2:]) for x in ROWs],return_index=True,return_inverse=True)# ip1, ip2, ip3, ip11, ip24, ...
 	rownames_all=np.array(ROWs)[ii]
 	colnames_all,col_reverseindex=np.unique(COLs,return_inverse=True)
 
@@ -1012,7 +1013,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 		current_row_idx+=len(rownames)
 		current_col_idx+=len(colnames)
 		print(f"elapsed_t: {time.time()-t00:.1f} s")
-	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} sec".center(160, " "))
+	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} sec".center(160, "-"))
 
 	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
 	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape[0]}_nUSRs.gz")
