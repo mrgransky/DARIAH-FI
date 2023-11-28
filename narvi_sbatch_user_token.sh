@@ -10,8 +10,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:teslap100:1
-#SBATCH --array=44-732
+#SBATCH --gres=gpu:rtx100:1
+#SBATCH --array=63-732
 ####SBATCH --array=730-732 # nikeX, nikeY
 
 user="`whoami`"
