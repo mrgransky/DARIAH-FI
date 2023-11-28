@@ -999,7 +999,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 	current_matrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
 	for idx, val in enumerate(SPMs):
 		matrix, rownames, colnames=val
-		print(f"SPM {idx+1}/{len(SPMs)} {matrix.shape} {str(rownames[:3])} {str(colnames[:10])}", end=" ")
+		print(f"SPM {idx+1}/{len(SPMs)} {matrix.shape} {str(rownames[:3])} {str(colnames[:10])}", end="\t")
 		# print(current_row_idx, current_col_idx)
 		t00=time.time()
 		if idx==len(SPMs)-1:

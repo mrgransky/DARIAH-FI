@@ -31,7 +31,7 @@ echo "$SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 dfsDIR="/lustre/sgn-data/Nationalbiblioteket/dataframes_XY_maxNumFeatures_1000000" ########## must be adjusted! ##########
 
-for qu in 'Economical Crisis in Finland' 'Global Warming' 'Helsingin Kaupunginteatteri' 'Suomen pankki lainat ja talletukset' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 
+for qu in 'torvisoittokunta' 'Economical Crisis in Finland' 'Global Warming' 'Helsingin Kaupunginteatteri' 'Suomen pankki lainat ja talletukset' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum' 'TAMPEREEN TEHDAS' 'Tampereen seudun työväenopisto' 'Helsingin pörssi ja suomen pankki' 'Tampereen Työväen Teatteri' 'Juha Sipilä Sahalahti' 
 # for qu in 'Tampereen seudun työväenopisto' 
 do
 	echo "Query: $qu"
