@@ -31,7 +31,7 @@ def generate_link(change):
 def recSys_cb(change):
 	flink="https://www.google.com/"
 	query = entry.value
-	TKs=get_test_recsys_result(qu=qu.split())
+	TKs=get_test_recsys_result(qu=query.split())
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
 										f"Since You searched for:<br>"\
