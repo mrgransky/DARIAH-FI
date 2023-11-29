@@ -47,8 +47,9 @@ def generate_link(change):
 
 def recSys_cb(change):
 	query = entry.value
-	with HiddenPrints():
-		TKs=get_test_recsys_result(qu=query)
+	# with HiddenPrints():
+	# 	TKs=get_test_recsys_result(qu=query)
+	TKs=get_test_recsys_result(qu=query)
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
