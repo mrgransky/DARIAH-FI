@@ -3,6 +3,7 @@ from IPython.display import display, HTML, Image
 from PIL import Image as PILImage, ImageOps
 from io import BytesIO
 import requests
+import urllib
 
 def get_test_recsys_result(qu):
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
