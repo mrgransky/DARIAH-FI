@@ -32,15 +32,12 @@ def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print('Standard Output:', stdout)
 	print('Standard Error:', stderr)
 
-
 	# Extract and deserialize the result
 	serialized_result = re.search(r'Serialized Result: (.+)', stdout).group(1)
-	my_res = json.loads(serialized_result)
-	print('Captured Result:', type(my_res), my_res)
-
-	res=["suomi", "helsinki", "tampere", "pori", "juha"]
-
-	return res
+	# recommended_tokens=["suomi", "helsinki", "tampere", "pori", "juha"] # to check the results!
+	recommended_tokens=json.loads(serialized_result)
+	print('Captured Result:', type(recommended_tokens), recommended_tokens)
+	return recommended_tokens[:5]
 
 def close_window(count=8):
 	if count > 0:

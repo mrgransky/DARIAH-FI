@@ -10,11 +10,11 @@ def customized_fcn(inp="This is my sample text!"):
 	return result
 
 def main():
+	print(f"Running {__file__} now,")
 	my_res=customized_fcn(inp=args.query)
-
 	# Serialize the list into a string and print it
 	serialized_result = json.dumps(my_res)
 	print('Serialized Result:', serialized_result)
-
+	print(f"DONE!")
 if __name__ == '__main__':
 	main()
