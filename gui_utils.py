@@ -92,3 +92,22 @@ exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px
 exit_btn.on_click(lambda x: close_window())
 
 countdown_lbl = widgets.HTML()
+
+
+def main():
+	# Display ipywidgets
+	widgets.VBox(
+			[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=widgets.Layout(align_items='center')),
+			welcome_lbl,
+			entry,
+			widgets.HBox([search_btn, widgets.Label(value=' '), clean_search_btn], layout=widgets.Layout(align_items='center')),
+			nlf_link_lable,
+			widgets.HBox([rec_btn, widgets.Label(value=' '), clean_recsys_btn], layout=widgets.Layout(align_items='center')),
+			recys_lbl,
+			widgets.HBox([exit_btn], layout=widgets.Layout(align_items='center')),
+			countdown_lbl],
+			layout=widgets.Layout(align_items='center')
+	)
+
+if __name__ == '__main__':
+	main()
