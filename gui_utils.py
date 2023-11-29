@@ -52,46 +52,35 @@ def on_entry_submit(change):
 		on_entry_click(entry, None, None)
 
 def on_entry_click(widget, event, data):
-		if widget.value == "Query keywords...":
-				widget.value = ""
-				widget.style = {'description_width': 'initial', 'color': 'black'}
+	if widget.value == "Query keywords...":
+		widget.value = ""
+		widget.style = {'description_width': 'initial', 'color': 'black'}
+
+left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
+right_image_path = "https://digi.kansalliskirjasto.fi/images/logos/logo_fi_darkblue.png"
+left_image = PILImage.open(BytesIO(requests.get(left_image_path).content))
+right_image = PILImage.open(BytesIO(requests.get(right_image_path).content))
+left_image_widget = widgets.Image(value=requests.get(left_image_path).content, format='png', width=300, height=300)
+right_image_widget = widgets.Image(value=requests.get(right_image_path).content, format='png', width=300, height=300)
+welcome_lbl = widgets.HTML(value="<h2 style=font-family:verdana;font-size:30px;color:black;text-align:center;>Welcome!<br>What are you looking after, today?</h2>")
+entry = widgets.Text(placeholder="Query keywords...", layout=widgets.Layout(width='850px'))
+search_btn = widgets.Button(description="Search NLF", layout=widgets.Layout(width='150px'))
+clean_search_btn = widgets.Button(description="Clean", layout=widgets.Layout(width='150px'))
+rec_btn = widgets.Button(description="Recommend Me", layout=widgets.Layout(width='150px'))
+clean_recsys_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'))
+search_btn.on_click(generate_link)
+clean_search_btn.on_click(clean_search_entry)
+nlf_link_lable = widgets.HTML(value="")
+#nlf_link_lable.observe(on_link_clicked, names='value')
+rec_btn.on_click(recSys_cb)
+clean_recsys_btn.on_click(clean_recsys_entry)
+recys_lbl = widgets.HTML()
+exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'))
+exit_btn.on_click(lambda x: close_window())
+countdown_lbl = widgets.HTML()
+
 
 def run_gui():
-	left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
-	right_image_path = "https://digi.kansalliskirjasto.fi/images/logos/logo_fi_darkblue.png"
-
-	left_image = PILImage.open(BytesIO(requests.get(left_image_path).content))
-	right_image = PILImage.open(BytesIO(requests.get(right_image_path).content))
-
-	left_image_widget = widgets.Image(value=requests.get(left_image_path).content, format='png', width=300, height=300)
-	right_image_widget = widgets.Image(value=requests.get(right_image_path).content, format='png', width=300, height=300)
-
-	welcome_lbl = widgets.HTML(value="<h2 style=font-family:verdana;font-size:30px;color:black;text-align:center;>Welcome!<br>What are you looking after, today?</h2>")
-
-	entry = widgets.Text(placeholder="Query keywords...", layout=widgets.Layout(width='850px'))
-
-	search_btn = widgets.Button(description="Search NLF", layout=widgets.Layout(width='150px'))
-	clean_search_btn = widgets.Button(description="Clean", layout=widgets.Layout(width='150px'))
-
-	rec_btn = widgets.Button(description="Recommend Me", layout=widgets.Layout(width='150px'))
-	clean_recsys_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'))
-
-	search_btn.on_click(generate_link)
-	clean_search_btn.on_click(clean_search_entry)
-
-	nlf_link_lable = widgets.HTML(value="")
-	#nlf_link_lable.observe(on_link_clicked, names='value')
-
-	rec_btn.on_click(recSys_cb)
-	clean_recsys_btn.on_click(clean_recsys_entry)
-
-	recys_lbl = widgets.HTML()
-
-	exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'))
-	exit_btn.on_click(lambda x: close_window())
-
-	countdown_lbl = widgets.HTML()
-
 	# Display ipywidgets
 	GUI=widgets.VBox(
 			[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=widgets.Layout(align_items='center')),
