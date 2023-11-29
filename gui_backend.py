@@ -1,34 +1,27 @@
 from utils import *
-from tokenizer_utils import *
+# from tokenizer_utils import *
 
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 
 def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
-	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
-	# run python script: concat_dfs.py
-	# cmd=f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'"
-	# os.system(cmd)
-
-	command = ['python', 'concat_dfs.py', '--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_XY', '--lmMethod', 'stanza', '--qphrase', f'{qu}']
+	# print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	
+	cmd=[	'python', 'concat_dfs.py', 
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
+				'--lmMethod', 'stanza', 
+				'--qphrase', f'{qu}',
+			]
+	
 	# Use subprocess.Popen to start the process
-	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
 	# Wait for the process to complete and get the return code
-	return_code = process.wait()
+	return_code=process.wait()
 
 	# Capture stdout and stderr
-	stdout, stderr = process.communicate()
+	stdout, stderr=process.communicate()
 
-	# Print the return code, stdout, and stderr
-	# print('Return Code:', return_code)
-	# print("*"*100)
-	# print('Standard Output:', stdout)
-	# print("*"*100)
-	# print('Standard Error:', stderr)
-	# print("*"*100)
-	# Extract and deserialize the result
-
-	serialized_result = re.search(r'Serialized Result: (.+)', stdout).group(1)
+	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
 	# recommended_tokens=["suomi", "helsinki", "tampere", "pori", "juha"] # to check the results!
 	recommended_tokens=json.loads(serialized_result)
 	print('Captured Result:', type(recommended_tokens), recommended_tokens)
