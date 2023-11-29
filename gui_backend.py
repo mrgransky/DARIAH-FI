@@ -29,9 +29,11 @@ def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 
 	# Print the return code, stdout, and stderr
 	print('Return Code:', return_code)
+	print("*"*100)
 	print('Standard Output:', stdout)
+	print("*"*100)
 	print('Standard Error:', stderr)
-
+	print("*"*100)
 	# Extract and deserialize the result
 	serialized_result = re.search(r'Serialized Result: (.+)', stdout).group(1)
 	# recommended_tokens=["suomi", "helsinki", "tampere", "pori", "juha"] # to check the results!
