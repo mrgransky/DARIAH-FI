@@ -5,6 +5,8 @@ from io import BytesIO
 import requests
 import urllib
 
+digi_base_url = "https://digi.kansalliskirjasto.fi/search"
+
 def get_test_recsys_result(qu):
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
 	print(f"This is a test result...")
@@ -22,8 +24,7 @@ def generate_link(change):
 	query = entry.value
 	if query and query != "Query keywords...":
 		encoded_query = urllib.parse.quote(query)
-		base_url = "https://digi.kansalliskirjasto.fi/search"
-		gen_link=f"{base_url}?query={encoded_query}"
+		gen_link=f"{digi_base_url}?query={encoded_query}"
 		nlf_link_lable.value=f"<b style=font-family:verdana;font-size:20px;color:blue><a href={gen_link} target='_blank'>Click here to open National Library Results</a></b>"
 	else:
 		nlf_link_lable.value = "<p style=font-family:Courier;font-size:18px;color:red>Oops! Enter a valid search query to proceed!</p>"
@@ -31,17 +32,19 @@ def generate_link(change):
 def recSys_cb(change):
 	flink="https://www.google.com/"
 	query = entry.value
+	encoded_query = urllib.parse.quote(query)
 	TKs=get_test_recsys_result(qu=query.split())
+	flinks=[f"{digi_base_url}?query={encoded_query} {tk}" for tk in TKs]
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
 										f"Since You searched for:<br>"\
 										f"<b><i font-size:30px;>{query}</i></b><br>"\
 										f"you might be also interested in:<br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[0]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[1]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[2]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[3]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[4]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[0]} target='_blank'>{query} + {TKs[0]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[1]} target='_blank'>{query} + {TKs[1]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[2]} target='_blank'>{query} + {TKs[2]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[3]} target='_blank'>{query} + {TKs[3]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[4]} target='_blank'>{query} + {TKs[4]}</a></b><br>"\
 										f"</p>"
 	else:
 		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
