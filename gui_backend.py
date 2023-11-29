@@ -32,9 +32,9 @@ def generate_link(change):
 def recSys_cb(change):
 	flink="https://www.google.com/"
 	query = entry.value
-	encoded_query = urllib.parse.quote(query)
+	# encoded_query = urllib.parse.quote(query)
 	TKs=get_test_recsys_result(qu=query.split())
-	flinks=[f"{digi_base_url}?query={encoded_query} {tk}" for tk in TKs]
+	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	print(flinks)
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
