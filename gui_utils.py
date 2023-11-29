@@ -107,6 +107,3 @@ def run_gui():
 			countdown_lbl],
 			layout=widgets.Layout(align_items='center')
 	)
-
-# if __name__ == '__main__':
-# 	run_gui()
