@@ -40,8 +40,6 @@ def recSys_cb(change):
 		else:
 				recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
 
-#f"<b style=font-family:verdana;font-size:20px;color:blue><a href={gen_link} target='_blank'>Click here</a></b>"
-
 def clean_search_entry(change):
 		nlf_link_lable.value = ""
 		entry.value = ""
