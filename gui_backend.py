@@ -16,7 +16,24 @@ def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	# print(err)
 	# print("-"*100)
 	command = ['python', 'concat_dfs.py', '--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_XY', '--lmMethod', 'stanza', '--qphrase', f'{qu}']
-	subprocess.run(command)
+	# subprocess.run(command)
+
+	# Use subprocess.Popen to start the process
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+	# Wait for the process to complete and get the return code
+	return_code = process.wait()
+
+	# Capture stdout and stderr
+	stdout, stderr = process.communicate()
+
+	# Print the return code, stdout, and stderr
+	print('Return Code:', return_code)
+	print('Standard Output:', stdout)
+	print('Standard Error:', stderr)
+
+
+
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
 
 	return res
@@ -40,7 +57,7 @@ def generate_link(change):
 
 def recSys_cb(change):
 	query = entry.value
-	TKs=get_test_recsys_result(qu=query.split())
+	TKs=get_test_recsys_result(qu=query)
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
