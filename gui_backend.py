@@ -8,13 +8,15 @@ def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	# run python script: concat_dfs.py
 	cmd=f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'"
 	# os.system(cmd)
-	subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	out, err = p.communicate()
-	print("#"*60)
-	print(out)
-	print("#"*30)
-	print(err)
-	print("-"*100)
+	# subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	# out, err = p.communicate()
+	# print("#"*60)
+	# print(out)
+	# print("#"*30)
+	# print(err)
+	# print("-"*100)
+	command = ['python', 'concat_dfs.py', '--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_XY', '--lmMethod', 'stanza', '--qphrase', f'{qu}']
+	subprocess.run(command)
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
 
 	return res
