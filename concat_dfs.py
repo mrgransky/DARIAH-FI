@@ -20,11 +20,6 @@ args = parser.parse_args()
 
 fprefix = "FILE_PREFIXname_TBR"
 
-def get_test_recsys_result():
-	res=["suomi", "helsinki", "tampere", "pori", "juha"]
-	print(f"This is a test result...")
-	return res
-
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
 	for tk in dframe[qcol]: # [tk1, tk2, …]

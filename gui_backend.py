@@ -1,4 +1,13 @@
-from utils import *
+import ipywidgets as widgets
+from IPython.display import display, HTML, Image
+from PIL import Image as PILImage, ImageOps
+from io import BytesIO
+import requests
+
+def get_test_recsys_result(qu):
+	res=["suomi", "helsinki", "tampere", "pori", "juha"]
+	print(f"This is a test result...")
+	return res
 
 def close_window(count=8):
 	if count > 0:
@@ -21,17 +30,17 @@ def generate_link(change):
 def recSys_cb(change):
 	flink="https://www.google.com/"
 	query = entry.value
-
+	TKs=get_test_recsys_result(qu=qu.split())
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
 										f"Since You searched for:<br>"\
 										f"<b><i font-size:30px;>{query}</i></b><br>"\
 										f"you might be also interested in:<br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK1</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK2</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK3</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK4</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK5</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[0]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[1]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[2]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[3]}</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[4]}</a></b><br>"\
 										f"</p>"
 	else:
 		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
