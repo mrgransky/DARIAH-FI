@@ -58,7 +58,6 @@ def on_entry_click(widget, event, data):
 				widget.value = ""
 				widget.style = {'description_width': 'initial', 'color': 'black'}
 
-
 def run_gui():
 	left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
 	right_image_path = "https://digi.kansalliskirjasto.fi/images/logos/logo_fi_darkblue.png"
@@ -109,5 +108,5 @@ def run_gui():
 			layout=widgets.Layout(align_items='center')
 	)
 
-if __name__ == '__main__':
-	run_gui()
+# if __name__ == '__main__':
+# 	run_gui()
