@@ -51,11 +51,6 @@ from matplotlib.colors import Colormap as cm
 import seaborn as sns
 # matplotlib.use("Agg")
 
-import ipywidgets as widgets
-from IPython.display import display, HTML, Image
-from PIL import Image as PILImage, ImageOps
-from io import BytesIO
-
 sz=16
 MODULE=60
 params = {
