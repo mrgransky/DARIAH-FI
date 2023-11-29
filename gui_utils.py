@@ -107,5 +107,5 @@ def run_gui():
 			layout=widgets.Layout(align_items='center')
 	)
 	display(GUI)
-	return GUI
+	# return GUI
 	print(f"Done!")
