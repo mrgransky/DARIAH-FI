@@ -94,7 +94,7 @@ def run_gui():
 	countdown_lbl = widgets.HTML()
 
 	# Display ipywidgets
-	widgets.VBox(
+	GUI=widgets.VBox(
 			[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=widgets.Layout(align_items='center')),
 			welcome_lbl,
 			entry,
@@ -106,4 +106,5 @@ def run_gui():
 			countdown_lbl],
 			layout=widgets.Layout(align_items='center')
 	)
+	display(GUI)
 	print(f"Done!")
