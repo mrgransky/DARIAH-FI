@@ -2,8 +2,8 @@ import os
 import sys
 import gc
 import contextlib
-import torch
-import faiss
+# import torch
+# import faiss
 import subprocess
 import urllib
 import requests
