@@ -6,18 +6,10 @@ digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	# run python script: concat_dfs.py
-	cmd=f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'"
+	# cmd=f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'"
 	# os.system(cmd)
-	# subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	# out, err = p.communicate()
-	# print("#"*60)
-	# print(out)
-	# print("#"*30)
-	# print(err)
-	# print("-"*100)
-	command = ['python', 'concat_dfs.py', '--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_XY', '--lmMethod', 'stanza', '--qphrase', f'{qu}']
-	# subprocess.run(command)
 
+	command = ['python', 'concat_dfs.py', '--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_XY', '--lmMethod', 'stanza', '--qphrase', f'{qu}']
 	# Use subprocess.Popen to start the process
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
@@ -28,17 +20,19 @@ def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	stdout, stderr = process.communicate()
 
 	# Print the return code, stdout, and stderr
-	print('Return Code:', return_code)
-	print("*"*100)
-	print('Standard Output:', stdout)
-	print("*"*100)
-	print('Standard Error:', stderr)
-	print("*"*100)
+	# print('Return Code:', return_code)
+	# print("*"*100)
+	# print('Standard Output:', stdout)
+	# print("*"*100)
+	# print('Standard Error:', stderr)
+	# print("*"*100)
 	# Extract and deserialize the result
+
 	serialized_result = re.search(r'Serialized Result: (.+)', stdout).group(1)
 	# recommended_tokens=["suomi", "helsinki", "tampere", "pori", "juha"] # to check the results!
 	recommended_tokens=json.loads(serialized_result)
 	print('Captured Result:', type(recommended_tokens), recommended_tokens)
+
 	return recommended_tokens[:5]
 
 def close_window(count=8):
@@ -60,7 +54,8 @@ def generate_link(change):
 
 def recSys_cb(change):
 	query = entry.value
-	TKs=get_test_recsys_result(qu=query)
+	with HiddenPrints():
+		TKs=get_test_recsys_result(qu=query)
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\

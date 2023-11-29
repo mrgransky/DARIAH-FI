@@ -11,9 +11,10 @@ def customized_fcn(inp="This is my sample text!"):
 
 def main():
 	my_splited_text=customized_fcn(inp=args.query)
-	
+
 	# Serialize the list into a string and print it
 	serialized_result = json.dumps(my_splited_text)
+	print('Serialized Result:', serialized_result)
 
 if __name__ == '__main__':
 	main()

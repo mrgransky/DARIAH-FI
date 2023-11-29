@@ -3,7 +3,7 @@ import json
 import re
 
 def run_my_script():
-	command = ['python', 'myscript.py', '--query', 'I want to eat an ice-cream right now!']
+	command = ['python', 'child.py', '--query', 'I want to eat an ice-cream right now!']
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	return_code = process.wait()
 	stdout, stderr = process.communicate()
