@@ -4,7 +4,7 @@ from utils import *
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 
 def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
-	# print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	
 	cmd=[	'python', 'concat_dfs.py', 
 				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
