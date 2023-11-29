@@ -909,12 +909,12 @@ def run():
 	# print("<>"*80)
 	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\n")
 	st_t = time.time()
-	print(get_topK_tokens(mat=concat_spm_U_x_T, 
-												mat_rows=concat_spm_usrNames,
-												mat_cols=concat_spm_tokNames,
-												avgrec=avgRecSys,
-											)
-		 )
+	topKtokens=get_topK_tokens(	mat=concat_spm_U_x_T, 
+															mat_rows=concat_spm_usrNames,
+															mat_cols=concat_spm_tokNames,
+															avgrec=avgRecSys,
+														)
+	print(topKtokens)
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	print("<>"*80)
 

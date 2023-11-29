@@ -6,8 +6,17 @@ digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) for query: {qu}")
 	# run python script: concat_dfs.py
-	os.system(f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'")
+	cmd=f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'"
+	# os.system(cmd)
+	subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = p.communicate()
+	print("#"*60)
+	print(out)
+	print("#"*30)
+	print(err)
+	print("-"*100)
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
+
 	return res
 
 def close_window(count=8):
