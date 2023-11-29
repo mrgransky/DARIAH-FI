@@ -1,55 +1,51 @@
-import ipywidgets as widgets
-from IPython.display import display, HTML, Image
-import urllib.parse
-import requests
-from PIL import Image as PILImage, ImageOps
-from io import BytesIO
+from utils import *
 
 def close_window(count=8):
-		if count > 0:
-				countdown_lbl.value = f"Thanks for using our service, Have a Good Day!<br><br>closing in {count} sec..."
-				time.sleep(1)
-				close_window(count-1)
-		else:
-				display(HTML("<b>Bye</b>"))
+	if count > 0:
+		countdown_lbl.value = f"Thanks for using our service, Have a Good Day!<br><br>closing in {count} sec..."
+		time.sleep(1)
+		close_window(count-1)
+	else:
+		display(HTML("<b>Bye</b>"))
 
 def generate_link(change):
-		query = entry.value
-		if query and query != "Query keywords...":
-				encoded_query = urllib.parse.quote(query)
-				base_url = "https://digi.kansalliskirjasto.fi/search"
-				gen_link=f"{base_url}?query={encoded_query}"
-				nlf_link_lable.value=f"<b style=font-family:verdana;font-size:20px;color:blue><a href={gen_link} target='_blank'>Click here to open National Library Results</a></b>"
-		else:
-				nlf_link_lable.value = "<p style=font-family:Courier;font-size:18px;color:red>Oops! Enter a valid search query to proceed!</p>"
+	query = entry.value
+	if query and query != "Query keywords...":
+		encoded_query = urllib.parse.quote(query)
+		base_url = "https://digi.kansalliskirjasto.fi/search"
+		gen_link=f"{base_url}?query={encoded_query}"
+		nlf_link_lable.value=f"<b style=font-family:verdana;font-size:20px;color:blue><a href={gen_link} target='_blank'>Click here to open National Library Results</a></b>"
+	else:
+		nlf_link_lable.value = "<p style=font-family:Courier;font-size:18px;color:red>Oops! Enter a valid search query to proceed!</p>"
 
 def recSys_cb(change):
-		flink="https://www.google.com/"
-		query = entry.value
-		if query and query != "Query keywords...":
-				recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
-												f"Since You searched for:<br>"\
-												f"<b><i font-size:30px;>{query}</i></b><br>"\
-												f"you might be also interested in:<br>"\
-												f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK1</a></b><br>"\
-												f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK2</a></b><br>"\
-												f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK3</a></b><br>"\
-												f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK4</a></b><br>"\
-												f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK5</a></b><br>"\
-												f"</p>"
-		else:
-				recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+	flink="https://www.google.com/"
+	query = entry.value
+
+	if query and query != "Query keywords...":
+		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
+										f"Since You searched for:<br>"\
+										f"<b><i font-size:30px;>{query}</i></b><br>"\
+										f"you might be also interested in:<br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK1</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK2</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK3</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK4</a></b><br>"\
+										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + TK5</a></b><br>"\
+										f"</p>"
+	else:
+		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
 
 def clean_search_entry(change):
-		nlf_link_lable.value = ""
-		entry.value = ""
-		entry.placeholder = "Query keywords..."
+	nlf_link_lable.value = ""
+	entry.value = ""
+	entry.placeholder = "Query keywords..."
 
 def clean_recsys_entry(change):
-		recys_lbl.value = ""
+	recys_lbl.value = ""
 
 def on_entry_submit(change):
-		on_entry_click(entry, None, None)
+	on_entry_click(entry, None, None)
 
 def on_entry_click(widget, event, data):
 	if widget.value == "Query keywords...":
