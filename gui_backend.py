@@ -35,6 +35,7 @@ def recSys_cb(change):
 	encoded_query = urllib.parse.quote(query)
 	TKs=get_test_recsys_result(qu=query.split())
 	flinks=[f"{digi_base_url}?query={encoded_query} {tk}" for tk in TKs]
+	print(flinks)
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
 										f"Since You searched for:<br>"\
