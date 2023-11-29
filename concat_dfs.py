@@ -915,6 +915,11 @@ def run():
 															avgrec=avgRecSys,
 														)
 	print(topKtokens)
+
+	# Serialize the list into a string and print it
+	serialized_result = json.dumps(topKtokens)
+	print('Serialized Result:', serialized_result)
+
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
 	print("<>"*80)
 
