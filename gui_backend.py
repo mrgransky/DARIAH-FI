@@ -9,7 +9,7 @@ digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 
 def get_test_recsys_result(qu):
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
-	print(f"This is a test result...")
+	# print(f"This is a test result...")
 	return res
 
 def close_window(count=8):
@@ -32,10 +32,8 @@ def generate_link(change):
 def recSys_cb(change):
 	flink="https://www.google.com/"
 	query = entry.value
-	# encoded_query = urllib.parse.quote(query)
 	TKs=get_test_recsys_result(qu=query.split())
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
-	print(flinks)
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
 										f"Since You searched for:<br>"\
