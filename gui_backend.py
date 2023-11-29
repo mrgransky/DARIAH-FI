@@ -3,9 +3,11 @@ from tokenizer_utils import *
 
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 
-def get_test_recsys_result(qu):
+def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
+	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) for query: {qu}")
+	# run python script: concat_dfs.py
+	os.system(f"python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --lmMethod 'stanza' --qphrase '{qu}'")
 	res=["suomi", "helsinki", "tampere", "pori", "juha"]
-	# print(f"This is a test result...")
 	return res
 
 def close_window(count=8):
@@ -26,7 +28,6 @@ def generate_link(change):
 		nlf_link_lable.value = "<p style=font-family:Courier;font-size:18px;color:red>Oops! Enter a valid search query to proceed!</p>"
 
 def recSys_cb(change):
-	flink="https://www.google.com/"
 	query = entry.value
 	TKs=get_test_recsys_result(qu=query.split())
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
@@ -82,7 +83,6 @@ recys_lbl = widgets.HTML()
 exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'))
 exit_btn.on_click(lambda x: close_window())
 countdown_lbl = widgets.HTML()
-
 
 def run_gui():
 	# Display ipywidgets
