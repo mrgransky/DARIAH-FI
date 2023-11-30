@@ -6,31 +6,6 @@ from io import BytesIO
 
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 
-def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
-	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
-	
-	cmd=[	'python', 'concat_dfs.py', 
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
-				'--lmMethod', 'stanza', 
-				'--qphrase', f'{qu}',
-			]
-	
-	# Use subprocess.Popen to start the process
-	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-
-	# Wait for the process to complete and get the return code
-	return_code=process.wait()
-
-	# Capture stdout and stderr
-	stdout, stderr=process.communicate()
-
-	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
-	# recommended_tokens=["suomi", "helsinki", "tampere", "pori", "juha"] # to check the results!
-	recommended_tokens=json.loads(serialized_result)
-	print('Captured Result:', type(recommended_tokens), recommended_tokens)
-
-	return recommended_tokens[:5]
-
 def close_window(count=8):
 	if count > 0:
 		countdown_lbl.value = f"Thanks for using our service, Have a Good Day!<br><br>closing in {count} sec..."
@@ -41,48 +16,108 @@ def close_window(count=8):
 
 def get_nlf_link(change):
 	query = entry.value
-	if query and query != "Query keywords...":
+	if query and query != "Enter your query keywords here...":
 		encoded_query = urllib.parse.quote(query)
 		gen_link=f"{digi_base_url}?query={encoded_query}"
 		nlf_link_lable.value=f"<b style=font-family:verdana;font-size:20px;color:blue><a href={gen_link} target='_blank'>Click here to open National Library Results</a></b>"
 	else:
 		nlf_link_lable.value = "<p style=font-family:Courier;font-size:18px;color:red>Oops! Enter a valid search query to proceed!</p>"
 
-def recSys_cb(change):
-	query = entry.value
-	# with HiddenPrints():
-	# 	TKs=get_recsys_result(qu=query)
-	TKs=get_recsys_result(qu=query)
-	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
-	if query and query != "Query keywords...":
-		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
-										f"Since You searched for:<br>"\
-										f"<b><i font-size:30px;>{query}</i></b><br>"\
-										f"you might be also interested in:<br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[0]} target='_blank'>{query} + {TKs[0]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[1]} target='_blank'>{query} + {TKs[1]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[2]} target='_blank'>{query} + {TKs[2]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[3]} target='_blank'>{query} + {TKs[3]}</a></b><br>"\
-										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[4]} target='_blank'>{query} + {TKs[4]}</a></b><br>"\
-										f"</p>"
-	else:
-		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+def on_entry_click(widget, event, data):
+	if widget.value == "Enter your query keywords here...":
+		widget.value = ""
+		widget.style = {'description_width': 'initial', 'color': 'black'}
 
 def clean_search_entry(change):
 	nlf_link_lable.value = ""
 	entry.value = ""
-	entry.placeholder = "Query keywords..."
+	entry.placeholder = "Enter your query keywords here..."
+
+# def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
+# 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	
+# 	cmd=[	'python', 'concat_dfs.py', 
+# 				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
+# 				'--lmMethod', 'stanza', 
+# 				'--qphrase', f'{qu}',
+# 			]
+	
+# 	# Use subprocess.Popen to start the process
+# 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+# 	# Wait for the process to complete and get the return code
+# 	return_code=process.wait()
+
+# 	# Capture stdout and stderr
+# 	stdout, stderr=process.communicate()
+
+# 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+# 	# recommended_tokens=["suomi", "helsinki", "tampere", "pori", "juha"] # to check the results!
+# 	recommended_tokens=json.loads(serialized_result)
+# 	print('Captured Result:', type(recommended_tokens), recommended_tokens)
+
+# 	return recommended_tokens[:5]
+
+# def recSys_cb(change):
+# 	query = entry.value
+# 	# with HiddenPrints():
+# 	# 	TKs=get_recsys_result(qu=query)
+# 	TKs=get_recsys_result(qu=query)
+# 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
+# 	if query and query != "Enter your query keywords here...":
+# 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
+# 										f"Since You searched for:<br>"\
+# 										f"<b><i font-size:30px;>{query}</i></b><br>"\
+# 										f"you might be also interested in:<br>"\
+# 										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[0]} target='_blank'>{query} + {TKs[0]}</a></b><br>"\
+# 										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[1]} target='_blank'>{query} + {TKs[1]}</a></b><br>"\
+# 										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[2]} target='_blank'>{query} + {TKs[2]}</a></b><br>"\
+# 										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[3]} target='_blank'>{query} + {TKs[3]}</a></b><br>"\
+# 										f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[4]} target='_blank'>{query} + {TKs[4]}</a></b><br>"\
+# 										f"</p>"
+# 	else:
+# 		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+
+# def clean_recsys_entry(change):
+# 	recys_lbl.value = ""
+
+
+def get_recsys_result():
+	return [f"TK_{i+1}" for i in range(15)]
+
+def update_recys_lbl(_):
+	flink = "https://www.google.com/"
+	TKs = get_recsys_result()
+	query = entry.value
+	if query and query != "Enter your query keywords here...":
+		recys_lbl.value = generate_recys_html(query, TKs, flink, slider_value.value)
+	else:
+		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+
+def generate_recys_html(query, TKs, flink, slider_value):
+	recys_lines = ""
+	for i in range(slider_value):
+		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[i]}</a></b><br>"
+	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
+				 f"Since You searched for:<br>" \
+				 f"<b><i font-size:30px;>{query}</i></b><br>" \
+				 f"you might be also interested in:<br>" \
+				 f"{recys_lines}" \
+				 f"</p>"
 
 def clean_recsys_entry(change):
+	entry.value = ""
+	entry.placeholder = "Enter your query keywords here..."
 	recys_lbl.value = ""
+	slider_value.layout.visibility = 'hidden'  # Hide slider
 
-def on_entry_submit(change):
-	on_entry_click(entry, None, None)
+def rec_btn_click(_):
+	progress_bar.layout.visibility = 'visible'  # Show progress bar
+	time.sleep(2)  # Simulate a time-consuming task (replace this with your actual task)
+	progress_bar.layout.visibility = 'hidden'  # Hide progress bar
+	slider_value.layout.visibility = 'visible'  # Show slider
+	update_recys_lbl(None)
 
-def on_entry_click(widget, event, data):
-	if widget.value == "Query keywords...":
-		widget.value = ""
-		widget.style = {'description_width': 'initial', 'color': 'black'}
 
 left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
 right_image_path = "https://digi.kansalliskirjasto.fi/images/logos/logo_fi_darkblue.png"
