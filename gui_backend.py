@@ -61,7 +61,7 @@ def clean_search_entry(change):
 # 	return recommended_tokens[:5]
 
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
-	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	# print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
 				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
 				'--lmMethod', 'stanza', 
@@ -193,7 +193,9 @@ slider_value = widgets.IntSlider(value=5, min=3, max=15, description='Recsys Cou
 slider_value.layout.visibility = 'hidden'  # Initially hidden
 
 progress_bar_style = {'description_width': 'initial', 'bar_color': 'blue', 'background_color': 'darkgray'}
+progress_bar_description_style = {'description_width': 'initial', 'font-size': '25px', 'fort_family': 'Futura'}
 progress_bar = widgets.IntProgress(value=0, min=0, max=350, description='Please wait...',style=progress_bar_style)
+progress_bar.description_style = progress_bar_description_style
 progress_bar.layout.visibility = 'hidden'  # Initially hidden
 
 slider_value.observe(update_recys_lbl, names='value') # real-time behavior
