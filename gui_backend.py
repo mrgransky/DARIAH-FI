@@ -33,7 +33,7 @@ vbox_layout = widgets.Layout(align_items='center', padding='15px')
 button_style = {'button_color': 'darkgray', 'font_weight': 'bold', 'font_size': '16px'}
 
 search_btn = widgets.Button(description="Search NLF", layout=widgets.Layout(width='150px'), style=button_style)
-clean_search_btn = widgets.Button(description="Clean", layout=widgets.Layout(width='150px'), style=button_style)
+clean_search_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'), style=button_style)
 rec_btn = widgets.Button(description="Recommend Me", layout=widgets.Layout(width='150px'), style=button_style)
 clean_recsys_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'), style=button_style)
 exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'), style=button_style)
