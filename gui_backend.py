@@ -80,7 +80,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 
 	# return [f"TK_{i+1}" for i in range(topK)]
-	return recommended_tokens[:topK]
+	return recommended_tokens#[:topK]
 
 # def recSys_cb(change):
 # 	query = entry.value
