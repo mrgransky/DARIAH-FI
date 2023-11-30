@@ -189,7 +189,7 @@ nlf_link_lable = widgets.HTML(value="")
 
 # Modified slider to have a minimum value of 3 and a maximum value of 15
 slider_style={'description_width': 'initial'}
-slider_value = widgets.IntSlider(value=5, min=3, max=15, description='Recsys Count', style=slider_style)
+slider_value = widgets.IntSlider(value=5, min=3, max=20, description='Recsys Count', style=slider_style)
 slider_value.layout.visibility = 'hidden'  # Initially hidden
 
 progress_bar_style = {'description_width': 'initial', 'bar_color': 'blue', 'background_color': 'darkgray'}
