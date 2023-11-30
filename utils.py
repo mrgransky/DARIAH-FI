@@ -794,7 +794,9 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	st_t=time.time()
 	nUsers, _ = spMtx.shape
 	doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
-	idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term))
+	#doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
+	idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term), dtype=np.float32)
+	#idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term))
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {idf.shape} {type(idf)} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB".center(150, " "))
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
@@ -1084,6 +1086,6 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, " "))	
 	return avg_rec # (nTokens,)
 
-def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=60):
-	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1]
-	#return [mat_cols[iTK] for iTK in avgrec.argsort()][::-1] # all results (time consuming!)
+def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, qu, K=80):
+	# return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1]
+	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:] if mat_cols[iTK] not in qu][::-1] # 

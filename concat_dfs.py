@@ -913,6 +913,7 @@ def run():
 															mat_rows=concat_spm_usrNames,
 															mat_cols=concat_spm_tokNames,
 															avgrec=avgRecSys,
+															qu=query_phrase_tk,
 														)
 	print(topKtokens)
 
