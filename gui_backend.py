@@ -80,7 +80,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 
 	# return [f"TK_{i+1}" for i in range(topK)]
-	return recommended_tokens
+	return recommended_tokens[:topK]
 
 # def recSys_cb(change):
 # 	query = entry.value
@@ -194,7 +194,7 @@ nlf_link_lable = widgets.HTML(value="")
 
 # Modified slider to have a minimum value of 3 and a maximum value of 15
 slider_style={'description_width': 'initial'}
-slider_value = widgets.IntSlider(value=3, min=3, max=15, description='Recsys Count', style=slider_style)
+slider_value = widgets.IntSlider(value=6, min=3, max=15, description='Recsys Count', style=slider_style)
 slider_value.layout.visibility = 'hidden'  # Initially hidden
 
 # Hidden progress bar
