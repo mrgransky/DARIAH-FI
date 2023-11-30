@@ -960,7 +960,7 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 	nUsers, _ = spMtx.shape
 	uNorms=np.zeros(nUsers, dtype=np.float32)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
-	for ui in range(nUsers):
+	for ui in np.arange(nUsers, dtype=np.int32):
 		nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
 		userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
 		# uNorms[ui]=np.linalg.norm(userInterest)
@@ -1047,7 +1047,7 @@ def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0)
 	cs=np.zeros(nUsers, dtype=np.float32) # (nUsers,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
 	quInterest_nonZeros=quInterest[idx_nonzeros]*(1/quInterestNorm)	
-	for ui in range(nUsers): # ip1, ip2, ..., ipN
+	for ui in np.arange(nUsers, dtype=np.int32): # ip1, ip2, ..., ipN
 		usrInterest=np.squeeze(spMtx[ui, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] # 1 x len(idx[1])
 		usrInterestNorm=spMtx_norm[ui]+1e-18
 
@@ -1073,7 +1073,7 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	nUsers, nTokens= spMtx.shape
 	avg_rec=np.zeros(nTokens, dtype=np.float32)# (nTokens,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
-	for ui in range(nUsers):
+	for ui in np.arange(nUsers, dtype=np.int32):
 		nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
 		userInterest=np.squeeze(spMtx[ui, nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
 		userInterestNorm=spMtx_norm[ui]+1e-18
@@ -1084,6 +1084,6 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, " "))	
 	return avg_rec # (nTokens,)
 
-def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=100):
+def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=60):
 	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1]
 	#return [mat_cols[iTK] for iTK in avgrec.argsort()][::-1] # all results (time consuming!)
