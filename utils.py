@@ -952,7 +952,7 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
 	return spm_files
 
-def get_idfed_users_norm(spMtx, idf_vec, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# print(f"Scipy userNorm:", end=" ")
 	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
 	print(f"Customized Users Norm", end=" ")
@@ -963,7 +963,8 @@ def get_idfed_users_norm(spMtx, idf_vec, save_dir: str="savin_dir", prefix_fname
 	for ui in range(nUsers):
 		nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
 		userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
-		uNorms[ui]=np.linalg.norm(userInterest)
+		# uNorms[ui]=np.linalg.norm(userInterest)
+		uNorms[ui]=np.linalg.norm(userInterest**exponent)
 	print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~215 sec
 	usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(uNorms)}_nUSRs.gz")
 	save_pickle(pkl=uNorms, fname=usrNorm_fname)
@@ -1033,7 +1034,7 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	# print(np.where(query_vector.flatten()!=0)[0])
 	return query_vector
 
-def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm):
+def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0):
 	print(f"Optimized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(150, "-"))
 	print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
 	print(f"<quVec> {type(query_vec)} {query_vec.shape} {query_vec.dtype}")
@@ -1050,14 +1051,16 @@ def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm):
 		usrInterest=np.squeeze(spMtx[ui, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] # 1 x len(idx[1])
 		usrInterestNorm=spMtx_norm[ui]+1e-18
 
-		usrInterest_noNorms=usrInterest # added Nov 10th
-		temp_cs_multiplier=np.sum(usrInterest_noNorms*quInterest_nonZeros) # added Nov 10th
+		# usrInterest_noNorms=usrInterest # added Nov 10th
+		# temp_cs_multiplier=np.sum(usrInterest_noNorms*quInterest_nonZeros) # added Nov 10th
 
-		usrInterest=(usrInterest*(1/usrInterestNorm))**0.1 # seems faster
+		usrInterest=(usrInterest*(1/usrInterestNorm))#**0.1 # seems faster
 		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)), exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
 
+		usrInterest=(usrInterest**exponent) # added Nov 30th
+
 		cs[ui]=np.sum(usrInterest*quInterest_nonZeros)
-		cs[ui]*=temp_cs_multiplier # added Nov 10th
+		# cs[ui]*=temp_cs_multiplier # added Nov 10th
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, "-"))
 	return cs # (nUsers,)
 

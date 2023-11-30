@@ -902,7 +902,7 @@ def run():
 											)
 
 	avgRecSys=get_avg_rec(spMtx=concat_spm_U_x_T,
-												cosine_sim=ccs, 
+												cosine_sim=ccs**5,
 												idf_vec=idf_vec,
 												spMtx_norm=usrNorms,
 											)
