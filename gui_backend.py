@@ -39,10 +39,8 @@ clean_recsys_btn = widgets.Button(description="Clear", layout=widgets.Layout(wid
 exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'), style=button_style)
 
 countdown_lbl = widgets.HTML()
-
-search_btn.on_click(get_nlf_link)
-clean_search_btn.on_click(clean_search_entry)
-nlf_link_lable = widgets.HTML(value="")
+recys_lbl = widgets.HTML()
+nlf_link_lable = widgets.HTML()
 
 # Modified slider to have a minimum value of 3 and a maximum value of 15
 slider_style={'description_width': 'initial'}
@@ -54,12 +52,6 @@ progress_bar_description_style = {'description_width': 'initial', 'font-size': '
 progress_bar = widgets.IntProgress(value=0, min=0, max=350, description='Please wait...', style=progress_bar_style)
 progress_bar.description_style = progress_bar_description_style
 progress_bar.layout.visibility = 'hidden'  # Initially hidden
-
-slider_value.observe(update_recys_lbl, names='value') # real-time behavior
-
-rec_btn.on_click(rec_btn_click)
-clean_recsys_btn.on_click(clean_recsys_entry)
-recys_lbl = widgets.HTML()
 
 def close_window(count=8):
 	if count > 0:
@@ -159,3 +151,9 @@ def run_gui():
 		layout=vbox_layout
 	)
 	display(GUI)
+
+search_btn.on_click(get_nlf_link)
+clean_search_btn.on_click(clean_search_entry)
+slider_value.observe(update_recys_lbl, names='value') # real-time behavior
+rec_btn.on_click(rec_btn_click)
+clean_recsys_btn.on_click(clean_recsys_entry)
