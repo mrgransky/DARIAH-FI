@@ -75,12 +75,12 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 	# Capture stdout and stderr
 	stdout, stderr=process.communicate()
 
-	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
-	recommended_tokens=[f"TK_{i+1}" for i in range(topK)]
-	# recommended_tokens=json.loads(serialized_result)
+	# serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+	recommended_tokens=json.loads(serialized_result)
 	print('Captured Result:', type(recommended_tokens), recommended_tokens)
 
-	return recommended_tokens
+	# recommended_tokens=[f"TK_{i+1}" for i in range(topK)]
+	return [f"TK_{i+1}" for i in range(topK)]
 
 # def recSys_cb(change):
 # 	query = entry.value
