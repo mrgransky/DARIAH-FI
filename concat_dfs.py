@@ -864,7 +864,7 @@ def run():
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
 									)
-	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.nbytes/1e6:.2f} MB")
+	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB")
 
 	try:
 		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])

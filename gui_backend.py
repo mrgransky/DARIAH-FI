@@ -106,7 +106,7 @@ def update_recys_lbl(_):
 
 def generate_recys_html(query, TKs, flinks, slider_value):
 	recys_lines = ""
-	for i in range(slider_value):
+	for i in np.arange(slider_value):
 		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[i]} target='_blank'>{query} + {TKs[i]}</a></b><br>"
 	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
 				 f"Since You searched for:<br>" \
