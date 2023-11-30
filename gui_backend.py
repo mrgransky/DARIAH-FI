@@ -79,7 +79,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
 	recommended_tokens=json.loads(serialized_result)
-	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
+	# print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 
 	# return [f"TK_{i+1}" for i in range(topK)]
 	return recommended_tokens#[:topK]
