@@ -63,7 +63,7 @@ def clean_search_entry(change):
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 	# print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_XY', 
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
 				'--lmMethod', 'stanza', 
 				'--qphrase', f'{qu}',
 			]

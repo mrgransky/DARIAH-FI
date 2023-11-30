@@ -1081,5 +1081,6 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, " "))	
 	return avg_rec # (nTokens,)
 
-def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=50):
-	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]]
+def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, K=100):
+	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1]
+	#return [mat_cols[iTK] for iTK in avgrec.argsort()][::-1] # all results (time consuming!)

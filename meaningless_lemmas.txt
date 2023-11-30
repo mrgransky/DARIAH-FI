@@ -2423,6 +2423,7 @@ aabala
 aabebkramlare
 aabenraag
 aabenraagi
+jok
 aabaljoki
 aett
 aetl
@@ -5833,3 +5834,4 @@ aakh
 aabfcrusko
 bksk
 bthk
+inrcn
