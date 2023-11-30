@@ -5,6 +5,8 @@ from PIL import Image as PILImage, ImageOps
 from io import BytesIO
 
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
+TKs=list()
+flinks=list()
 
 def close_window(count=8):
 	if count > 0:
@@ -107,11 +109,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 
 def update_recys_lbl(_):
 	query = entry.value
-	flink = "https://www.google.com/"
-	TKs=get_recsys_result(qu=query, topK=15)
-	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	if query and query != "Enter your query keywords here...":
-		# recys_lbl.value = generate_recys_html(query, TKs, flink, slider_value.value)
 		recys_lbl.value = generate_recys_html(query, TKs, flinks, slider_value.value)
 	else:
 		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
@@ -127,33 +125,30 @@ def generate_recys_html(query, TKs, flinks, slider_value):
 				 f"{recys_lines}" \
 				 f"</p>"
 
-
-
-# def generate_recys_html(query, TKs, flink, slider_value):
-# 	recys_lines = ""
-# 	for i in range(slider_value):
-# 		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[i]}</a></b><br>"
-# 		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[i]}</a></b><br>"
-# 	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
-# 				 f"Since You searched for:<br>" \
-# 				 f"<b><i font-size:30px;>{query}</i></b><br>" \
-# 				 f"you might be also interested in:<br>" \
-# 				 f"{recys_lines}" \
-# 				 f"</p>"
-
 def clean_recsys_entry(change):
 	entry.value = ""
 	entry.placeholder = "Enter your query keywords here..."
 	recys_lbl.value = ""
 	slider_value.layout.visibility = 'hidden'  # Hide slider
 
-def rec_btn_click(_):
-	progress_bar.layout.visibility = 'visible'  # Show progress bar
-	time.sleep(2)  # Simulate a time-consuming task (replace this with your actual task)
-	progress_bar.layout.visibility = 'hidden'  # Hide progress bar
-	slider_value.layout.visibility = 'visible'  # Show slider
+def rec_btn_click(change):
+	# progress_bar.layout.visibility = 'visible'  # Show progress bar
+	# time.sleep(2)  # Simulate a time-consuming task (replace this with your actual task)
+	# progress_bar.layout.visibility = 'hidden'  # Hide progress bar
+	# slider_value.layout.visibility = 'visible'  # Show slider
+	query = entry.value
+	if query and query != "Enter your query keywords here...":
+		progress_bar.layout.visibility = 'visible'  # Show progress bar
+		global TKs, flinks
+		TKs=get_recsys_result(qu=query, topK=15)
+		flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
+		#print(TKs)
+		progress_bar.layout.visibility = 'hidden'  # Hide progress bar
+		slider_value.layout.visibility = 'visible'  # Show slider
+	else:
+		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+		
 	update_recys_lbl(None)
-
 
 left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
 right_image_path = "https://digi.kansalliskirjasto.fi/images/logos/logo_fi_darkblue.png"
@@ -194,7 +189,7 @@ nlf_link_lable = widgets.HTML(value="")
 
 # Modified slider to have a minimum value of 3 and a maximum value of 15
 slider_style={'description_width': 'initial'}
-slider_value = widgets.IntSlider(value=6, min=3, max=15, description='Recsys Count', style=slider_style)
+slider_value = widgets.IntSlider(value=5, min=3, max=15, description='Recsys Count', style=slider_style)
 slider_value.layout.visibility = 'hidden'  # Initially hidden
 
 # Hidden progress bar
