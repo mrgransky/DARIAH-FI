@@ -6,7 +6,7 @@ from io import BytesIO
 
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 
-def get_test_recsys_result(qu: str="Tampereen seudun työväenopisto"):
+def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	
 	cmd=[	'python', 'concat_dfs.py', 
@@ -39,7 +39,7 @@ def close_window(count=8):
 	else:
 		display(HTML("<b>Bye</b>"))
 
-def generate_link(change):
+def get_nlf_link(change):
 	query = entry.value
 	if query and query != "Query keywords...":
 		encoded_query = urllib.parse.quote(query)
@@ -51,8 +51,8 @@ def generate_link(change):
 def recSys_cb(change):
 	query = entry.value
 	# with HiddenPrints():
-	# 	TKs=get_test_recsys_result(qu=query)
-	TKs=get_test_recsys_result(qu=query)
+	# 	TKs=get_recsys_result(qu=query)
+	TKs=get_recsys_result(qu=query)
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	if query and query != "Query keywords...":
 		recys_lbl.value=f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>"\
@@ -91,34 +91,64 @@ right_image = PILImage.open(BytesIO(requests.get(right_image_path).content))
 left_image_widget = widgets.Image(value=requests.get(left_image_path).content, format='png', width=300, height=300)
 right_image_widget = widgets.Image(value=requests.get(right_image_path).content, format='png', width=300, height=300)
 welcome_lbl = widgets.HTML(value="<h2 style=font-family:verdana;font-size:30px;color:black;text-align:center;>Welcome!<br>What are you looking after, today?</h2>")
-entry = widgets.Text(placeholder="Query keywords...", layout=widgets.Layout(width='850px'))
-search_btn = widgets.Button(description="Search NLF", layout=widgets.Layout(width='150px'))
-clean_search_btn = widgets.Button(description="Clean", layout=widgets.Layout(width='150px'))
-rec_btn = widgets.Button(description="Recommend Me", layout=widgets.Layout(width='150px'))
-clean_recsys_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'))
-search_btn.on_click(generate_link)
+
+# Modified entry widget
+entry = widgets.Text(placeholder="Enter your query keywords here...", 
+										 layout=widgets.Layout(width='800px', 
+																					 height='50px',
+																					 font_size='30px', 
+																					 padding='5px',
+																					 font_weight='bold',
+																					 font_family='Ubuntu',
+																					)
+										)
+
+# Added vertical padding
+vbox_layout = widgets.Layout(align_items='center', padding='15px')
+
+# Modified buttons with dark gray background and enlarged font size
+button_style = {'button_color': 'darkgray', 'font_weight': 'bold', 'font_size': '16px'}
+
+search_btn = widgets.Button(description="Search NLF", layout=widgets.Layout(width='150px'), style=button_style)
+clean_search_btn = widgets.Button(description="Clean", layout=widgets.Layout(width='150px'), style=button_style)
+rec_btn = widgets.Button(description="Recommend Me", layout=widgets.Layout(width='150px'), style=button_style)
+clean_recsys_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'), style=button_style)
+exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'), style=button_style)
+
+countdown_lbl = widgets.HTML()
+
+search_btn.on_click(get_nlf_link)
 clean_search_btn.on_click(clean_search_entry)
 nlf_link_lable = widgets.HTML(value="")
-#nlf_link_lable.observe(on_link_clicked, names='value')
-rec_btn.on_click(recSys_cb)
+
+# Modified slider to have a minimum value of 3 and a maximum value of 15
+slider_style={'description_width': 'initial'}
+slider_value = widgets.IntSlider(value=3, min=3, max=15, description='Recsys Count', style=slider_style)
+slider_value.layout.visibility = 'hidden'  # Initially hidden
+
+# Hidden progress bar
+progress_bar = widgets.IntProgress(value=0, min=0, max=100, description='Loading...')
+progress_bar.layout.visibility = 'hidden'  # Initially hidden
+slider_value.observe(update_recys_lbl, names='value') # real-time behavior
+
+rec_btn.on_click(rec_btn_click)
 clean_recsys_btn.on_click(clean_recsys_entry)
 recys_lbl = widgets.HTML()
-exit_btn = widgets.Button(description="Exit", layout=widgets.Layout(width='100px'))
-exit_btn.on_click(lambda x: close_window())
-countdown_lbl = widgets.HTML()
 
 def run_gui():
 	# Display ipywidgets
 	GUI=widgets.VBox(
-			[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=widgets.Layout(align_items='center')),
-			welcome_lbl,
-			entry,
-			widgets.HBox([search_btn, widgets.Label(value=' '), clean_search_btn], layout=widgets.Layout(align_items='center')),
-			nlf_link_lable,
-			widgets.HBox([rec_btn, widgets.Label(value=' '), clean_recsys_btn], layout=widgets.Layout(align_items='center')),
-			recys_lbl,
-			widgets.HBox([exit_btn], layout=widgets.Layout(align_items='center')),
-			countdown_lbl],
-			layout=widgets.Layout(align_items='center')
+		[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=vbox_layout),
+		 welcome_lbl,
+		 entry,
+		 widgets.HBox([search_btn, widgets.Label(value=' '), clean_search_btn], layout=vbox_layout),
+		 nlf_link_lable,
+		 widgets.HBox([rec_btn, widgets.Label(value=' '), clean_recsys_btn], layout=vbox_layout),
+		 slider_value,  # Added slider
+		 recys_lbl,
+		 progress_bar,  # Added progress bar
+		 widgets.HBox([exit_btn], layout=vbox_layout),
+		 countdown_lbl],
+		layout=vbox_layout
 	)
 	display(GUI)
