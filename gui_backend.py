@@ -35,7 +35,7 @@ def clean_search_entry(change):
 
 # def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 # 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
-	
+
 # 	cmd=[	'python', 'concat_dfs.py', 
 # 				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
 # 				'--lmMethod', 'stanza', 
@@ -57,6 +57,30 @@ def clean_search_entry(change):
 # 	print('Captured Result:', type(recommended_tokens), recommended_tokens)
 
 # 	return recommended_tokens[:5]
+
+def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
+	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	cmd=[	'python', 'concat_dfs.py', 
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30', 
+				'--lmMethod', 'stanza', 
+				'--qphrase', f'{qu}',
+			]
+	
+	# Use subprocess.Popen to start the process
+	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+	# Wait for the process to complete and get the return code
+	return_code=process.wait()
+
+	# Capture stdout and stderr
+	stdout, stderr=process.communicate()
+
+	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+	recommended_tokens=[f"TK_{i+1}" for i in range(topK)]
+	# recommended_tokens=json.loads(serialized_result)
+	print('Captured Result:', type(recommended_tokens), recommended_tokens)
+
+	return recommended_tokens
 
 # def recSys_cb(change):
 # 	query = entry.value
@@ -81,29 +105,41 @@ def clean_search_entry(change):
 # def clean_recsys_entry(change):
 # 	recys_lbl.value = ""
 
-
-def get_recsys_result():
-	return [f"TK_{i+1}" for i in range(15)]
-
 def update_recys_lbl(_):
 	flink = "https://www.google.com/"
-	TKs = get_recsys_result()
+	TKs=get_recsys_result(qu=query, topK=15)
+	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 	query = entry.value
 	if query and query != "Enter your query keywords here...":
-		recys_lbl.value = generate_recys_html(query, TKs, flink, slider_value.value)
+		# recys_lbl.value = generate_recys_html(query, TKs, flink, slider_value.value)
+		recys_lbl.value = generate_recys_html(query, TKs, flinks, slider_value.value)
 	else:
 		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
 
-def generate_recys_html(query, TKs, flink, slider_value):
+def generate_recys_html(query, TKs, flinks, slider_value):
 	recys_lines = ""
 	for i in range(slider_value):
-		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[i]}</a></b><br>"
+		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[i]} target='_blank'>{query} + {TKs[i]}</a></b><br>"
 	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
 				 f"Since You searched for:<br>" \
 				 f"<b><i font-size:30px;>{query}</i></b><br>" \
 				 f"you might be also interested in:<br>" \
 				 f"{recys_lines}" \
 				 f"</p>"
+
+
+
+# def generate_recys_html(query, TKs, flink, slider_value):
+# 	recys_lines = ""
+# 	for i in range(slider_value):
+# 		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[i]}</a></b><br>"
+# 		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flink} target='_blank'>{query} + {TKs[i]}</a></b><br>"
+# 	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
+# 				 f"Since You searched for:<br>" \
+# 				 f"<b><i font-size:30px;>{query}</i></b><br>" \
+# 				 f"you might be also interested in:<br>" \
+# 				 f"{recys_lines}" \
+# 				 f"</p>"
 
 def clean_recsys_entry(change):
 	entry.value = ""
