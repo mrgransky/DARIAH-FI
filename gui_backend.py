@@ -140,14 +140,14 @@ def rec_btn_click(change):
 	if query and query != "Enter your query keywords here...":
 		progress_bar.layout.visibility = 'visible'  # Show progress bar
 		global TKs, flinks
-		TKs=get_recsys_result(qu=query, topK=15)
+		TKs=get_recsys_result(qu=query, topK=25)
 		flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 		#print(TKs)
 		progress_bar.layout.visibility = 'hidden'  # Hide progress bar
 		slider_value.layout.visibility = 'visible'  # Show slider
 	else:
 		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
-		
+
 	update_recys_lbl(None)
 
 left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
@@ -192,9 +192,10 @@ slider_style={'description_width': 'initial'}
 slider_value = widgets.IntSlider(value=5, min=3, max=15, description='Recsys Count', style=slider_style)
 slider_value.layout.visibility = 'hidden'  # Initially hidden
 
-# Hidden progress bar
-progress_bar = widgets.IntProgress(value=0, min=0, max=100, description='Loading...')
+progress_bar_style = {'description_width': 'initial', 'bar_color': 'blue', 'background_color': 'darkgray'}
+progress_bar = widgets.IntProgress(value=0, min=0, max=350, description='Please wait...',style=progress_bar_style)
 progress_bar.layout.visibility = 'hidden'  # Initially hidden
+
 slider_value.observe(update_recys_lbl, names='value') # real-time behavior
 
 rec_btn.on_click(rec_btn_click)
