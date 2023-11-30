@@ -106,10 +106,10 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 # 	recys_lbl.value = ""
 
 def update_recys_lbl(_):
+	query = entry.value
 	flink = "https://www.google.com/"
 	TKs=get_recsys_result(qu=query, topK=15)
 	flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
-	query = entry.value
 	if query and query != "Enter your query keywords here...":
 		# recys_lbl.value = generate_recys_html(query, TKs, flink, slider_value.value)
 		recys_lbl.value = generate_recys_html(query, TKs, flinks, slider_value.value)
