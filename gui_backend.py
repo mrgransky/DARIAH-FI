@@ -75,7 +75,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", topK: int=15):
 	# Capture stdout and stderr
 	stdout, stderr=process.communicate()
 
-	# serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
 	recommended_tokens=json.loads(serialized_result)
 	print('Captured Result:', type(recommended_tokens), recommended_tokens)
 
