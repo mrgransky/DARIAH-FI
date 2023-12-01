@@ -32,9 +32,16 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 				'--qphrase', f'{qu}',
 			]
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+	print(f"subprocess Popen...")
+
+	print(f"process.wait()...")
 	return_code=process.wait()
+
+	print(f"process.communicate()...")
 	stdout, stderr=process.communicate()
+	print(f'serializing...')
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+	print(f"json loads...")
 	recommended_tokens=json.loads(serialized_result)
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 	# return [f"TK_{i+1}" for i in range(topK)]
