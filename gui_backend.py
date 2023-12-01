@@ -84,7 +84,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
 				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30',
-				'--lmMethod', 'stanza', 
+				'--lmMethod', 'stanza',
 				'--qphrase', f'{qu}',
 			]
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)

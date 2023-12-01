@@ -27,7 +27,7 @@ from utils import *
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} query: {qu}")
 	cmd=[	'python', 'concat_dfs.py',
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30',
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x182',
 				'--lmMethod', 'stanza', 
 				'--qphrase', f'{qu}',
 			]
@@ -37,12 +37,22 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"process.wait()...")
 	return_code=process.wait()
 
-	print(f"process.communicate()...")
+	# Check the return code for errors
+	if return_code != 0:
+		print("Error executing script:", process.stderr.read())
+		# exit(1)
+		return
+
+	print(f"process.communicate()", end="\t")
+	t0=time.time()
 	stdout, stderr=process.communicate()
+	print(f"elapsed_t: {time.time()-t0:.2f} sec")
 	print(f'serializing...')
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+
 	print(f"json loads...")
 	recommended_tokens=json.loads(serialized_result)
+
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 	# return [f"TK_{i+1}" for i in range(topK)]
 	return recommended_tokens
