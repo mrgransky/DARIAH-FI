@@ -83,13 +83,30 @@ def clean_search_entry(change):
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x182',
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30',
 				'--lmMethod', 'stanza',
 				'--qphrase', f'{qu}',
 			]
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-	return_code=process.wait()
-	stdout, stderr=process.communicate()
+	
+	print(f"Wait for the script to finish executing (time consuming)...")
+	t0=time.time()
+	return_code=process.wait() # Wait for the script to finish executing
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
+
+	print(f"process.communicate()", end="\t")
+	t0=time.time()
+	stdout, stderr=process.communicate() # stderr not important!
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
+
+	if return_code != 0: # Check the return code for errors
+		print(f"<!> Error in executing script: {stderr}")
+		return
+
+	print("*"*120)
+	print(stdout)
+	print("*"*120)
+
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
 	recommended_tokens=json.loads(serialized_result)
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
