@@ -27,7 +27,7 @@ from utils import *
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} query: {qu}")
 	cmd=[	'python', 'concat_dfs.py',
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x182',
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30',
 				'--lmMethod', 'stanza', 
 				'--qphrase', f'{qu}',
 			]
