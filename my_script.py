@@ -35,12 +35,12 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"subprocess Popen...", end="\t")
 	t0=time.time()
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-	print(f"elapsed_t: {time.time()-t0:.2f} sec")
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
 	print(f"Wait for the script to finish executing...", end="\t")
 	t0=time.time()
 	return_code=process.wait() # Wait for the script to finish executing
-	print(f"elapsed_t: {time.time()-t0:.2f} sec")
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
 	print(f"checing for error...", end="\t")
 	t0=time.time()
@@ -48,22 +48,22 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 		print("Error executing script:", process.stderr.read())
 		# exit(1)
 		return
-	print(f"elapsed_t: {time.time()-t0:.2f} sec")
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
 	print(f"process.communicate()", end="\t")
 	t0=time.time()
 	stdout, stderr=process.communicate()
-	print(f"elapsed_t: {time.time()-t0:.2f} sec")
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
-	print(f'serializing...')
+	print(f'serializing...', end="\t")
 	t0=time.time()
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
-	print(f"elapsed_t: {time.time()-t0:.2f} sec")
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
 	print(f"json loads...", end="\t")
 	t0=time.time()
 	recommended_tokens=json.loads(serialized_result)
-	print(f"elapsed_t: {time.time()-t0:.2f} sec")
+	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 	# return [f"TK_{i+1}" for i in range(topK)]
