@@ -37,7 +37,7 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
-	print(f"Wait for the script to finish executing...", end="\t")
+	print(f"Wait for the script to finish executing (time consuming)...", end="\t")
 	t0=time.time()
 	return_code=process.wait() # Wait for the script to finish executing
 	print(f"elapsed_t: {time.time()-t0:.5f} sec")
@@ -67,6 +67,10 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 	# return [f"TK_{i+1}" for i in range(topK)]
+	# Print the output of the script
+	print("*"*150)
+	print(process.stdout.read())
+	print("*"*150)
 	return recommended_tokens
 
 if __name__ == '__main__':
