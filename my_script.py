@@ -27,7 +27,7 @@ from utils import *
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	print(f"Running {__file__} query: {qu}")
 	cmd=[	'python', 'concat_dfs.py',
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30',
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x182',
 				'--lmMethod', 'stanza', 
 				'--qphrase', f'{qu}',
 			]
@@ -37,23 +37,23 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
-	print(f"Wait for the script to finish executing (time consuming)...", end="\t")
+	print(f"Wait for the script to finish executing (time consuming)", end=" ")
 	t0=time.time()
 	return_code=process.wait() # Wait for the script to finish executing
 	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
-	print(f"checing for error...", end="\t")
-	t0=time.time()
-	if return_code != 0: # Check the return code for errors
-		print("Error executing script:", process.stderr.read())
-		# exit(1)
-		return
-	print(f"elapsed_t: {time.time()-t0:.5f} sec")
-
 	print(f"process.communicate()", end="\t")
 	t0=time.time()
-	stdout, stderr=process.communicate()
+	stdout, stderr=process.communicate() # stderr not important!
 	print(f"elapsed_t: {time.time()-t0:.5f} sec")
+
+	if return_code != 0: # Check the return code for errors
+		print(f"<!> Error in executing script: {stderr}")
+		return
+
+	print("*"*120)
+	print(stdout)
+	print("*"*120)
 
 	print(f'serializing...', end="\t")
 	t0=time.time()
@@ -67,13 +67,6 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 
 	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 	# return [f"TK_{i+1}" for i in range(topK)]
-	# Print the output of the script
-	print("*"*80)
-	print(stdout)
-	print("*"*80)
-	print(stderr)
-	print("*"*80)
-
 	return recommended_tokens
 
 if __name__ == '__main__':
