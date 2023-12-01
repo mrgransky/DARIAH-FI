@@ -81,19 +81,18 @@ def clean_search_entry(change):
 	entry.placeholder = "Enter your query keywords here..."
 
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
-	# print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x182',
+				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x30',
 				'--lmMethod', 'stanza', 
 				'--qphrase', f'{qu}',
 			]
-	
 	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	return_code=process.wait()
 	stdout, stderr=process.communicate()
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
 	recommended_tokens=json.loads(serialized_result)
-	# print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
+	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
 	# return [f"TK_{i+1}" for i in range(topK)]
 	return recommended_tokens
 
