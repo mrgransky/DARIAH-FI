@@ -69,7 +69,10 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
 	# return [f"TK_{i+1}" for i in range(topK)]
 	# Print the output of the script
 	print("*"*150)
-	print(process.stdout.read())
+	# Print the output of the script
+	# Read the output immediately after waiting for the child process to finish
+	output = process.stdout.read()
+	print(output)
 	print("*"*150)
 	return recommended_tokens
 
