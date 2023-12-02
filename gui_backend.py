@@ -142,7 +142,7 @@ def rec_btn_click(change):
 	if query and query != "Enter your query keywords here...":
 		progress_bar.layout.visibility = 'visible'  # Show progress bar
 		global TKs, flinks
-		TKs=get_recsys_result(qu=query)
+		TKs=get_recsys_result(qu=query, ndata=30)
 		flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
 		#print(TKs)
 		progress_bar.layout.visibility = 'hidden'  # Hide progress bar
