@@ -118,7 +118,7 @@ def update_recys_lbl(_):
 	if query and query != "Enter your query keywords here...":
 		recys_lbl.value = generate_recys_html(query, TKs, flinks, slider_value.value)
 	else:
-		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:black;text-align:center;>Enter a valid search query first!</p>"
+		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:red;text-align:center;>Enter a valid search query first!</p>"
 
 def generate_recys_html(query, TKs, flinks, slider_value):
 	recys_lines = ""
@@ -148,7 +148,7 @@ def rec_btn_click(change):
 		progress_bar.layout.visibility = 'hidden'  # Hide progress bar
 		slider_value.layout.visibility = 'visible'  # Show slider
 	else:
-		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:black;text-align:center;>Enter a valid search query first!</p>"
+		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:red;text-align:center;>Enter a valid search query first!</p>"
 	slider_value.value = 5  # Reset slider to its initial value
 	update_recys_lbl(None)
 
