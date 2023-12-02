@@ -13,7 +13,7 @@ left_image = PILImage.open(BytesIO(requests.get(left_image_path).content))
 right_image = PILImage.open(BytesIO(requests.get(right_image_path).content))
 left_image_widget = widgets.Image(value=requests.get(left_image_path).content, format='png', width=300, height=300)
 right_image_widget = widgets.Image(value=requests.get(right_image_path).content, format='png', width=300, height=300)
-welcome_lbl = widgets.HTML(value="<h2 style=font-family:verdana;font-size:30px;color:black;text-align:center;>Welcome!<br>What are you looking after, today?</h2>")
+welcome_lbl = widgets.HTML(value="<h2 style=font-family:verdana;font-size:22px;color:black;text-align:center;>Welcome to User-based Recommendation System!<br>What are you looking after?</h2>")
 
 # Modified entry widget
 entry = widgets.Text(placeholder="Enter your query keywords here...", 
@@ -80,10 +80,10 @@ def clean_search_entry(change):
 	entry.value = ""
 	entry.placeholder = "Enter your query keywords here..."
 
-def get_recsys_result(qu: str="Tampereen seudun työväenopisto"):
+def get_recsys_result(qu: str="Tampereen seudun työväenopisto", ndata: int=30):
 	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
-				'--dfsPath', '/scratch/project_2004072/Nationalbiblioteket/dataframes_x182',
+				'--dfsPath', f'/scratch/project_2004072/Nationalbiblioteket/dataframes_x{ndata}',
 				'--lmMethod', 'stanza',
 				'--qphrase', f'{qu}',
 			]
@@ -118,7 +118,7 @@ def update_recys_lbl(_):
 	if query and query != "Enter your query keywords here...":
 		recys_lbl.value = generate_recys_html(query, TKs, flinks, slider_value.value)
 	else:
-		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:black;text-align:center;>Enter a valid search query first!</p>"
 
 def generate_recys_html(query, TKs, flinks, slider_value):
 	recys_lines = ""
@@ -148,7 +148,8 @@ def rec_btn_click(change):
 		progress_bar.layout.visibility = 'hidden'  # Hide progress bar
 		slider_value.layout.visibility = 'visible'  # Show slider
 	else:
-		recys_lbl.value = "<font color='red'>Enter a valid search query first</font>"
+		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:black;text-align:center;>Enter a valid search query first!</p>"
+	slider_value.value = 5  # Reset slider to its initial value
 	update_recys_lbl(None)
 
 def run_gui():
