@@ -81,7 +81,7 @@ def clean_search_entry(change):
 	entry.placeholder = "Enter your query keywords here..."
 
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto", ndata: int=30):
-	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) query: {qu}")
+	print(f"Running {__file__} with {ndata} stored logged data in system using {nb.get_num_threads()} CPU core(s) query: {qu}")
 	cmd=[	'python', 'concat_dfs.py', 
 				'--dfsPath', f'/scratch/project_2004072/Nationalbiblioteket/dataframes_x{ndata}',
 				'--lmMethod', 'stanza',
@@ -94,18 +94,15 @@ def get_recsys_result(qu: str="Tampereen seudun työväenopisto", ndata: int=30)
 	return_code=process.wait() # Wait for the script to finish executing
 	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
-	print(f"process.communicate()", end="\t")
-	t0=time.time()
 	stdout, stderr=process.communicate() # stderr not important!
-	print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
 	if return_code != 0: # Check the return code for errors
 		print(f"<!> Error in executing script: {stderr}")
 		return
 
-	print("*"*120)
+	print("*"*90)
 	print(stdout)
-	print("*"*120)
+	print("*"*90)
 
 	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
 	recommended_tokens=json.loads(serialized_result)
