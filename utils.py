@@ -974,8 +974,7 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 
 def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
-	# SPMs=[(load_pickle(fpath=spm_path), load_pickle(fpath=spm_uname_path), load_pickle(fpath=spm_tkname_path)) for spm_path, spm_uname_path, spm_tkname_path in zip( get_spm_files(fpath=spm_fname), get_spm_files(fpath=spm_rows_fname), get_spm_files(fpath=spm_cols_fname)) ]
-	print(f"Concatinating {len(SPMs)} SPMs".center(180, "-"))
+	print(f"Concatinating {len(SPMs)} SPMs".center(200, "-"))
 	# return None, None, None
 	t=time.time()
 	ROWs=list()
@@ -1016,7 +1015,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 		current_row_idx+=len(rownames)
 		current_col_idx+=len(colnames)
 		print(f"elapsed_t: {time.time()-t00:.1f} s")
-	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} sec".center(180, "-"))
+	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} sec".center(200, "-"))
 
 	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
 	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape[0]}_nUSRs.gz")
