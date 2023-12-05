@@ -19,7 +19,9 @@ import glob
 import string
 import time
 import logging
-import functools
+# import functools
+import gzip
+
 from pandas.api.types import is_datetime64_any_dtype
 
 import numpy as np
@@ -671,21 +673,41 @@ def save_pickle(pkl, fname:str=""):
 	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
 		pkl.to_pickle(path=fname)
 	else:
-		with open(fname , mode="wb") as f:
+		# with open(fname , mode="wb") as f:
+		with gzip.open(fname , mode="wb") as f:
 			dill.dump(pkl, f)
 	elpt = time.time()-st_t
 	fsize_dump = os.stat( fname ).st_size / 1e6
 	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(150, " "))
 
-def load_pickle(fpath:str="unknown", dftype=None):
+# def load_pickle(fpath:str="unknown",):
+# 	print(f"Checking for existence? {fpath}")
+# 	st_t = time.time()
+# 	try:
+# 		pkl = pd.read_pickle(fpath)
+# 	except Exception as e:
+# 		print(f"<!> Not a Pandas DataFrame <read_pickle> {e}")
+# 		# with open(fpath, mode='rb') as f:
+# 		with gzip.open(fpath, mode='rb') as f:
+# 			pkl = dill.load(f)
+# 	elpt = time.time()-st_t
+# 	fsize = os.stat( fpath ).st_size / 1e6
+# 	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(130, " "))
+# 	return pkl
+
+def load_pickle(fpath:str="unknown",):
 	print(f"Checking for existence? {fpath}")
 	st_t = time.time()
 	try:
-		pkl = pd.read_pickle(fpath)
-	except Exception as e:
-		print(f"<!> Not a Pandas DataFrame <read_pickle> {e}")
+		with gzip.open(fpath, mode='rb') as f:
+			pkl=dill.load(f)
+	except gzip.BadGzipFile as ee:
+		print(f"<!> {ee}")
 		with open(fpath, mode='rb') as f:
-			pkl = dill.load(f)
+			pkl=dill.load(f)
+	except Exception as e:
+		print(f"<<!>> {e} loading for pandas read_pkl...")
+		pkl = pd.read_pickle(fpath)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
 	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(130, " "))
