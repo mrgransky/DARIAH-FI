@@ -804,12 +804,12 @@ def run():
 	RES_DIR=make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
 	
-	for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
-		print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
-		print(sp_mtx)
-		print(sp_mtx_rows)
-		print(sp_mtx_cols)
-		print("-"*180)
+	# for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
+	# 	print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
+	# 	print(sp_mtx)
+	# 	print(sp_mtx_rows)
+	# 	print(sp_mtx_cols)
+	# 	print("-"*180)
 	
 	try:
 		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
