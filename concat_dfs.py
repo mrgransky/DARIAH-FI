@@ -906,9 +906,8 @@ def run():
 												idf_vec=idf_vec,
 												spMtx_norm=usrNorms,
 											)
-	# print("<>"*80)
-	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\n")
-	st_t = time.time()
+	print("<>"*100)
+	print(f"Recommendation Result for Raw Query Phrase: < {args.qphrase} >\n")
 	topKtokens=get_topK_tokens(	mat=concat_spm_U_x_T, 
 															mat_rows=concat_spm_usrNames,
 															mat_cols=concat_spm_tokNames,
@@ -916,13 +915,10 @@ def run():
 															qu=query_phrase_tk,
 														)
 	print(topKtokens)
-
+	print("<>"*100)
 	# Serialize the list into a string and print it
 	serialized_result = json.dumps(topKtokens)
 	print('Serialized Result:', serialized_result)
-
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(140, " "))
-	print("<>"*80)
 
 if __name__ == '__main__':
 	# os.system("clear")
