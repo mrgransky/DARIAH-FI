@@ -19,7 +19,6 @@ stars=$(printf '%*s' 100 '')
 txt="$user began Slurm job: `date`"
 ch="#"
 
-
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
 echo "CPUS/NODE: $SLURM_JOB_CPUS_PER_NODE, MEM/NODE(--mem): $SLURM_MEM_PER_NODE"
