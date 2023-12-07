@@ -1,4 +1,6 @@
 from utils import *
+from nlp_utils import *
+
 import ipywidgets as widgets
 from IPython.display import display, HTML, Image
 from PIL import Image as PILImage, ImageOps
