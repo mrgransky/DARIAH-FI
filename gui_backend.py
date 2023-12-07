@@ -7,8 +7,21 @@ from io import BytesIO
 digi_base_url = "https://digi.kansalliskirjasto.fi/search"
 left_image_path = "https://www.topuniversities.com/sites/default/files/profiles/logos/tampere-university_5bbf14847d023f5bc849ec9a_large.jpg"
 right_image_path = "https://digi.kansalliskirjasto.fi/images/logos/logo_fi_darkblue.png"
+
 TKs=list()
 flinks=list()
+
+lmMethod: str="stanza"
+nSPMs: int=2
+spm_files_dir=f"/scratch/project_2004072/Nationalbiblioteket/dataframes_x{nSPMs}/"
+fprefix=f"concatinated_{nSPMs}_SPMs"
+
+concat_spm_U_x_T=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
+concat_spm_usrNames=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
+concat_spm_tokNames=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
+idf_vec=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
+usrNorms=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
+
 left_image = PILImage.open(BytesIO(requests.get(left_image_path).content))
 right_image = PILImage.open(BytesIO(requests.get(right_image_path).content))
 left_image_widget = widgets.Image(value=requests.get(left_image_path).content, format='png', width=300, height=300)
@@ -53,6 +66,31 @@ progress_bar = widgets.IntProgress(value=0, min=0, max=350, description='Please 
 progress_bar.description_style = progress_bar_description_style
 progress_bar.layout.visibility = 'hidden'  # Initially hidden
 
+def run_recSys(query_phrase: str: "This is a sample raw query phrase!", ):
+	query_phrase_tk = get_lemmatized_sqp(qu_list=[query_phrase], lm=lmMethod)
+	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
+															mat_row=concat_spm_usrNames, 
+															mat_col=concat_spm_tokNames, 
+															tokenized_qu_phrases=query_phrase_tk,
+														)
+	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
+												query_vec=query_vector, 
+												idf_vec=idf_vec,
+												spMtx_norm=usrNorms, # must be adjusted, accordingly!
+											)
+	avgRecSys=get_avg_rec(spMtx=concat_spm_U_x_T,
+												cosine_sim=ccs**5,
+												idf_vec=idf_vec,
+												spMtx_norm=usrNorms,
+											)
+	topKtokens=get_topK_tokens(	mat=concat_spm_U_x_T, 
+															mat_rows=concat_spm_usrNames,
+															mat_cols=concat_spm_tokNames,
+															avgrec=avgRecSys,
+															qu=query_phrase_tk,
+														)
+	return topKtokens
+
 def close_window(count=8):
 	if count > 0:
 		countdown_lbl.value = f"Thanks for using our service, Have a Good Day!<br><br>closing in {count} sec..."
@@ -82,32 +120,34 @@ def clean_search_entry(change):
 
 def get_recsys_result(qu: str="Tampereen seudun työväenopisto", ndata: int=30):
 	print(f"Running {__file__} with {ndata} stored logged data in system using {nb.get_num_threads()} CPU core(s) query: {qu}")
-	cmd=[	'python', 'concat_dfs.py', 
-				'--dfsPath', f'/scratch/project_2004072/Nationalbiblioteket/dataframes_x{ndata}',
-				'--lmMethod', 'stanza',
-				'--qphrase', f'{qu}',
-			]
-	process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+	# cmd=[	'python', 'concat_dfs.py', 
+	# 			'--dfsPath', f'/scratch/project_2004072/Nationalbiblioteket/dataframes_x{ndata}',
+	# 			'--lmMethod', 'stanza',
+	# 			'--qphrase', f'{qu}',
+	# 		]
+	# process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 	
-	print(f"Wait for the script to finish executing (time consuming)...")
-	t0=time.time()
-	return_code=process.wait() # Wait for the script to finish executing
-	print(f"elapsed_t: {time.time()-t0:.5f} sec")
+	# print(f"Wait for the script to finish executing (time consuming)...")
+	# t0=time.time()
+	# return_code=process.wait() # Wait for the script to finish executing
+	# print(f"elapsed_t: {time.time()-t0:.5f} sec")
 
-	stdout, stderr=process.communicate() # stderr not important!
+	# stdout, stderr=process.communicate() # stderr not important!
 
-	if return_code != 0: # Check the return code for errors
-		print(f"<!> Error in executing script: {stderr}")
-		return
+	# if return_code != 0: # Check the return code for errors
+	# 	print(f"<!> Error in executing script: {stderr}")
+	# 	return
 
-	print("*"*90)
-	print(stdout)
-	print("*"*90)
+	# print("*"*90)
+	# print(stdout)
+	# print("*"*90)
 
-	serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
-	recommended_tokens=json.loads(serialized_result)
-	print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
-	# return [f"TK_{i+1}" for i in range(topK)]
+	# serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
+	# recommended_tokens=json.loads(serialized_result)
+	# print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
+	# # return [f"TK_{i+1}" for i in range(topK)]
+	recommended_tokens=run_recSys(query_phrase=qu)
 	return recommended_tokens
 
 def update_recys_lbl(_):
@@ -150,6 +190,8 @@ def rec_btn_click(change):
 	update_recys_lbl(None)
 
 def run_gui():
+	# load files and spm:
+
 	GUI=widgets.VBox(
 		[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=vbox_layout),
 		 welcome_lbl,

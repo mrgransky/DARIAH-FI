@@ -877,6 +877,7 @@ def run():
 																) # (nUsers,) 
 	print(f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}")
 	print("-"*150)
+
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
 	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
