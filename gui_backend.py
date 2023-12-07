@@ -66,7 +66,7 @@ progress_bar = widgets.IntProgress(value=0, min=0, max=350, description='Please 
 progress_bar.description_style = progress_bar_description_style
 progress_bar.layout.visibility = 'hidden'  # Initially hidden
 
-def run_recSys(query_phrase: str: "This is a sample raw query phrase!", ):
+def run_recSys(query_phrase: str="This is a sample raw query phrase!", ):
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[query_phrase], lm=lmMethod)
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
