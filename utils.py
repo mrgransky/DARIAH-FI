@@ -74,7 +74,7 @@ params = {
 pylab.rcParams.update(params)
 
 # logging.getLogger().setLevel(logging.WARNING)
-logging.getLogger().setLevel(logging.CRITICAL)
+logging.getLogger("stanza").setLevel(logging.CRITICAL)
 
 # check for more hex_color: https://www.webucator.com/article/python-color-constants-module/
 clrs = ["#ff2eee",
