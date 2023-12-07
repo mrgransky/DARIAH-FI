@@ -18,11 +18,12 @@ nSPMs: int=58
 spm_files_dir=f"/scratch/project_2004072/Nationalbiblioteket/dataframes_x{nSPMs}/"
 fprefix=f"concatinated_{nSPMs}_SPMs"
 
-concat_spm_U_x_T=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
-concat_spm_usrNames=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
-concat_spm_tokNames=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
-idf_vec=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
-usrNorms=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
+with HiddenPrints():
+	concat_spm_U_x_T=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
+	concat_spm_usrNames=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
+	concat_spm_tokNames=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
+	idf_vec=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
+	usrNorms=load_pickle(fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
 
 left_image = PILImage.open(BytesIO(requests.get(left_image_path).content))
 right_image = PILImage.open(BytesIO(requests.get(right_image_path).content))
@@ -120,38 +121,6 @@ def clean_search_entry(change):
 	entry.value = ""
 	entry.placeholder = "Enter your query keywords here..."
 
-def get_recsys_result(qu: str="Tampereen seudun työväenopisto", ndata: int=30):
-	print(f"Running {__file__} with {ndata} stored logged data in system using {nb.get_num_threads()} CPU core(s) query: {qu}")
-
-	# cmd=[	'python', 'concat_dfs.py', 
-	# 			'--dfsPath', f'/scratch/project_2004072/Nationalbiblioteket/dataframes_x{ndata}',
-	# 			'--lmMethod', 'stanza',
-	# 			'--qphrase', f'{qu}',
-	# 		]
-	# process=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-	
-	# print(f"Wait for the script to finish executing (time consuming)...")
-	# t0=time.time()
-	# return_code=process.wait() # Wait for the script to finish executing
-	# print(f"elapsed_t: {time.time()-t0:.5f} sec")
-
-	# stdout, stderr=process.communicate() # stderr not important!
-
-	# if return_code != 0: # Check the return code for errors
-	# 	print(f"<!> Error in executing script: {stderr}")
-	# 	return
-
-	# print("*"*90)
-	# print(stdout)
-	# print("*"*90)
-
-	# serialized_result=re.search(r'Serialized Result: (.+)', stdout).group(1)
-	# recommended_tokens=json.loads(serialized_result)
-	# print('Captured Result:', type(recommended_tokens), len(recommended_tokens), recommended_tokens)
-	# # return [f"TK_{i+1}" for i in range(topK)]
-	recommended_tokens=run_recSys(query_phrase=qu)
-	return recommended_tokens
-
 def update_recys_lbl(_):
 	query = entry.value
 	if query and query != "Enter your query keywords here...":
@@ -181,9 +150,9 @@ def rec_btn_click(change):
 	if query and query != "Enter your query keywords here...":
 		progress_bar.layout.visibility = 'visible'  # Show progress bar
 		global TKs, flinks
-		TKs=get_recsys_result(qu=query, ndata=732)
+		with HiddenPrints():
+			TKs=run_recSys(query_phrase=query)
 		flinks=[f"{digi_base_url}?query={urllib.parse.quote(f'{query} {tk}')}" for tk in TKs]
-		#print(TKs)
 		progress_bar.layout.visibility = 'hidden'  # Hide progress bar
 		slider_value.layout.visibility = 'visible'  # Show slider
 	else:
