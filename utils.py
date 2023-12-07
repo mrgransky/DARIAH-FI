@@ -74,8 +74,7 @@ params = {
 	}
 pylab.rcParams.update(params)
 
-logger = logging.getLogger()
-logger.disabled = True
+logging.getLogger().setLevel(logging.WARNING)
 
 # check for more hex_color: https://www.webucator.com/article/python-color-constants-module/
 clrs = ["#ff2eee",
