@@ -32,7 +32,7 @@ import dask
 # Numpy: 1.25.2 Pandas: 2.1.0 Dask: 2023.9.1 # September 2023
 
 from natsort import natsorted
-from collections import Counter
+from collections import Counter, defaultdict
 from typing import List, Set, Dict, Tuple
 
 from scipy.sparse import csr_matrix, coo_matrix, lil_matrix, linalg
@@ -681,21 +681,6 @@ def save_pickle(pkl, fname:str=""):
 	fsize_dump = os.stat( fname ).st_size / 1e6
 	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(150, " "))
 
-# def load_pickle(fpath:str="unknown",):
-# 	print(f"Checking for existence? {fpath}")
-# 	st_t = time.time()
-# 	try:
-# 		pkl = pd.read_pickle(fpath)
-# 	except Exception as e:
-# 		print(f"<!> Not a Pandas DataFrame <read_pickle> {e}")
-# 		# with open(fpath, mode='rb') as f:
-# 		with gzip.open(fpath, mode='rb') as f:
-# 			pkl = dill.load(f)
-# 	elpt = time.time()-st_t
-# 	fsize = os.stat( fpath ).st_size / 1e6
-# 	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(130, " "))
-# 	return pkl
-
 def load_pickle(fpath:str="unknown",):
 	print(f"Checking for existence? {fpath}")
 	st_t = time.time()
@@ -1040,13 +1025,17 @@ def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str
 		print(f"elapsed_t: {time.time()-t00:.1f} s")
 	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} sec".center(200, "-"))
 
+	concat_BoW = get_concat_bow(colnames_all) # np.array(["A", "B", "C", "D"]) => {"A":0, "B":1, "C":2, "D":3,}
+
 	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
 	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape[0]}_nUSRs.gz")
 	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_token_names_{newmatrix.shape[1]}_nTOKs.gz")
+	concat_bow_fname=os.path.join(save_dir, f"{prefix_fname}_x_{newmatrix.shape[1]}_BoWs.json")
 
 	save_pickle(pkl=newmatrix, fname=spm_fname)
 	save_pickle(pkl=rownames_all, fname=spm_rows_fname)
 	save_pickle(pkl=colnames_all, fname=spm_cols_fname)
+	save_vocab(vb=concat_BoW, fname=concat_bow_fname)
 
 	return newmatrix, rownames_all, colnames_all
 
@@ -1111,3 +1100,9 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, qu, K: int=80):
 	# return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1]
 	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:] if mat_cols[iTK] not in qu][::-1] # 
+
+def get_concat_bow(arr):
+	bow_dict = defaultdict(int)
+	for i, v in enumerate(arr):
+		bow_dict[v] = i
+	return bow_dict
