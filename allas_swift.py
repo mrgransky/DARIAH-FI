@@ -4,6 +4,7 @@ import geopandas as gpd
 from rasterio.io import MemoryFile
 import tempfile
 import os
+import glob
 
 """
 Example script for using Allas directly from a Python script with swift library
@@ -46,16 +47,18 @@ conn = swiftclient.Connection(
 )
 
 ### 1. Download a file from Allas to local filesystem
-obj = '<YOUR-ALLAS-FILE>'
+print(f"downloading file into local file...")
+obj = 'dataframes_x2.tar'
 container = 'buck_x2'
-file_output = '<YOUR-OUTPUT-PATH>'
+file_output = '/scratch/project_2004072/Nationalbiblioteket/test_trash'
 headers, raster = conn.get_object(container, obj)
 with open(file_output, 'bw') as f:
 		f.write(raster)
-
+print(f"done!")
+print(os.listdir(file_output))
 ### 2. Writing a raster file to Allas using the Swift library
 fp = "<PATH-TO-LOCAL-TIF-FILE>"
-bucket_name = '<YOUR-BUCKET>'
+bucket_name = 'buck_x2'
 raster = rasterio.open(fp)
 input_data = raster.read()
 
