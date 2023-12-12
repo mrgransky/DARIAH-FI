@@ -47,7 +47,7 @@ conn = swiftclient.Connection(
 ### 0.0 Looping through buckets and files inside
 resp_headers, containers = conn.get_account()
 for container in containers:
-	print(f"bucket: {container['name']} contains:")
+	print(f"bucket < {container['name']} > contains:")
 	for data in conn.get_container(container['name'])[1]:
 		print("\t" + container['name'] + "/" + data['name'])
 
@@ -62,33 +62,35 @@ headers, my_obj = conn.get_object(container, obj)
 
 print(f"{type(headers)} {type(my_obj)}")
 
-with open(os.path.join(out_dir, file_output), 'bw') as f:
-	f.write(my_obj)
-print(f"done!")
-print(os.listdir(out_dir))
 
 
-### 2. Writing a raster file to Allas using the Swift library
-print(f"writing...")
-fp = "<PATH-TO-LOCAL-TIF-FILE>"
-bucket_name = 'buck_x2'
-raster = rasterio.open(fp)
-input_data = raster.read()
-
-# The file is written to memory first and then uploaded to Allas
-with MemoryFile() as mem_file:
-		with mem_file.open(**raster.profile) as dataset:
-				dataset.write(input_data)
-		conn.put_object(bucket_name, os.path.basename(fp), contents=mem_file)
+# with open(os.path.join(out_dir, file_output), 'bw') as f:
+# 	f.write(my_obj)
+# print(f"done!")
+# print(os.listdir(out_dir))
 
 
-### 3. Writing a vector file to Allas using the Swift library
-fp = "<PATH-TO-GPKG-FILE>"
-bucket_name = '<YOUR-BUCKET>'
-vector = gpd.read_file(fp)
+# ### 2. Writing a raster file to Allas using the Swift library
+# print(f"writing...")
+# fp = "<PATH-TO-LOCAL-TIF-FILE>"
+# bucket_name = 'buck_x2'
+# raster = rasterio.open(fp)
+# input_data = raster.read()
 
-# The file is written to memory first and then uploaded to Allas
-tmp = tempfile.NamedTemporaryFile()
-vector.to_file(tmp, layer='test', driver="GPKG")
-tmp.seek(0) # Moving pointer to the beginning of temp file.
-conn.put_object(bucket_name, os.path.basename(fp) ,contents=tmp)
+# # The file is written to memory first and then uploaded to Allas
+# with MemoryFile() as mem_file:
+# 		with mem_file.open(**raster.profile) as dataset:
+# 				dataset.write(input_data)
+# 		conn.put_object(bucket_name, os.path.basename(fp), contents=mem_file)
+
+
+# ### 3. Writing a vector file to Allas using the Swift library
+# fp = "<PATH-TO-GPKG-FILE>"
+# bucket_name = '<YOUR-BUCKET>'
+# vector = gpd.read_file(fp)
+
+# # The file is written to memory first and then uploaded to Allas
+# tmp = tempfile.NamedTemporaryFile()
+# vector.to_file(tmp, layer='test', driver="GPKG")
+# tmp.seek(0) # Moving pointer to the beginning of temp file.
+# conn.put_object(bucket_name, os.path.basename(fp) ,contents=tmp)
