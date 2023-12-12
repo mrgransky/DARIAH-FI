@@ -26,7 +26,6 @@ _auth_token = os.environ['OS_AUTH_TOKEN']
 _project_name = os.environ['OS_PROJECT_NAME']
 _user = os.environ['OS_USERNAME']
 
-
 # Various settings for connecting to Puhti
 _auth_version = '3'
 _os_options = {
@@ -46,12 +45,12 @@ conn = swiftclient.Connection(
 		auth_version=_auth_version
 )
 
-### 5. Looping through buckets and files inside your project
+### 0.0 Looping through buckets and files inside
 resp_headers, containers = conn.get_account()
 for container in containers:
-		print(container['name'])
-		for data in conn.get_container(container['name'])[1]:
-				print("\t" + container['name'] + "/" + data['name'])
+	print(f"bucket: {container['name']} contains:")
+	for data in conn.get_container(container['name'])[1]:
+		print("\t" + container['name'] + "/" + data['name'])
 
 ### 1. Download a file from Allas to local filesystem
 print(f"downloading file into local file...")
@@ -59,10 +58,15 @@ obj = 'dataframes_x2.tar'
 container = 'buck_x2'
 out_dir = "/scratch/project_2004072/Nationalbiblioteket/test_trash"
 file_output = 'dataframes_x2_copy.tar'
+headers, my_obj = conn.get_object(container, obj)
 
-headers, raster = conn.get_object(container, obj)
+print(f"{type(headers)} {type(my_obj)}")
+
+for ch in my_obj.chunks():
+  print(type(ch), ch)
+
 with open(os.path.join(out_dir, file_output), 'bw') as f:
-		f.write(raster)
+	f.write(my_obj)
 print(f"done!")
 print(os.listdir(out_dir))
 
