@@ -69,8 +69,9 @@ for k, v in headers.items():
 
 print(f"{json.dumps(headers, indent=2, ensure_ascii=False)}")
 print("#"*100)
-print(my_obj)
-print("#"*100)
+
+# print(my_obj)
+# print("#"*100)
 
 # with open(os.path.join(out_dir, file_output), 'bw') as f:
 # 	f.write(my_obj)
