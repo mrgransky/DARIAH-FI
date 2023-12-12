@@ -48,9 +48,13 @@ conn = swiftclient.Connection(
 
 ### 0.0 Looping through buckets and files inside
 resp_headers, containers = conn.get_account()
-print("Response headers: %s" % resp_headers)
+print(f"{json.dumps(resp_headers, indent=2, ensure_ascii=False)}")
+print("#"*100)
 
 for container in containers:
+	print(f"{json.dumps(container, indent=2, ensure_ascii=False)}")
+	print("*"*100)
+
 	print(f"{type(container)} < {container['name']} > contains:")
 	for data in conn.get_container(container['name'])[1]:
 		print("\t" + container['name'] + "/" + data['name'])
@@ -66,8 +70,8 @@ headers, my_obj = conn.get_object(container, obj)
 
 print(f"{type(headers)} {type(my_obj)}")
 
-for k, v in headers.items():
-	print(k, v)
+# for k, v in headers.items():
+# 	print(k, v)
 
 print(f"{json.dumps(headers, indent=2, ensure_ascii=False)}")
 print("#"*100)
