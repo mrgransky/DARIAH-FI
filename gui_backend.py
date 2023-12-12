@@ -14,7 +14,7 @@ TKs=list()
 flinks=list()
 
 lmMethod: str="stanza"
-nSPMs: int=732
+nSPMs: int=58
 spm_files_dir=f"/scratch/project_2004072/Nationalbiblioteket/dataframes_x{nSPMs}/"
 fprefix=f"concatinated_{nSPMs}_SPMs"
 

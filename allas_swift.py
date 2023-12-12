@@ -34,6 +34,8 @@ _os_options = {
 		'project_name': _project_name
 }
 
+print(f"creating swift connection...")
+
 # Creating the connection client
 conn = swiftclient.Connection(
 		user=_user,
@@ -45,7 +47,7 @@ conn = swiftclient.Connection(
 
 ### 1. Download a file from Allas to local filesystem
 obj = '<YOUR-ALLAS-FILE>'
-container = '<YOUR-ALLAS-BUCKET>'
+container = 'buck_x2'
 file_output = '<YOUR-OUTPUT-PATH>'
 headers, raster = conn.get_object(container, obj)
 with open(file_output, 'bw') as f:
