@@ -50,7 +50,7 @@ conn = swiftclient.Connection(
 print(f"downloading file into local file...")
 obj = 'dataframes_x2.tar'
 container = 'buck_x2'
-file_output = '/scratch/project_2004072/Nationalbiblioteket/test_trash'
+file_output = '/scratch/project_2004072/Nationalbiblioteket/test_trash/dataframes_x2_copy.tar'
 headers, raster = conn.get_object(container, obj)
 with open(file_output, 'bw') as f:
 		f.write(raster)
