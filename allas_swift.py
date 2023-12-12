@@ -57,12 +57,10 @@ obj = 'dataframes_x2.tar'
 container = 'buck_x2'
 out_dir = "/scratch/project_2004072/Nationalbiblioteket/test_trash"
 file_output = 'dataframes_x2_copy.tar'
+
 headers, my_obj = conn.get_object(container, obj)
 
 print(f"{type(headers)} {type(my_obj)}")
-
-for ch in my_obj.chunks():
-  print(type(ch), ch)
 
 with open(os.path.join(out_dir, file_output), 'bw') as f:
 	f.write(my_obj)
