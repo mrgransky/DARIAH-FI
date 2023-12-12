@@ -4,8 +4,7 @@ import geopandas as gpd
 from rasterio.io import MemoryFile
 import tempfile
 import os
-import glob
-
+import tarfile
 """
 Example script for using Allas directly from a Python script with swift library
 Created on 27.01.2020 by Johannes Nyman
