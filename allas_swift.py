@@ -69,6 +69,7 @@ with open(os.path.join(out_dir, file_output), 'bw') as f:
 print(f"done!")
 print(os.listdir(out_dir))
 
+
 ### 2. Writing a raster file to Allas using the Swift library
 print(f"writing...")
 fp = "<PATH-TO-LOCAL-TIF-FILE>"
