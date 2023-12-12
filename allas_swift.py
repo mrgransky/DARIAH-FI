@@ -5,6 +5,8 @@ from rasterio.io import MemoryFile
 import tempfile
 import os
 import tarfile
+import json
+
 """
 Example script for using Allas directly from a Python script with swift library
 Created on 27.01.2020 by Johannes Nyman
@@ -65,10 +67,11 @@ print(f"{type(headers)} {type(my_obj)}")
 for k, v in headers.items():
 	print(k, v)
 
-print(headers)
+print(f"{json.dumps(headers, indent=2, ensure_ascii=False)}")
 print("#"*100)
 print(my_obj)
 print("#"*100)
+
 # with open(os.path.join(out_dir, file_output), 'bw') as f:
 # 	f.write(my_obj)
 # print(f"done!")
