@@ -62,8 +62,13 @@ headers, my_obj = conn.get_object(container, obj)
 
 print(f"{type(headers)} {type(my_obj)}")
 
+for k, v in headers.items():
+	print(k, v)
 
-
+print(headers)
+print("#"*100)
+print(my_obj)
+print("#"*100)
 # with open(os.path.join(out_dir, file_output), 'bw') as f:
 # 	f.write(my_obj)
 # print(f"done!")
