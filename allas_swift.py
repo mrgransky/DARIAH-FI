@@ -48,8 +48,10 @@ conn = swiftclient.Connection(
 
 ### 0.0 Looping through buckets and files inside
 resp_headers, containers = conn.get_account()
+print("Response headers: %s" % resp_headers)
+
 for container in containers:
-	print(f"bucket < {container['name']} > contains:")
+	print(f"{type(container)} < {container['name']} > contains:")
 	for data in conn.get_container(container['name'])[1]:
 		print("\t" + container['name'] + "/" + data['name'])
 
@@ -73,10 +75,12 @@ print("#"*100)
 # print(my_obj)
 # print("#"*100)
 
-# with open(os.path.join(out_dir, file_output), 'bw') as f:
-# 	f.write(my_obj)
-# print(f"done!")
-# print(os.listdir(out_dir))
+with open(os.path.join(out_dir, file_output), 'bw') as f:
+	# f.write(my_obj)
+	print(type(f))
+
+print(f"done!")
+print(os.listdir(out_dir))
 
 
 # ### 2. Writing a raster file to Allas using the Swift library
