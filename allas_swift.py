@@ -46,6 +46,13 @@ conn = swiftclient.Connection(
 		auth_version=_auth_version
 )
 
+### 5. Looping through buckets and files inside your project
+resp_headers, containers = conn.get_account()
+for container in containers:
+		print(container['name'])
+		for data in conn.get_container(container['name'])[1]:
+				print("\t" + container['name'] + "/" + data['name'])
+
 ### 1. Download a file from Allas to local filesystem
 print(f"downloading file into local file...")
 obj = 'dataframes_x2.tar'
@@ -83,12 +90,3 @@ tmp = tempfile.NamedTemporaryFile()
 vector.to_file(tmp, layer='test', driver="GPKG")
 tmp.seek(0) # Moving pointer to the beginning of temp file.
 conn.put_object(bucket_name, os.path.basename(fp) ,contents=tmp)
-
-
-### 5. Looping through buckets and files inside your project
-resp_headers, containers = conn.get_account()
-for container in containers:
-		print(container['name'])
-		for data in conn.get_container(container['name'])[1]:
-				print("\t" + container['name'] + "/" + data['name'])
-
