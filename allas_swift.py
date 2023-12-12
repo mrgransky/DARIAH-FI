@@ -50,13 +50,17 @@ conn = swiftclient.Connection(
 print(f"downloading file into local file...")
 obj = 'dataframes_x2.tar'
 container = 'buck_x2'
-file_output = '/scratch/project_2004072/Nationalbiblioteket/test_trash/dataframes_x2_copy.tar'
+out_dir = "/scratch/project_2004072/Nationalbiblioteket/test_trash"
+file_output = 'dataframes_x2_copy.tar'
+
 headers, raster = conn.get_object(container, obj)
-with open(file_output, 'bw') as f:
+with open(os.path.join(out_dir, file_output), 'bw') as f:
 		f.write(raster)
 print(f"done!")
-print(os.listdir(file_output))
+print(os.listdir(out_dir))
+
 ### 2. Writing a raster file to Allas using the Swift library
+print(f"writing...")
 fp = "<PATH-TO-LOCAL-TIF-FILE>"
 bucket_name = 'buck_x2'
 raster = rasterio.open(fp)
