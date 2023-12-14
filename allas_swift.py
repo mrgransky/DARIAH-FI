@@ -54,7 +54,6 @@ print("#"*100)
 for container in containers:
 	print(f"{json.dumps(container, indent=2, ensure_ascii=False)}")
 	print("*"*100)
-
 	print(f"{type(container)} < {container['name']} > contains:")
 	for data in conn.get_container(container['name'])[1]:
 		print("\t" + container['name'] + "/" + data['name'])

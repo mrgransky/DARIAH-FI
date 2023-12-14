@@ -45,9 +45,7 @@ entry = widgets.Text(placeholder="Enter your query keywords here...",
 # Added vertical padding
 vbox_layout = widgets.Layout(align_items='center', padding='15px')
 
-# Modified buttons with dark gray background and enlarged font size
 button_style = {'button_color': 'darkgray', 'font_weight': 'bold', 'font_size': '16px'}
-
 search_btn = widgets.Button(description="Search NLF", layout=widgets.Layout(width='150px'), style=button_style)
 clean_search_btn = widgets.Button(description="Clear", layout=widgets.Layout(width='150px'), style=button_style)
 rec_btn = widgets.Button(description="Recommend Me", layout=widgets.Layout(width='150px'), style=button_style)
