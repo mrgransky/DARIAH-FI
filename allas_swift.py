@@ -7,16 +7,10 @@ import os
 import tarfile
 import json
 
-
-
-
 ### 1. Establishing the Swift connection to Allas
-# You need to run the following commands in Puhti to get the authentication to Allas active
-
-"""
-module load allas
-allas-conf
-"""
+# in terminal:
+# module load allas
+# allas-conf project_2004072
 
 # These exist after running allas-conf
 _authurl = os.environ['OS_STORAGE_URL']
@@ -43,7 +37,7 @@ conn = swiftclient.Connection(
 		auth_version=_auth_version
 )
 
-### 0.0 Looping through buckets and files inside
+### Looping through buckets and files inside
 resp_headers, containers = conn.get_account()
 print(f"{json.dumps(resp_headers, indent=2, ensure_ascii=False)}")
 print("#"*100)
@@ -56,7 +50,6 @@ for container in containers:
 		print("\t" + container['name'] + "/" + data['name'])
 
 ### 1. Download a file from Allas to local filesystem
-print(f"downloading file into local file...")
 obj = 'dataframes_x2.tar'
 container = 'buck_x2'
 out_dir = "/scratch/project_2004072/Nationalbiblioteket/test_trash"
@@ -66,22 +59,29 @@ headers, my_obj = conn.get_object(container, obj)
 
 print(f"{type(headers)} {type(my_obj)}")
 
-# for k, v in headers.items():
-# 	print(k, v)
-
 print(f"{json.dumps(headers, indent=2, ensure_ascii=False)}")
 print("#"*100)
 
-# print(my_obj)
-# print("#"*100)
-
+print(f"downloading file into local file...")
 with open(os.path.join(out_dir, file_output), 'bw') as f:
 	# f.write(my_obj)
 	print(type(f))
-
 print(f"done!")
 print(os.listdir(out_dir))
 
+# start my computation:
+############################
+############################
+
+# delete the saved and the created local object in my puhti scratch directory:
+print(f"removing local obj:")
+try:
+	conn.delete_object(container, obj)
+	print("Successfully deleted the object")
+except ClientException as e:
+	print(f"Failed to delete the object with error: {e}")
+print(f"Done!")
+print(os.listdir(out_dir))
 
 # ### 2. Writing a raster file to Allas using the Swift library
 # print(f"writing...")
