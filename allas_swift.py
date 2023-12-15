@@ -7,13 +7,7 @@ import os
 import tarfile
 import json
 
-"""
-Example script for using Allas directly from a Python script with swift library
-Created on 27.01.2020 by Johannes Nyman
-"""
-
 ### 1. Establishing the Swift connection to Allas
-
 # You need to run the following commands in Puhti to get the authentication to Allas active
 
 """
