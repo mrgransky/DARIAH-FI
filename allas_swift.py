@@ -71,7 +71,8 @@ print(os.listdir(out_dir))
 
 # start my computation:
 ############################
-# my code...
+# must untar first...
+# execute my code...
 ############################
 
 # delete the saved and the created local object in my puhti scratch directory:
