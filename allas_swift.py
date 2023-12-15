@@ -64,13 +64,14 @@ print("#"*100)
 
 print(f"downloading file into local file...")
 with open(os.path.join(out_dir, file_output), 'bw') as f:
-	# f.write(my_obj)
+	f.write(my_obj)
 	print(type(f))
 print(f"done!")
 print(os.listdir(out_dir))
 
 # start my computation:
 ############################
+# my code...
 ############################
 
 # delete the saved and the created local object in my puhti scratch directory:
