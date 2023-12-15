@@ -7,6 +7,9 @@ import os
 import tarfile
 import json
 
+
+
+
 ### 1. Establishing the Swift connection to Allas
 # You need to run the following commands in Puhti to get the authentication to Allas active
 
