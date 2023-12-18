@@ -55,16 +55,16 @@ container = 'buck_x2'
 out_dir = "/scratch/project_2004072/Nationalbiblioteket/test_trash"
 file_output = 'dataframes_x2_copy.tar'
 
-headers, my_obj = conn.get_object(container, obj)
+headers, obj_contents = conn.get_object(container, obj)
 
-print(f"{type(headers)} {type(my_obj)}")
+print(f"{type(headers)} {type(obj_contents)}")
 
 print(f"{json.dumps(headers, indent=2, ensure_ascii=False)}")
 print("#"*100)
 
 print(f"downloading file into local file...")
 with open(os.path.join(out_dir, file_output), 'bw') as f:
-	f.write(my_obj)
+	f.write(obj_contents)
 	print(type(f))
 print(f"done!")
 print(os.listdir(out_dir))

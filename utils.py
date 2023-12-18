@@ -136,34 +136,28 @@ usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket',
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
-# datasets_path = os.path.join( NLF_DATASET_PATH, f"datasets" )
-# dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs" )
-# dpath = os.path.join( NLF_DATASET_PATH, f"NLF_Pseudonymized_Logs_nikeXY" )
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
-# dfs_path = os.path.join( NLF_DATASET_PATH, f"dataframes")
 
 # pd.set_option('display.max_rows', None)
 # pd.set_option('display.max_columns', None)
 # pd.set_option('display.width', 1000)
 # pd.set_option('display.max_colwidth', None)
 
-# # list of all weights (initial):
-# weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
-# weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
-# weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
-# weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
-# weightContentPTAppearance:float = 0.005	# Did not consider initiially!
-# weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
-
-
-# list of all weights:
+# list of all weights (initial):
 weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
-weightSnippetHWAppearance:float = 0.6		# suggested by Jakko: 0.2
+weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
 weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
-weightContentHWAppearance:float = 0.5		# suggested by Jakko: 0.05
-weightContentPTAppearance:float = 0.3		# Did not consider initiially!
-weightContentAppearance:float = 0.15 		# suggested by Jakko: 0.05
+weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
+weightContentPTAppearance:float = 0.005	# Did not consider initiially!
+weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
 
+# # list of all weights (bad_results):
+# weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
+# weightSnippetHWAppearance:float = 0.6		# suggested by Jakko: 0.2
+# weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
+# weightContentHWAppearance:float = 0.5		# suggested by Jakko: 0.05
+# weightContentPTAppearance:float = 0.3		# Did not consider initiially!
+# weightContentAppearance:float = 0.15 		# suggested by Jakko: 0.05
 
 w_list:List[float] = [weightQueryAppearance, 
 											weightSnippetHWAppearance,
