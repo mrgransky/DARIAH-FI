@@ -11,24 +11,16 @@ def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	print(len(vb), len(lst), wg, lst)
 	result_vb: Dict[str, float]={}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
-		# print(vtk)
 		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
-			# return
 			print(f"{vtk} not found! => continue...")
-			continue
-			# pass
-		# print(f"...HELOOOOOO after continue with < {vtk} > ...")
+			continue # pass is wrong! # return is wrong!
 		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
-			# print(f"{vtk} Found!")
 			prev = result_vb.get(vtk)
 			curr = prev + wg
 			result_vb[vtk] = curr
-			# result_vb[vtk] = result_vb.get(vtk) + wg # original implementation
-			#print(vtk, wg, result_vb[vtk])
 		else:
 			print(f"initialize with wg={wg} for < {vtk} >")
 			result_vb[vtk]=wg
-		# print()
 	print(f"result_vb {type(result_vb)} {len(result_vb)}")
 	print(json.dumps(result_vb, indent=2, ensure_ascii=False))
 	return result_vb
