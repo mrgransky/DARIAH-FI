@@ -119,23 +119,23 @@ def clean_search_entry(change):
 	entry.value = ""
 	entry.placeholder = "Enter your query keywords here..."
 
+def generate_recys_html(query, TKs, flinks, slider_value):
+	recys_lines = ""
+	for i in np.arange(slider_value):
+		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[i]} target='_blank'>{query} + {TKs[i]}</a></b><br>"
+	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
+				 f"Since you searched for:<br>" \
+				 f"<b><i font-size:30px;>{query}</i></b><br>" \
+				 f"you might be also interested in:<br>" \
+				 f"{recys_lines}" \
+				 f"</p>"
+
 def update_recys_lbl(_):
 	query = entry.value
 	if query and query != "Enter your query keywords here...":
 		recys_lbl.value = generate_recys_html(query, TKs, flinks, slider_value.value)
 	else:
 		recys_lbl.value = "<p style=font-family:verdana;font-size:18px;color:red;text-align:center;>Enter a valid search query first!</p>"
-
-def generate_recys_html(query, TKs, flinks, slider_value):
-	recys_lines = ""
-	for i in np.arange(slider_value):
-		recys_lines += f"<b style=font-family:verdana;font-size:20px;color:blue><a href={flinks[i]} target='_blank'>{query} + {TKs[i]}</a></b><br>"
-	return f"<p style=font-family:verdana;color:green;font-size:20px;text-align:center;>" \
-				 f"Since you searched<br>" \
-				 f"<b><i font-size:30px;>{query}</i></b><br>" \
-				 f"you might be also interested in:<br>" \
-				 f"{recys_lines}" \
-				 f"</p>"
 
 def clean_recsys_entry(change):
 	entry.value = ""
@@ -159,8 +159,6 @@ def rec_btn_click(change):
 	update_recys_lbl(None)
 
 def run_gui():
-	# load files and spm:
-
 	GUI=widgets.VBox(
 		[widgets.HBox([left_image_widget, widgets.Label(value=' '), right_image_widget], layout=vbox_layout),
 		 welcome_lbl,

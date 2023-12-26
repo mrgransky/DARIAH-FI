@@ -1110,3 +1110,10 @@ def get_concat_bow(arr):
 	for i, v in enumerate(arr):
 		bow_dict[v] = i
 	return bow_dict
+
+def extract_tar(fname):
+	output_folder = fname.split(".")[0]
+	if not os.path.isdir(output_folder):
+		print(f"{output_folder} does not exist, creating...")
+		with tarfile.open(fname, 'r:gz') as tfile:
+			tfile.extractall(output_folder)
