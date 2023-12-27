@@ -880,7 +880,7 @@ def run():
 
 	# save in a tar archive file
 	if not os.path.isfile(os.path.join(save_dir, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
-		print(f">> fpath: {os.path.join(save_dir, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...")
+		print(f'>> fpath: {os.path.join(save_dir, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
 		get_compressed_archive(save_dir=args.dfsPath, compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz")
 
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
