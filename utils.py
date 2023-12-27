@@ -20,6 +20,7 @@ import string
 import time
 import logging
 import gzip
+import tarfile
 
 from pandas.api.types import is_datetime64_any_dtype
 
