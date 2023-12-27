@@ -1133,5 +1133,6 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 			print(file_)
 			file_path = os.path.join(save_dir, file_)
 			tfile.add(file_path, arcname=file_)
-	fsize_compressed = os.stat( compressed_fpath ).st_size / 1e6
-	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fpath:.2f} MB")
+	compressed_fsize = os.path.getsize(compressed_fpath) / (1024 * 1024) # in MB
+	print(compressed_fsize)
+	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fsize:.2f} MB")
