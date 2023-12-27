@@ -1122,7 +1122,9 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 	print(f"Creating a compressed archive file: {compressed_fname}".center(110, "-"))
 	t0 = time.time()
 	concat_files = [os.path.join(save_dir, fname) for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
+	# print(concat_files)
 	with tarfile.open(compressed_fname, 'w:gz') as tfile:
 		for f in concat_files:
+			print(f)
 			tfile.add(f)
 	print(f"Elapsed_t: {time.time()-t0:.2f} sec".center(110, "-"))
