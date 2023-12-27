@@ -1120,7 +1120,7 @@ def extract_tar(fname):
 			tfile.extractall(output_folder)
 
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="comp_file.tar.gz"):
-	print(f"Creating a compressed archive out of x{}file: {compressed_fname}".center(110, "-"))
+	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
 	concat_files = [os.path.join(save_dir, fname) for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
 	# print(concat_files)
@@ -1128,4 +1128,4 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 		for f in concat_files:
 			print(f)
 			tfile.add(f)
-	print(f"Elapsed_t: {time.time()-t0:.2f} sec".center(110, "-"))
+	print(f"Elapsed_t: {time.time()-t0:.2f} sec")
