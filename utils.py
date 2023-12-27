@@ -1125,13 +1125,13 @@ def extract_tar(fname):
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="comp_file.tar.gz"):
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
-	concat_files = [os.path.join(save_dir, fname) for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
+	concat_files = [fname for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
 	print(concat_files)
 	compressed_fpath = os.path.join(save_dir, compressed_fname)
 	with tarfile.open(compressed_fpath, 'w:gz') as tfile:
-		for f in concat_files:
-			print(f)
-			print(f.split("/")[-1])
-			tfile.add(f.split("/")[-1])
+		for file_ in concat_files:
+			print(file_)
+			file_path = os.path.join(save_dir, file_)
+			tfile.add(file_path, arcname=file_)
 	fsize_compressed = os.stat( compressed_fpath ).st_size / 1e6
 	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fpath:.2f} MB")
