@@ -984,7 +984,7 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 	save_pickle(pkl=uNorms, fname=usrNorm_fname)
 	return uNorms
 
-def get_user_token_spm_concat(SPMs, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: str="file_prefix"):
 	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
 	print(f"Concatinating {len(SPMs)} SPMs".center(200, "-"))
 	# return None, None, None
@@ -1117,3 +1117,12 @@ def extract_tar(fname):
 		print(f"{output_folder} does not exist, creating...")
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
+
+def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="comp_file.tar.gz"):
+	print(f"Creating a compressed archive file: {compressed_fname}".center(110, "-"))
+	t0 = time.time()
+	concat_files = [os.path.join(save_dir, fname) for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
+	with tarfile.open(compressed_fname, 'w:gz') as tfile:
+		for f in concat_files:
+			tfile.add(f)
+	print(f"Elapsed_t: {time.time()-t0:.2f} sec".center(110, "-"))

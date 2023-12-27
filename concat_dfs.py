@@ -878,6 +878,9 @@ def run():
 	print(f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}")
 	print("-"*150)
 
+	# save in a tar archive file
+	get_compressed_archive(save_dir=args.dfsPath, compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz")
+
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
 	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
@@ -895,7 +898,6 @@ def run():
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
-
 	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
 												query_vec=query_vector, 
 												idf_vec=idf_vec,
