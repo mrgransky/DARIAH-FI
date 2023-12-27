@@ -53,6 +53,9 @@ from matplotlib.colors import Colormap as cm
 import seaborn as sns
 # matplotlib.use("Agg")
 
+# from googleapiclient.discovery import build
+# from google.oauth2.service_account import Credentials
+
 sz=16
 MODULE=60
 params = {
@@ -1123,9 +1126,12 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
 	concat_files = [os.path.join(save_dir, fname) for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
-	# print(concat_files)
-	with tarfile.open(os.path.join(save_dir, compressed_fname), 'w:gz') as tfile:
+	print(concat_files)
+	compressed_fpath = os.path.join(save_dir, compressed_fname)
+	with tarfile.open(compressed_fpath, 'w:gz') as tfile:
 		for f in concat_files:
 			print(f)
-			tfile.add(f)
-	print(f"Elapsed_t: {time.time()-t0:.2f} sec")
+			print(f.split("/")[-1])
+			tfile.add(f.split("/")[-1])
+	fsize_compressed = os.stat( compressed_fpath ).st_size / 1e6
+	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fpath:.2f} MB")
