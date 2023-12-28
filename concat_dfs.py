@@ -875,7 +875,7 @@ def run():
 	print(f"Concatenated Sparse Matrix [INFO]".center(150, "-"))
 	print(f"spMtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {concat_spm_U_x_T.dtype}"
 				f"byte size[count] {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB") # lil_matrix (nUsers, nTokens)
-	print(f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape}\n"	# <class 'numpy.ndarray'> (nUsers,)
+	print(f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} | "	# <class 'numpy.ndarray'> (nUsers,)
 				f"spMtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"		# <class 'numpy.ndarray'> (nTokens,)
 			)
 	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB")
