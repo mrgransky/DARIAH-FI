@@ -794,13 +794,13 @@ def run():
 	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
-	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_vocabs.gz')
+	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
 	print(f"Found {len(sp_mtx_files)} spMtx files | " 
 				f"{len(sp_mtx_rows_files)} spMtx rows(users) | "
 				f"{len(sp_mtx_cols_files)} spMtx columns(tokens) | "
 				f"{len(sp_mtx_concat_BoWs)} spMtx vocabs (json)"
 			)
-	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 3 SPMs files have different length!"
+	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 4 SPMs files (+1 BoWs) have different length!"
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
 	RES_DIR=make_result_dir(infile=fprefix)
