@@ -795,11 +795,11 @@ def run():
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
 	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
-	print(f"Found {len(sp_mtx_files)} spMtx files | " 
+	print(f"{len(sp_mtx_files)} spMtx files | " 
 				f"{len(sp_mtx_rows_files)} spMtx rows(users) | "
 				f"{len(sp_mtx_cols_files)} spMtx columns(tokens) | "
 				f"{len(sp_mtx_concat_BoWs)} spMtx vocabs (json)"
-			)
+			.center(150, " "))
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 4 SPMs files (+1 BoWs) have different length!"
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
@@ -833,11 +833,6 @@ def run():
 			prefix_fname=fprefix,
 		)
 
-	print(f"sp_mtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.dtype} {concat_spm_U_x_T.shape} byte size[count] {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB") # lil_matrix (nUsers, nTokens)
-	print(f"sp_mtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
-				f"sp_mtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"	# <class 'numpy.ndarray'> (nTokens,)
-			)
-
 	# ##############################################For Double checking with 2 DFs#####################################################
 	# try:
 	# 	concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
@@ -866,7 +861,6 @@ def run():
 										save_dir=args.dfsPath,
 										prefix_fname=fprefix,
 									)
-	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB")
 
 	try:
 		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
@@ -877,6 +871,14 @@ def run():
 																	save_dir=args.dfsPath,
 																	prefix_fname=fprefix,
 																) # (nUsers,) 
+
+	print(f"Concatenated Sparse Matrix [INFO]".center(150, "-"))
+	print(f"spMtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {concat_spm_U_x_T.dtype}"
+				f"byte size[count] {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB") # lil_matrix (nUsers, nTokens)
+	print(f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape}\n"	# <class 'numpy.ndarray'> (nUsers,)
+				f"spMtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"		# <class 'numpy.ndarray'> (nTokens,)
+			)
+	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB")
 	print(f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}")
 	print("-"*150)
 
