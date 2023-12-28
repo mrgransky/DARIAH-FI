@@ -1161,4 +1161,5 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 	compressed_fsize = os.path.getsize(compressed_fpath) / (1024 * 1024) # in MB
 	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fsize:.2f} MB")
 	if upload_2_gdrive:
-		upload_to_google_drive(folder_id="1rstAr9W4PC2ueHyLH-Igoxifrzv7aD2Z", archived_fname=compressed_fpath)
+		upload_to_google_drive(folder_name="NLF", archived_fname=compressed_fpath)
+		# upload_to_google_drive(folder_id="1rstAr9W4PC2ueHyLH-Igoxifrzv7aD2Z", archived_fname=compressed_fpath)
