@@ -56,6 +56,9 @@ import seaborn as sns
 # from googleapiclient.discovery import build
 # from google.oauth2.service_account import Credentials
 
+from pydrive2.auth import GoogleAuth
+from pydrive2.drive import GoogleDrive
+
 sz=16
 MODULE=60
 params = {
@@ -1122,7 +1125,30 @@ def extract_tar(fname):
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
 
-def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="comp_file.tar.gz"):
+# def upload_to_google_drive(folder_id: str="PUBLIC_FOLDER_ID_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
+def upload_to_google_drive(folder_name: str="PUBLIC_UNIQUE_FOLDER_NAME_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
+	print(f">> Uploading to Google Drive folder_id: {folder_id} ...")
+	t0 = time.time()
+	# Google Drive authentication
+	gauth = GoogleAuth()
+	gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication
+	drive = GoogleDrive(gauth)
+
+	# Find the folder ID
+	folder_list = drive.ListFile({'q': f"title='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
+	if len(folder_list) > 0:
+		folder_id = folder_list[0]['id']  # Get the ID of the first folder in the list
+	else:
+		print(f"No folder named {folder_name} found, Uploading failed!!")
+		return
+
+	# Upload the archive to Google Drive
+	file_drive = drive.CreateFile({"title": archived_fname, "parents": [{"id": folder_id}]})
+	file_drive.SetContentFile(archived_fname)
+	file_drive.Upload()
+	print(f"{archived_fname} uploaded to Google Drive successfully in {time.time()-t0:.2f} sec!")
+
+def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=True):
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
 	concat_files = [fname for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
@@ -1134,3 +1160,5 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 			tfile.add(file_path, arcname=file_)
 	compressed_fsize = os.path.getsize(compressed_fpath) / (1024 * 1024) # in MB
 	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fsize:.2f} MB")
+	if upload_2_gdrive:
+		upload_to_google_drive(folder_id="1rstAr9W4PC2ueHyLH-Igoxifrzv7aD2Z", archived_fname=compressed_fpath)
