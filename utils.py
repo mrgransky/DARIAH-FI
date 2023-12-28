@@ -1127,7 +1127,8 @@ def extract_tar(fname):
 
 # def upload_to_google_drive(folder_id: str="PUBLIC_FOLDER_ID_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
 def upload_to_google_drive(folder_name: str="PUBLIC_UNIQUE_FOLDER_NAME_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
-	print(f">> Uploading to Google Drive folder_id: {folder_id} ...")
+	# print(f">> Uploading to Google Drive folder_id: {folder_id} ...")
+	print(f">> Uploading to Google Drive folder_name: {folder_name} ...")
 	t0 = time.time()
 	# Google Drive authentication
 	gauth = GoogleAuth()
