@@ -924,10 +924,10 @@ def run():
 															qu=query_phrase_tk,
 														)
 	print(topKtokens)
-	print("<>"*100)
-	# Serialize the list into a string and print it
-	serialized_result = json.dumps(topKtokens)
-	print('Serialized Result:', serialized_result)
+	# print("<>"*100)
+	# # Serialize the list into a string and print it
+	# serialized_result = json.dumps(topKtokens)
+	# print('Serialized Result:', serialized_result)
 
 if __name__ == '__main__':
 	# os.system("clear")
