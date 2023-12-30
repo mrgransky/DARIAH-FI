@@ -1150,7 +1150,7 @@ def upload_to_google_drive(folder_name: str="PUBLIC_UNIQUE_FOLDER_NAME_in_Gdrive
 	file_drive.Upload()
 	print(f"{archived_fname} uploaded to Google Drive successfully in {time.time()-t0:.2f} sec!")
 
-def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="/scratch/project_2004072/Nationalbiblioteket/compressed_datasets"):
+def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"):
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
 	concat_files = [fname for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
