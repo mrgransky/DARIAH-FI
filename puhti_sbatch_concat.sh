@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spMtx_x182_concat
+#SBATCH --job-name=spMtx_x732_concat
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=1488G
 #SBATCH --partition=hugemem_longrun
 #SBATCH --time=14-00:00:00
@@ -29,7 +29,7 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x182" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" ########## must be adjusted! ##########
 
 for qu in 'TAMPEREEN TEHDAS' 'Juha Sipilä Sahalahti' 'Liberalismin ja konservatismin aika' 'Suomalaisten suhtautuminen konservatismiin' 'Helsingin poliisilaitos' 'Suomen sosialistinen tasavalta' 'Mietteitä sosialismista' 'suomen sosialidemokraattinen puolue' 'Suomen Kommunistinen Puolue' 'Suomen Teollisuuslehti' 'Sosiaalisen kestävyyden' 'Helsingfors Gymnastikklubb' 'suomen kestävän kehityksen tavoitteet' 'Finlands Socialdemokratiska Parti' 'Tampereen seudun työväenopisto' 'Helsingin tuomiokirkko' 'sosialismi' 'Helsingin pörssi ja suomen pankki' 'suomen pääkaupunki' 'Länsi-Uudenmaan poliisilaitos' 'tampereen teknillinen yliopisto' 'torvisoittokunta' 'Tampereen Työväen Teatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
 # for qu in 'Tampereen seudun työväenopisto'
