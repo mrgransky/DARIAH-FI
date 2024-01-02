@@ -7,9 +7,9 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=373G
-#SBATCH --partition=small
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=483G
+#SBATCH --partition=hugemem
 #SBATCH --time=03-00:00:00
 ####SBATCH --gres=gpu:v100:1
 
@@ -31,8 +31,8 @@ echo "${stars// /*}"
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
 dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732_old" ########## must be adjusted! ##########
 
-for qu in 'TAMPEREEN TEHDAS' 'Juha Sipilä Sahalahti' 'Liberalismin ja konservatismin aika' 'Suomalaisten suhtautuminen konservatismiin' 'Helsingin poliisilaitos' 'Suomen sosialistinen tasavalta' 'Mietteitä sosialismista' 'suomen sosialidemokraattinen puolue' 'Suomen Kommunistinen Puolue' 'Suomen Teollisuuslehti' 'Sosiaalisen kestävyyden' 'Helsingfors Gymnastikklubb' 'suomen kestävän kehityksen tavoitteet' 'Finlands Socialdemokratiska Parti' 'Tampereen seudun työväenopisto' 'Helsingin tuomiokirkko' 'sosialismi' 'Helsingin pörssi ja suomen pankki' 'suomen pääkaupunki' 'Länsi-Uudenmaan poliisilaitos' 'tampereen teknillinen yliopisto' 'torvisoittokunta' 'Tampereen Työväen Teatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
-# for qu in 'Tampereen seudun työväenopisto'
+# for qu in 'TAMPEREEN TEHDAS' 'Juha Sipilä Sahalahti' 'Liberalismin ja konservatismin aika' 'Suomalaisten suhtautuminen konservatismiin' 'Helsingin poliisilaitos' 'Suomen sosialistinen tasavalta' 'Mietteitä sosialismista' 'suomen sosialidemokraattinen puolue' 'Suomen Kommunistinen Puolue' 'Suomen Teollisuuslehti' 'Sosiaalisen kestävyyden' 'Helsingfors Gymnastikklubb' 'suomen kestävän kehityksen tavoitteet' 'Finlands Socialdemokratiska Parti' 'Tampereen seudun työväenopisto' 'Helsingin tuomiokirkko' 'sosialismi' 'Helsingin pörssi ja suomen pankki' 'suomen pääkaupunki' 'Länsi-Uudenmaan poliisilaitos' 'tampereen teknillinen yliopisto' 'torvisoittokunta' 'Tampereen Työväen Teatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
+for qu in 'Tampereen seudun työväenopisto'
 do
   echo "Query: $qu"
   python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase "$qu"
