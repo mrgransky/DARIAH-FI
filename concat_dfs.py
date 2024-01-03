@@ -882,10 +882,10 @@ def run():
 	print(f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}")
 	print("-"*150)
 
-	# # save in a tar archive file
-	# if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
-	# 	print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
-	# 	get_compressed_archive(save_dir=args.dfsPath, compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz")
+	# save in a tar archive file
+	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
+		print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
+		get_compressed_archive(save_dir=args.dfsPath, compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz")
 
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
