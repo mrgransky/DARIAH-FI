@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spMtx_x20
+#SBATCH --job-name=spMtx_x732_concat
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=40
-#SBATCH --mem=1490G
+#SBATCH --mem=1494G
 #SBATCH --partition=hugemem_longrun
 #SBATCH --time=14-00:00:00
 ####SBATCH --gres=gpu:v100:1
