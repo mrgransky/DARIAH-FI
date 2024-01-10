@@ -468,7 +468,6 @@ def main():
 
 	print(f"USER_DF (detailed + user_token_interest): {type(df_user)} {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
-	print("<>"*60)
 	######################################## Creating/Loading User_DF ########################################
 
 	# with open(os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_interest_{len(BoWs)}.txt"), "w", encoding="utf-8") as f:
@@ -496,7 +495,8 @@ def main():
 	print(f"spMtx {usr_tk_spm.shape} | "
 				f"{len(usr_tk_spm_usrNames)} rows(users) | "
 				f"{len(usr_tk_spm_tokNames)} columns(tokens)"
-			.center(120, " "))
+				.center(120, "-")
+		)
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
 
 
