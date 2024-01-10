@@ -455,12 +455,11 @@ def main():
 										MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
 									)
 	######################################## Creating/Loading BoWs ########################################
-	# print(f"USERs DF".center(100, ' '))
 	print(f">> Remove column(s) with all zeros(if any): {list(df_inp.columns[(df_inp==0).all()])}")
 	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
 
 	######################################## Creating/Loading User_DF ########################################
-	print(f"USERs DF".center(120, ' '))
+	print(f"Creating/Loading USERs DF".center(120, '-'))
 	try:
 		df_user=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
@@ -481,6 +480,7 @@ def main():
 	# 		f.write("\n")
 
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
+	print(f"Creating/Loading Sparse Mtx [user vs. token]".center(120, '-'))
 	try:
 		usr_tk_spm=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
 		usr_tk_spm_usrNames=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
@@ -493,6 +493,10 @@ def main():
 																																				spm_rows_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"),
 																																				spm_cols_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
 																																			)
+	print(f"spMtx {usr_tk_spm.shape} | "
+				f"{len(usr_tk_spm_usrNames)} rows(users) | "
+				f"{len(usr_tk_spm_tokNames)} columns(tokens)"
+			.center(120, " "))
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
 
 
