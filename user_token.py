@@ -30,7 +30,7 @@ parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 
 args = parser.parse_args()
 # how to run:
-# python RecSys_usr_token.py --inputDF ~/Datasets/Nationalbiblioteket/dataframes/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --maxNumFeat -1
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
@@ -424,7 +424,7 @@ def main():
 	qu_phrase=args.qphrase
 	topK=5
 
-	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer")
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	df_inp=load_pickle(fpath=args.inputDF)
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
 	print( df_inp.info(memory_usage="deep", verbose=True) )
