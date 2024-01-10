@@ -425,9 +425,10 @@ def main():
 
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	df_inp=load_pickle(fpath=args.inputDF)
+	print(f"-"*100)
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
 	print( df_inp.info(memory_usage="deep", verbose=True) )
-	print(f"#"*100)
+	print(f"-"*100)
 
 	if df_inp.shape[0] == 0:
 		print(f"Empty DF: {df_inp.shape} => Exit...")
@@ -440,8 +441,7 @@ def main():
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	
 	make_folder(folder_name=args.outDIR)
-	# return
-	
+	######################################## Creating/Loading BoWs ########################################
 	try:
 		BoWs=load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
@@ -454,12 +454,13 @@ def main():
 										MAX_DF=float(args.maxDocFreq),
 										MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
 									)
-
+	######################################## Creating/Loading BoWs ########################################
 	# print(f"USERs DF".center(100, ' '))
-	print(f">> Remove columns with all zeros: {list(df_inp.columns[(df_inp==0).all()])}", end=" ")
-	t0=time.time()
-	df_inp = df_inp.dropna(axis=1, how='all') # remove collection_query_phrase  all zeros
-	print(f"Elapsed_t: {time.time()-t0:.2f} sec")
+	print(f">> Remove column(s) with all zeros(if any): {list(df_inp.columns[(df_inp==0).all()])}")
+	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
+
+	######################################## Creating/Loading User_DF ########################################
+	print(f"USERs DF".center(120, ' '))
 	try:
 		df_user=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
@@ -468,7 +469,8 @@ def main():
 
 	print(f"USER_DF (detailed + user_token_interest): {type(df_user)} {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
-	print("<>"*50)
+	print("<>"*60)
+	######################################## Creating/Loading User_DF ########################################
 
 	# with open(os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_usr_tk_interest_{len(BoWs)}.txt"), "w", encoding="utf-8") as f:
 	# 	for i in df_user.index:
@@ -478,6 +480,7 @@ def main():
 	# 		f.write("\n")
 	# 		f.write("\n")
 
+	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
 	try:
 		usr_tk_spm=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"))
 		usr_tk_spm_usrNames=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"))
@@ -490,6 +493,10 @@ def main():
 																																				spm_rows_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"),
 																																				spm_cols_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
 																																			)
+	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
+
+
+
 	######################################################
 	# no need to continue after this!
 	# otherwise, adjustment for spm is required!
