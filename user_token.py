@@ -362,9 +362,9 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 															)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec {user_df.shape}")
 
-	print("*"*80)
+	# print("*"*80)
 	print( user_df.info( verbose=True, memory_usage="deep") )
-	print("*"*80)
+	# print("*"*80)
 
 	# # Learning Weights: TODO
 	# # Initialize a weight column with default values
@@ -381,15 +381,17 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	# # Assume you have a DataFrame 'df' containing columns 'user_id', 'type', 'tokens', and 'document_id'
 
-	# # Initialize features
+	# # Initialize features XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 	# df['search_prompt'] = df.apply(lambda x: 1 if x['type'] == 'search' else 0, axis=1)
 	# df['snippet_appearance'] = df.apply(lambda x: 1 if x['type'] == 'snippet' else 0, axis=1)
 	# df['highlighted_snippet'] = df.apply(lambda x: 1 if x['type'] == 'snippet' and any(token in x['tokens'] for token in x['search_query_tokens']) else 0, axis=1)
 	# df['full_content_click'] = df.apply(lambda x: 1 if x['type'] == 'click' else 0, axis=1)
 	# df['highlighted_content'] = df.apply(lambda x: 1 if x['type'] == 'click' and any(token in x['tokens'] for token in x['search_query_tokens']) else 0, axis=1)
+	#	# XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 	# # Assuming you have a DataFrame 'df' with features and weights
 	# features = ['search_prompt', 'snippet_appearance', 'highlighted_snippet', 'full_content_click', 'highlighted_content']
+	# ['search_query_prompt_tokens', 'snippet_tokens', 'highlighted_snippet_tokens', 'full_content_click_tokens', 'highlighted_content_tokens']
 	# X = df[features]
 	# y = df['weight']
 
@@ -406,7 +408,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 
 
-	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(120, " "))
+	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(150, "-"))
 	imf_st_t = time.time()
 	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
 	try:
@@ -446,13 +448,13 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print("#"*80)
 		save_pickle(pkl=user_df, fname=users_df_detailed_fname)
 		
-	print(f"Adding <TOTAL> user_token_interest to user_df: {user_df.shape}")	
-	print( user_df.info( verbose=True, memory_usage="deep") )
-	print("#"*80)
+	print(f"<TOTAL> user_token_interest {user_df.shape}", end="\t")	
+	# print( user_df.info( verbose=True, memory_usage="deep") )
+	# print("#"*80)
 	st_t = time.time()
 	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, ) # {'a': 5.1, 'b': 2.5, 'd': 8.0, 'e': 6.3, 'l': 4.3, 'w': 8.5}
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
-	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} s | {user_df.shape}".center(150, "-"))
+	print(f"Complete USERs {type(user_df)} {user_df.shape} tot_elapsed_t: {time.time()-imf_st_t:.2f} s".center(150, "-"))
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
 	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
