@@ -213,9 +213,9 @@ def tokenize_pt_nwp_content(results_list):
 	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
 def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
-	print(f"Getting USERs DataFrame from Input DF: {dframe.shape}".center(150, "-"))
+	print(f"Getting USERs DataFrame from Input {type(dframe)} {dframe.shape}".center(150, "-"))
 	print(dframe.info(verbose=True, memory_usage="deep"))
-	print("<>"*55)
+	print("<>"*60)
 
 	sqFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_search_queries.gz")
 	snHWFile = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_snippets_hw.gz")
@@ -360,13 +360,53 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 																					'snippets_raw_text',
 																				]
 															)
-	print(f"Elapsed_t: {time.time()-st_t:.3f} sec | {user_df.shape}")
+	print(f"Elapsed_t: {time.time()-st_t:.3f} sec {user_df.shape}")
 
 	print("*"*80)
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("*"*80)
 
-	print(f"Implicit Feedback for each category | user_df: {user_df.shape}".center(120, " "))
+	# # Learning Weights: TODO
+	# # Initialize a weight column with default values
+	# user_df['weight'] = 1.0
+
+	# # Assign higher weights for search prompts
+	# df.loc[df['type'] == 'search', 'weight'] = 2.0
+
+	# # Assign weights for other interaction types accordingly
+	# # You might adjust these weights based on the importance of each interaction type
+	# df.loc[df['type'] == 'snippet', 'weight'] = 1.5
+	# df.loc[df['type'] == 'click', 'weight'] = 3.0
+
+
+	# # Assume you have a DataFrame 'df' containing columns 'user_id', 'type', 'tokens', and 'document_id'
+
+	# # Initialize features
+	# df['search_prompt'] = df.apply(lambda x: 1 if x['type'] == 'search' else 0, axis=1)
+	# df['snippet_appearance'] = df.apply(lambda x: 1 if x['type'] == 'snippet' else 0, axis=1)
+	# df['highlighted_snippet'] = df.apply(lambda x: 1 if x['type'] == 'snippet' and any(token in x['tokens'] for token in x['search_query_tokens']) else 0, axis=1)
+	# df['full_content_click'] = df.apply(lambda x: 1 if x['type'] == 'click' else 0, axis=1)
+	# df['highlighted_content'] = df.apply(lambda x: 1 if x['type'] == 'click' and any(token in x['tokens'] for token in x['search_query_tokens']) else 0, axis=1)
+
+	# # Assuming you have a DataFrame 'df' with features and weights
+	# features = ['search_prompt', 'snippet_appearance', 'highlighted_snippet', 'full_content_click', 'highlighted_content']
+	# X = df[features]
+	# y = df['weight']
+
+	# # Split the data
+	# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+	# # Train a simple regression model
+	# model = RandomForestRegressor()
+	# model.fit(X_train, y_train)
+
+	# # Predict weights
+	# df['predicted_weight'] = model.predict(X)
+	# ########################
+
+
+
+	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(120, " "))
 	imf_st_t = time.time()
 	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
 	try:
@@ -410,7 +450,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	print("#"*80)
 	st_t = time.time()
-	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, ) # {'a': 5, 'b': 2, 'd': 8.2, 'e': 6.3, 'l': 4.3, 'w': 8.5}
+	user_df["user_token_interest"] = user_df.apply( get_total_user_token_interest, axis=1, ) # {'a': 5.1, 'b': 2.5, 'd': 8.0, 'e': 6.3, 'l': 4.3, 'w': 8.5}
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s")
 	print(f"USERs {type(user_df)} | tot_elapsed_t: {time.time()-imf_st_t:.2f} s | {user_df.shape}".center(150, "-"))
 	print( user_df.info( verbose=True, memory_usage="deep") )
@@ -459,7 +499,7 @@ def main():
 	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
 
 	######################################## Creating/Loading User_DF ########################################
-	print(f"Creating/Loading USERs DF".center(120, '-'))
+	print(f"Creating/Loading USERs DF".center(150, ' '))
 	try:
 		df_user=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:

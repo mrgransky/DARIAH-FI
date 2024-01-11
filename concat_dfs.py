@@ -18,7 +18,7 @@ parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
 args = parser.parse_args()
 
-fprefix = "FILE_PREFIXname_TBR"
+fprefix: str = "FILE_PREFIXname_TBR"
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
@@ -675,6 +675,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 def get_users_tokens_df(save_dir: str="saving_directory", prefix_fname: str="prefix_file_name", lm: str=args.lmMethod):
+	# inefficient approach! memory error for more than 2 log files...
 	print(f"Pandas DataFrame".center(150, " "))
 	user_df_files=get_df_files(fpath=save_dir+'/'+'*_user_df_*_BoWs.gz')
 	for f in user_df_files:
