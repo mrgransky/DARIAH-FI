@@ -44,7 +44,7 @@ def get_total_user_token_interest(df: pd.DataFrame):
 	)
 	result=dict( sorted( r.items() ) ) # sort by keys: ascending! A, B, .., Ö
 	# print(f"Total VOCAB {df.user_ip} {type(result)} {len(result)}")
-	print(json.dumps(result, indent=2, ensure_ascii=False))
+	# print(json.dumps(result, indent=2, ensure_ascii=False))
 	return result
 
 def get_raw_sqp(phrase_list):
