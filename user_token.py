@@ -305,6 +305,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	print(f">> Getting initial user_df from DF_preprocessed: {df_preprocessed.shape}", end=" ")
 	st_t = time.time()
+	
 	users_list = list()
 	search_query_phrase_tokens_list = list()
 	search_results_hw_snippets_tokens_list = list()
