@@ -378,11 +378,14 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 			'nwp_content_pt_token': weightContentPTAppearance
 	}
 
-	# Convert sequences to pandas Series
-	df_series = user_df.applymap(lambda x: pd.Series(x) if isinstance(x, list) else x)
+	# Function to apply weights to a column
+	def apply_weights(column, weight):
+		if isinstance(column, list):
+			return [weight if token in column else 0 for token in column]
+		return column * weight
 
-	# Combine all token information into a single DataFrame with weighted importance
-	token_data = pd.concat([df_series[col] * column_weights[col] for col in column_weights], axis=1)
+	# Apply weights to each column
+	token_data = pd.concat([user_df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
 
 	print("*"*80)
 	print( token_data.info( verbose=True, memory_usage="deep") )
