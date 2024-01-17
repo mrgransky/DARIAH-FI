@@ -367,6 +367,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	# print("*"*80)
 
+	print(f"Leaning Weights user_df: {user_df.shape}".center(100, "-"))
 	# Learning Weights: TODO
 	column_weights = {
 			'qu_tokens': weightQueryAppearance,
@@ -377,8 +378,15 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 			'nwp_content_pt_token': weightContentPTAppearance
 	}
 
+	# Convert sequences to numeric format (NumPy array)
+	df_numeric = user_df.applymap(lambda x: np.array(x) if isinstance(x, list) else x)
+
 	# Combine all token information into a single DataFrame with weighted importance
-	token_data = pd.concat([user_df[col] * column_weights[col] for col in column_weights], axis=1)
+	token_data = pd.concat([df_numeric[col] * column_weights[col] for col in column_weights], axis=1)
+
+	print("*"*80)
+	print( token_data.info( verbose=True, memory_usage="deep") )
+	print("*"*80)
 
 	# Target variable (weights to be learned)
 	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
