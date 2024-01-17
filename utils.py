@@ -41,6 +41,9 @@ from scipy.sparse import csr_matrix, coo_matrix, lil_matrix, linalg
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
 
 from colorama import Fore, Style, Back
 from functools import cache
@@ -156,8 +159,8 @@ weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
 weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
 weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
 weightContentHWAppearance:float = 0.1		# suggested by Jakko: 0.05
-weightContentPTAppearance:float = 0.005	# Did not consider initiially!
 weightContentAppearance:float = 0.05 		# suggested by Jakko: 0.05
+weightContentPTAppearance:float = 0.005	# Did not consider initiially!
 
 # # list of all weights (bad_results):
 # weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0

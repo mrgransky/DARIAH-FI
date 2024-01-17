@@ -367,45 +367,39 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	# print("*"*80)
 
-	# # Learning Weights: TODO
-	# # Initialize a weight column with default values
-	# user_df['weight'] = 1.0
+	# Learning Weights: TODO
+	column_weights = {
+			'qu_tokens': weightQueryAppearance,
+			'snippets_hw_token': weightSnippetHWAppearance,
+			'snippets_token': weightSnippetAppearance,
+			'nwp_content_hw_token': weightContentHWAppearance,
+			'nwp_content_lemma_all': weightContentAppearance,
+			'nwp_content_pt_token': weightContentPTAppearance
+	}
 
-	# # Assign higher weights for search prompts
-	# df.loc[df['type'] == 'search', 'weight'] = 2.0
+	# Combine all token information into a single DataFrame with weighted importance
+	token_data = pd.concat([user_df[col] * column_weights[col] for col in column_weights], axis=1)
 
-	# # Assign weights for other interaction types accordingly
-	# # You might adjust these weights based on the importance of each interaction type
-	# df.loc[df['type'] == 'snippet', 'weight'] = 1.5
-	# df.loc[df['type'] == 'click', 'weight'] = 3.0
+	# Target variable (weights to be learned)
+	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
 
+	# Split the data
+	X_train, X_test, y_train, y_test = train_test_split(token_data, y, test_size=0.2, random_state=42)
 
-	# # Assume you have a DataFrame 'df' containing columns 'user_id', 'type', 'tokens', and 'document_id'
+	# Train a machine learning model
+	model = RandomForestRegressor()
+	model.fit(X_train, y_train)
 
-	# # Initialize features XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	# df['search_prompt'] = df.apply(lambda x: 1 if x['type'] == 'search' else 0, axis=1)
-	# df['snippet_appearance'] = df.apply(lambda x: 1 if x['type'] == 'snippet' else 0, axis=1)
-	# df['highlighted_snippet'] = df.apply(lambda x: 1 if x['type'] == 'snippet' and any(token in x['tokens'] for token in x['search_query_tokens']) else 0, axis=1)
-	# df['full_content_click'] = df.apply(lambda x: 1 if x['type'] == 'click' else 0, axis=1)
-	# df['highlighted_content'] = df.apply(lambda x: 1 if x['type'] == 'click' and any(token in x['tokens'] for token in x['search_query_tokens']) else 0, axis=1)
-	#	# XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	# Predict weights
+	predicted_weights = model.predict(X_test)
 
-	# # Assuming you have a DataFrame 'df' with features and weights
-	# features = ['search_prompt', 'snippet_appearance', 'highlighted_snippet', 'full_content_click', 'highlighted_content']
-	# ['search_query_prompt_tokens', 'snippet_tokens', 'highlighted_snippet_tokens', 'full_content_click_tokens', 'highlighted_content_tokens']
-	# X = df[features]
-	# y = df['weight']
+	# Evaluate the model
+	mse = mean_squared_error(y_test, predicted_weights)
+	print(f'Mean Squared Error: {mse}')
 
-	# # Split the data
-	# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+	print(f"Feature Importances: {model.feature_importances_} | coeff: {model.coef_}")
 
-	# # Train a simple regression model
-	# model = RandomForestRegressor()
-	# model.fit(X_train, y_train)
-
-	# # Predict weights
-	# df['predicted_weight'] = model.predict(X)
-	# ########################
+	return
 
 	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(150, "-"))
 	imf_st_t = time.time()
