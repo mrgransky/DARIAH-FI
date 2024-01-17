@@ -390,11 +390,17 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 			sys.exit(0)
 		# return column * weight
 
-	# Apply weights to each column
-	print(f">> Apply weights to each column [might take a while]...", end="\t")
-	t0 = time.time()
-	token_data = pd.concat([user_df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
-	print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
+	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
+	try:
+		load_pickle(fpath=tk_data_df_fname)
+	except Exception as e:
+		print(f"<!> {e}")
+		# Apply weights to each column
+		print(f">> Apply weights to each column [might take a while]...", end="\t")
+		t0 = time.time()
+		token_data = pd.concat([user_df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
+		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
+		save_pickle(pkl=token_data, fname=tk_data_df_fname)
 
 	print("*"*80)
 	print( token_data.info( verbose=True, memory_usage="deep") )
