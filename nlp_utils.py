@@ -8,21 +8,21 @@ lemmatizer_methods = {"nltk": nltk_lemmatizer,
 											}
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
-	print(len(vb), len(lst), wg, lst)
+	# print(len(vb), len(lst), wg, lst)
 	result_vb: Dict[str, float]={}
 	for _, vtk in enumerate(lst): # [tk1, tk2, …]
 		if vb.get(vtk) is None: #["I", "go", "to", "school"] XXXXXXXXXXXXXXXXXXXXx
-			print(f"{vtk} not found! => continue...")
+			# print(f"{vtk} not found! => continue...")
 			continue # pass is wrong! # return is wrong!
 		if result_vb.get(vtk) is not None: # check if this token is available in BoWs
 			prev = result_vb.get(vtk)
 			curr = prev + wg
 			result_vb[vtk] = curr
 		else:
-			print(f"initialize with wg={wg} for < {vtk} >")
+			# print(f"initialize with wg={wg} for < {vtk} >")
 			result_vb[vtk]=wg
-	print(f"result_vb {type(result_vb)} {len(result_vb)}")
-	print(json.dumps(result_vb, indent=2, ensure_ascii=False))
+	# print(f"result_vb {type(result_vb)} {len(result_vb)}")
+	# print(json.dumps(result_vb, indent=2, ensure_ascii=False))
 	return result_vb
 
 def get_total_user_token_interest(df: pd.DataFrame):
