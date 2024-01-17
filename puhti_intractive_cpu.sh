@@ -1,1 +1,0 @@
-../base_essentials/puhti_intractive_cpu.sh
