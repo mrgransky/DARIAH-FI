@@ -380,43 +380,60 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	# Function to apply weights to a column
 	def apply_weights(column, weight):
-		print(weight, type(column), len(column))
+		# print(weight, type(column), len(column))
 		if len(column) == 0:
 			return #column  # Return the original empty column
 		if isinstance(column, list):
 			return [weight if token in column else 0 for token in column]
 		else:
-			print(f"ERROR!")
+			print(f"ERROR...")
+			print(weight, type(column), len(column))
 			sys.exit(0)
 		# return column * weight
 
 	# Apply weights to each column
+	priny(f">> Apply weights to each column [might take a while]...", end="\t")
+	t0 = time.time()
 	token_data = pd.concat([user_df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
+	print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
 
 	print("*"*80)
 	print( token_data.info( verbose=True, memory_usage="deep") )
 	print("*"*80)
 
 	# Target variable (weights to be learned)
+	priny(f">> Getting target y", end="\t")
+	t0 = time.time()
 	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
+	print(f"Elapsed_t: {time.time()-t0:.2f} s | y: {type(y)} {y.shape}")
 
 	# Split the data
 	X_train, X_test, y_train, y_test = train_test_split(token_data, y, test_size=0.2, random_state=42)
-
+	print(f"(X_train, y_train): ({X_train.shape}, {y_train.shape})")
+	print(f"(X_test, y_test): ({X_test.shape}, {y_test.shape})")
+	
 	# Train a machine learning model
+	print(f">> Training RandomForestRegressor()....", end="\t")
+	t0 = time.time()
 	model = RandomForestRegressor()
 	model.fit(X_train, y_train)
+	print(f"Elapsed_t: {time.time()-t0:.2f} s model: {type(model)}")
 
 	# Predict weights
+	print(f">> predict weights for X_test: {X_test.shape}...", end="\t")
+	t0 = time.time()
 	predicted_weights = model.predict(X_test)
+	print(f"Elapsed_t: {time.time()-t0:.2f} s predidcted_weights: {type(predicted_weights)}")
 
 	# Evaluate the model
+	print(f">> MSE: y_pred: {predicted_weights.shape} vs. y: {y.shape}", end="\t")
+	t0 = time.time()
 	mse = mean_squared_error(y_test, predicted_weights)
-	print(f'Mean Squared Error: {mse}')
+	print(f"Elapsed_t: {time.time()-t0:.2f} s | MSE = {mse}")
 
 	print(f"Feature Importances: {model.feature_importances_} | coeff: {model.coef_}")
 
-	return
+	# return
 
 	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(150, "-"))
 	imf_st_t = time.time()
