@@ -392,7 +392,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		# return column * weight
 
 	# Apply weights to each column
-	priny(f">> Apply weights to each column [might take a while]...", end="\t")
+	print(f">> Apply weights to each column [might take a while]...", end="\t")
 	t0 = time.time()
 	token_data = pd.concat([user_df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
 	print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
@@ -402,7 +402,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print("*"*80)
 
 	# Target variable (weights to be learned)
-	priny(f">> Getting target y", end="\t")
+	print(f">> Getting target y", end="\t")
 	t0 = time.time()
 	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
 	print(f"Elapsed_t: {time.time()-t0:.2f} s | y: {type(y)} {y.shape}")
