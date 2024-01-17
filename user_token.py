@@ -380,14 +380,13 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	# Function to apply weights to a column
 	def apply_weights(column, weight):
-		# print(weight, type(column), len(column))
+		print(weight, type(column), len(column))
 		if len(column) == 0:
 			return #column  # Return the original empty column
 		if isinstance(column, list):
 			return [weight if token in column else 0 for token in column]
 		else:
-			print(f"ERROR...")
-			print(weight, type(column), len(column))
+			print(f"ERROR... {weight} {type(column)}")
 			sys.exit(0)
 		# return column * weight
 
