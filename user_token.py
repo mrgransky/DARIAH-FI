@@ -409,12 +409,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	# Target variable (weights to be learned)
 	print(f">> Getting target y", end="\t")
 	t0 = time.time()
-	# y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
-	y = pd.DataFrame([column_weights])
+	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
+	# y = pd.DataFrame([column_weights])
 	print(f"Elapsed_t: {time.time()-t0:.4f} s | y: {type(y)} {y.shape}")
 
 	print(y)
-
+	print(y.to_numpy().flatten())
 	# Split the data
 	print(f"Spliting train vs. test token_data: {token_data.shape} y: {y.shape}")
 	X_train, X_test, y_train, y_test = train_test_split(token_data, y.to_numpy().flatten(), test_size=0.2, random_state=42)
