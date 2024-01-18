@@ -415,6 +415,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print("*"*80)
 	print( y.info( verbose=True, memory_usage="deep") )
 	print("*"*80)
+	print(y)
 
 	# Split the data
 	X_train, X_test, y_train, y_test = train_test_split(token_data, y, test_size=0.2, random_state=42)
