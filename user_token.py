@@ -380,15 +380,14 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	# Function to apply weights to a column
 	def apply_weights(column, weight):
-		print(weight, type(column), len(column))
 		if len(column) == 0:
-			return #column  # Return the original empty column
+			return 0
 		if isinstance(column, list):
-			return [weight if token in column else 0 for token in column]
+			print(weight, type(column), len(column))
+			return sum([weight if token in column else 0 for token in column])
 		else:
-			print(f"ERROR... {weight} {type(column)}")
-			sys.exit(0)
-		# return column * weight
+			print(f"Unknown type! ERROR... {weight} {type(column)}")
+			return 0
 
 	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
 	try:
@@ -402,65 +401,55 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
 		save_pickle(pkl=token_data, fname=tk_data_df_fname)
 
-	print("*"*80)
 	print( token_data.info( verbose=True, memory_usage="deep") )
 	print("*"*80)
 
-	print(token_data.head(5))
+	print(token_data.head(10))
 	print("*"*80)
 
-	print(token_data.tail(5))
+	print(token_data.tail(10))
 	print("*"*80)
 
-	# Target variable (weights to be learned)
-	print(f">> Getting target y", end="\t")
-	t0 = time.time()
-	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
-	# y = pd.DataFrame([column_weights])
-	print(f"Elapsed_t: {time.time()-t0:.4f} s | y: {type(y)} {y.shape}")
+	# # Target variable (weights to be learned) # TODO: target must be constructed!!!!
+	######### TODO #########
+	# print(f">> Constructing the target y", end="\t")
+	# # Split the data !!!!!!!!!!!1 EEEERRROOOORRRRRR!
+	# print(f"Spliting train vs. test token_data: {token_data.shape} y: {y.shape}")
+	# X_train, X_test, y_train, y_test = train_test_split(token_data.T.to_numpy(), y.to_numpy().flatten(), test_size=0.2, random_state=42)
 
-	print(y)
-	print(y.to_numpy().flatten())
+	# print(f"(X_train, y_train): {X_train.shape}, {y_train.shape}")
+	# print(f"(X_test, y_test): {X_test.shape}, {y_test.shape}")
 
-	print(token_data.T.values().to_numpy().shape, y.to_numpy().flatten().shape)
-
-	# Split the data
-	print(f"Spliting train vs. test token_data: {token_data.shape} y: {y.shape}")
-	X_train, X_test, y_train, y_test = train_test_split(token_data.T.to_numpy(), y.to_numpy().flatten(), test_size=0.2, random_state=42)
-
-	print(f"(X_train, y_train): {X_train.shape}, {y_train.shape}")
-	print(f"(X_test, y_test): {X_test.shape}, {y_test.shape}")
-
-	# print(X_train)
-	# print(y_train)
-	# print("-"*100)
-	# print(X_test)
-	# print(y_test)
-	# print("-"*100)
+	# # print(X_train)
+	# # print(y_train)
+	# # print("-"*100)
+	# # print(X_test)
+	# # print(y_test)
+	# # print("-"*100)
 	
-	# Train a machine learning model
-	print(f">> Training RandomForestRegressor()....", end="\t")
-	t0 = time.time()
-	model = RandomForestRegressor()
-	print(f"fitting model to X_train: {X_train} y_train: {y_train}")
-	model.fit(X_train, y_train)
-	print(f"Elapsed_t: {time.time()-t0:.2f} s model: {type(model)}")
+	# # Train a machine learning model
+	# print(f">> Training RandomForestRegressor()....", end="\t")
+	# t0 = time.time()
+	# model = RandomForestRegressor()
+	# print(f"fitting model to X_train: {X_train} y_train: {y_train}")
+	# model.fit(X_train, y_train)
+	# print(f"Elapsed_t: {time.time()-t0:.2f} s model: {type(model)}")
 
-	# Predict weights
-	print(f">> predict weights for X_test: {X_test.shape}...", end="\t")
-	t0 = time.time()
-	predicted_weights = model.predict(X_test)
-	print(f"Elapsed_t: {time.time()-t0:.2f} s predidcted_weights: {type(predicted_weights)}")
+	# # Predict weights
+	# print(f">> predict weights for X_test: {X_test.shape}...", end="\t")
+	# t0 = time.time()
+	# predicted_weights = model.predict(X_test)
+	# print(f"Elapsed_t: {time.time()-t0:.2f} s predidcted_weights: {type(predicted_weights)}")
 
-	# Evaluate the model
-	print(f">> MSE: y_pred: {predicted_weights.shape} vs. y: {y.shape}", end="\t")
-	t0 = time.time()
-	mse = mean_squared_error(y_test, predicted_weights)
-	print(f"Elapsed_t: {time.time()-t0:.2f} s | MSE = {mse}")
+	# # Evaluate the model
+	# print(f">> MSE: y_pred: {predicted_weights.shape} vs. y: {y.shape}", end="\t")
+	# t0 = time.time()
+	# mse = mean_squared_error(y_test, predicted_weights)
+	# print(f"Elapsed_t: {time.time()-t0:.2f} s | MSE = {mse}")
 
-	print(f"Feature Importances: {model.feature_importances_} | coeff: {model.coef_}")
+	# print(f"Feature Importances: {model.feature_importances_} | coeff: {model.coef_}")
 
-	# return
+	# # return
 
 	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(150, "-"))
 	imf_st_t = time.time()
