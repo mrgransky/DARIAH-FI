@@ -415,13 +415,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	print(y)
 	print(y.to_numpy().flatten())
-	print(y.to_numpy().flatten().shape)
-	
+
+	print(token_data.T.to_numpy().shape, y.to_numpy().flatten().shape)
 	# Split the data
 	print(f"Spliting train vs. test token_data: {token_data.shape} y: {y.shape}")
 	X_train, X_test, y_train, y_test = train_test_split(token_data.T.to_numpy(), y.to_numpy().flatten(), test_size=0.2, random_state=42)
 
-	#y.to_numpy().flatten().shape
 	print(f"(X_train, y_train): ({X_train.shape}, {y_train.shape})")
 	print(f"(X_test, y_test): ({X_test.shape}, {y_test.shape})")
 	
