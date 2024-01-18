@@ -406,6 +406,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print( token_data.info( verbose=True, memory_usage="deep") )
 	print("*"*80)
 
+	print(token_data.head(5))
+	print("*"*80)
+
+	print(token_data.tail(5))
+	print("*"*80)
+
 	# Target variable (weights to be learned)
 	print(f">> Getting target y", end="\t")
 	t0 = time.time()
@@ -416,7 +422,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(y)
 	print(y.to_numpy().flatten())
 
-	print(token_data.T.to_numpy().shape, y.to_numpy().flatten().shape)
+	print(token_data.T.values().to_numpy().shape, y.to_numpy().flatten().shape)
+
 	# Split the data
 	print(f"Spliting train vs. test token_data: {token_data.shape} y: {y.shape}")
 	X_train, X_test, y_train, y_test = train_test_split(token_data.T.to_numpy(), y.to_numpy().flatten(), test_size=0.2, random_state=42)
@@ -424,12 +431,12 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f"(X_train, y_train): {X_train.shape}, {y_train.shape}")
 	print(f"(X_test, y_test): {X_test.shape}, {y_test.shape}")
 
-	print(X_train)
-	print(y_train)
-	print("-"*100)
-	print(X_test)
-	print(y_test)
-	print("-"*100)
+	# print(X_train)
+	# print(y_train)
+	# print("-"*100)
+	# print(X_test)
+	# print(y_test)
+	# print("-"*100)
 	
 	# Train a machine learning model
 	print(f">> Training RandomForestRegressor()....", end="\t")
