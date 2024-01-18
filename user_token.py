@@ -30,7 +30,7 @@ parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 
 args = parser.parse_args()
 # how to run:
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --maxNumFeat -1
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x20 --maxNumFeat -1
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
@@ -392,7 +392,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 
 	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
 	try:
-		load_pickle(fpath=tk_data_df_fname)
+		token_data = load_pickle(fpath=tk_data_df_fname)
 	except Exception as e:
 		print(f"<!> {e}")
 		# Apply weights to each column
