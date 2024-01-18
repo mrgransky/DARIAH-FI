@@ -435,6 +435,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print(f">> Training RandomForestRegressor()....", end="\t")
 	t0 = time.time()
 	model = RandomForestRegressor()
+	print(f"fitting model to X_train: {X_train} y_train: {y_train}")
 	model.fit(X_train, y_train)
 	print(f"Elapsed_t: {time.time()-t0:.2f} s model: {type(model)}")
 
