@@ -409,12 +409,10 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	# Target variable (weights to be learned)
 	print(f">> Getting target y", end="\t")
 	t0 = time.time()
-	y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
+	# y = pd.DataFrame(list(column_weights.values()), columns=['weights'])
+	y = pd.DataFrame([column_weights])
 	print(f"Elapsed_t: {time.time()-t0:.4f} s | y: {type(y)} {y.shape}")
 
-	print("*"*80)
-	print( y.info( verbose=True, memory_usage="deep") )
-	print("*"*80)
 	print(y)
 
 	# Split the data
