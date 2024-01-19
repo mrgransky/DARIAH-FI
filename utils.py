@@ -704,7 +704,7 @@ def load_pickle(fpath:str="unknown",):
 		with open(fpath, mode='rb') as f:
 			pkl=dill.load(f)
 	except Exception as e:
-		print(f"<<!>> {e} loading for pandas read_pkl...")
+		print(f"<<!>> {e} pandas read_pkl...")
 		pkl = pd.read_pickle(fpath)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6

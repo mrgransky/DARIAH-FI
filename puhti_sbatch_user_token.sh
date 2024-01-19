@@ -11,7 +11,7 @@
 #SBATCH --mem=256G
 #SBATCH --partition=large
 #SBATCH --time=03-00:00:00
-#SBATCH --array=712-731
+#SBATCH --array=731
 ######SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
