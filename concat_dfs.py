@@ -898,11 +898,12 @@ def run():
 	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
 	##############################################################################################################
 	# applicable only for 1 query phrase and must be adjusted 
-	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
-															mat_row=concat_spm_usrNames, 
-															mat_col=concat_spm_tokNames, 
-															tokenized_qu_phrases=query_phrase_tk,
-														)
+	query_vector=get_query_vec(	
+		mat=concat_spm_U_x_T,
+		mat_row=concat_spm_usrNames,
+		mat_col=concat_spm_tokNames,
+		tokenized_qu_phrases=query_phrase_tk,
+	)
 	print(f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
 				f"Allzero? {np.all(query_vector==0.0)} NonZeros: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
@@ -927,7 +928,7 @@ def run():
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
-		qu=query_vector,
+		qu=query_phrase_tk,
 		K=50,
 	)
 	print(len(topKtokens), topKtokens)
