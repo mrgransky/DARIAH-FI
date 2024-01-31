@@ -824,22 +824,23 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 		
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
 	print(f"SciPy SparseMtx (detailed) user_df: {df.shape} |BoWs|: {len(vb)}".center(120, " "))
-	user_token_df=get_unpacked_user_token_interest(df=df) # done on the fly... no saving
-	##########################Sparse Matrix info##########################
+	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
+
+	#######################################################################################################################
+	print(f">> rows [USERs] with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}")
+	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users with all zero cols...")
+	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
+	#######################################################################################################################
+
 	if user_token_df.isnull().values.any():
 		t=time.time()
 		print(f">>> Converting {user_token_df.isna().sum().sum()} NaNs to 0.0", end="\t")
 		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
 		print(f"Elapsed_t: {time.time()-t:.2f} sec")
-
 	# print( user_token_df.info(memory_usage="deep") )
-	print(f">> rows [USERs] with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}")
-	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users with all zero cols...")
-
-	user_token_df = user_token_df.dropna(axis=0, how='all')
 
 	print(
-		f"Getting spMtx from user_token_df: {user_token_df.shape} "
+		f"Getting spMtx from Cleaned user_token_df: {user_token_df.shape} "
 		f"nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} "
 		f"nZeros: {(user_token_df==0.0).sum().sum()}"
 		.center(160, ' ')
