@@ -796,11 +796,13 @@ def run():
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
 	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
-	print(f"{len(sp_mtx_files)} spMtx files | " 
-				f"{len(sp_mtx_rows_files)} spMtx rows(users) | "
-				f"{len(sp_mtx_cols_files)} spMtx columns(tokens) | "
-				f"{len(sp_mtx_concat_BoWs)} spMtx vocabs (json)"
-			.center(150, " "))
+
+	print(
+		f"{len(sp_mtx_files)} spMtx files | " 
+		f"{len(sp_mtx_rows_files)} spMtx rows(users) | "
+		f"{len(sp_mtx_cols_files)} spMtx columns(tokens) | "
+		f"{len(sp_mtx_concat_BoWs)} spMtx vocabs (json)".center(150, " ")
+	)
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 4 SPMs files (+1 BoWs) have different length!"
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
@@ -891,16 +893,17 @@ def run():
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
 	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
-
+	##############################################################################################################
+	# applicable only for 1 query phrase and must be adjusted 
 	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
 															mat_row=concat_spm_usrNames, 
 															mat_col=concat_spm_tokNames, 
 															tokenized_qu_phrases=query_phrase_tk,
 														)
-	print(f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape} Allzero? {np.all(query_vector==0.0)}\n"
-				f"|NonZeros|: {np.count_nonzero(query_vector)} "
+	print(f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
+				f"Allzero? {np.all(query_vector==0.0)} NonZeros: {np.count_nonzero(query_vector)} "
 				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
-				f"{[f'idx[{qidx}]: {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
+				f"{[f'idx[{qidx}] {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
 			)
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
@@ -918,12 +921,12 @@ def run():
 											)
 	print("<>"*100)
 	print(f"Recommendation Result for Raw Query Phrase: < {args.qphrase} >\n")
-	topKtokens=get_topK_tokens(	mat=concat_spm_U_x_T, 
-															mat_rows=concat_spm_usrNames,
-															mat_cols=concat_spm_tokNames,
-															avgrec=avgRecSys,
-															qu=query_phrase_tk,
-														)
+	topKtokens=get_topK_tokens(
+		mat_cols=concat_spm_tokNames,
+		avgrec=avgRecSys,
+		qu=query_vector,
+		K=50,
+	)
 	print(topKtokens)
 	# print("<>"*100)
 	# # Serialize the list into a string and print it

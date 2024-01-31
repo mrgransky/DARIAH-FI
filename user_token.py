@@ -212,7 +212,18 @@ def tokenize_hw_nwp_content(results_list):
 def tokenize_pt_nwp_content(results_list):
 	return [tklm for el in results_list for tklm in lemmatizer_methods.get(args.lmMethod)(el)]
 
-def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
+def apply_weights(column, weight):
+	# Function to apply weights to a column
+	if len(column) == 0:
+		return 0
+	if isinstance(column, list):
+		print(weight, type(column), len(column))
+		return sum([weight if token in column else 0 for token in column])
+	else:
+		print(f"Unknown type! ERROR... {weight} {type(column)}")
+		return 0
+
+def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool=False):
 	print(f"Getting USERs DataFrame from Input {type(dframe)} {dframe.shape}".center(150, "-"))
 	print(dframe.info(verbose=True, memory_usage="deep"))
 	print("<>"*60)
@@ -367,89 +378,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	print( user_df.info( verbose=True, memory_usage="deep") )
 	# print("*"*80)
 
-	print(f"Leaning Weights user_df: {user_df.shape}".center(100, "-"))
-	# Learning Weights: TODO
-	column_weights = {
-			'qu_tokens': weightQueryAppearance,
-			'snippets_hw_token': weightSnippetHWAppearance,
-			'snippets_token': weightSnippetAppearance,
-			'nwp_content_hw_token': weightContentHWAppearance,
-			'nwp_content_lemma_all': weightContentAppearance,
-			'nwp_content_pt_token': weightContentPTAppearance
-	}
-
-	# Function to apply weights to a column
-	def apply_weights(column, weight):
-		if len(column) == 0:
-			return 0
-		if isinstance(column, list):
-			print(weight, type(column), len(column))
-			return sum([weight if token in column else 0 for token in column])
-		else:
-			print(f"Unknown type! ERROR... {weight} {type(column)}")
-			return 0
-
-	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
-	try:
-		token_data = load_pickle(fpath=tk_data_df_fname)
-	except Exception as e:
-		print(f"<!> {e}")
-		# Apply weights to each column
-		print(f">> Apply weights to each column [might take a while]...", end="\t")
-		t0 = time.time()
-		token_data = pd.concat([user_df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
-		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
-		save_pickle(pkl=token_data, fname=tk_data_df_fname)
-
-	print( token_data.info( verbose=True, memory_usage="deep") )
-	print("*"*80)
-
-	print(token_data.head(10))
-	print("*"*80)
-
-	print(token_data.tail(10))
-	print("*"*80)
-
-	# # Target variable (weights to be learned) # TODO: target must be constructed!!!!
-	######### TODO #########
-	# print(f">> Constructing the target y", end="\t")
-	# # Split the data !!!!!!!!!!!1 EEEERRROOOORRRRRR!
-	# print(f"Spliting train vs. test token_data: {token_data.shape} y: {y.shape}")
-	# X_train, X_test, y_train, y_test = train_test_split(token_data.T.to_numpy(), y.to_numpy().flatten(), test_size=0.2, random_state=42)
-
-	# print(f"(X_train, y_train): {X_train.shape}, {y_train.shape}")
-	# print(f"(X_test, y_test): {X_test.shape}, {y_test.shape}")
-
-	# # print(X_train)
-	# # print(y_train)
-	# # print("-"*100)
-	# # print(X_test)
-	# # print(y_test)
-	# # print("-"*100)
-	
-	# # Train a machine learning model
-	# print(f">> Training RandomForestRegressor()....", end="\t")
-	# t0 = time.time()
-	# model = RandomForestRegressor()
-	# print(f"fitting model to X_train: {X_train} y_train: {y_train}")
-	# model.fit(X_train, y_train)
-	# print(f"Elapsed_t: {time.time()-t0:.2f} s model: {type(model)}")
-
-	# # Predict weights
-	# print(f">> predict weights for X_test: {X_test.shape}...", end="\t")
-	# t0 = time.time()
-	# predicted_weights = model.predict(X_test)
-	# print(f"Elapsed_t: {time.time()-t0:.2f} s predidcted_weights: {type(predicted_weights)}")
-
-	# # Evaluate the model
-	# print(f">> MSE: y_pred: {predicted_weights.shape} vs. y: {y.shape}", end="\t")
-	# t0 = time.time()
-	# mse = mean_squared_error(y_test, predicted_weights)
-	# print(f"Elapsed_t: {time.time()-t0:.2f} s | MSE = {mse}")
-
-	# print(f"Feature Importances: {model.feature_importances_} | coeff: {model.coef_}")
-
-	# # return
+	if learned_weights:
+		weights = get_learned_weights(df=user_df)
 
 	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(150, "-"))
 	imf_st_t = time.time()
@@ -503,6 +433,43 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int]):
 	user_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(bow)}_BoWs.gz")
 	save_pickle(pkl=user_df, fname=user_df_fname)
 	return user_df
+
+def get_learned_weights(df: pd.DataFrame):
+	learned_weights = list()
+
+	print(f"Leaning Weights df: {df.shape}".center(100, "-"))
+	# Learning Weights: TODO
+	column_weights = {
+		'qu_tokens': weightQueryAppearance,
+		'snippets_hw_token': weightSnippetHWAppearance,
+		'snippets_token': weightSnippetAppearance,
+		'nwp_content_hw_token': weightContentHWAppearance,
+		'nwp_content_lemma_all': weightContentAppearance,
+		'nwp_content_pt_token': weightContentPTAppearance
+	}
+
+	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
+	try:
+		token_data = load_pickle(fpath=tk_data_df_fname)
+	except Exception as e:
+		print(f"<!> {e}")
+		# Apply weights to each column
+		print(f">> Apply weights to each column [might take a while]...", end="\t")
+		t0 = time.time()
+		token_data = pd.concat([df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
+		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
+		save_pickle(pkl=token_data, fname=tk_data_df_fname)
+
+	print( token_data.info( verbose=True, memory_usage="deep") )
+	print("*"*80)
+
+	print(token_data.head(10))
+	print("*"*80)
+
+	print(token_data.tail(10))
+	print("*"*80)
+
+	return learned_weights
 
 def main():
 	qu_phrase=args.qphrase

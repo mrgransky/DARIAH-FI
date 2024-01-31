@@ -154,7 +154,7 @@ rpath = os.path.join( NLF_DATASET_PATH, f"results" )
 # pd.set_option('display.width', 1000)
 # pd.set_option('display.max_colwidth', None)
 
-# list of all weights (initial):
+# Arbitrary fixed initial weights:
 weightQueryAppearance:float = 1.0				# suggested by Jakko: 1.0
 weightSnippetHWAppearance:float = 0.4		# suggested by Jakko: 0.2
 weightSnippetAppearance:float = 0.2			# suggested by Jakko: 0.2
@@ -833,7 +833,17 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 		print(f"Elapsed_t: {time.time()-t:.2f} sec")
 
 	# print( user_token_df.info(memory_usage="deep") )
-	print(f"Getting spMtx user_token_df: {user_token_df.shape} nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()}, nZeros: {(user_token_df==0.0).sum().sum()}".center(160, ' '))
+	print(f">> rows [USERs] with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}")
+	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users with all zero cols...")
+
+	user_token_df = user_token_df.dropna(axis=0, how='all')
+
+	print(
+		f"Getting spMtx from user_token_df: {user_token_df.shape} "
+		f"nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} "
+		f"nZeros: {(user_token_df==0.0).sum().sum()}"
+		.center(160, ' ')
+	)
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
@@ -1109,8 +1119,8 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, " "))	
 	return avg_rec # (nTokens,)
 
-def get_topK_tokens(mat, mat_rows, mat_cols, avgrec, qu, K: int=80):
-	# return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1]
+def get_topK_tokens(mat_cols, avgrec, qu, K: int=100):
+	# return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1] # n
 	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:] if mat_cols[iTK] not in qu][::-1] # 
 
 def get_concat_bow(arr):

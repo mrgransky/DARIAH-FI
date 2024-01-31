@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nike_COMPLEMENTRY_Q
+#SBATCH --job-name=nike_weights_learning
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -11,7 +11,7 @@
 #SBATCH --mem=256G
 #SBATCH --partition=large
 #SBATCH --time=03-00:00:00
-#SBATCH --array=731
+#SBATCH --array=708-731
 ######SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
@@ -33,7 +33,7 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x20"
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_weights_learning"
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
