@@ -924,7 +924,7 @@ def run():
 												spMtx_norm=usrNorms,
 											)
 	print("<>"*100)
-	print(f"Recommendation Result for Raw Query Phrase: < {args.qphrase} > {query_vector}\n")
+	print(f"Recommendation Result for Raw Query Phrase: < {args.qphrase} > {query_phrase_tk}\n")
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
