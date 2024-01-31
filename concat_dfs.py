@@ -20,6 +20,9 @@ args = parser.parse_args()
 
 fprefix: str = "FILE_PREFIXname_TBR"
 
+# how to run:
+# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY
+
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
 	for tk in dframe[qcol]: # [tk1, tk2, …]
@@ -920,14 +923,14 @@ def run():
 												spMtx_norm=usrNorms,
 											)
 	print("<>"*100)
-	print(f"Recommendation Result for Raw Query Phrase: < {args.qphrase} >\n")
+	print(f"Recommendation Result for Raw Query Phrase: < {args.qphrase} > {query_vector}\n")
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
 		qu=query_vector,
 		K=50,
 	)
-	print(topKtokens)
+	print(len(topKtokens), topKtokens)
 	# print("<>"*100)
 	# # Serialize the list into a string and print it
 	# serialized_result = json.dumps(topKtokens)

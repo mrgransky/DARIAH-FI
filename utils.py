@@ -827,21 +827,21 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 
 	#######################################################################################################################
-	print(f">> rows [USERs] with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}")
-	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users with all zero cols...")
+	print(f">> USERs (rows) with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}")
+	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users out of {user_token_df.shape[0]} with all zero cols...")
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
 	#######################################################################################################################
 
 	if user_token_df.isnull().values.any():
 		t=time.time()
-		print(f">>> Converting {user_token_df.isna().sum().sum()} NaNs to 0.0", end="\t")
+		print(f"Converting {user_token_df.isna().sum().sum()} cells of NaNs to cells of 0.0...", end="\t")
 		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
-		print(f"Elapsed_t: {time.time()-t:.2f} sec")
+		print(f"Elapsed_t: {time.time()-t:.2f} s")
 	# print( user_token_df.info(memory_usage="deep") )
 
 	print(
-		f"Getting spMtx from Cleaned user_token_df: {user_token_df.shape} "
-		f"nNaNs({user_token_df.isnull().values.any()}): {user_token_df.isna().sum().sum()} "
+		f"Getting spMtx Cleaned user_token_df: {user_token_df.shape} "
+		f"nNaNs({user_token_df.isnull().values.any()})[!!!MUST BE ZERO/FALSE!!!]: {user_token_df.isna().sum().sum()} "
 		f"nZeros: {(user_token_df==0.0).sum().sum()}"
 		.center(160, ' ')
 	)
@@ -955,7 +955,7 @@ def get_df_spm(df: pd.DataFrame):
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
-	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö)".center(150, " "))
+	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö) [on the fly]".center(170, " "))
 	st_t = time.time()
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
