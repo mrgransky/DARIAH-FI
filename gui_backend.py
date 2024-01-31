@@ -69,27 +69,31 @@ progress_bar.layout.visibility = 'hidden'  # Initially hidden
 
 def run_recSys(query_phrase: str="This is a sample raw query phrase!", ):
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[query_phrase], lm=lmMethod)
-	query_vector=get_query_vec(	mat=concat_spm_U_x_T,
-															mat_row=concat_spm_usrNames, 
-															mat_col=concat_spm_tokNames, 
-															tokenized_qu_phrases=query_phrase_tk,
-														)
-	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
-												query_vec=query_vector, 
-												idf_vec=idf_vec,
-												spMtx_norm=usrNorms, # must be adjusted, accordingly!
-											)
-	avgRecSys=get_avg_rec(spMtx=concat_spm_U_x_T,
-												cosine_sim=ccs**5,
-												idf_vec=idf_vec,
-												spMtx_norm=usrNorms,
-											)
-	topKtokens=get_topK_tokens(	mat=concat_spm_U_x_T, 
-															mat_rows=concat_spm_usrNames,
-															mat_cols=concat_spm_tokNames,
-															avgrec=avgRecSys,
-															qu=query_phrase_tk,
-														)
+	query_vector=get_query_vec(	
+		mat=concat_spm_U_x_T,
+		mat_row=concat_spm_usrNames,
+		mat_col=concat_spm_tokNames,
+		tokenized_qu_phrases=query_phrase_tk,
+	)
+	ccs=get_optimized_cs(
+		spMtx=concat_spm_U_x_T,
+		query_vec=query_vector,
+		idf_vec=idf_vec,
+		spMtx_norm=usrNorms, # must be adjusted, accordingly!
+	)
+	avgRecSys=get_avg_rec(
+		spMtx=concat_spm_U_x_T,
+		cosine_sim=ccs**5,
+		idf_vec=idf_vec,
+		spMtx_norm=usrNorms,
+	)
+	topKtokens=get_topK_tokens(	
+		mat=concat_spm_U_x_T,
+		mat_rows=concat_spm_usrNames,
+		mat_cols=concat_spm_tokNames,
+		avgrec=avgRecSys,
+		qu=query_phrase_tk,
+	)
 	return topKtokens
 
 def close_window(count=8):
