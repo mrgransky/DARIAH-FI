@@ -913,7 +913,7 @@ def run():
 	) # lil_matrix (nUsers, nTokens)
 	print("-"*120)
 
-	# save in a tar archive file
+	# save ALL concat files in dir as a tar archive file
 	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
 		print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
 		get_compressed_archive(save_dir=args.dfsPath, compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz")
@@ -964,7 +964,7 @@ def run():
 	print(len(topKtokens), topKtokens)
 
 	################################################# SHRINKED ################################################# 
-	print(f"Shrinked Query".center(120, "#"))
+	print(f"Shrinked Query".center(150, "#"))
 	query_vector_shrinked=get_query_vec(
 		mat=concat_shrinked_spm_U_x_T,
 		mat_row=concat_shrinked_spm_usrNames,
@@ -994,7 +994,7 @@ def run():
 		idf_vec=idf_vec_shrinked,
 		spMtx_norm=usrNorms_shrinked,
 	)
-	print("#"*25)
+	print("#"*100)
 	print(f"Recommendation Result[ShRINKED]:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {query_phrase_tk}\n")
 	topKtokens_shrinked=get_topK_tokens(
 		mat_cols=concat_shrinked_spm_tokNames,

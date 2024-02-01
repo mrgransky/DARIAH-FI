@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spMtx_xx58_concat
+#SBATCH --job-name=spMtx_xx58_concat_shrinked_original
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=256G
+#SBATCH --mem=266G
 #SBATCH --partition=small
-#SBATCH --time=01-03:00:00
+#SBATCH --time=03-00:00:00
 ####SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
