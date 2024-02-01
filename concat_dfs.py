@@ -795,6 +795,7 @@ def get_users_tokens_ddf():
 def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	make_folder(folder_name=args.dfsPath)
+
 	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
 	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
 	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
@@ -823,7 +824,7 @@ def run():
 		# concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
 		# concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
 		# concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
-		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_USERs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
+		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
 		concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_rows_*_nUSRs.gz')[0])
 		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_cols_*_nTOKs.gz')[0])
 	except Exception as e:
@@ -841,6 +842,22 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
+
+	try:
+		# load shrinked spMtx
+		concat_shrinked_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
+		concat_shrinked_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_rows_*_nUSRs.gz')[0])
+		concat_shrinked_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_cols_*_nTOKs.gz')[0])
+	except Exception as e:
+		print(f"<!> No Shrinked_SPM concat files found! {e} Generating in progress [might take a while]...")
+		concat_shrinked_spm_U_x_T, concat_shrinked_spm_usrNames, concat_shrinked_spm_tokNames = get_shrinked_spMtx(
+			spMtx=concat_spm_U_x_T,
+			spMtx_rows=concat_spm_usrNames,
+			spMtx_cols=concat_spm_tokNames,
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		)
+
 
 	# ##############################################For Double checking with 2 DFs#####################################################
 	# try:
