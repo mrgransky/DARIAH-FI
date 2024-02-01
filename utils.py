@@ -1068,7 +1068,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 	# shrinking the BIG sparse matrix:
 	print(
 		f"Shrinking Origial BIG Sparse Matrices: {spMtx.shape} "
-		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(140, "-")
+		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(160, "-")
 	)
 	t0=time.time()
 	idx_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))

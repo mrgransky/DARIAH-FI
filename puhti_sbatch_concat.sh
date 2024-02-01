@@ -35,7 +35,7 @@ dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_xx58" ##########
 for qu in 'Tampereen seudun työväenopisto'
 do
   echo "Query: $qu"
-  python -u concat_dfs.py --dfsPath $dfsDIR --lmMethod 'stanza' --qphrase "$qu"
+  python -u concat_dfs.py --dfsPath $dfsDIR --qphrase "$qu"
 done
 
 done_txt="$user finished Slurm job: `date`"
