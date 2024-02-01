@@ -1084,10 +1084,10 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 	)
 
 	# save shrinked sparse matrices:
-	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_USERs_vs_TOKENs_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
-	spm_rows_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_rows_{spMtx_shrinked.shape[0]}_nUSRs.gz")
-	spm_cols_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_cols_{spMtx_shrinked.shape[1]}_nTOKs.gz")
-	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_x_{spMtx_shrinked.shape[1]}_BoWs.json")
+	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_USERs_vs_TOKENs_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
+	spm_rows_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_rows_{spMtx_shrinked.shape[0]}_nUSRs.gz")
+	spm_cols_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_cols_{spMtx_shrinked.shape[1]}_nTOKs.gz")
+	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_x_{spMtx_shrinked.shape[1]}_BoWs.json")
 
 	save_pickle(pkl=spMtx_shrinked, fname=spm_shrinked_fname)
 	save_pickle(pkl=spMtx_row_shrinked, fname=spm_rows_shrinked_fname)

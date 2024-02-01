@@ -854,6 +854,7 @@ def run():
 			prefix_fname=fprefix,
 		) # (nUsers,) 
 
+	################################################# SHRINKED ################################################# 
 	try:
 		# load shrinked spMtx
 		concat_shrinked_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
@@ -866,7 +867,7 @@ def run():
 			spMtx_rows=concat_spm_usrNames,
 			spMtx_cols=concat_spm_tokNames,
 			save_dir=args.dfsPath,
-			prefix_fname=fprefix+f"_",
+			prefix_fname=fprefix+f"_shrinked",
 		)
 
 	try:
@@ -876,7 +877,7 @@ def run():
 		idf_vec_shrinked=get_idf(
 			spMtx=concat_shrinked_spm_U_x_T,
 			save_dir=args.dfsPath,
-			prefix_fname=fprefix,
+			prefix_fname=fprefix+f"_shrinked",
 		)
 
 	try:
@@ -904,7 +905,7 @@ def run():
 	print(f"Concatenated < SHRINKED > Sparse Matrix".center(120, "-"))
 	print(
 		f"spMtx {type(concat_shrinked_spm_U_x_T)} {concat_shrinked_spm_U_x_T.shape} {concat_shrinked_spm_U_x_T.dtype}"
-		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB\n"
+		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_shrinked_spm_U_x_T.data])/1e9:.3f} GB\n"
 		f"spMtx_rows {type(concat_shrinked_spm_usrNames)} {concat_shrinked_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
 		f"spMtx_cols {type(concat_shrinked_spm_tokNames)} {concat_shrinked_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
 		f"IDF {type(idf_vec_shrinked)} {idf_vec_shrinked.shape} {idf_vec_shrinked.dtype} {idf_vec_shrinked.nbytes/1e6:.2f} MB"
