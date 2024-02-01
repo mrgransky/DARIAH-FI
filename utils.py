@@ -1051,7 +1051,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 	concat_BoW = get_concat_bow(colnames_all) # np.array(["A", "B", "C", "D"]) => {"A":0, "B":1, "C":2, "D":3,}
 
 	# save original BIG sparse matrices:
-	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spMtx_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
+	spm_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_USERs_TOKENs_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
 	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_rows_{newmatrix.shape[0]}_nUSRs.gz")
 	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_cols_{newmatrix.shape[1]}_nTOKs.gz")
 	concat_bow_fname=os.path.join(save_dir, f"{prefix_fname}_x_{newmatrix.shape[1]}_BoWs.json")
@@ -1075,7 +1075,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {spMtx_shrinked.shape} rows: {spMtx_row_shrinked.shape} cols: {spMtx_col_shrinked.shape}")
 
 	# save shrinked sparse matrices:
-	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_shrinked_spMtx_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
+	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_USERs_TOKENs_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
 	spm_rows_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_rows_{spMtx_shrinked.shape[0]}_nUSRs.gz")
 	spm_cols_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_cols_{spMtx_shrinked.shape[1]}_nTOKs.gz")
 	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_x_{spMtx_shrinked.shape[1]}_BoWs.json")
