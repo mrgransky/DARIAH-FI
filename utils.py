@@ -681,7 +681,7 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	return vb
 
 def save_pickle(pkl, fname:str=""):
-	print(f"Saving {type(pkl)}\n{fname}")
+	print(f"\nSaving {type(pkl)}\n{fname}")
 	st_t = time.time()
 	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
 		pkl.to_pickle(path=fname)
@@ -691,7 +691,7 @@ def save_pickle(pkl, fname:str=""):
 			dill.dump(pkl, f)
 	elpt = time.time()-st_t
 	fsize_dump = os.stat( fname ).st_size / 1e6
-	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(150, " "))
+	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(120, " "))
 
 def load_pickle(fpath:str="unknown",):
 	print(f"Checking for existence? {fpath}")
@@ -1068,7 +1068,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 	# shrinking the BIG sparse matrix:
 	print(
 		f"Shrinking Origial BIG Sparse Matrices: {spMtx.shape} "
-		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(150, " ")
+		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(140, "-")
 	)
 	t0=time.time()
 	idx_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))

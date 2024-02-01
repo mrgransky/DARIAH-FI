@@ -873,7 +873,7 @@ def run():
 	try:
 		idf_vec_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_idf_vec_1_x_*_nTOKs.gz')[0])
 	except Exception as e:
-		print(f"<!> idf file not available! {e}")
+		print(f"<!> SHRINKED idf file not available! {e}")
 		idf_vec_shrinked=get_idf(
 			spMtx=concat_shrinked_spm_U_x_T,
 			save_dir=args.dfsPath,
@@ -921,8 +921,8 @@ def run():
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
 	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
-	##############################################################################################################
-	# applicable only for 1 query phrase and must be adjusted 
+	#########################################################################################################################
+
 	query_vector=get_query_vec(
 		mat=concat_spm_U_x_T,
 		mat_row=concat_spm_usrNames,
@@ -938,6 +938,7 @@ def run():
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
+
 
 	ccs=get_optimized_cs(
 		spMtx=concat_spm_U_x_T,
@@ -961,6 +962,48 @@ def run():
 		K=80,
 	)
 	print(len(topKtokens), topKtokens)
+
+	################################################# SHRINKED ################################################# 
+	print(f"Shrinked Query".center(120, "#"))
+	query_vector_shrinked=get_query_vec(
+		mat=concat_shrinked_spm_U_x_T,
+		mat_row=concat_shrinked_spm_usrNames,
+		mat_col=concat_shrinked_spm_tokNames,
+		tokenized_qu_phrases=query_phrase_tk,
+	)
+	print(
+		f"quVec [SHRINKED] {type(query_vector_shrinked)} {query_vector_shrinked.dtype} {query_vector_shrinked.shape}\n"
+		f"Allzero? {np.all(query_vector_shrinked==0.0)} NonZeros: {np.count_nonzero(query_vector_shrinked)} "
+		f"@ idx(s): {np.where(query_vector_shrinked.flatten()!=0)[0]} "
+		f"{[f'idx[{qidx}] {concat_shrinked_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector_shrinked.flatten()!=0)[0])]}"
+	)
+	if np.all( query_vector_shrinked==0.0 ):
+		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		return
+
+	ccs_shrinked=get_optimized_cs(
+		spMtx=concat_shrinked_spm_U_x_T,
+		query_vec=query_vector_shrinked,
+		idf_vec=idf_vec_shrinked,
+		spMtx_norm=usrNorms_shrinked, # must be adjusted, accordingly!
+	)
+
+	avgRecSys_shrinked=get_avg_rec(
+		spMtx=concat_shrinked_spm_U_x_T,
+		cosine_sim=ccs_shrinked**5,
+		idf_vec=idf_vec_shrinked,
+		spMtx_norm=usrNorms_shrinked,
+	)
+	print("#"*25)
+	print(f"Recommendation Result[ShRINKED]:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {query_phrase_tk}\n")
+	topKtokens_shrinked=get_topK_tokens(
+		mat_cols=concat_shrinked_spm_tokNames,
+		avgrec=avgRecSys_shrinked,
+		qu=query_phrase_tk,
+		K=80,
+	)
+	print(len(topKtokens_shrinked), topKtokens_shrinked)
+
 	# print("<>"*100)
 	# # Serialize the list into a string and print it
 	# serialized_result = json.dumps(topKtokens)
