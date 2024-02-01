@@ -929,7 +929,7 @@ def run():
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
 		qu=query_phrase_tk,
-		K=50,
+		K=80,
 	)
 	print(len(topKtokens), topKtokens)
 	# print("<>"*100)
