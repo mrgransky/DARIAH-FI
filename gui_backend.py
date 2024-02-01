@@ -88,7 +88,6 @@ def run_recSys(query_phrase: str="This is a sample raw query phrase!", ):
 		spMtx_norm=usrNorms,
 	)
 	topKtokens=get_topK_tokens(
-		mat_rows=concat_spm_usrNames,
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
 		qu=query_phrase_tk,
