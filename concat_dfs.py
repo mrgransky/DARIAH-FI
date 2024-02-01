@@ -888,7 +888,7 @@ def run():
 			spMtx=concat_shrinked_spm_U_x_T,
 			idf_vec=idf_vec_shrinked,
 			save_dir=args.dfsPath,
-			prefix_fname=fprefix,
+			prefix_fname=fprefix+f"_shrinked",
 		) # (nUsers,) 
 
 	print(f"Concatenated < Original BIG > Sparse Matrix".center(120, "-"))
