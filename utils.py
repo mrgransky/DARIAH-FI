@@ -1050,9 +1050,10 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 
 	concat_BoW = get_concat_bow(colnames_all) # np.array(["A", "B", "C", "D"]) => {"A":0, "B":1, "C":2, "D":3,}
 
-	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
-	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_user_ip_names_{newmatrix.shape[0]}_nUSRs.gz")
-	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spm_token_names_{newmatrix.shape[1]}_nTOKs.gz")
+	# save original BIG sparse matrices:
+	spm_fname=os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_spMtx_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
+	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_rows_{newmatrix.shape[0]}_nUSRs.gz")
+	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_cols_{newmatrix.shape[1]}_nTOKs.gz")
 	concat_bow_fname=os.path.join(save_dir, f"{prefix_fname}_x_{newmatrix.shape[1]}_BoWs.json")
 
 	save_pickle(pkl=newmatrix, fname=spm_fname)
@@ -1060,6 +1061,32 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 	save_pickle(pkl=colnames_all, fname=spm_cols_fname)
 	save_vocab(vb=concat_BoW, fname=concat_bow_fname)
 
+	######################################################################################
+	# shrinking the BIG sparse matrix:
+	print(f">> Shrinking Origial BIG Sparse Matrices: {newmatrix.shape} rows: {rownames_all.shape} cols: {colnames_all.shape} [takes a while]...")
+	t0=time.time()
+	idx_more_than_1user = np.squeeze(np.asarray((np.sum(newmatrix > 0, axis=0 ) > 1)))
+	
+	spMtx_shrinked = newmatrix[:, idx_more_than_1user] # more than 1 user
+	spMtx_row_shrinked = rownames_all
+	spMtx_col_shrinked = colnames_all[idx_more_than_1user]
+	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked)
+
+	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {spMtx_shrinked.shape} rows: {spMtx_row_shrinked.shape} cols: {spMtx_col_shrinked.shape}")
+
+	# save shrinked sparse matrices:
+	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_USERs_TOKENs_shrinked_spMtx_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
+	spm_rows_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_rows_{spMtx_shrinked.shape[0]}_nUSRs.gz")
+	spm_cols_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_cols_{spMtx_shrinked.shape[1]}_nTOKs.gz")
+	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_x_{spMtx_shrinked.shape[1]}_BoWs.json")
+
+	save_pickle(pkl=spMtx_shrinked, fname=spm_shrinked_fname)
+	save_pickle(pkl=spMtx_row_shrinked, fname=spm_rows_shrinked_fname)
+	save_pickle(pkl=spMtx_col_shrinked, fname=spm_cols_shrinked_fname)
+	save_vocab(vb=concat_BoW_shrinked, fname=concat_bow_shrinked_fname)
+
+	######################################################################################
+	
 	return newmatrix, rownames_all, colnames_all
 
 def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"]):
@@ -1083,7 +1110,8 @@ def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0)
 	cs=np.zeros(nUsers, dtype=np.float32) # (nUsers,)
 	idf_squeezed=np.squeeze(np.asarray(idf_vec))
 	quInterest_nonZeros=quInterest[idx_nonzeros]*(1/quInterestNorm)	
-	for ui in np.arange(nUsers, dtype=np.int32): # ip1, ip2, ..., ipN
+	# for ui in np.arange(nUsers, dtype=np.int32): # ip1, ip2, ..., ipN
+	for ui, uv in enumerate(spMtx): # slightly faster
 		usrInterest=np.squeeze(spMtx[ui, idx_nonzeros].toarray())*idf_squeezed[idx_nonzeros] # 1 x len(idx[1])
 		usrInterestNorm=spMtx_norm[ui]+1e-18
 
