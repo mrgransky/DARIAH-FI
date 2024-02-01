@@ -810,6 +810,7 @@ def run():
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 4 SPMs files (+1 BoWs) have different length!"
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
+
 	RES_DIR=make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
 	
@@ -821,39 +822,13 @@ def run():
 	# 	print("-"*180)
 	
 	try:
-		# concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_*_nUSRs_x_*_nTOKs.gz')[0])
-		# concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_user_ip_names_*_nUSRs.gz')[0])
-		# concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_USERs_TOKENs_spm_token_names_*_nTOKs.gz')[0])
 		concat_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
 		concat_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_rows_*_nUSRs.gz')[0])
 		concat_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_cols_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> No SPM concat files found! {e} Generating in progress... [might take a while]")
-		### no print:
-		# with HiddenPrints():
-		# 	concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
-		# 		SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files)],
-		# 		save_dir=args.dfsPath,
-		# 		prefix_fname=fprefix,
-		# 	)
-		## with print:
 		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
 			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files)],
-			save_dir=args.dfsPath,
-			prefix_fname=fprefix,
-		)
-
-	try:
-		# load shrinked spMtx
-		concat_shrinked_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
-		concat_shrinked_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_rows_*_nUSRs.gz')[0])
-		concat_shrinked_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_cols_*_nTOKs.gz')[0])
-	except Exception as e:
-		print(f"<!> No Shrinked_SPM concat files found {e} [might take a while]...")
-		concat_shrinked_spm_U_x_T, concat_shrinked_spm_usrNames, concat_shrinked_spm_tokNames = get_shrinked_spMtx(
-			spMtx=concat_spm_U_x_T,
-			spMtx_rows=concat_spm_usrNames,
-			spMtx_cols=concat_spm_tokNames,
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
@@ -880,10 +855,25 @@ def run():
 		) # (nUsers,) 
 
 	try:
+		# load shrinked spMtx
+		concat_shrinked_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
+		concat_shrinked_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_rows_*_nUSRs.gz')[0])
+		concat_shrinked_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_cols_*_nTOKs.gz')[0])
+	except Exception as e:
+		print(f"<!> No Shrinked_SPM concat files found {e} [might take a while]...")
+		concat_shrinked_spm_U_x_T, concat_shrinked_spm_usrNames, concat_shrinked_spm_tokNames = get_shrinked_spMtx(
+			spMtx=concat_spm_U_x_T,
+			spMtx_rows=concat_spm_usrNames,
+			spMtx_cols=concat_spm_tokNames,
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix+f"_",
+		)
+
+	try:
 		idf_vec_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_idf_vec_1_x_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> idf file not available! {e}")
-		idf_vec=get_idf(
+		idf_vec_shrinked=get_idf(
 			spMtx=concat_shrinked_spm_U_x_T,
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
@@ -893,7 +883,7 @@ def run():
 		usrNorms_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'shrinked_users_norm_1_x_*_nUSRs.gz')[0])
 	except Exception as e:
 		print(f"<!> SHRINKED usrNorm file not found! {e}")
-		usrNorms=get_idfed_users_norm(
+		usrNorms_shrinked=get_idfed_users_norm(
 			spMtx=concat_shrinked_spm_U_x_T,
 			idf_vec=idf_vec_shrinked,
 			save_dir=args.dfsPath,
