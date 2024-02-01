@@ -849,7 +849,7 @@ def run():
 		concat_shrinked_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_rows_*_nUSRs.gz')[0])
 		concat_shrinked_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_cols_*_nTOKs.gz')[0])
 	except Exception as e:
-		print(f"<!> No Shrinked_SPM concat files found! {e} Generating in progress [might take a while]...")
+		print(f"<!> No Shrinked_SPM concat files found {e} [might take a while]...")
 		concat_shrinked_spm_U_x_T, concat_shrinked_spm_usrNames, concat_shrinked_spm_tokNames = get_shrinked_spMtx(
 			spMtx=concat_spm_U_x_T,
 			spMtx_rows=concat_spm_usrNames,
@@ -857,56 +857,70 @@ def run():
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
 		)
-
-
-	# ##############################################For Double checking with 2 DFs#####################################################
-	# try:
-	# 	concat_df_U_x_T=load_pickle(fpath=glob.glob(args.dfsPath+'/'+'*PDFs_*USERs_TOKENs_pdf_*_nUSRs_x_*_nTOKs.gz')[0])
-	# except Exception as e:
-	# 	print(f"<!> user_token_df Not available! {e}")
-	# 	concat_df_U_x_T = get_users_tokens_df(save_dir=args.dfsPath, 
-	# 																				prefix_fname=f"concatinated_{len(get_df_files(fpath=args.dfsPath+'/'+'*_user_df_*_BoWs.gz' ))}_PDFs",
-	# 																			)
-	# print(f"USER_TOKEN concat_pDF: {concat_df_U_x_T.shape}")
-	# print(concat_df_U_x_T.info(memory_usage="deep"))
-	# print("<>"*50)
-	# ########################### only works with x2 files ############################
-	# t=time.time()
-	# print(f">> dfs concat and spm are equal?", end=" ")
-	# print(np.all(concat_spm_U_x_T.toarray()==concat_df_U_x_T.values), end=" ")
-	# print(f"Elapsed_t: {time.time()-t:.2f} sec")
-	# ########################### only works with x2 files ############################
-	# ##############################################For Double checking with 2 DFs#####################################################
 	
 	try:
-		# load idf
-		idf_vec=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_idf_vec_1_x_*_nTOKs.gz')[0])
+		idf_vec=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_idf_vec_1_x_*_nTOKs.gz')[0])
 	except Exception as e:
 		print(f"<!> idf file not available! {e}")
-		idf_vec=get_idf(spMtx=concat_spm_U_x_T,
-										save_dir=args.dfsPath,
-										prefix_fname=fprefix,
-									)
+		idf_vec=get_idf(
+			spMtx=concat_spm_U_x_T,
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		)
 
 	try:
-		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'*_users_norm_1_x_*_nUSRs.gz')[0])
+		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_users_norm_1_x_*_nUSRs.gz')[0])
 	except Exception as e:
 		print(f"<!> usrNorm file not found! {e}")
-		usrNorms=get_idfed_users_norm(spMtx=concat_spm_U_x_T, 
-																	idf_vec=idf_vec,
-																	save_dir=args.dfsPath,
-																	prefix_fname=fprefix,
-																) # (nUsers,) 
+		usrNorms=get_idfed_users_norm(
+			spMtx=concat_spm_U_x_T,
+			idf_vec=idf_vec,
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		) # (nUsers,) 
 
-	print(f"Concatenated Sparse Matrix [INFO]".center(150, "-"))
-	print(f"spMtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {concat_spm_U_x_T.dtype}"
-				f"byte size[count] {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB") # lil_matrix (nUsers, nTokens)
-	print(f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} | "	# <class 'numpy.ndarray'> (nUsers,)
-				f"spMtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}"		# <class 'numpy.ndarray'> (nTokens,)
-			)
-	print(f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB")
-	print(f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}")
-	print("-"*150)
+	try:
+		idf_vec_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_idf_vec_1_x_*_nTOKs.gz')[0])
+	except Exception as e:
+		print(f"<!> idf file not available! {e}")
+		idf_vec=get_idf(
+			spMtx=concat_shrinked_spm_U_x_T,
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		)
+
+	try:
+		usrNorms_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'shrinked_users_norm_1_x_*_nUSRs.gz')[0])
+	except Exception as e:
+		print(f"<!> SHRINKED usrNorm file not found! {e}")
+		usrNorms=get_idfed_users_norm(
+			spMtx=concat_shrinked_spm_U_x_T,
+			idf_vec=idf_vec_shrinked,
+			save_dir=args.dfsPath,
+			prefix_fname=fprefix,
+		) # (nUsers,) 
+
+	print(f"Concatenated < Original BIG > Sparse Matrix".center(120, "-"))
+	print(
+		f"spMtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {concat_spm_U_x_T.dtype}"
+		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB\n"
+		f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
+		f"spMtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
+		f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB"
+		f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}"
+	) # lil_matrix (nUsers, nTokens)
+	print("-"*120)
+
+	print(f"Concatenated < SHRINKED > Sparse Matrix".center(120, "-"))
+	print(
+		f"spMtx {type(concat_shrinked_spm_U_x_T)} {concat_shrinked_spm_U_x_T.shape} {concat_shrinked_spm_U_x_T.dtype}"
+		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB\n"
+		f"spMtx_rows {type(concat_shrinked_spm_usrNames)} {concat_shrinked_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
+		f"spMtx_cols {type(concat_shrinked_spm_tokNames)} {concat_shrinked_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
+		f"IDF {type(idf_vec_shrinked)} {idf_vec_shrinked.shape} {idf_vec_shrinked.dtype} {idf_vec_shrinked.nbytes/1e6:.2f} MB"
+		f"Customized Users Norm (IDFed): {type(usrNorms_shrinked)} {usrNorms_shrinked.dtype} {usrNorms_shrinked.shape}"
+	) # lil_matrix (nUsers, nTokens)
+	print("-"*120)
 
 	# save in a tar archive file
 	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
@@ -918,32 +932,36 @@ def run():
 	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
 	##############################################################################################################
 	# applicable only for 1 query phrase and must be adjusted 
-	query_vector=get_query_vec(	
+	query_vector=get_query_vec(
 		mat=concat_spm_U_x_T,
 		mat_row=concat_spm_usrNames,
 		mat_col=concat_spm_tokNames,
 		tokenized_qu_phrases=query_phrase_tk,
 	)
-	print(f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
-				f"Allzero? {np.all(query_vector==0.0)} NonZeros: {np.count_nonzero(query_vector)} "
-				f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
-				f"{[f'idx[{qidx}] {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
-			)
+	print(
+		f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
+		f"Allzero? {np.all(query_vector==0.0)} NonZeros: {np.count_nonzero(query_vector)} "
+		f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
+		f"{[f'idx[{qidx}] {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
+	)
 	if np.all( query_vector==0.0 ):
 		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
 		return
-	ccs=get_optimized_cs(	spMtx=concat_spm_U_x_T,
-												query_vec=query_vector, 
-												idf_vec=idf_vec,
-												spMtx_norm=usrNorms, # must be adjusted, accordingly!
-											)
 
-	avgRecSys=get_avg_rec(spMtx=concat_spm_U_x_T,
-												cosine_sim=ccs**5,
-												idf_vec=idf_vec,
-												spMtx_norm=usrNorms,
-											)
-	print("<>"*100)
+	ccs=get_optimized_cs(
+		spMtx=concat_spm_U_x_T,
+		query_vec=query_vector,
+		idf_vec=idf_vec,
+		spMtx_norm=usrNorms, # must be adjusted, accordingly!
+	)
+
+	avgRecSys=get_avg_rec(
+		spMtx=concat_spm_U_x_T,
+		cosine_sim=ccs**5,
+		idf_vec=idf_vec,
+		spMtx_norm=usrNorms,
+	)
+	print("<>"*25)
 	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {query_phrase_tk}\n")
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,

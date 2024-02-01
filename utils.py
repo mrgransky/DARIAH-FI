@@ -681,7 +681,7 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	return vb
 
 def save_pickle(pkl, fname:str=""):
-	print(f"Saving {type(pkl)} {fname}")
+	print(f"Saving {type(pkl)}\n{fname}")
 	st_t = time.time()
 	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
 		pkl.to_pickle(path=fname)
@@ -1054,7 +1054,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 	spm_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_USERs_vs_TOKENs_{newmatrix.shape[0]}_nUSRs_x_{newmatrix.shape[1]}_nTOKs.gz")
 	spm_rows_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_rows_{newmatrix.shape[0]}_nUSRs.gz")
 	spm_cols_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_cols_{newmatrix.shape[1]}_nTOKs.gz")
-	concat_bow_fname=os.path.join(save_dir, f"{prefix_fname}_x_{newmatrix.shape[1]}_BoWs.json")
+	concat_bow_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_x_{newmatrix.shape[1]}_BoWs.json")
 
 	save_pickle(pkl=newmatrix, fname=spm_fname)
 	save_pickle(pkl=rownames_all, fname=spm_rows_fname)
@@ -1087,7 +1087,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_USERs_vs_TOKENs_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
 	spm_rows_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_rows_{spMtx_shrinked.shape[0]}_nUSRs.gz")
 	spm_cols_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_cols_{spMtx_shrinked.shape[1]}_nTOKs.gz")
-	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_x_{spMtx_shrinked.shape[1]}_BoWs.json")
+	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_shrinked_spMtx_x_{spMtx_shrinked.shape[1]}_BoWs.json")
 
 	save_pickle(pkl=spMtx_shrinked, fname=spm_shrinked_fname)
 	save_pickle(pkl=spMtx_row_shrinked, fname=spm_rows_shrinked_fname)
@@ -1096,7 +1096,6 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 
 	######################################################################################
 	return spMtx_shrinked, spMtx_row_shrinked, spMtx_col_shrinked
-
 
 def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"]):
 	query_vector=np.zeros((1, mat.shape[1]), dtype=np.float32)
@@ -1174,7 +1173,6 @@ def extract_tar(fname):
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
 
-# def upload_to_google_drive(folder_id: str="PUBLIC_FOLDER_ID_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
 def upload_to_google_drive(folder_name: str="PUBLIC_UNIQUE_FOLDER_NAME_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
 	# print(f">> Uploading to Google Drive folder_id: {folder_id} ...")
 	print(f">> Uploading to Google Drive folder_name: {folder_name} ...")
