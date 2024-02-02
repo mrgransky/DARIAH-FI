@@ -11,8 +11,7 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:teslav100:1
-#SBATCH --array=63-731
-####SBATCH --array=730-731 # nikeX, nikeY
+#SBATCH --array=29-81,730-731
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -33,7 +32,7 @@ echo "${stars// /*}"
 echo ">> Using $SLURM_CLUSTER_NAME conda env from Anaconda..."
 source activate py39
 files=(/lustre/sgn-data/Nationalbiblioteket/datasets/*.dump)
-ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes" #### must be adjusted ####
+ddir="/lustre/sgn-data/Nationalbiblioteket/dataframes_xx60" #### must be adjusted ####
 # maxNumFeatures=$(awk -v x="1.1e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
