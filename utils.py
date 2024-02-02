@@ -1067,20 +1067,22 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 	######################################################################################
 	# shrinking the BIG sparse matrix:
 	print(
-		f"Shrinking Origial BIG Sparse Matrices: {spMtx.shape} "
+		f"Shrinking Origial BIG {type(spMtx)} {spMtx.shape} "
 		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(160, "-")
 	)
 	t0=time.time()
-	idx_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))
+	tk_idx_seen_by_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))
 	
-	spMtx_shrinked = spMtx[:, idx_more_than_1user] # more than 1 user
+	spMtx_shrinked = spMtx[:, tk_idx_seen_by_more_than_1user] # more than 1 user
 	spMtx_row_shrinked = spMtx_rows
-	spMtx_col_shrinked = spMtx_cols[idx_more_than_1user]
+	spMtx_col_shrinked = spMtx_cols[tk_idx_seen_by_more_than_1user]
 	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked)
 
 	print(
-		f"Elapsed_t: {time.time()-t0:.2f} sec "
-		f"{spMtx_shrinked.shape} rows: {spMtx_row_shrinked.shape} cols: {spMtx_col_shrinked.shape}".center(150, " ")
+		f"Elapsed_t: {time.time()-t0:.f} s | {type(spMtx_shrinked)} {spMtx_shrinked.shape}"
+		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in spMtx_shrinked.data])/1e9:.2f} GB "
+		f"rows{type(spMtx_row_shrinked)}: {spMtx_row_shrinked.shape} "
+		f"cols{type(spMtx_col_shrinked)}: {spMtx_col_shrinked.shape} "
 	)
 
 	# save shrinked sparse matrices:

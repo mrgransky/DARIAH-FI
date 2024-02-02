@@ -21,7 +21,7 @@ args = parser.parse_args()
 fprefix: str = "FILE_PREFIXname_TBR"
 
 # how to run:
-# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_XY --qphrase "Åbo Akademi i Vasa"
+# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_xx58 --qphrase "Tampereen Teknillinen Yliopisto"
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
@@ -881,7 +881,7 @@ def run():
 		)
 
 	try:
-		usrNorms_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'shrinked_users_norm_1_x_*_nUSRs.gz')[0])
+		usrNorms_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_users_norm_1_x_*_nUSRs.gz')[0])
 	except Exception as e:
 		print(f"<!> SHRINKED usrNorm file not found! {e}")
 		usrNorms_shrinked=get_idfed_users_norm(
