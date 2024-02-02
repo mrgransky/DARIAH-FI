@@ -1063,7 +1063,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 
 	return newmatrix, rownames_all, colnames_all
 
-def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
+def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, using_csr: bool = True):
 	######################################################################################
 	# shrinking the BIG sparse matrix:
 	print(
@@ -1071,9 +1071,17 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname):
 		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(160, "-")
 	)
 	t0=time.time()
-	tk_idx_seen_by_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))
-	
-	spMtx_shrinked = spMtx[:, tk_idx_seen_by_more_than_1user] # more than 1 user
+
+	if using_csr:
+		print(f"=> CSR [Time-Efficient] approach...")
+		spMtx_csr = spMtx.tocsr()
+		tk_idx_seen_by_more_than_1user = np.asarray((spMtx_csr > 0).sum(axis=0)).squeeze() > 1
+		spMtx_shrinked_csr = spMtx_csr[:, tk_idx_seen_by_more_than_1user]
+		spMtx_shrinked = spMtx_shrinked_csr.tolil()
+	else:
+		print(f">> Time-Inefficient approach...")
+		tk_idx_seen_by_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))	
+		spMtx_shrinked = spMtx[:, tk_idx_seen_by_more_than_1user] # more than 1 user
 	spMtx_row_shrinked = spMtx_rows
 	spMtx_col_shrinked = spMtx_cols[tk_idx_seen_by_more_than_1user]
 	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked)
