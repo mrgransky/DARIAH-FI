@@ -1063,7 +1063,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 
 	return newmatrix, rownames_all, colnames_all
 
-def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, using_csr: bool = True):
+def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, using_csr: bool=True):
 	######################################################################################
 	# shrinking the BIG sparse matrix:
 	print(
@@ -1087,7 +1087,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked)
 
 	print(
-		f"Elapsed_t: {time.time()-t0:.f} s | {type(spMtx_shrinked)} {spMtx_shrinked.shape}"
+		f"Elapsed_t: {time.time()-t0:.2f} s | {type(spMtx_shrinked)} {spMtx_shrinked.shape}"
 		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in spMtx_shrinked.data])/1e9:.2f} GB "
 		f"rows{type(spMtx_row_shrinked)}: {spMtx_row_shrinked.shape} "
 		f"cols{type(spMtx_col_shrinked)}: {spMtx_col_shrinked.shape} "

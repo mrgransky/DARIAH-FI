@@ -21,7 +21,7 @@ args = parser.parse_args()
 fprefix: str = "FILE_PREFIXname_TBR"
 
 # how to run:
-# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_xx58 --qphrase "Tampereen Teknillinen Yliopisto"
+# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_xx2 --qphrase "Tampereen Teknillinen Yliopisto"
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
