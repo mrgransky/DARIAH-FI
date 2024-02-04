@@ -11,7 +11,7 @@
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:teslav100:1
-#SBATCH --array=29-81,730-731
+#SBATCH --array=725-729
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
