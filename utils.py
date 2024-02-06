@@ -1068,12 +1068,12 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 	# shrinking the BIG sparse matrix:
 	print(
 		f"Shrinking Origial BIG {type(spMtx)} {spMtx.shape} "
-		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(160, "-")
+		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(180, " ")
 	)
 	t0=time.time()
 
 	if using_csr:
-		print(f"=> CSR [Time-Efficient] approach...")
+		print(f"< CSR > [Time-Efficient] approach...")
 		spMtx_csr = spMtx.tocsr()
 		tk_idx_seen_by_more_than_1user = np.asarray((spMtx_csr > 0).sum(axis=0)).squeeze() > 1
 		spMtx_shrinked_csr = spMtx_csr[:, tk_idx_seen_by_more_than_1user]
@@ -1087,11 +1087,12 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked)
 
 	print(
-		f"Elapsed_t: {time.time()-t0:.2f} s | {type(spMtx_shrinked)} {spMtx_shrinked.shape}"
-		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in spMtx_shrinked.data])/1e9:.2f} GB "
-		f"rows{type(spMtx_row_shrinked)}: {spMtx_row_shrinked.shape} "
-		f"cols{type(spMtx_col_shrinked)}: {spMtx_col_shrinked.shape} "
+		f"Elapsed_t: {time.time()-t0:.1f} s {type(spMtx_shrinked)} {spMtx_shrinked.shape} "
+		f"rows {type(spMtx_row_shrinked)} {spMtx_row_shrinked.shape} "
+		f"cols {type(spMtx_col_shrinked)} {spMtx_col_shrinked.shape} "
+		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in spMtx_shrinked.data])/1e9:.1f} GB"
 	)
+	print("-"*180)
 
 	# save shrinked sparse matrices:
 	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_USERs_vs_TOKENs_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
