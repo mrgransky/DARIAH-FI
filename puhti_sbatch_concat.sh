@@ -29,7 +29,7 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_xx55" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_xx50" ########## must be adjusted! ##########
 
 # for qu in 'TAMPEREEN TEHDAS' 'Helsingin Teknillinen reaalikoulu' 'Suomen Teknillinen Korkeakoulu' 'Juha Sipilä Sahalahti' 'Liberalismin ja konservatismin aika' 'Suomalaisten suhtautuminen konservatismiin' 'Helsingin poliisilaitos' 'Suomen sosialistinen tasavalta' 'Mietteitä sosialismista' 'suomen sosialidemokraattinen puolue' 'Kokoomuksen historia' 'Suomen Kommunistinen Puolue' 'Suomen Teollisuuslehti' 'Sosiaalisen kestävyyden' 'Helsingfors Gymnastikklubb' 'suomen kestävän kehityksen tavoitteet' 'Finlands Socialdemokratiska Parti' 'Tampereen seudun työväenopisto' 'Helsingin tuomiokirkko' 'sosialismi' 'Helsingin pörssi ja suomen pankki' 'suomen pääkaupunki' 'Länsi-Uudenmaan poliisilaitos' 'tampereen teknillinen yliopisto' 'torvisoittokunta' 'Tampereen Työväen Teatteri' 'Suomen pankki lainat ja talletukset' 'Global Warming' 'Economical Crisis in Finland' 'Helsingin Kaupunginteatteri' 'Suomalainen Kirjakauppa' 'kantakirjasonni' 'Senaatti-kiinteistöt ja Helsingin kaupunki' 'finska skolor på åland' 'Helsingfors stadsteater' 'Åbo Akademi i Vasa' 'Stockholms universitet' 'Jakobstads svenska församling' 'Ålands kulturhistoriska museum'
 for qu in 'Tampereen seudun työväenopisto'
