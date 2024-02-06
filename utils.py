@@ -1046,7 +1046,7 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 		current_row_idx+=len(rownames)
 		current_col_idx+=len(colnames)
 		print(f"elapsed_t: {time.time()-t00:.1f} s")
-	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} sec".center(220, "-"))
+	print(f"Total Contatenation Elapsed Time: {int(time.time()-t)} s".center(220, "-"))
 
 	concat_BoW = get_concat_bow(colnames_all) # np.array(["A", "B", "C", "D"]) => {"A":0, "B":1, "C":2, "D":3,}
 
