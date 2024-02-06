@@ -7,11 +7,11 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=192G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=210G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=725-729
+#SBATCH --array=29-81,725-731
 #SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
