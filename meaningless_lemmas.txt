@@ -4,6 +4,7 @@ tmt
 ocb
 rdf
 alf
+anst
 frk
 albi
 aldiz
@@ -2711,7 +2712,7 @@ bfebj
 rsbok
 azäöü
 mäßig
-"^[azäöü].+mäßig$"
+abo
 aaboe
 aabo
 aaboam
@@ -2812,6 +2813,7 @@ abmi
 aabmi
 aabmsp
 aadalsg
+mikaelsg
 aadr
 aadru
 ahtcc
@@ -8499,3 +8501,13 @@ kreditl
 kreditsedl
 tilctti
 tild
+tkr
+kcsäsiirtola
+tili
+tuomiokirklo
+tuomiokkirkko
+mmämkö
+sswita
+yymntyä
+fmido
+täydelliscs

@@ -50,7 +50,7 @@ def spacy_tokenizer(docs):
 @cache
 def stanza_lemmatizer(docs):
 	try:
-		print(f'\nstanza raw input:\n{docs}\n')
+		print(f'>> Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
