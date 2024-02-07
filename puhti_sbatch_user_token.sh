@@ -11,7 +11,7 @@
 #SBATCH --mem=208G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=29-81,725-731
+#SBATCH --array=712-731
 #SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
@@ -33,7 +33,7 @@ echo "${stars// /*}"
 
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x60" # x58: 30-80 & 725-731
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_xx20" # x58: 30-80 & 725-731
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
