@@ -171,10 +171,16 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 
 		print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 		print(f">> creating raw_docs_list", end=" ")
-		raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
+		# raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
 
-		# del raw_texts_list
-		# gc.collect()
+		raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if (
+			re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
+			re.search(r"\S", subitem) and
+			re.search(r"\D", subitem) and
+			# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
+			max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
+			re.search(r"\b(?=\D)\w{3,}\b", subitem)
+		)]
 
 		print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
@@ -184,8 +190,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR] ...")
 		pst = time.time()
 		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
-		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} sec")
-		print(f"TFID for {len(preprocessed_docs)} raw corpus, might take a while...")		
+		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
 		################################################################################################################################################################
 		# max_df is used for removing terms that appear too frequently, also known as "corpus-specific stop words". For example:
 
@@ -201,16 +206,18 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		################################################################################################################################################################
 		
 		# Initialize TFIDF # not time consuming...
+		print(f"TFID for {len(preprocessed_docs)} raw corpus, might take a while...")
 		st_t = time.time()
-		tfidf_vec=TfidfVectorizer(tokenizer=lemmatizer_methods.get(lm),
-																lowercase=True,
-																analyzer="word",
-																dtype="float32",
-																use_idf=True, # Enable inverse-document-frequency reweighting. If False, idf(t) = 1.
-																max_features=MAX_FEATURES, # retreive all features, DEFAULT: NONE!
-																max_df=MAX_DF, # ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
-																min_df=MIN_DF, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold # removing terms appearing too infrequently
-															)
+		tfidf_vec=TfidfVectorizer(
+			tokenizer=lemmatizer_methods.get(lm),
+			lowercase=True,
+			analyzer="word",
+			dtype="float32",
+			use_idf=True, # Enable inverse-document-frequency reweighting. If False, idf(t) = 1.
+			max_features=MAX_FEATURES, # retreive all features, DEFAULT: NONE!
+			max_df=MAX_DF, # ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
+			min_df=MIN_DF, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold # removing terms appearing too infrequently
+		)
 
 		# Fit TFIDF # TIME CONSUMING:
 		tfidf_matrix=tfidf_vec.fit_transform(raw_documents=preprocessed_docs)

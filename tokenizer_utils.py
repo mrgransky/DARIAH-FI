@@ -24,19 +24,23 @@ with HiddenPrints():
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
-	lang_id_config={"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'de', 'fr']}
-	lang_configs = {"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-									"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-									"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-									"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-									"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
-									"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-									"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
-								}
-	smp=MultilingualPipeline(	lang_id_config=lang_id_config,
-														lang_configs=lang_configs,
-														download_method=DownloadMethod.REUSE_RESOURCES,
-													)
+	lang_id_config = {
+		"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'de', 'fr']
+	}
+	lang_configs = {
+		"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+		"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
+		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
+		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
+	}
+	smp=MultilingualPipeline(	
+		lang_id_config=lang_id_config,
+		lang_configs=lang_configs,
+		download_method=DownloadMethod.REUSE_RESOURCES,
+	)
 	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ", "X"]
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 	with open('meaningless_lemmas.txt', 'r') as file_:
@@ -50,7 +54,7 @@ def spacy_tokenizer(docs):
 @cache
 def stanza_lemmatizer(docs):
 	try:
-		print(f'>> Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
+		print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
@@ -63,7 +67,7 @@ def stanza_lemmatizer(docs):
 			for _, vw in enumerate(vsnt.words) 
 			if ( 
 					(wlm:=vw.lemma)
-					and 3 <= len(wlm) <= 40
+					and 5 <= len(wlm) <= 40
 					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|"|#|<unk>|\s+', wlm) 
 					and vw.upos not in useless_upos_tags 
 					and wlm not in UNQ_STW
@@ -74,7 +78,7 @@ def stanza_lemmatizer(docs):
 		print(f"<!> Stanza Error: {e}")
 		return
 	print( lemmas_list )
-	print(f"{len(lemmas_list)} lemma(s) | Elapsed_t: {end_t-st_t:.3f} s".center(150, "-") )
+	print(f"Found {len(lemmas_list)} lemma(s) in {end_t-st_t:.2f} s".center(140, "-") )
 	return lemmas_list
 
 def trankit_lemmatizer(docs):

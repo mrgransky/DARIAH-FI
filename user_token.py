@@ -498,14 +498,15 @@ def main():
 		BoWs=load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
-		BoWs=get_BoWs(dframe=df_inp, 
-										saveDIR=args.outDIR,
-										fprefix=fprefix, 
-										lm=args.lmMethod, 
-										MIN_DF=int(args.minDocFreq), 
-										MAX_DF=float(args.maxDocFreq),
-										MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
-									)
+		BoWs=get_BoWs(
+			dframe=df_inp, 
+			saveDIR=args.outDIR,
+			fprefix=fprefix, 
+			lm=args.lmMethod, 
+			MIN_DF=int(args.minDocFreq), 
+			MAX_DF=float(args.maxDocFreq),
+			MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
+		)
 	######################################## Creating/Loading BoWs ########################################
 	print(f">> Remove column(s) with all zeros(if any): {list(df_inp.columns[(df_inp==0).all()])}")
 	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
