@@ -30,7 +30,7 @@ parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 
 args = parser.parse_args()
 # how to run:
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x20 --maxNumFeat -1
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XXX --maxNumFeat -1
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)

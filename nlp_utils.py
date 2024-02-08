@@ -187,10 +187,13 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		raw_docs_list_bard = [
 			subitem
 			for itm in raw_texts_list
-			if itm and not itm.isspace()
+			# Early termination: Skip empty or whitespace lists
+			if itm and not all(char.isspace() for char in itm)  # Check all chars in itm for whitespace
 			for subitem in itm
-			if re.search(r"\b[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]+\b", subitem) and
-			any(word >= 3 for word in subitem.split())
+			# Combine letter check and word boundary:
+			if re.search(r"\b[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]+\b", subitem)
+			# Check any word >= 3 characters, avoiding unnecessary list creation:
+			if any(len(word) >= 5 for word in subitem.split())
 		]
 		print(f">>>> Google Bard vs Original implementation: {set(raw_docs_list_bard)==set(raw_docs_list)}")
 
