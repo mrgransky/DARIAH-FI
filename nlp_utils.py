@@ -166,21 +166,24 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 			ltot = lque + lcol + lclp + lsnp + lcnt
 			raw_texts_list.append( ltot )
 
-		# del dframe
-		# gc.collect()
-
 		print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
 		print(f">> creating raw_docs_list", end=" ")
 		# raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
 
-		raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if (
-			re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
-			re.search(r"\S", subitem) and
-			re.search(r"\D", subitem) and
-			# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
-			max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
-			re.search(r"\b(?=\D)\w{3,}\b", subitem)
-		)]
+		raw_docs_list = [
+			subitem 
+			for itm in raw_texts_list 
+			if itm 
+			for subitem in itm 
+			if (
+				re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
+				re.search(r"\S", subitem) and
+				re.search(r"\D", subitem) and
+				# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
+				max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
+				re.search(r"\b(?=\D)\w{3,}\b", subitem)
+			)
+		]
 
 		print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
@@ -192,7 +195,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 			for subitem in itm
 			# Combine letter check and word boundary:
 			if re.search(r"\b[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]+\b", subitem)
-			# Check any word >= 3 characters, avoiding unnecessary list creation:
+			# Check any word >= 5 characters, avoiding unnecessary list creation:
 			if any(len(word) >= 5 for word in subitem.split())
 		]
 		print(f">>>> Google Bard vs Original implementation: {set(raw_docs_list_bard)==set(raw_docs_list)}")
@@ -220,7 +223,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		
 		# Initialize TFIDF # not time consuming...
 		print(f"TFID for {len(preprocessed_docs)} raw corpus, might take a while...")
-		return
+		sys.exit(0)
 		st_t = time.time()
 		tfidf_vec=TfidfVectorizer(
 			tokenizer=lemmatizer_methods.get(lm),

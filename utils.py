@@ -732,7 +732,6 @@ def get_query_phrase(inp_url):
 	return params.get("query")
 
 def clean_(docs: str="This is a <NORMAL> string!!"):
-	print(f"<>"*100)
 	print(f'Raw Input:\n>>{docs}<<')
 	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
 	# st_t = time.time()
