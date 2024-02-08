@@ -184,6 +184,16 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 
 		print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
 
+		raw_docs_list_bard = [
+			subitem
+			for itm in raw_texts_list
+			if itm and not itm.isspace()
+			for subitem in itm
+			if re.search(r"\b[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]+\b", subitem) and
+			any(word >= 3 for word in subitem.split())
+		]
+		print(f">>>> Google Bard vs Original implementation: {set(raw_docs_list_bard)==set(raw_docs_list)}")
+
 		raw_docs_list = list(set(raw_docs_list))
 		# print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
@@ -207,6 +217,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		
 		# Initialize TFIDF # not time consuming...
 		print(f"TFID for {len(preprocessed_docs)} raw corpus, might take a while...")
+		return
 		st_t = time.time()
 		tfidf_vec=TfidfVectorizer(
 			tokenizer=lemmatizer_methods.get(lm),
