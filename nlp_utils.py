@@ -167,7 +167,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 			raw_texts_list.append( ltot )
 
 		print(len(users_list), len(raw_texts_list), type(raw_texts_list), any(elem is None for elem in raw_texts_list))
-		print(f">> creating raw_docs_list", end=" ")
+		print(f">> Creating raw_docs_list: [..., ['', '', ...], ['̈́'], ['', '', '', ...], ...]", end="\t")
 		# raw_docs_list = [subitem for itm in raw_texts_list if itm for subitem in itm if ( re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and re.search(r"\S", subitem) and re.search(r"\D", subitem) and max([len(el) for el in subitem.split()])>2  and re.search(r"\b(?=\D)\w{3,}\b", subitem)) ]
 
 		raw_docs_list = [
@@ -184,28 +184,9 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 				re.search(r"\b(?=\D)\w{3,}\b", subitem)
 			)
 		]
-
 		print(len(raw_docs_list), type(raw_docs_list), any(elem is None for elem in raw_docs_list))
-
-		raw_docs_list_bard = [
-			subitem
-			for itm in raw_texts_list
-			# Early termination: Skip empty or whitespace lists
-			if itm and not all(char.isspace() for char in itm)  # Check all chars in itm for whitespace
-			for subitem in itm
-			# Combine letter check and word boundary:
-			if re.search(r"\b[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]+\b", subitem)
-			# Check any word >= 5 characters, avoiding unnecessary list creation:
-			if any(len(word) >= 5 for word in subitem.split())
-		]
-		print(f">>>> Google Bard vs Original implementation: {set(raw_docs_list_bard)==set(raw_docs_list)}")
-
 		raw_docs_list = list(set(raw_docs_list))
-		# print(f"<<!>> unique phrases: {len(raw_docs_list)}")
-
-		print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR] ...")
-		sys.exit(0)
-
+		print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
 		pst = time.time()
 		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
