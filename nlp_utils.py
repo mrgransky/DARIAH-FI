@@ -204,6 +204,8 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		# print(f"<<!>> unique phrases: {len(raw_docs_list)}")
 
 		print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR] ...")
+		sys.exit(0)
+
 		pst = time.time()
 		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
@@ -223,7 +225,6 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 		
 		# Initialize TFIDF # not time consuming...
 		print(f"TFID for {len(preprocessed_docs)} raw corpus, might take a while...")
-		sys.exit(0)
 		st_t = time.time()
 		tfidf_vec=TfidfVectorizer(
 			tokenizer=lemmatizer_methods.get(lm),
