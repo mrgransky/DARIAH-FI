@@ -14,6 +14,8 @@
 #SBATCH --array=0-150,580-731
 #SBATCH --gres=gpu:v100:1
 
+##### x302: 0-150, 580-731
+
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
 txt="$user began Slurm job: `date`"

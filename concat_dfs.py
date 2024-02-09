@@ -914,20 +914,26 @@ def run():
 	print("-"*120)
 
 	# save ALL concat files in dir as a tar archive file
+	comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
 	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
 		print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
-		get_compressed_archive(save_dir=args.dfsPath, compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz")
+		get_compressed_archive(
+			save_dir=args.dfsPath, 
+			compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz",
+			upload_2_gdrive=False,
+			compressed_dir=comp_dir,
+		)
 
-	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
-	query_phrase_tk = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
-	print(f"Raw < {args.qphrase} > lemmatized into {len(query_phrase_tk)} lemma(s): {query_phrase_tk}")
 	#########################################################################################################################
+	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
+	tokenized_query_phrase = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
+	print(f"Raw < {args.qphrase} > lemmatized into {len(tokenized_query_phrase)} lemma(s): {tokenized_query_phrase}")
 
 	query_vector=get_query_vec(
 		mat=concat_spm_U_x_T,
 		mat_row=concat_spm_usrNames,
 		mat_col=concat_spm_tokNames,
-		tokenized_qu_phrases=query_phrase_tk,
+		tokenized_qu_phrases=tokenized_query_phrase,
 	)
 	print(
 		f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
@@ -936,9 +942,8 @@ def run():
 		f"{[f'idx[{qidx}] {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
 	)
 	if np.all( query_vector==0.0 ):
-		print(f"Sorry, We couldn't find tokenized words similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search other phrases!")
+		print(f"We couldn't find lemmas similar to {Fore.RED+Back.WHITE}{args.qphrase}{Style.RESET_ALL} in our BoWs! Search again!")
 		return
-
 
 	ccs=get_optimized_cs(
 		spMtx=concat_spm_U_x_T,
@@ -954,11 +959,11 @@ def run():
 		spMtx_norm=usrNorms,
 	)
 	print("<>"*25)
-	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {query_phrase_tk}\n")
+	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {tokenized_query_phrase}\n")
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
-		qu=query_phrase_tk,
+		qu=tokenized_query_phrase,
 		K=80,
 	)
 	print(len(topKtokens), topKtokens)
@@ -969,7 +974,7 @@ def run():
 		mat=concat_shrinked_spm_U_x_T,
 		mat_row=concat_shrinked_spm_usrNames,
 		mat_col=concat_shrinked_spm_tokNames,
-		tokenized_qu_phrases=query_phrase_tk,
+		tokenized_qu_phrases=tokenized_query_phrase,
 	)
 	print(
 		f"quVec [SHRINKED] {type(query_vector_shrinked)} {query_vector_shrinked.dtype} {query_vector_shrinked.shape}\n"
@@ -995,11 +1000,11 @@ def run():
 		spMtx_norm=usrNorms_shrinked,
 	)
 	print("#"*100)
-	print(f"Recommendation Result[ShRINKED]:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {query_phrase_tk}\n")
+	print(f"Recommendation Result[ShRINKED]:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {tokenized_query_phrase}\n")
 	topKtokens_shrinked=get_topK_tokens(
 		mat_cols=concat_shrinked_spm_tokNames,
 		avgrec=avgRecSys_shrinked,
-		qu=query_phrase_tk,
+		qu=tokenized_query_phrase,
 		K=80,
 	)
 	print(len(topKtokens_shrinked), topKtokens_shrinked)
