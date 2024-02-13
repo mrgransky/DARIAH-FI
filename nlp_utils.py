@@ -1,11 +1,12 @@
 from tokenizer_utils import *
 from utils import *
 
-lemmatizer_methods = {"nltk": nltk_lemmatizer,
-											"spacy": spacy_tokenizer,
-											"trankit": trankit_lemmatizer,
-											"stanza": stanza_lemmatizer,
-											}
+lemmatizer_methods = {
+	"nltk": nltk_lemmatizer,
+	"spacy": spacy_tokenizer,
+	"trankit": trankit_lemmatizer,
+	"stanza": stanza_lemmatizer,
+}
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
 	# print(len(vb), len(lst), wg, lst)
