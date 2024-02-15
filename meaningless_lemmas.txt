@@ -8552,6 +8552,13 @@ loka
 lok
 marraskuu
 joulukuu
+maanantai
+tiistai
+keskiviikko
+torstai
+perjantai
+lauantai
+sunnuntai
 vkcka
 tskillig
 iiatientrui
@@ -8648,3 +8655,7 @@ maalaisp
 qvarvm
 coloribv
 antae
+jfich
+inrv
+mnette
+vhtevsiv
