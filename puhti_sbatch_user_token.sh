@@ -11,10 +11,10 @@
 #SBATCH --mem=373G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=0-150, 580-731
+#SBATCH --array=0-150,580-731
 #SBATCH --gres=gpu:v100:1
 
-##### x303: 0-150, 580-731
+##### x303: 0-150,580-731
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
