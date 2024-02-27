@@ -48,8 +48,9 @@ with open('meaningless_lemmas.txt', 'r') as file_:
 STOPWORDS.extend(my_custom_stopwords)
 UNQ_STW = list(set(STOPWORDS))
 
-print(enchant.list_languages())
-sys.exit(0)
+# print(enchant.list_languages())
+# sys.exit(0)
+
 @cache
 def stanza_lemmatizer(docs):
 	try:
