@@ -1,4 +1,4 @@
-import enchant
+# import enchant
 import libvoikko
 
 import stanza
@@ -8,20 +8,21 @@ import nltk
 import re
 import time
 import sys
-
-nltk_modules = ['punkt',
-							'stopwords',
-							'wordnet',
-							'averaged_perceptron_tagger', 
-							'omw-1.4',
-							]
-nltk.download(#'all',
-							nltk_modules,
-							quiet=True, 
-							raise_on_error=True,
-							)
-
 from functools import cache
+
+nltk_modules = [
+	'punkt',
+	'stopwords',
+	'wordnet',
+	'averaged_perceptron_tagger', 
+	'omw-1.4',
+]
+nltk.download(
+	#'all',
+	nltk_modules,
+	quiet=True, 
+	raise_on_error=True,
+)
 
 lang_id_config = {
 	"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'de', 'fr']
@@ -35,7 +36,7 @@ lang_configs = {
 	"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 	"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 }
-smp=MultilingualPipeline(	
+smp = MultilingualPipeline(	
 	lang_id_config=lang_id_config,
 	lang_configs=lang_configs,
 	download_method=DownloadMethod.REUSE_RESOURCES,
