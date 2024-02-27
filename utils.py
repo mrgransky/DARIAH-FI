@@ -22,8 +22,9 @@ import logging
 import gzip
 import tarfile
 import shutil
-import enchant
-import libvoikko
+
+# import enchant
+# import libvoikko
 
 from pandas.api.types import is_datetime64_any_dtype
 
@@ -722,10 +723,9 @@ def get_query_phrase(inp_url):
 	#print(parameters)
 	return params.get("query")
 
-def clean_(docs: str="This is a <NORMAL> string!!"):
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 	print(f'Raw Input:\n>>{docs}<<')
 	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
-	# st_t = time.time()
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	# docs = docs.lower()
@@ -736,13 +736,15 @@ def clean_(docs: str="This is a <NORMAL> string!!"):
 	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs)#.strip()
 	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces
-	docs = re.sub(r'\s{2,}', 
-								" ", 
-								# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
-								re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
-				).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
+	docs = re.sub(
+		r'\s{2,}', 
+		" ", 
+		# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
+		re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
+	).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
 	##########################################################################################
-	# docs = remove_misspelled_(text=docs)
+	if del_misspelled:
+		docs = remove_misspelled_(text=docs)
 	docs = docs.lower()
 	##########################################################################################
 	print(f'Cleaned Input:\n{docs}')
@@ -762,6 +764,7 @@ def remove_misspelled_(text: str="This is a sample sentence."):
 	# sv_dict = enchant.Dict("sv_SE")
 	sv_dict = enchant.Dict("sv")
 	en_dict = enchant.Dict("en")
+	de_dict = enchant.Dict("de")
 
 	# Split the text into words
 	if not isinstance(text, list):
@@ -777,7 +780,7 @@ def remove_misspelled_(text: str="This is a sample sentence."):
 	for word in words:
 		# print(word)
 		# if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
-		if not (fi_dict.spell(word) or fii_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+		if not (fi_dict.spell(word) or fii_dict.check(word) or sv_dict.check(word) or en_dict.check(word) or de_dict.check(word)):
 			# print(f"\t\t{word} does not exist")
 			pass
 		else:

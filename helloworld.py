@@ -1,8 +1,6 @@
 import enchant
 import libvoikko
 
-
-
 import stanza
 from stanza.pipeline.multilingual import MultilingualPipeline
 from stanza.pipeline.core import DownloadMethod
@@ -119,7 +117,6 @@ def remove_misspelled_(text="This is a sample sentence."):
 	# Create dictionaries for Finnish, Swedish, and English
 	fi_dict = libvoikko.Voikko(language="fi")	
 	fii_dict = enchant.Dict("fi")
-	fi_sv_dict = enchant.Dict("sv_FI")
 	sv_dict = enchant.Dict("sv")
 	en_dict = enchant.Dict("en")
 	
@@ -135,8 +132,8 @@ def remove_misspelled_(text="This is a sample sentence."):
 	cleaned_words = []
 	for word in words:
 		# print(word)
-		print(word, fi_dict.spell(word), fii_dict.check(word), fi_sv_dict.check(word), sv_dict.check(word), en_dict.check(word))
-		if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+		print(word, fi_dict.spell(word), fii_dict.check(word), sv_dict.check(word), en_dict.check(word))
+		if not (fi_dict.spell(word) or fii_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
 		# if not (fi_dict.spell(word)):
 			print(f"\t\t{word} does not exist")
 			pass
@@ -149,7 +146,7 @@ def remove_misspelled_(text="This is a sample sentence."):
 	return cleaned_text
 
 # orig_text = '''
-# Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+# Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
 
 # Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
 
@@ -163,6 +160,11 @@ def remove_misspelled_(text="This is a sample sentence."):
 # '''
 
 orig_text = """
+Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
+"vanhala nikkilä"~6 - Pietarila ja nykyään
+Yrjönpäivää juhlitaan
+"alina keskinen" - iiiifff Vaili Siviä -
+N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
 Katso grafiikoista, miten Suomen ja Ruotsin sotilaallinen voima eroaa
 Suomi voittaa Ruotsin henkilöstön ja maavoimien kaluston määrässä. Ruotsilla sotilasteknologia on joiltain osin korkeampaa laatua. 
 Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
