@@ -1,0 +1,9 @@
+###### Requirements without Version Specifiers ######
+stanza
+trankit
+numpy
+scikit-learn
+natsort
+colorama
+numba
+###### Requirements with Version Specifiers ######
