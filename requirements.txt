@@ -6,4 +6,6 @@ scikit-learn
 natsort
 colorama
 numba
+libvoikko
+pyenchant
 ###### Requirements with Version Specifiers ######
