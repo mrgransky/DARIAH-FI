@@ -1,4 +1,4 @@
-# import enchant
+import enchant
 import libvoikko
 
 import stanza
