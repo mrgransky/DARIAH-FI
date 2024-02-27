@@ -1,6 +1,8 @@
 import enchant
 import libvoikko
 
+
+
 import stanza
 from stanza.pipeline.multilingual import MultilingualPipeline
 from stanza.pipeline.core import DownloadMethod
@@ -48,8 +50,9 @@ with open('meaningless_lemmas.txt', 'r') as file_:
 STOPWORDS.extend(my_custom_stopwords)
 UNQ_STW = list(set(STOPWORDS))
 
-# print(enchant.list_languages())
-# sys.exit(0)
+
+print(enchant.list_languages())
+sys.exit(0)
 
 @cache
 def stanza_lemmatizer(docs):
