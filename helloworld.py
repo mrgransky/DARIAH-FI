@@ -114,10 +114,10 @@ def remove_misspelled_(text="This is a sample sentence."):
 	# print(f"Removing misspelled word(s)".center(100, " "))
 	# Create dictionaries for Finnish, Swedish, and English
 	fi_dict = libvoikko.Voikko(language="fi")	
-	fii_dict = enchant.Dict("fi")
-	fi_sv_dict = enchant.Dict("sv_FI")
-	sv_dict = enchant.Dict("sv_SE")
-	en_dict = enchant.Dict("en")
+	# fii_dict = enchant.Dict("fi")
+	# fi_sv_dict = enchant.Dict("sv_FI")
+	# sv_dict = enchant.Dict("sv_SE")
+	# en_dict = enchant.Dict("en")
 	
 	# Split the text into words
 	if not isinstance(text, list):
@@ -132,7 +132,8 @@ def remove_misspelled_(text="This is a sample sentence."):
 	for word in words:
 		# print(word)
 		# print(word, fi_dict.spell(word), fii_dict.check(word), fi_sv_dict.check(word), sv_dict.check(word), en_dict.check(word))
-		if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+		# if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+		if not (fi_dict.spell(word)):
 			# print(f"\t\t{word} does not exist")
 			pass
 		else:
