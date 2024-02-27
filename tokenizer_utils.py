@@ -9,17 +9,18 @@ with HiddenPrints():
 								'averaged_perceptron_tagger', 
 								'omw-1.4',
 								]
-	nltk.download(#'all',
-								nltk_modules,
-								quiet=True, 
-								raise_on_error=True,
-								)
+	nltk.download(
+		#'all',
+		nltk_modules,
+		quiet=True, 
+		raise_on_error=True,
+	)
 
-	import trankit
-	p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
-	p.add('swedish')
-	p.add('russian')
-	p.set_auto(True)
+	# import trankit
+	# p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
+	# p.add('swedish')
+	# p.add('russian')
+	# p.set_auto(True)
 
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline

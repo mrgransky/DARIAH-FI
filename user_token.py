@@ -29,7 +29,10 @@ parser.add_argument('-maxdf', '--minDocFreq', default=1, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 
 args = parser.parse_args()
-# how to run:
+# how to run (local Ubuntu 22.04.4 LTS):
+# python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1
+
+# how to run (Pouhti):
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XXX --maxNumFeat -1
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021

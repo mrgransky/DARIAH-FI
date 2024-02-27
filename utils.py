@@ -22,16 +22,14 @@ import logging
 import gzip
 import tarfile
 import shutil
+import enchant
+import libvoikko
 
 from pandas.api.types import is_datetime64_any_dtype
 
 import numpy as np
 import pandas as pd
 import numba as nb
-
-import dask.dataframe as dd
-import dask
-# Numpy: 1.25.2 Pandas: 2.1.0 Dask: 2023.9.1 # September 2023
 
 from natsort import natsorted
 from collections import Counter, defaultdict
@@ -52,16 +50,8 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
-# import matplotlib.ticker as ticker
-# import matplotlib
 import seaborn as sns
 # matplotlib.use("Agg")
-
-# from googleapiclient.discovery import build
-# from google.oauth2.service_account import Credentials
-
-from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
 
 sz=16
 MODULE=60
@@ -140,10 +130,11 @@ clrs = ["#ff2eee",
 				"#79CDCD",
 			]
 
-usr_ = {'alijani': '/lustre/sgn-data/Nationalbiblioteket', 
-				'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
-				"xenial": 	f"{os.environ['HOME']}/Datasets/Nationalbiblioteket",
-				}
+usr_ = {
+	'alijani': '/lustre/sgn-data/Nationalbiblioteket', 
+	'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
+	"farid": 	f"{os.environ['HOME']}/datasets/Nationalbiblioteket",
+}
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
@@ -737,7 +728,7 @@ def clean_(docs: str="This is a <NORMAL> string!!"):
 	# st_t = time.time()
 	if not docs or len(docs) == 0 or docs == "":
 		return
-	docs = docs.lower()
+	# docs = docs.lower()
 	# treat all as document
 	# docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip() # "kuuslammi janakkala"^5 or # "karl urnberg"~1
 	docs = re.sub(r'[\{\}@®¤†±©§½✓%,+;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+', ' ', docs )#.strip()
@@ -750,7 +741,10 @@ def clean_(docs: str="This is a <NORMAL> string!!"):
 								# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
 								re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
 				).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
-
+	##########################################################################################
+	docs = remove_misspelled_(text=docs)
+	docs = docs.lower()
+	##########################################################################################
 	print(f'Cleaned Input:\n{docs}')
 	print(f"<>"*100)
 
@@ -758,6 +752,39 @@ def clean_(docs: str="This is a <NORMAL> string!!"):
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
+
+def remove_misspelled_(text: str="This is a sample sentence."):
+	# print(f"Removing misspelled word(s)".center(100, " "))
+	# Create dictionaries for Finnish, Swedish, and English
+	fi_dict = libvoikko.Voikko(language="fi")	
+	fii_dict = enchant.Dict("fi")
+	fi_sv_dict = enchant.Dict("sv_FI")
+	sv_dict = enchant.Dict("sv_SE")
+	en_dict = enchant.Dict("en")
+
+	# Split the text into words
+	if not isinstance(text, list):
+		# print(f"Convert to a list of words using split() command |", end=" ")
+		words = text.split()
+	else:
+		words = text
+	
+	# print(f"Document conatins {len(words)} word(s)")
+	t0 = time.time()
+	# Remove misspelled words
+	cleaned_words = []
+	for word in words:
+		# print(word)
+		if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+			# print(f"\t\t{word} does not exist")
+			pass  # You can choose to handle misspelled words differently, like logging them
+		else:
+			cleaned_words.append(word)
+
+	# Join the cleaned words back into a string
+	cleaned_text = " ".join(cleaned_words)
+	# print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
+	return cleaned_text
 
 def get_concat_df(dir_path: str):
 	dump_files = glob.glob(os.path.join(dir_path, "*.dump")) # list
@@ -1205,29 +1232,6 @@ def extract_tar(fname):
 		print(f"{output_folder} does not exist, creating...")
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
-
-def upload_to_google_drive(folder_name: str="PUBLIC_UNIQUE_FOLDER_NAME_in_Gdrive", archived_fname: str="concat_xN.tar.gz"):
-	# print(f">> Uploading to Google Drive folder_id: {folder_id} ...")
-	print(f">> Uploading to Google Drive folder_name: {folder_name} ...")
-	t0 = time.time()
-	# Google Drive authentication
-	gauth = GoogleAuth()
-	gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication
-	drive = GoogleDrive(gauth)
-
-	# Find the folder ID
-	folder_list = drive.ListFile({'q': f"title='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
-	if len(folder_list) > 0:
-		folder_id = folder_list[0]['id']  # Get the ID of the first folder in the list
-	else:
-		print(f"No folder named {folder_name} found, Uploading failed!!")
-		return
-
-	# Upload the archive to Google Drive
-	file_drive = drive.CreateFile({"title": archived_fname, "parents": [{"id": folder_id}]})
-	file_drive.SetContentFile(archived_fname)
-	file_drive.Upload()
-	print(f"{archived_fname} uploaded to Google Drive successfully in {time.time()-t0:.2f} sec!")
 
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="destination/path/to/comp_dir"):
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
