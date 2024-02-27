@@ -742,7 +742,7 @@ def clean_(docs: str="This is a <NORMAL> string!!"):
 								re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
 				).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
 	##########################################################################################
-	docs = remove_misspelled_(text=docs)
+	# docs = remove_misspelled_(text=docs)
 	docs = docs.lower()
 	##########################################################################################
 	print(f'Cleaned Input:\n{docs}')
@@ -758,8 +758,9 @@ def remove_misspelled_(text: str="This is a sample sentence."):
 	# Create dictionaries for Finnish, Swedish, and English
 	fi_dict = libvoikko.Voikko(language="fi")	
 	fii_dict = enchant.Dict("fi")
-	fi_sv_dict = enchant.Dict("sv_FI")
-	sv_dict = enchant.Dict("sv_SE")
+	# fi_sv_dict = enchant.Dict("sv_FI")
+	# sv_dict = enchant.Dict("sv_SE")
+	sv_dict = enchant.Dict("sv")
 	en_dict = enchant.Dict("en")
 
 	# Split the text into words
@@ -775,9 +776,10 @@ def remove_misspelled_(text: str="This is a sample sentence."):
 	cleaned_words = []
 	for word in words:
 		# print(word)
-		if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+		# if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
+		if not (fi_dict.spell(word) or fii_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
 			# print(f"\t\t{word} does not exist")
-			pass  # You can choose to handle misspelled words differently, like logging them
+			pass
 		else:
 			cleaned_words.append(word)
 

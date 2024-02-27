@@ -120,7 +120,7 @@ def remove_misspelled_(text="This is a sample sentence."):
 	fi_dict = libvoikko.Voikko(language="fi")	
 	fii_dict = enchant.Dict("fi")
 	fi_sv_dict = enchant.Dict("sv_FI")
-	sv_dict = enchant.Dict("sv_SE")
+	sv_dict = enchant.Dict("sv")
 	en_dict = enchant.Dict("en")
 	
 	# Split the text into words
