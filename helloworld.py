@@ -52,7 +52,7 @@ UNQ_STW = list(set(STOPWORDS))
 
 
 print(enchant.list_languages())
-sys.exit(0)
+# sys.exit(0)
 
 @cache
 def stanza_lemmatizer(docs):
