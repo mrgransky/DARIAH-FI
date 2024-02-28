@@ -14,8 +14,14 @@ echo "${stars// /*}"
 
 echo "${stars// /*}"
 
-files=(/media/volume/Nationalbiblioteket/datasets/*.dump)
-ddir="/media/volume/Nationalbiblioteket/dataframes_x2"
+HOME_DIR=$(echo $HOME)
+source $HOME_DIR/miniconda3/bin/activate py39
+
+WDIR="/media/volume"
+echo "HOME DIR $HOME_DIR | WDIR: $WDIR"
+
+files=($WDIR/Nationalbiblioteket/datasets/*.dump)
+ddir="$WDIR/Nationalbiblioteket/dataframes_x2"
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
