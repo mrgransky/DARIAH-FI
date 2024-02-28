@@ -555,8 +555,6 @@ def main():
 		)
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
 
-
-
 	######################################################
 	# no need to continue after this!
 	# otherwise, adjustment for spm is required!
