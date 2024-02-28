@@ -723,7 +723,7 @@ def get_query_phrase(inp_url):
 	#print(parameters)
 	return params.get("query")
 
-def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
@@ -751,12 +751,41 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 
 def remove_misspelled_(documents: str="This is a sample sentence."):
 	# print(f"Removing misspelled word(s)".center(100, " "))
-	# Split the text into words
+	# Create dictionaries for Finnish, Swedish, and English
+	fi_dict = libvoikko.Voikko(language="fi")	
+	fii_dict = enchant.Dict("fi")
+	sv_dict = enchant.Dict("sv_SE")
+	sv_fi_dict = enchant.Dict("sv_FI")
+	en_dict = enchant.Dict("en")
+	de_dict = enchant.Dict("de")
+	no_dict = enchant.Dict("no")
+	da_dict = enchant.Dict("da")
+	es_dict = enchant.Dict("es")
+	et_dict = enchant.Dict("et")
+	
+	ca_dict = enchant.Dict("ca")
+	cs_dict = enchant.Dict("cs")
+	cy_dict = enchant.Dict("cy")
+	fo_dict = enchant.Dict("fo")
+	fr_dict = enchant.Dict("fr")
+	ga_dict = enchant.Dict("ga")
+	hr_dict = enchant.Dict("hr")
+	hu_dict = enchant.Dict("hu")
+	is_dict = enchant.Dict("is")
+	it_dict = enchant.Dict("it")
+	lt_dict = enchant.Dict("lt")
+	lv_dict = enchant.Dict("lv")
+	nl_dict = enchant.Dict("nl")
+	pl_dict = enchant.Dict("pl")
+	sl_dict = enchant.Dict("sl")
+	sk_dict = enchant.Dict("sk")
+	
+	# Split the documents into words
 	if not isinstance(documents, list):
 		# print(f"Convert to a list of words using split() command |", end=" ")
-		words = text.split()
+		words = documents.split()
 	else:
-		words = text
+		words = documents
 	
 	# print(f"Document conatins {len(words)} word(s)")
 	t0 = time.time()
@@ -804,7 +833,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			sl_dict.check(word) or 
 			sk_dict.check(word)
 		):
-			print(f"\t\t{word} does not exist")
+			# print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
