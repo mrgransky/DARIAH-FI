@@ -214,9 +214,10 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="SAVING_DIR", fprefix: str="file
 			analyzer="word",
 			dtype="float32",
 			use_idf=True, # Enable inverse-document-frequency reweighting. If False, idf(t) = 1.
-			max_features=MAX_FEATURES, # retreive all features, DEFAULT: NONE!
-			max_df=MAX_DF, # ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
-			min_df=MIN_DF, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold # removing terms appearing too infrequently
+			# max_features=MAX_FEATURES, # retreive all features, DEFAULT: NONE!
+			# max_df=MAX_DF, # ignore terms appear in more than P% of documents 1.0 does not ignore any terms # removing terms appearing too frequently
+			# min_df=MIN_DF, # cut-off: ignore terms that have doc_freq strictly lower than the given threshold # removing terms appearing too infrequently
+			token_pattern=None,
 		)
 
 		# Fit TFIDF # TIME CONSUMING:

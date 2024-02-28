@@ -12,13 +12,12 @@ ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
 
-echo "${stars// /*}"
-
 HOME_DIR=$(echo $HOME)
 source $HOME_DIR/miniconda3/bin/activate py39
 
 WDIR="/media/volume"
 echo "HOME DIR $HOME_DIR | WDIR: $WDIR"
+echo "${stars// /*}"
 
 files=($WDIR/Nationalbiblioteket/datasets/*.dump)
 ddir="$WDIR/Nationalbiblioteket/dataframes_x2"
