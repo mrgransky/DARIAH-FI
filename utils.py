@@ -134,6 +134,7 @@ usr_ = {
 	'alijani': '/lustre/sgn-data/Nationalbiblioteket', 
 	'alijanif':	'/scratch/project_2004072/Nationalbiblioteket',
 	"farid": 	f"{os.environ['HOME']}/datasets/Nationalbiblioteket",
+	"ubuntu": f"/media/volume/Nationalbiblioteket", 
 }
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
