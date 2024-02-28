@@ -8,4 +8,5 @@ colorama
 numba
 libvoikko
 pyenchant
+seaborn
 ###### Requirements with Version Specifiers ######
