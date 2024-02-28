@@ -97,10 +97,11 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 		" ", 
 		re.sub(r'\b\w{,2}\b', ' ', docs)
 	).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
-
+	##########################################################################################
 	if del_misspelled:
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
+	##########################################################################################
 	print(f'Cleaned Input:\n{docs}')
 	print(f"<>"*100)
 	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
@@ -108,7 +109,7 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 		return
 	return docs
 
-def remove_misspelled_(documents):
+def remove_misspelled_(documents: str="This is a sample sentence."):
 	print(f"Removing misspelled word(s)".center(100, " "))
 	# Create dictionaries for Finnish, Swedish, and English
 	fi_dict = libvoikko.Voikko(language="fi")	
@@ -122,6 +123,23 @@ def remove_misspelled_(documents):
 	es_dict = enchant.Dict("es")
 	et_dict = enchant.Dict("et")
 	
+	ca_dict = enchant.Dict("ca")
+	cs_dict = enchant.Dict("cs")
+	cy_dict = enchant.Dict("cy")
+	fo_dict = enchant.Dict("fo")
+	fr_dict = enchant.Dict("fr")
+	ga_dict = enchant.Dict("ga")
+	hr_dict = enchant.Dict("hr")
+	hu_dict = enchant.Dict("hu")
+	is_dict = enchant.Dict("is")
+	it_dict = enchant.Dict("it")
+	lt_dict = enchant.Dict("lt")
+	lv_dict = enchant.Dict("lv")
+	nl_dict = enchant.Dict("nl")
+	pl_dict = enchant.Dict("pl")
+	sl_dict = enchant.Dict("sl")
+	sk_dict = enchant.Dict("sk")
+	
 	# Split the documents into words
 	if not isinstance(documents, list):
 		print(f"Convert to a list of words using split() command |", end=" ")
@@ -133,20 +151,19 @@ def remove_misspelled_(documents):
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		# print(word)
-		print(
-			word,
-			fi_dict.spell(word),
-			fii_dict.check(word), 
-			sv_dict.check(word), 
-			sv_fi_dict.check(word), 
-			en_dict.check(word),
-			de_dict.check(word),
-			no_dict.check(word),
-			da_dict.check(word),
-			es_dict.check(word),
-			et_dict.check(word)
-		)
+		# print(
+		# 	word,
+		# 	fi_dict.spell(word),
+		# 	fii_dict.check(word), 
+		# 	sv_dict.check(word), 
+		# 	sv_fi_dict.check(word), 
+		# 	en_dict.check(word),
+		# 	de_dict.check(word),
+		# 	no_dict.check(word),
+		# 	da_dict.check(word),
+		# 	es_dict.check(word),
+		# 	et_dict.check(word)
+		# )
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -157,7 +174,23 @@ def remove_misspelled_(documents):
 			no_dict.check(word) or
 			da_dict.check(word) or
 			es_dict.check(word) or
-			et_dict.check(word)
+			et_dict.check(word) or # estonian
+			ca_dict.check(word) or
+			cs_dict.check(word) or 
+			cy_dict.check(word) or 
+			fo_dict.check(word) or 
+			fr_dict.check(word) or 
+			ga_dict.check(word) or 
+			hr_dict.check(word) or 
+			hu_dict.check(word) or 
+			is_dict.check(word) or 
+			it_dict.check(word) or 
+			lt_dict.check(word) or 
+			lv_dict.check(word) or 
+			nl_dict.check(word) or 
+			pl_dict.check(word) or 
+			sl_dict.check(word) or 
+			sk_dict.check(word)
 		):
 			print(f"\t\t{word} does not exist")
 			pass

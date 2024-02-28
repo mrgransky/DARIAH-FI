@@ -23,8 +23,8 @@ import gzip
 import tarfile
 import shutil
 
-# import enchant
-# import libvoikko
+import enchant
+import libvoikko
 
 from pandas.api.types import is_datetime64_any_dtype
 
@@ -725,26 +725,20 @@ def get_query_phrase(inp_url):
 
 def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 	print(f'Raw Input:\n>>{docs}<<')
-	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	# docs = docs.lower()
-	# treat all as document
-	# docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip() # "kuuslammi janakkala"^5 or # "karl urnberg"~1
 	docs = re.sub(r'[\{\}@®¤†±©§½✓%,+;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+', ' ', docs )#.strip()
-	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2]))
-	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs)#.strip()
-	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces
 	docs = re.sub(
 		r'\s{2,}', 
 		" ", 
 		# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
 		re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
-	).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
+	).strip()
 	##########################################################################################
 	if del_misspelled:
-		docs = remove_misspelled_(text=docs)
+		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
 	print(f'Cleaned Input:\n{docs}')
@@ -755,19 +749,10 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 		return
 	return docs
 
-def remove_misspelled_(text: str="This is a sample sentence."):
+def remove_misspelled_(documents: str="This is a sample sentence."):
 	# print(f"Removing misspelled word(s)".center(100, " "))
-	# Create dictionaries for Finnish, Swedish, and English
-	fi_dict = libvoikko.Voikko(language="fi")	
-	fii_dict = enchant.Dict("fi")
-	# fi_sv_dict = enchant.Dict("sv_FI")
-	# sv_dict = enchant.Dict("sv_SE")
-	sv_dict = enchant.Dict("sv")
-	en_dict = enchant.Dict("en")
-	de_dict = enchant.Dict("de")
-
 	# Split the text into words
-	if not isinstance(text, list):
+	if not isinstance(documents, list):
 		# print(f"Convert to a list of words using split() command |", end=" ")
 		words = text.split()
 	else:
@@ -778,10 +763,48 @@ def remove_misspelled_(text: str="This is a sample sentence."):
 	# Remove misspelled words
 	cleaned_words = []
 	for word in words:
-		# print(word)
-		# if not (fi_dict.spell(word) or fii_dict.check(word) or fi_sv_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
-		if not (fi_dict.spell(word) or fii_dict.check(word) or sv_dict.check(word) or en_dict.check(word) or de_dict.check(word)):
-			# print(f"\t\t{word} does not exist")
+		# print(
+		# 	word,
+		# 	fi_dict.spell(word),
+		# 	fii_dict.check(word), 
+		# 	sv_dict.check(word), 
+		# 	sv_fi_dict.check(word), 
+		# 	en_dict.check(word),
+		# 	de_dict.check(word),
+		# 	no_dict.check(word),
+		# 	da_dict.check(word),
+		# 	es_dict.check(word),
+		# 	et_dict.check(word)
+		# )
+		if not (
+			fi_dict.spell(word) or 
+			fii_dict.check(word) or 
+			sv_dict.check(word) or 
+			sv_fi_dict.check(word) or 
+			en_dict.check(word) or
+			de_dict.check(word) or
+			no_dict.check(word) or
+			da_dict.check(word) or
+			es_dict.check(word) or
+			et_dict.check(word) or # estonian
+			ca_dict.check(word) or
+			cs_dict.check(word) or 
+			cy_dict.check(word) or 
+			fo_dict.check(word) or 
+			fr_dict.check(word) or 
+			ga_dict.check(word) or 
+			hr_dict.check(word) or 
+			hu_dict.check(word) or 
+			is_dict.check(word) or 
+			it_dict.check(word) or 
+			lt_dict.check(word) or 
+			lv_dict.check(word) or 
+			nl_dict.check(word) or 
+			pl_dict.check(word) or 
+			sl_dict.check(word) or 
+			sk_dict.check(word)
+		):
+			print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
