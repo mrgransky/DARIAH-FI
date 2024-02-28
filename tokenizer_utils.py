@@ -37,7 +37,7 @@ with HiddenPrints():
 		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 	}
-	smp=MultilingualPipeline(	
+	smp = MultilingualPipeline(	
 		lang_id_config=lang_id_config,
 		lang_configs=lang_configs,
 		download_method=DownloadMethod.REUSE_RESOURCES,

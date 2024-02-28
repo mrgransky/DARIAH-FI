@@ -53,17 +53,21 @@ print(enchant.list_languages())
 # sys.exit(0)
 
 @cache
-def stanza_lemmatizer(docs):
+def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	try:
 		print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		# list comprehension: slow but functional alternative
-		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
-		# lemmas_list = [ re.sub(r'"|#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm)>=3 and len(wlm)<=40 and not re.search(r"\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ) ]
+		# for i, v in enumerate(all_.sentences):
+		# 	print(v)
+		# 	for ii, vv in enumerate(v.words):
+		# 		print(vv.text, vv.lemma)
+		# 	print()
+
 		lemmas_list = [ 
-			re.sub(r'["#_\-]', '', wlm.lower())
+			# re.sub(r'["#_\-]', '', wlm.lower())
+			re.sub(r'["#_\-]', '', wlm)
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
 			if ( 
@@ -82,68 +86,88 @@ def stanza_lemmatizer(docs):
 	print(f"Found {len(lemmas_list)} lemma(s) in {end_t-st_t:.2f} s".center(140, "-") )
 	return lemmas_list
 
-def clean_(docs: str="This is a <NORMAL> string!!"):
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 	print(f'Raw Input:\n>>{docs}<<')
-	# print(f"{f'Inp. word(s): { len( docs.split() ) }':<20}", end="")
-	# st_t = time.time()
 	if not docs or len(docs) == 0 or docs == "":
 		return
-	# treat all as document
-	# docs = re.sub(r'\"|\'|<[^>]+>|[~*^][\d]+', ' ', docs).strip() # "kuuslammi janakkala"^5 or # "karl urnberg"~1
 	docs = re.sub(r'[\{\}@®¤†±©§½✓%,+;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+', ' ', docs )#.strip()
-	# docs = " ".join(map(str, [w for w in docs.split() if len(w)>2]))
-	# docs = " ".join([w for w in docs.split() if len(w)>2])
 	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs)#.strip()
-	# docs = re.sub(r'\s{2,}', " ", re.sub(r'\b\w{,2}\b', ' ', docs).strip() ) # rm words with len() < 3 ex) ö v or l m and extra spaces
-	docs = re.sub(r'\s{2,}', 
-								" ", 
-								# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
-								re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
-				).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
+	docs = re.sub(
+		r'\s{2,}', 
+		" ", 
+		re.sub(r'\b\w{,2}\b', ' ', docs)
+	).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
 
-	docs = remove_misspelled_(text=docs)
+	if del_misspelled:
+		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
-
 	print(f'Cleaned Input:\n{docs}')
 	print(f"<>"*100)
-
 	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
 
-def remove_misspelled_(text="This is a sample sentence."):
+def remove_misspelled_(documents):
 	print(f"Removing misspelled word(s)".center(100, " "))
 	# Create dictionaries for Finnish, Swedish, and English
 	fi_dict = libvoikko.Voikko(language="fi")	
 	fii_dict = enchant.Dict("fi")
-	sv_dict = enchant.Dict("sv")
+	sv_dict = enchant.Dict("sv_SE")
+	sv_fi_dict = enchant.Dict("sv_FI")
 	en_dict = enchant.Dict("en")
+	de_dict = enchant.Dict("de")
+	no_dict = enchant.Dict("no")
+	da_dict = enchant.Dict("da")
+	es_dict = enchant.Dict("es")
+	et_dict = enchant.Dict("et")
 	
-	# Split the text into words
-	if not isinstance(text, list):
+	# Split the documents into words
+	if not isinstance(documents, list):
 		print(f"Convert to a list of words using split() command |", end=" ")
-		words = text.split()
+		words = documents.split()
 	else:
-		words = text
+		words = documents
 	
-	# print(f"Document conatins {len(words)} word(s)")
+	print(f"Document conatins {len(words)} word(s)")
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
 		# print(word)
-		print(word, fi_dict.spell(word), fii_dict.check(word), sv_dict.check(word), en_dict.check(word))
-		if not (fi_dict.spell(word) or fii_dict.check(word) or sv_dict.check(word) or en_dict.check(word)):
-		# if not (fi_dict.spell(word)):
+		print(
+			word,
+			fi_dict.spell(word),
+			fii_dict.check(word), 
+			sv_dict.check(word), 
+			sv_fi_dict.check(word), 
+			en_dict.check(word),
+			de_dict.check(word),
+			no_dict.check(word),
+			da_dict.check(word),
+			es_dict.check(word),
+			et_dict.check(word)
+		)
+		if not (
+			fi_dict.spell(word) or 
+			fii_dict.check(word) or 
+			sv_dict.check(word) or 
+			sv_fi_dict.check(word) or 
+			en_dict.check(word) or
+			de_dict.check(word) or
+			no_dict.check(word) or
+			da_dict.check(word) or
+			es_dict.check(word) or
+			et_dict.check(word)
+		):
 			print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
-
+	# print(cleaned_words)
 	# Join the cleaned words back into a string
-	cleaned_text = " ".join(cleaned_words)
+	cleaned_doc = " ".join(cleaned_words)
 	print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
-	return cleaned_text
+	return cleaned_doc
 
 # orig_text = '''
 # Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
@@ -161,9 +185,10 @@ def remove_misspelled_(text="This is a sample sentence."):
 
 orig_text = """
 Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-"vanhala nikkilä"~6 - Pietarila ja nykyään
+"vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään
 Yrjönpäivää juhlitaan
-"alina keskinen" - iiiifff Vaili Siviä -
+Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+"alina keskinen" - iiiifff Vaili Siviä - Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
 N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
 Katso grafiikoista, miten Suomen ja Ruotsin sotilaallinen voima eroaa
 Suomi voittaa Ruotsin henkilöstön ja maavoimien kaluston määrässä. Ruotsilla sotilasteknologia on joiltain osin korkeampaa laatua. 
@@ -175,52 +200,20 @@ rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip
 Vastaava: Ei n KONTTORI: Antinkatu 15 (Kthityksen kirjakau] taina 8-4. Tilauksia, ilmoituksia, kirjapainotöit;
 
 Etsimä
-
+Pälkäneellä ensi sunnuntaina maaliskuun 1 pnä klo 13. Kokoontumispaikat: Onkkaalassa sk-talolle. Valvojat: Matti Heikkilä ja Huugo Aalto. Äimälässä kokoonnutaan J. Lassilaan, valvojat: Kalle Lemola ja Jussi Lassila. Iltasmäellä koululle, valvojat: Eino Tamminen ja Eelis Värilä. Laitikkalassa kokoonnutaan Meijerille, valvojat: Jussi Kaakinen ja Jussi Helmikkala. Kukkolan kylä kokoontuu koululle, valvojat: Heikki Mäkelä ja Aukusti Aspila. Sappeessa kokoonnutaan koululle, valvojat: Tauno Nieminen ja Väinö Hartikkala. Salmentaka kokoontuu kansakoululle, valvojat: August Koivisto ja Kalle Kauppi. Pohjalahtelaiset kokoontuvat koululle, valvojat: Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: Lauri Laurila ja Heikki Mattila.
 Keskuspoliisi
 
 Kommunistien jouKKowangitfemista tahoilla maassa.
-
-en
-
 -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-
 ätytsille
-
 Siffiffi ilmoitetaan
-
-Eilen oömtttto romntti eHwii keskuspoliisi PaNntzmngiHa kaksi huomattawaa iwitairfeituéia, ftidöttäen oananoÄÉjägjriätiJn flfjrccrin ÄlU'o Tiunnrjen ja foiriunc-biiataja i'}rjö Enteen. PibätyHestä ou saatu ieunmvat tfefoot: Klo %1 amntlla o;i Anno Tuo!!!!'<!! llsuirtlwn tullut 4 eHwän ini-estä, jcistti 3 meni stjälk m 1 [ai omclk. Huoneesw toimittiwat fy? VontaÄasttHen oimen mulamHa stellä olleen cun° lnatnjärjeswn owisiaman maifc= klchoituAoneen. Etsitit lakawarikoiwa: M!,ö4 TmunGm ussomoonoassit M laWmM sinen Tuominen muiaman  ammattijär)je.s<tön hmmeistoon. Lähtiessään
-
-deKfa, lvaan hänen rckiiryisten potti:- ri«ien harrastustenia ja toimintansa .vuoksi. Ennettä ei myöskään ole lvlMgutu hänen loiminmnm wuoksi kolnmunistiien eduskuntanchmän jaie ne mi.
-
-Tuomtt-ia ja Ennettä aletaan tui» tia iohdatkoin. KmrluZ>ielut ulotetaan myöskin muihin salaiseen toiminkaan osallistuneihin henkilöi' i>in, i o oka äskettäin on pidätetty, ni» mittain Työ,'>'äen,järjei-!ö!en Tie° laloudeichoitajaan E. Paajoioen ja Idiin ja Lännen toimiitajaan Väinö Vuorioon. Eilen aamuPäiirxillä ammatiijärjestön mboiia tiedoiie.ttiin jHkö'ano'!talla sihteeri Anoo Tuomiien Llmiierdamin iniernatstonaalin toimistoon ja myös Tuk- Yol-naan Ruoisin amniattijärjes' lölle. 3ähkö!M«nisja ei ollut muum kuiti ilmoitus pidämssestä. jan konttorissa toimiteltiin etsintä, viitaan ei taiawarikoitu.
-
-pyysi Tuominen waimcaan itmoiitamaan am!i>attimviesiöön, ena hän tattaa, ettei ole iefnantunut muihin kuin ammattiiMljesitön asioivin \ix ettei hän järjestön toimin» taan ole koMmmt sekoitwa milöäii politiikkaa. Ainmattiiälljestön huoneistoHl toilnittnvat etsiwät tårtasiutsen, mutia mitään papereita eiwät he kuiteirkaan kMvalVoineei. Tieltä tvietiin Tuominen Fabianinkadulla etftnän keskuspoliisin lurkintotvankilaan. l3ilen aamulla famaan liiman wangitmn kansanedustaja 2):iö Enne ja häneMn aumiossaan toi* miteltiin kxnimrk-axau*. Enne kuljetettiin llsunnosltaan TULin toinnislooit Tnömäentalolle, jossa häu sai lärjestää ucheUMMoa koekemia pal>ereiiaan. Toimistoja eitviit fiiiHv: mitään taSawarMmeet. !Pidätnsten johdosta kääntyi 3.3.
-
-Lamassa yhteydessä tuin Enne ja Tuominen pidätettiin kuulustellija warten eräs naiOenkilö. joka oli majoitellut määrällä nimellä oleske<lewia koimnunisleja. Hänen luo taan tawattiin uistita kymmeniä kiloja kiik>oitus'kirjalli'uu:!a.
-Kun rapaus on omansa herättämään juurta huomiota, on tiedus» tettu myöskin pääministeriltä, jolloin pääminisieri- Tuntia ilmoitti. mä ballitus ei ole fi:ä ollenkaan käsilellm, waan onfe kokonaan eifitoär! keskuspoiiisiil asia. Mikäli hän oU kuullut, ei yidä:yk'eu pitäin kostea fotoin montaa nenfiUu.
 Pidätettnien lutumääm »ouiee
 Suomalaisyrittäjä pidätettiin Mijasissa 
 Espanjan Aurinkorannikolla tunnettu pitkän linjan yrittäjä päätyi yllättäen kaltereiden taakse. 
 """
 
-print(orig_text)
-cleaned_fin_text = clean_(docs=orig_text)
+# print(orig_text)
+cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
-
-# cleaned_fin_text = remove_misspelled_(text=stanza_lemmatizer(docs=clean_(docs=orig_text)))
-# cleaned_fin_text_lemmatized = stanza_lemmatizer(docs=cleaned_fin_text)
-print(f"Cleaned:")
+print(f"Final Cleaned:")
 print(cleaned_fin_text)
-print("<>"*80)
-
-# Example usage
-# text = '''
-# I went to schhool yesterdayy to hangout with the composcr of the jazz rhythm but I coulld not obscerve any of my fricnds over therc.
-# '''
-
-# text = '''
-# I went to schhool yesterdayy but I could not obscerve any of my fricnds not suomen pääministeri over therc mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. 
-# '''
-
-# cleaned_text = clean_document(text)
-# print(cleaned_text)
