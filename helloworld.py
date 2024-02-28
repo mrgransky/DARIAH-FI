@@ -112,7 +112,7 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 def remove_misspelled_(documents: str="This is a sample sentence."):
 	print(f"Removing misspelled word(s)".center(100, " "))
 	# Create dictionaries for Finnish, Swedish, and English
-	fi_dict = libvoikko.Voikko(language="fi")	
+	fi_dict = libvoikko.Voikko(language="fi")
 	fii_dict = enchant.Dict("fi")
 	sv_dict = enchant.Dict("sv_SE")
 	sv_fi_dict = enchant.Dict("sv_FI")

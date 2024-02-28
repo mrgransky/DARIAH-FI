@@ -23,8 +23,8 @@ import gzip
 import tarfile
 import shutil
 
-import enchant
-import libvoikko
+# import enchant
+# import libvoikko
 
 from pandas.api.types import is_datetime64_any_dtype
 
