@@ -202,60 +202,61 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
 	return cleaned_doc
 
-orig_text = '''
-åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-Styrelseledamot – det här ingår i rollen!
-Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-I detta inlägg, det tredje i vår serie, 
-tydliggör Lena Hasselborn, styrelsecoach på PwC, vad som ingår i rollen som styrelseledamot. 
-Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
+# orig_text = '''
+# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
+# Styrelseledamot – det här ingår i rollen!
+# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+# I detta inlägg, det tredje i vår serie, 
+# tydliggör Lena Hasselborn, styrelsecoach på PwC, vad som ingår i rollen som styrelseledamot. 
+# Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
 
-Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
+# Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
 
-Enligt larmet har en spårvagn kört in i en annan spårvagn bakifrån.
+# Enligt larmet har en spårvagn kört in i en annan spårvagn bakifrån.
 
-Räddningstjänsten är på plats med en ”större styrka”.
+# Räddningstjänsten är på plats med en ”större styrka”.
 
-På grund av olyckan har all spårvagnstrafik mot Angered ställts in.
+# På grund av olyckan har all spårvagnstrafik mot Angered ställts in.
 
-– Vi tittar på att sätta in ersättningstrafik, säger Christian Blomquist, störningskoordinator på Västtrafik, till GP.
-En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
-I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
-Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-'''
+# – Vi tittar på att sätta in ersättningstrafik, säger Christian Blomquist, störningskoordinator på Västtrafik, till GP.
+# En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
+# I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
+# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+# '''
 
-# orig_text = """
-# Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-# "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään
-# Yrjönpäivää juhlitaan
-# mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
-# mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
-# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-# rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. 
-# Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-# "alina keskinen" - iiiifff Vaili Siviä - Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
-# N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-# Katso grafiikoista, miten Suomen ja Ruotsin sotilaallinen voima eroaa
-# Suomi voittaa Ruotsin henkilöstön ja maavoimien kaluston määrässä. Ruotsilla sotilasteknologia on joiltain osin korkeampaa laatua. 
-# Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
-# N:o 45
-# rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
-# Vastaava: Ei n KONTTORI: Antinkatu 15 (Kthityksen kirjakau] taina 8-4. Tilauksia, ilmoituksia, kirjapainotöit;
+orig_text = """
+"vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
+Yrjönpäivää juhlitaan
+mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
+mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
+mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä - Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
+N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
+Katso grafiikoista, miten Suomen ja Ruotsin sotilaallinen voima eroaa
+Suomi voittaa Ruotsin henkilöstön ja maavoimien kaluston määrässä. Ruotsilla sotilasteknologia on joiltain osin korkeampaa laatua. 
+Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
+Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
+Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+N:o 45
+rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+Vastaava: Ei n KONTTORI: Antinkatu 15 (Kthityksen kirjakau] taina 8-4. Tilauksia, ilmoituksia, kirjapainotöit;
 
-# Etsimä
-# Pälkäneellä ensi sunnuntaina maaliskuun 1 pnä klo 13. Kokoontumispaikat: Onkkaalassa sk-talolle. Valvojat: Matti Heikkilä ja Huugo Aalto. Äimälässä kokoonnutaan J. Lassilaan, valvojat: Kalle Lemola ja Jussi Lassila. Iltasmäellä koululle, valvojat: Eino Tamminen ja Eelis Värilä. Laitikkalassa kokoonnutaan Meijerille, valvojat: Jussi Kaakinen ja Jussi Helmikkala. Kukkolan kylä kokoontuu koululle, valvojat: Heikki Mäkelä ja Aukusti Aspila. Sappeessa kokoonnutaan koululle, valvojat: Tauno Nieminen ja Väinö Hartikkala. Salmentaka kokoontuu kansakoululle, valvojat: August Koivisto ja Kalle Kauppi. Pohjalahtelaiset kokoontuvat koululle, valvojat: Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: Lauri Laurila ja Heikki Mattila.
-# Keskuspoliisi
+Etsimä
+Pälkäneellä ensi sunnuntaina maaliskuun 1 pnä klo 13. Kokoontumispaikat: Onkkaalassa sk-talolle. Valvojat: Matti Heikkilä ja Huugo Aalto. Äimälässä kokoonnutaan J. Lassilaan, valvojat: Kalle Lemola ja Jussi Lassila. Iltasmäellä koululle, valvojat: Eino Tamminen ja Eelis Värilä. Laitikkalassa kokoonnutaan Meijerille, valvojat: Jussi Kaakinen ja Jussi Helmikkala. Kukkolan kylä kokoontuu koululle, valvojat: Heikki Mäkelä ja Aukusti Aspila. Sappeessa kokoonnutaan koululle, valvojat: Tauno Nieminen ja Väinö Hartikkala. Salmentaka kokoontuu kansakoululle, valvojat: August Koivisto ja Kalle Kauppi. Pohjalahtelaiset kokoontuvat koululle, valvojat: Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: Lauri Laurila ja Heikki Mattila.
+Keskuspoliisi
 
-# Kommunistien jouKKowangitfemista tahoilla maassa.
-# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-# ätytsille
-# Siffiffi ilmoitetaan
-# Pidätettnien lutumääm »ouiee
-# Suomalaisyrittäjä pidätettiin Mijasissa 
-# Espanjan Aurinkorannikolla tunnettu pitkän linjan yrittäjä päätyi yllättäen kaltereiden taakse. 
-# """
+Kommunistien jouKKowangitfemista tahoilla maassa.
+-!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+ätytsille
+Siffiffi ilmoitetaan
+Pidätettnien lutumääm »ouiee
+Suomalaisyrittäjä pidätettiin Mijasissa 
+Espanjan Aurinkorannikolla tunnettu pitkän linjan yrittäjä päätyi yllättäen kaltereiden taakse.
+Voikko on pääosin Harri Pitkäsen ohjelmoima vapaa suomen kielen oikoluku- ja tavutusohjelmisto, 
+joka pohjautuu Hannu Väisäsen Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+"""
 
 # print(orig_text)
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
