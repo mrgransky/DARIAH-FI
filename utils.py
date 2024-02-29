@@ -737,7 +737,7 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 		re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
 	).strip()
 	##########################################################################################
-	if del_misspelled:
+	if (del_misspelled and os.environ['USER']!="alijanif"):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
