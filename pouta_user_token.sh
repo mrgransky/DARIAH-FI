@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## run using command:
-## $ nohup bash pouta_gan.sh 0 > /dev/null 2>&1 &
+## $ nohup bash pouta_user_token.sh 0 > /dev/null 2>&1 &
 ## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_output.out 2>&1 & # with output saved in check_output.out
 
 user="`whoami`"
