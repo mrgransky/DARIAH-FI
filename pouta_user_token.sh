@@ -20,7 +20,6 @@ echo "HOME DIR $HOME_DIR | WDIR: $WDIR"
 echo "${stars// /*}"
 
 files=($WDIR/Nationalbiblioteket/datasets/*.dump)
-# files=("$WDIR/Nationalbiblioteket/datasets"/*.dump)
 ddir="$WDIR/Nationalbiblioteket/dataframes_x2"
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
@@ -28,11 +27,8 @@ maxNumFeatures=-1
 # Get the input integer argument
 query_index=$1
 
-echo "$files"
 echo "maxNumFeat: $maxNumFeatures | outDIR $ddir"
 echo "Q[$query_index]: ${files[$query_index]}"
-echo "Q[$query_index]: ${files[$query_index]}"
-echo "${files[0]}"
 
 # # Run both commands simultaneously
 # python -u user_token.py \
