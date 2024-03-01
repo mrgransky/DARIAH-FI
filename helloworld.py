@@ -30,7 +30,8 @@ lang_id_config = {
 }
 
 lang_configs = {
-	"en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
+	# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
+	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
@@ -79,11 +80,11 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		# for i, v in enumerate(all_.sentences):
-		# 	print(v)
-		# 	# for ii, vv in enumerate(v.words):
-		# 	# 	print(vv.text, vv.lemma, vv.upos)
-		# 	# print()
+		for i, v in enumerate(all_.sentences):
+			print(v)
+			# for ii, vv in enumerate(v.words):
+			# 	print(vv.text, vv.lemma, vv.upos)
+			# print()
 
 		lemmas_list = [ 
 			# re.sub(r'["#_\-]', '', wlm.lower())
@@ -144,7 +145,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	es_dict = enchant.Dict("es")
 	et_dict = enchant.Dict("et")
 	
-	ca_dict = enchant.Dict("ca")
 	cs_dict = enchant.Dict("cs")
 	cy_dict = enchant.Dict("cy")
 	fo_dict = enchant.Dict("fo")
@@ -173,19 +173,34 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		# print(
-		# 	word,
-		# 	fi_dict.spell(word),
-		# 	fii_dict.check(word), 
-		# 	sv_dict.check(word), 
-		# 	sv_fi_dict.check(word), 
-		# 	en_dict.check(word),
-		# 	de_dict.check(word),
-		# 	no_dict.check(word),
-		# 	da_dict.check(word),
-		# 	es_dict.check(word),
-		# 	et_dict.check(word)
-		# )
+		print(
+			word,
+			fi_dict.spell(word),
+			fii_dict.check(word), 
+			sv_dict.check(word), 
+			sv_fi_dict.check(word), 
+			en_dict.check(word),
+			de_dict.check(word),
+			no_dict.check(word),
+			da_dict.check(word),
+			es_dict.check(word),
+			et_dict.check(word),
+			cs_dict.check(word), 
+			cy_dict.check(word), 
+			fo_dict.check(word), 
+			fr_dict.check(word), 
+			ga_dict.check(word), 
+			hr_dict.check(word), 
+			hu_dict.check(word), 
+			is_dict.check(word), 
+			it_dict.check(word), 
+			lt_dict.check(word), 
+			lv_dict.check(word), 
+			nl_dict.check(word), 
+			pl_dict.check(word), 
+			sl_dict.check(word), 
+			sk_dict.check(word)
+		)
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -197,7 +212,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			da_dict.check(word) or
 			es_dict.check(word) or
 			et_dict.check(word) or # estonian
-			ca_dict.check(word) or
 			cs_dict.check(word) or 
 			cy_dict.check(word) or 
 			fo_dict.check(word) or 
@@ -225,11 +239,13 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	return cleaned_doc
 
 orig_text = '''
+enGliSH
 Cellulose Union, The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
 Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 '''
 
 # orig_text = '''
+# sVenskA
 # Styrelseledamot – det här ingår i rollen!
 # Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
 # I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
@@ -255,6 +271,7 @@ Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 32
 # '''
 
 # orig_text = """
+# SoUmI
 # UNIVERsITY LIBRARY AT HELsINKI 30
 # J. VALLINKOsKI
 # <em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
