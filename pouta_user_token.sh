@@ -24,20 +24,19 @@ ddir="$WDIR/Nationalbiblioteket/dataframes_x2"
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
-# Get the input integer argument
-query_index=$1
+# Get the input integer argument or set default value to 0
+query_index=${1:-0} # 0 by default!
 
 echo "maxNumFeat: $maxNumFeatures | outDIR $ddir"
 echo "Q[$query_index]: ${files[$query_index]}"
 
-# # Run both commands simultaneously
-# python -u user_token.py \
-# 	--inputDF ${files[0]} \
-# 	--outDIR $ddir \
-# 	--lmMethod 'stanza' \
-# 	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-# 	--maxNumFeat $maxNumFeatures \
+python -u user_token.py \
+	--inputDF ${files[$query_index]} \
+	--outDIR $ddir \
+	--lmMethod 'stanza' \
+	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+	--maxNumFeat $maxNumFeatures \
 
-# done_txt="$user finished job: `date`"
-# echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
-# echo "${stars// /*}"
+done_txt="$user finished job: `date`"
+echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
+echo "${stars// /*}"
