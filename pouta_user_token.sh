@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## run using command:
-## $ nohup bash pouta_gan.sh > /dev/null 2>&1 &
-## $ nohup bash pouta_user_token.sh > /media/volume/trash/NLF/check_output.out 2>&1 & # with output saved in check_output.out
+## $ nohup bash pouta_gan.sh 0 > /dev/null 2>&1 &
+## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_output.out 2>&1 & # with output saved in check_output.out
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -25,17 +25,17 @@ ddir="$WDIR/Nationalbiblioteket/dataframes_x2"
 maxNumFeatures=-1
 
 # Get the input integer argument or set default value to 0
-query_index=${1:-0} # 0 by default!
+qIDX=${1:-0} # 0 by default!
 
 echo "maxNumFeat: $maxNumFeatures | outDIR $ddir"
-echo "Q[$query_index]: ${files[$query_index]}"
+echo "Q[$qIDX]: ${files[$qIDX]}"
 
-# python -u user_token.py \
-# 	--inputDF ${files[$query_index]} \
-# 	--outDIR $ddir \
-# 	--lmMethod 'stanza' \
-# 	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-# 	--maxNumFeat $maxNumFeatures \
+python -u user_token.py \
+	--inputDF ${files[$qIDX]} \
+	--outDIR $ddir \
+	--lmMethod 'stanza' \
+	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+	--maxNumFeat $maxNumFeatures >>$WDIR/trash/NLF/nikeQ_$qIDX.out 2>&1 &
 
 done_txt="$user finished job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
