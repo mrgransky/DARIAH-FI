@@ -28,14 +28,19 @@ maxNumFeatures=-1
 qIDX=${1:-0} # 0 by default!
 
 echo "maxNumFeat: $maxNumFeatures | outDIR $ddir"
-echo "Q[$qIDX]: ${files[$qIDX]}"
 
-python -u user_token.py \
-	--inputDF ${files[$qIDX]} \
-	--outDIR $ddir \
-	--lmMethod 'stanza' \
-	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-	--maxNumFeat $maxNumFeatures >>$WDIR/trash/NLF/nikeQ_$qIDX.out 2>&1 &
+# Check if the input index is within the range of available files
+if [ $qIDX -ge 0 ] && [ $qIDX -lt ${#files[@]} ]; then
+echo "Q[$qIDX]: ${files[$qIDX]}"
+	python -u user_token.py \
+		--inputDF ${files[$qIDX]} \
+		--outDIR $ddir \
+		--lmMethod 'stanza' \
+		--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+		--maxNumFeat $maxNumFeatures >>$WDIR/trash/NLF/nikeQ_$qIDX.out 2>&1 &
+else
+	echo "Error: Invalid input index. Please provide a valid index between 0 and $((${#files[@]} - 1))."
+fi
 
 done_txt="$user finished job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
