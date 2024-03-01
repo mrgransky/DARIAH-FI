@@ -60,7 +60,7 @@ with HiddenPrints():
 		"ADP",
 		"PRON",
 		"PART",
-		# "ADV",
+		"ADV",
 		"INTJ",
 		# "X", # foriegn words will be excluded,
 	]
