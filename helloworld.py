@@ -30,7 +30,7 @@ lang_id_config = {
 }
 
 lang_configs = {
-	"en": {"processors":"tokenize,lemma,pos", "package":'ESLSpok',"tokenize_no_ssplit":True},
+	"en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
@@ -79,11 +79,11 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		for i, v in enumerate(all_.sentences):
-			print(v)
-			# for ii, vv in enumerate(v.words):
-			# 	print(vv.text, vv.lemma, vv.upos)
-			# print()
+		# for i, v in enumerate(all_.sentences):
+		# 	print(v)
+		# 	# for ii, vv in enumerate(v.words):
+		# 	# 	print(vv.text, vv.lemma, vv.upos)
+		# 	# print()
 
 		lemmas_list = [ 
 			# re.sub(r'["#_\-]', '', wlm.lower())
@@ -107,7 +107,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	return lemmas_list
 
 def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
-	docs = docs.title()
+	# docs = docs.title()
 	# print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
@@ -120,7 +120,6 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 	).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
 	##########################################################################################
 	if del_misspelled:
-		docs = docs.title()
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
@@ -163,6 +162,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	sk_dict = enchant.Dict("sk")
 	
 	# Split the documents into words
+	documents = documents.title()
 	if not isinstance(documents, list):
 		# print(f"Convert to a list of words using split() command |", end=" ")
 		words = documents.split()
@@ -224,8 +224,12 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	# print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
 	return cleaned_doc
 
+orig_text = '''
+Cellulose Union, The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
+Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
+'''
+
 # orig_text = '''
-# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
 # Styrelseledamot – det här ingår i rollen!
 # Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
 # I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
@@ -245,50 +249,54 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
 # I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
 # Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
+# n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+# <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
 # '''
 
-orig_text = """
-UNIVERsITY LIBRARY AT HELsINKI 30
+# orig_text = """
+# UNIVERsITY LIBRARY AT HELsINKI 30
+# J. VALLINKOsKI
+# <em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
+# Kuninkaallinen Turun Akatemia 1642—1828
+# DIE DIssERTATIONEN DER
+# "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
+# helsingin teknillinen reaalikoulu
+# Yrjönpäivää juhlitaan
+# mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
+# mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
+# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
 
-J. VALLINKOsKI
+# muistcttatpaa!
 
-<em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
-Kuninkaallinen Turun Akatemia
-1642—1828
+# Salama Teatterissa
+# rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
+# Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
+# N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
+# Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
+# Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
+# Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+# N:o 45
+# rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
 
-DIE DIssERTATIONEN DER<<
-"vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
-Yrjönpäivää juhlitaan
-mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
-mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
-mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
-Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
-N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
-Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-N:o 45
-rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+# Keskuspoliisi
+# Kommunistien jouKKowangitfemista tahoilla maassa.
+# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+# ätytsille
+# Siffiffi ilmoitetaan
+# Pidätettnien lutumääm »ouiee
+# Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+# Etsimä
+# Pohjalahtelaiset kokoontuvat koululle, valvojat: 
+# Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
+# Lauri Laurila ja Heikki Mattila.
+# (joko kutoen tai ommel- ( len) saatte <em>ryijyn</em> uskomattoman &gt; 
+# huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+# n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+# <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
+# """
 
-Keskuspoliisi
-Kommunistien jouKKowangitfemista tahoilla maassa.
--!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-ätytsille
-Siffiffi ilmoitetaan
-Pidätettnien lutumääm »ouiee
-Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
-Etsimä
-Pohjalahtelaiset kokoontuvat koululle, valvojat: 
-Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
-Lauri Laurila ja Heikki Mattila.
-(joko kutoen tai ommel- ( len) saatte <em>ryijyn</em> uskomattoman &gt; 
-huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
-"""
-
-# print(orig_text)
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
-# print(f"Final Cleaned:")
-# print(cleaned_fin_text)

@@ -33,7 +33,7 @@ with HiddenPrints():
 	}
 
 	lang_configs = {
-		"en": {"processors":"tokenize,lemma,pos", "package":'ESLSpok',"tokenize_no_ssplit":True},
+		"en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
 		"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},

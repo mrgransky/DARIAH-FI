@@ -781,6 +781,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	sk_dict = enchant.Dict("sk")
 	
 	# Split the documents into words
+	documents = documents.title()
 	if not isinstance(documents, list):
 		# print(f"Convert to a list of words using split() command |", end=" ")
 		words = documents.split()
