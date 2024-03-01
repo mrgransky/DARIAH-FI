@@ -23,9 +23,6 @@ import gzip
 import tarfile
 import shutil
 
-# import enchant
-# import libvoikko
-
 from pandas.api.types import is_datetime64_any_dtype
 
 import numpy as np
@@ -136,6 +133,10 @@ usr_ = {
 	"farid": 	f"{os.environ['HOME']}/datasets/Nationalbiblioteket",
 	"ubuntu": f"/media/volume/Nationalbiblioteket", 
 }
+
+if os.environ['USER']!="alijanif":
+	import enchant
+	import libvoikko
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
