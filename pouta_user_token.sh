@@ -30,12 +30,12 @@ query_index=${1:-0} # 0 by default!
 echo "maxNumFeat: $maxNumFeatures | outDIR $ddir"
 echo "Q[$query_index]: ${files[$query_index]}"
 
-python -u user_token.py \
-	--inputDF ${files[$query_index]} \
-	--outDIR $ddir \
-	--lmMethod 'stanza' \
-	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-	--maxNumFeat $maxNumFeatures \
+# python -u user_token.py \
+# 	--inputDF ${files[$query_index]} \
+# 	--outDIR $ddir \
+# 	--lmMethod 'stanza' \
+# 	--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
+# 	--maxNumFeat $maxNumFeatures \
 
 done_txt="$user finished job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
