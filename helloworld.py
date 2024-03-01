@@ -32,7 +32,8 @@ lang_id_config = {
 lang_configs = {
 	# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
 	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+	# "sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+	"sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
@@ -80,11 +81,11 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		for i, v in enumerate(all_.sentences):
-			print(v)
-			# for ii, vv in enumerate(v.words):
-			# 	print(vv.text, vv.lemma, vv.upos)
-			# print()
+		# for i, v in enumerate(all_.sentences):
+		# 	print(v)
+		# 	# for ii, vv in enumerate(v.words):
+		# 	# 	print(vv.text, vv.lemma, vv.upos)
+		# 	# print()
 
 		lemmas_list = [ 
 			# re.sub(r'["#_\-]', '', wlm.lower())
@@ -173,34 +174,34 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		print(
-			word,
-			fi_dict.spell(word),
-			fii_dict.check(word), 
-			sv_dict.check(word), 
-			sv_fi_dict.check(word), 
-			en_dict.check(word),
-			de_dict.check(word),
-			no_dict.check(word),
-			da_dict.check(word),
-			es_dict.check(word),
-			et_dict.check(word),
-			cs_dict.check(word), 
-			cy_dict.check(word), 
-			fo_dict.check(word), 
-			fr_dict.check(word), 
-			ga_dict.check(word), 
-			hr_dict.check(word), 
-			hu_dict.check(word), 
-			is_dict.check(word), 
-			it_dict.check(word), 
-			lt_dict.check(word), 
-			lv_dict.check(word), 
-			nl_dict.check(word), 
-			pl_dict.check(word), 
-			sl_dict.check(word), 
-			sk_dict.check(word)
-		)
+		# print(
+		# 	word,
+		# 	fi_dict.spell(word),
+		# 	fii_dict.check(word), 
+		# 	sv_dict.check(word), 
+		# 	sv_fi_dict.check(word), 
+		# 	en_dict.check(word),
+		# 	de_dict.check(word),
+		# 	no_dict.check(word),
+		# 	da_dict.check(word),
+		# 	es_dict.check(word),
+		# 	et_dict.check(word),
+		# 	cs_dict.check(word), 
+		# 	cy_dict.check(word), 
+		# 	fo_dict.check(word), 
+		# 	fr_dict.check(word), 
+		# 	ga_dict.check(word), 
+		# 	hr_dict.check(word), 
+		# 	hu_dict.check(word), 
+		# 	is_dict.check(word), 
+		# 	it_dict.check(word), 
+		# 	lt_dict.check(word), 
+		# 	lv_dict.check(word), 
+		# 	nl_dict.check(word), 
+		# 	pl_dict.check(word), 
+		# 	sl_dict.check(word), 
+		# 	sk_dict.check(word)
+		# )
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -228,7 +229,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			sl_dict.check(word) or 
 			sk_dict.check(word)
 		):
-			# print(f"\t\t{word} does not exist")
+			print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
@@ -238,14 +239,17 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	# print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
 	return cleaned_doc
 
-orig_text = '''
-enGliSH
-Cellulose Union, The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
-Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
-'''
+# orig_text = '''
+# enGliSH
+# Cellulose Union, The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
+# Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
+# '''
 
 # orig_text = '''
 # sVenskA
+# Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
+# för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
+# af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
 # Styrelseledamot – det här ingår i rollen!
 # Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
 # I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
@@ -270,50 +274,61 @@ Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 32
 # <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
 # '''
 
-# orig_text = """
-# SoUmI
-# UNIVERsITY LIBRARY AT HELsINKI 30
-# J. VALLINKOsKI
-# <em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
-# Kuninkaallinen Turun Akatemia 1642—1828
-# DIE DIssERTATIONEN DER
-# "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
-# helsingin teknillinen reaalikoulu
-# Yrjönpäivää juhlitaan
-# mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
-# mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
-# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+orig_text = """
+SoUmI
+Osoite
 
-# muistcttatpaa!
+: Nimi: • I tillin II II 111 il ill II II Ullin lIIHIIIIMIIIIIIIIIIIHIIIIIIIIIIM
 
-# Salama Teatterissa
-# rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
-# Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
-# N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-# Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
-# Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-# Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-# N:o 45
-# rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+arpavihon ostajalle.
 
-# Keskuspoliisi
-# Kommunistien jouKKowangitfemista tahoilla maassa.
-# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-# ätytsille
-# Siffiffi ilmoitetaan
-# Pidätettnien lutumääm »ouiee
-# Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
-# Etsimä
-# Pohjalahtelaiset kokoontuvat koululle, valvojat: 
-# Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
-# Lauri Laurila ja Heikki Mattila.
-# (joko kutoen tai ommel- ( len) saatte <em>ryijyn</em> uskomattoman &gt; 
-# huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
-# n:o 3 i Napo by, Storkyro, 166, 167, 168. 
-# <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
-# """
+Sähköyhtiöt ja asentajat!
+
+Kesäkorj suksiin muuntaja-asemille ja ulkolinjoille sopivat tarvikkeet ostatte meiltä edullisin tukkuhinnoin.
+
+Rauman Sähkö- ja Telefooniinko Urho Tuominen. Kauppak. 22. Puh. 11 43.
+UNIVERsITY LIBRARY AT HELsINKI 30
+J. VALLINKOsKI
+<em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
+Kuninkaallinen Turun Akatemia 1642—1828
+DIE DIssERTATIONEN DER
+"vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
+helsingin teknillinen reaalikoulu
+Yrjönpäivää juhlitaan
+mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
+mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
+mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+
+muistcttatpaa!
+
+Salama Teatterissa
+rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
+Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
+N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
+Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
+Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
+Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+N:o 45
+rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+
+Keskuspoliisi
+Kommunistien jouKKowangitfemista tahoilla maassa.
+-!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+ätytsille
+Siffiffi ilmoitetaan
+Pidätettnien lutumääm »ouiee
+Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+Etsimä
+Pohjalahtelaiset kokoontuvat koululle, valvojat: 
+Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
+Lauri Laurila ja Heikki Mattila.
+(joko kutoen tai ommel- ( len) saatte <em>ryijyn</em> uskomattoman &gt; 
+huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+<em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
+"""
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
