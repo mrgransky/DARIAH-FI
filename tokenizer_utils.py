@@ -34,7 +34,7 @@ with HiddenPrints():
 		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
-		"et": {"processors":"tokenize,lemma,pos,mwt", "package":'edt',"tokenize_no_ssplit":True},
+		"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
 		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 	}
