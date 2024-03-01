@@ -3,17 +3,19 @@ from utils import *
 # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
 	import nltk
-	nltk_modules = ['punkt',
-								'stopwords',
-								'wordnet',
-								'averaged_perceptron_tagger', 
-								'omw-1.4',
-								]
+	nltk_modules = [
+		'punkt',
+		'wordnet',
+		'averaged_perceptron_tagger', 
+		'omw-1.4',
+		'stopwords',
+	]
+
 	nltk.download(
-		#'all',
+		# 'all',
 		nltk_modules,
-		quiet=True, 
-		raise_on_error=True,
+		quiet=True,
+		# raise_on_error=True,
 	)
 
 	# import trankit
@@ -25,11 +27,13 @@ with HiddenPrints():
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
+
 	lang_id_config = {
 		"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
 	}
+
 	lang_configs = {
-		"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+		"en": {"processors":"tokenize,lemma,pos", "package":'ESLSpok',"tokenize_no_ssplit":True},
 		"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
@@ -38,12 +42,29 @@ with HiddenPrints():
 		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 	}
+
 	smp = MultilingualPipeline(	
 		lang_id_config=lang_id_config,
 		lang_configs=lang_configs,
 		download_method=DownloadMethod.REUSE_RESOURCES,
 	)
-	useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ", "X"]
+
+	useless_upos_tags = [
+		"PUNCT",
+		"CCONJ",
+		"SCONJ",
+		"SYM",
+		"AUX",
+		"NUM",
+		"DET",
+		"ADP",
+		"PRON",
+		"PART",
+		# "ADV",
+		"INTJ",
+		# "X", # foriegn words will be excluded,
+	]
+
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 	with open('meaningless_lemmas.txt', 'r') as file_:
 		my_custom_stopwords=[line.strip() for line in file_]

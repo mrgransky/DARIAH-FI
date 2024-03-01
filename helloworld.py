@@ -17,31 +17,51 @@ nltk_modules = [
 	'averaged_perceptron_tagger', 
 	'omw-1.4',
 ]
+
 nltk.download(
-	#'all',
+	# 'all',
 	nltk_modules,
 	quiet=True, 
-	raise_on_error=True,
+	# raise_on_error=True,
 )
 
 lang_id_config = {
-	"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'de', 'fr']
+	"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
 }
+
 lang_configs = {
-	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+	"en": {"processors":"tokenize,lemma,pos", "package":'ESLSpok',"tokenize_no_ssplit":True},
 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True},
+	"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
 	"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 	"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 }
+
 smp = MultilingualPipeline(	
 	lang_id_config=lang_id_config,
 	lang_configs=lang_configs,
 	download_method=DownloadMethod.REUSE_RESOURCES,
 )
-useless_upos_tags = ["PUNCT", "CCONJ", "SYM", "AUX", "NUM", "DET", "ADP", "PRON", "PART", "ADV", "INTJ", "X"]
+
+useless_upos_tags = [
+	"PUNCT", 
+	"CCONJ",
+	"SCONJ", 
+	"SYM", 
+	"AUX", 
+	"NUM", 
+	"DET", 
+	"ADP", 
+	"PRON", 
+	"PART", 
+	"ADV", 
+	"INTJ", 
+	# "X", # foriegn words will be excluded,
+]
+
 STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 with open('meaningless_lemmas.txt', 'r') as file_:
 	my_custom_stopwords=[line.strip() for line in file_]
@@ -49,21 +69,21 @@ STOPWORDS.extend(my_custom_stopwords)
 UNQ_STW = list(set(STOPWORDS))
 
 
-print(enchant.list_languages())
+# print(enchant.list_languages())
 # sys.exit(0)
 
 @cache
 def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	try:
-		print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
+		# print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		# for i, v in enumerate(all_.sentences):
-		# 	print(v)
-		# 	for ii, vv in enumerate(v.words):
-		# 		print(vv.text, vv.lemma)
-		# 	print()
+		for i, v in enumerate(all_.sentences):
+			print(v)
+			# for ii, vv in enumerate(v.words):
+			# 	print(vv.text, vv.lemma, vv.upos)
+			# print()
 
 		lemmas_list = [ 
 			# re.sub(r'["#_\-]', '', wlm.lower())
@@ -87,7 +107,8 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	return lemmas_list
 
 def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
-	print(f'Raw Input:\n>>{docs}<<')
+	docs = docs.title()
+	# print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	docs = re.sub(r'[\{\}@®¤†±©§½✓%,+;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+', ' ', docs )#.strip()
@@ -99,18 +120,19 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 	).strip() # rm words with len() < 3 ex) ö v or l m and extra spaces
 	##########################################################################################
 	if del_misspelled:
+		docs = docs.title()
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	print(f'Cleaned Input:\n{docs}')
-	print(f"<>"*100)
+	# print(f'Cleaned Input:\n{docs}')
+	# print(f"<>"*100)
 	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
 
 def remove_misspelled_(documents: str="This is a sample sentence."):
-	print(f"Removing misspelled word(s)".center(100, " "))
+	# print(f"Removing misspelled word(s)".center(100, " "))
 	# Create dictionaries for Finnish, Swedish, and English
 	fi_dict = libvoikko.Voikko(language="fi")
 	fii_dict = enchant.Dict("fi")
@@ -142,28 +164,28 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	
 	# Split the documents into words
 	if not isinstance(documents, list):
-		print(f"Convert to a list of words using split() command |", end=" ")
+		# print(f"Convert to a list of words using split() command |", end=" ")
 		words = documents.split()
 	else:
 		words = documents
 	
-	print(f"Document conatins {len(words)} word(s)")
+	# print(f"Document conatins {len(words)} word(s)")
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		print(
-			word,
-			fi_dict.spell(word),
-			fii_dict.check(word), 
-			sv_dict.check(word), 
-			sv_fi_dict.check(word), 
-			en_dict.check(word),
-			de_dict.check(word),
-			no_dict.check(word),
-			da_dict.check(word),
-			es_dict.check(word),
-			et_dict.check(word)
-		)
+		# print(
+		# 	word,
+		# 	fi_dict.spell(word),
+		# 	fii_dict.check(word), 
+		# 	sv_dict.check(word), 
+		# 	sv_fi_dict.check(word), 
+		# 	en_dict.check(word),
+		# 	de_dict.check(word),
+		# 	no_dict.check(word),
+		# 	da_dict.check(word),
+		# 	es_dict.check(word),
+		# 	et_dict.check(word)
+		# )
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -192,14 +214,14 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			sl_dict.check(word) or 
 			sk_dict.check(word)
 		):
-			print(f"\t\t{word} does not exist")
+			# print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
 	# print(cleaned_words)
 	# Join the cleaned words back into a string
 	cleaned_doc = " ".join(cleaned_words)
-	print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
+	# print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
 	return cleaned_doc
 
 # orig_text = '''
@@ -226,40 +248,47 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # '''
 
 orig_text = """
+UNIVERsITY LIBRARY AT HELsINKI 30
+
+J. VALLINKOsKI
+
+<em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
+Kuninkaallinen Turun Akatemia
+1642—1828
+
+DIE DIssERTATIONEN DER<<
 "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
 Yrjönpäivää juhlitaan
 mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
 mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
 mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
 mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä - Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
+rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
+Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
 N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-Katso grafiikoista, miten Suomen ja Ruotsin sotilaallinen voima eroaa
-Suomi voittaa Ruotsin henkilöstön ja maavoimien kaluston määrässä. Ruotsilla sotilasteknologia on joiltain osin korkeampaa laatua. 
 Suomen pääministeri | Helsingin pörssi ja suomen pankki | 
 Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
 Albin Rimppi  Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
 N:o 45
 rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
-Vastaava: Ei n KONTTORI: Antinkatu 15 (Kthityksen kirjakau] taina 8-4. Tilauksia, ilmoituksia, kirjapainotöit;
 
-Etsimä
-Pälkäneellä ensi sunnuntaina maaliskuun 1 pnä klo 13. Kokoontumispaikat: Onkkaalassa sk-talolle. Valvojat: Matti Heikkilä ja Huugo Aalto. Äimälässä kokoonnutaan J. Lassilaan, valvojat: Kalle Lemola ja Jussi Lassila. Iltasmäellä koululle, valvojat: Eino Tamminen ja Eelis Värilä. Laitikkalassa kokoonnutaan Meijerille, valvojat: Jussi Kaakinen ja Jussi Helmikkala. Kukkolan kylä kokoontuu koululle, valvojat: Heikki Mäkelä ja Aukusti Aspila. Sappeessa kokoonnutaan koululle, valvojat: Tauno Nieminen ja Väinö Hartikkala. Salmentaka kokoontuu kansakoululle, valvojat: August Koivisto ja Kalle Kauppi. Pohjalahtelaiset kokoontuvat koululle, valvojat: Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: Lauri Laurila ja Heikki Mattila.
 Keskuspoliisi
-
 Kommunistien jouKKowangitfemista tahoilla maassa.
 -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
 ätytsille
 Siffiffi ilmoitetaan
 Pidätettnien lutumääm »ouiee
-Suomalaisyrittäjä pidätettiin Mijasissa 
-Espanjan Aurinkorannikolla tunnettu pitkän linjan yrittäjä päätyi yllättäen kaltereiden taakse.
-Voikko on pääosin Harri Pitkäsen ohjelmoima vapaa suomen kielen oikoluku- ja tavutusohjelmisto, 
-joka pohjautuu Hannu Väisäsen Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+Etsimä
+Pohjalahtelaiset kokoontuvat koululle, valvojat: 
+Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
+Lauri Laurila ja Heikki Mattila.
+(joko kutoen tai ommel- ( len) saatte <em>ryijyn</em> uskomattoman &gt; 
+huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
 """
 
 # print(orig_text)
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
-print(f"Final Cleaned:")
-print(cleaned_fin_text)
+# print(f"Final Cleaned:")
+# print(cleaned_fin_text)
