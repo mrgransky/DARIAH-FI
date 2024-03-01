@@ -39,7 +39,7 @@ echo "Q[$qIDX]: ${files[$qIDX]}"
 		--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
 		--maxNumFeat $maxNumFeatures >>$WDIR/trash/NLF/nikeQ_$qIDX.out 2>&1 &
 else
-	echo "Error: Invalid input index. Please provide a valid index between 0 and $((${#files[@]} - 1))."
+	echo "<!> Error: Invalid input query index: $qIDX. Please provide a valid index between 0 and $((${#files[@]} - 1))."
 fi
 
 done_txt="$user finished job: `date`"
