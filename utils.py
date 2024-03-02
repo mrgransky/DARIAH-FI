@@ -729,8 +729,17 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	# docs = docs.lower()
-	docs = re.sub(r'[\{\}@®¤†±©§½✓%,+;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+', ' ', docs )#.strip()
-	docs = re.sub(r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+', " ", docs)#.strip()
+	t0 = time.time()
+	docs = re.sub(
+		r'[\{\}@®¤†±©§½✓%,+;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+',
+		' ',
+		docs,
+	)
+	docs = re.sub(
+		r'\b(?:\w*(\w)(\1{2,})\w*)\b|\d+',
+		" ",
+		docs,
+	)
 	docs = re.sub(
 		r'\s{2,}', 
 		" ", 
@@ -742,9 +751,8 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	print(f'Cleaned Input:\n{docs}')
+	print(f'Cleaned Input: [elasped_t: {time.time()-t0:.4f} s]\n{docs}')
 	print(f"<>"*100)
-
 	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
