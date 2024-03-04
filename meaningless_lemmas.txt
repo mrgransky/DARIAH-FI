@@ -9105,3 +9105,5 @@ fastigkablg
 coimcllisex
 subst
 metsa
+hämeenkalu
+suomia

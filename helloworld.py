@@ -79,21 +79,20 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		# for i, v in enumerate(all_.sentences):
-		# 	print(v)
-		# 	# for ii, vv in enumerate(v.words):
-		# 	# 	print(vv.text, vv.lemma, vv.upos)
-		# 	# print()
+		for i, v in enumerate(all_.sentences):
+			print(i, v)
+			for ii, vv in enumerate(v.words):
+				print(ii, vv.text, vv.lemma, vv.upos)
+			print()
 
 		lemmas_list = [ 
-			# re.sub(r'["#_\-]', '', wlm.lower())
-			re.sub(r'["#_\-]', '', wlm)
+			re.sub(r'["#_\-]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
 			if ( 
 					(wlm:=vw.lemma)
 					and 5 <= len(wlm) <= 40
-					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|"|#|<unk>|\s+', wlm) 
+					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+', wlm) 
 					and vw.upos not in useless_upos_tags 
 					and wlm not in UNQ_STW
 			)
@@ -172,34 +171,34 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		print(
-			word,
-			fi_dict.spell(word),
-			fii_dict.check(word), 
-			sv_dict.check(word), 
-			sv_fi_dict.check(word), 
-			en_dict.check(word),
-			de_dict.check(word),
-			# no_dict.check(word),
-			da_dict.check(word),
-			es_dict.check(word),
-			et_dict.check(word),
-			cs_dict.check(word), 
-			# cy_dict.check(word), 
-			# fo_dict.check(word), 
-			fr_dict.check(word), 
-			ga_dict.check(word), 
-			hr_dict.check(word), 
-			hu_dict.check(word), 
-			# is_dict.check(word), 
-			it_dict.check(word), 
-			lt_dict.check(word), 
-			lv_dict.check(word), 
-			nl_dict.check(word), 
-			pl_dict.check(word), 
-			sl_dict.check(word), 
-			sk_dict.check(word)
-		)
+		# print(
+		# 	word,
+		# 	fi_dict.spell(word),
+		# 	fii_dict.check(word), 
+		# 	sv_dict.check(word), 
+		# 	sv_fi_dict.check(word), 
+		# 	en_dict.check(word),
+		# 	de_dict.check(word),
+		# 	# no_dict.check(word),
+		# 	da_dict.check(word),
+		# 	es_dict.check(word),
+		# 	et_dict.check(word),
+		# 	cs_dict.check(word), 
+		# 	# cy_dict.check(word), 
+		# 	# fo_dict.check(word), 
+		# 	fr_dict.check(word), 
+		# 	ga_dict.check(word), 
+		# 	hr_dict.check(word), 
+		# 	hu_dict.check(word), 
+		# 	# is_dict.check(word), 
+		# 	it_dict.check(word), 
+		# 	lt_dict.check(word), 
+		# 	lv_dict.check(word), 
+		# 	nl_dict.check(word), 
+		# 	pl_dict.check(word), 
+		# 	sl_dict.check(word), 
+		# 	sk_dict.check(word)
+		# )
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -227,7 +226,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			sl_dict.check(word) or 
 			sk_dict.check(word)
 		):
-			print(f"\t\t{word} does not exist")
+			# print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
@@ -277,6 +276,7 @@ SUomI
 ruottalan koski
 Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
 Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
+Tampereen Teknillinen Yliopisto
 Osoite : Nimi: • I tillin II II 111 il ill II II Ullin lIIHIIIIMIIIIIIIIIIIHIIIIIIIIIIM
 arpavihon ostajalle. Sunnuntcnnll näytetään kuuluisaa filminäytelmää „Kamelianai,nen".
 Rumanlan kci 2tllwll'teatterissll.
