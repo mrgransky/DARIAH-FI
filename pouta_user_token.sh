@@ -2,8 +2,10 @@
 
 ## run using command:
 ## $ nohup bash pouta_user_token.sh 0 > /dev/null 2>&1 &
-## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_output.out 2>&1 & # with output saved in check_output.out
+## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_nlf_output.out 2>&1 & # with output saved in check_output.out
+
 ## $ nohup parallel -j 50 "bash pouta_user_token.sh {}" ::: {682..731} > /dev/null 2>&1 &
+## $ nohup parallel -j 50 "bash pouta_user_token.sh {}" ::: {682..731} > /media/volume/trash/NLF/check_nlf_output.out 2>&1 &
 
 USR_NAME="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -13,8 +15,8 @@ ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
 HOME_DIR=$(echo $HOME)
-# STORAGE_DIR="/media/volume" # Pouta
-STORAGE_DIR="$HOME_DIR/datasets" # local
+STORAGE_DIR="/media/volume" # Pouta
+# STORAGE_DIR="$HOME_DIR/datasets" # local
 DATAFRAME_DIR="$STORAGE_DIR/Nationalbiblioteket/dataframes_xx"
 files=($STORAGE_DIR/Nationalbiblioteket/datasets/*.dump)
 echo "HOME DIR $HOME_DIR"
