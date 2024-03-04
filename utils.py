@@ -724,6 +724,7 @@ def get_query_phrase(inp_url):
 	#print(parameters)
 	return params.get("query")
 
+@cache
 def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
@@ -751,13 +752,14 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	print(f'Cleaned Input: [elasped_t: {time.time()-t0:.4f} s]\n{docs}')
+	print(f'Cleaned Input [elasped_t: {time.time()-t0:.2f} s]:\n{docs}')
 	print(f"<>"*100)
 	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
 
+@cache
 def remove_misspelled_(documents: str="This is a sample sentence."):
 	# print(f"Removing misspelled word(s)".center(100, " "))
 	# Create dictionaries for Finnish, Swedish, and English
@@ -802,19 +804,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	# Remove misspelled words
 	cleaned_words = []
 	for word in words:
-		# print(
-		# 	word,
-		# 	fi_dict.spell(word),
-		# 	fii_dict.check(word), 
-		# 	sv_dict.check(word), 
-		# 	sv_fi_dict.check(word), 
-		# 	en_dict.check(word),
-		# 	de_dict.check(word),
-		# 	no_dict.check(word),
-		# 	da_dict.check(word),
-		# 	es_dict.check(word),
-		# 	et_dict.check(word)
-		# )
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -822,19 +811,19 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			sv_fi_dict.check(word) or 
 			en_dict.check(word) or
 			de_dict.check(word) or
-			no_dict.check(word) or
+			# no_dict.check(word) or
 			da_dict.check(word) or
 			es_dict.check(word) or
 			et_dict.check(word) or # estonian
 			ca_dict.check(word) or
 			cs_dict.check(word) or 
-			cy_dict.check(word) or 
-			fo_dict.check(word) or 
+			# cy_dict.check(word) or 
+			# fo_dict.check(word) or 
 			fr_dict.check(word) or 
 			ga_dict.check(word) or 
 			hr_dict.check(word) or 
 			hu_dict.check(word) or 
-			is_dict.check(word) or 
+			# is_dict.check(word) or 
 			it_dict.check(word) or 
 			lt_dict.check(word) or 
 			lv_dict.check(word) or 

@@ -6,20 +6,22 @@ parser = argparse.ArgumentParser(	description='User-Item Recommendation system d
 																	epilog='Developed by Farid Alijani',
 																)
 
-parser.add_argument('-idf', 
-										'--inputDF', 
-										required=True,
-										# default=os.path.join(datasets_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), 
-										type=str,
-										help="Input DataFrame",
-									)
-parser.add_argument('-odir', 
-										'--outDIR', 
-										# default="/scratch/project_2004072/Nationalbiblioteket/dataframes",
-										type=str, 
-										required=True, 
-										help='output directory to save files',
-									)
+parser.add_argument(
+	'-idf', 
+	'--inputDF', 
+	required=True,
+	# default=os.path.join(datasets_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), 
+	type=str,
+	help="Input DataFrame",
+)
+parser.add_argument(
+	'-odir', 
+	'--outDIR', 
+	# default="/scratch/project_2004072/Nationalbiblioteket/dataframes",
+	type=str, 
+	required=True, 
+	help='output directory to save files',
+)
 parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)

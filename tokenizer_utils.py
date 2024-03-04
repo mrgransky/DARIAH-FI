@@ -38,7 +38,7 @@ with HiddenPrints():
 		"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True},
+		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
 		"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
 		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
