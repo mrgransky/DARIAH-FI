@@ -92,7 +92,7 @@ def stanza_lemmatizer(docs):
 			if ( 
 					(wlm:=vw.lemma)
 					and 5 <= len(wlm) <= 40
-					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|"|#|<unk>|\s+', wlm) 
+					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+', wlm) 
 					and vw.upos not in useless_upos_tags 
 					and wlm not in UNQ_STW
 			)
