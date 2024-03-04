@@ -1,17 +1,18 @@
 from utils import *
 from nlp_utils import *
 
-parser = argparse.ArgumentParser(	description='User-Item Recommendation system developed based on National Library of Finland (NLF) dataset', 
-																	prog='RecSys USER-TOKEN', 
-																	epilog='Developed by Farid Alijani',
-																)
-
-parser.add_argument('-d', 
-										'--dfsPath', # only available small df_concat: /scratch/project_2004072/Nationalbiblioteket/dataframes_tmp/
-										type=str, 
-										required=True,
-										help='Path to directory of df_concat',
-									)
+parser = argparse.ArgumentParser(
+	description='User-based Recommendation System developed based on National Library of Finland (NLF) dataset', 
+	prog='RecSys Concatenated DFs', 
+	epilog='Developed by Farid Alijani',
+)
+parser.add_argument(
+	'-d', 
+	'--dfsPath', # only available small df_concat: /scratch/project_2004072/Nationalbiblioteket/dataframes_tmp/
+	type=str, 
+	required=True,
+	help='Path to directory of df_concat',
+)
 parser.add_argument('-q', '--qphrase', default="Helsingin Pörssi ja Suomen Pankki", type=str)
 parser.add_argument('-lm', '--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
