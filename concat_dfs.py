@@ -704,10 +704,11 @@ def get_users_tokens_df(save_dir: str="saving_directory", prefix_fname: str="pre
 	st_t = time.time()
 	# user_token_df_concat=get_concat(pdfs=users_tokens_dfs) # [TIME INEFFICIENT] for sparse pandas dataFrame
 	user_token_df_concat=get_optimized_concat(pdfs=users_tokens_dfs)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} {user_token_df_concat.shape}"
-				f" | memory: {user_token_df_concat.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB"
-				f" | sparsity: {user_token_df_concat.sparse.density:.6f}"
-			)
+	print(
+		f"Elapsed_t: {time.time()-st_t:.2f} s | {type(user_token_df_concat)} {user_token_df_concat.shape}\n"
+		f"Memory: {user_token_df_concat.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB\n"
+		f"Sparsity: {user_token_df_concat.sparse.density:.6f}"
+	)
 	print("<>"*50)
 	print(user_token_df_concat.info(memory_usage="deep"))
 	print("<>"*50)
@@ -898,7 +899,7 @@ def run():
 		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB\n"
 		f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
 		f"spMtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
-		f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB"
+		f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype} {idf_vec.nbytes/1e6:.2f} MB\n"
 		f"Customized Users Norm (IDFed): {type(usrNorms)} {usrNorms.dtype} {usrNorms.shape}"
 	) # lil_matrix (nUsers, nTokens)
 	print("-"*120)
@@ -909,7 +910,7 @@ def run():
 		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_shrinked_spm_U_x_T.data])/1e9:.3f} GB\n"
 		f"spMtx_rows {type(concat_shrinked_spm_usrNames)} {concat_shrinked_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
 		f"spMtx_cols {type(concat_shrinked_spm_tokNames)} {concat_shrinked_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
-		f"IDF {type(idf_vec_shrinked)} {idf_vec_shrinked.shape} {idf_vec_shrinked.dtype} {idf_vec_shrinked.nbytes/1e6:.2f} MB"
+		f"IDF {type(idf_vec_shrinked)} {idf_vec_shrinked.shape} {idf_vec_shrinked.dtype} {idf_vec_shrinked.nbytes/1e6:.2f} MB\n"
 		f"Customized Users Norm (IDFed): {type(usrNorms_shrinked)} {usrNorms_shrinked.dtype} {usrNorms_shrinked.shape}"
 	) # lil_matrix (nUsers, nTokens)
 	print("-"*120)
@@ -939,7 +940,7 @@ def run():
 	print(
 		f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
 		f"Allzero? {np.all(query_vector==0.0)} NonZeros: {np.count_nonzero(query_vector)} "
-		f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]} "
+		f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]}\n"
 		f"{[f'idx[{qidx}] {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
 	)
 	if np.all( query_vector==0.0 ):

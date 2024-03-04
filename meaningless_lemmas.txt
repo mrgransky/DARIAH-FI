@@ -8540,7 +8540,9 @@ sistl
 antip
 uha
 tammikuu
+tammik
 helmikuu
+helmik
 helmi
 maaliskuu
 huhtikuu

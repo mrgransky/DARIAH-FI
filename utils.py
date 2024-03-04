@@ -824,7 +824,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			hr_dict.check(word) or 
 			hu_dict.check(word) or 
 			# is_dict.check(word) or 
-			it_dict.check(word) or 
+			# it_dict.check(word) or 
 			lt_dict.check(word) or 
 			lv_dict.check(word) or 
 			nl_dict.check(word) or 

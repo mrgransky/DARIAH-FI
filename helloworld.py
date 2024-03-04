@@ -79,11 +79,11 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = smp(docs)
-		for i, v in enumerate(all_.sentences):
-			print(i, v)
-			for ii, vv in enumerate(v.words):
-				print(ii, vv.text, vv.lemma, vv.upos)
-			print()
+		# for i, v in enumerate(all_.sentences):
+		# 	print(i, v)
+		# 	for ii, vv in enumerate(v.words):
+		# 		print(ii, vv.text, vv.lemma, vv.upos)
+		# 	print()
 
 		lemmas_list = [ 
 			re.sub(r'["#_\-]', '', wlm.lower())
@@ -171,34 +171,34 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		# print(
-		# 	word,
-		# 	fi_dict.spell(word),
-		# 	fii_dict.check(word), 
-		# 	sv_dict.check(word), 
-		# 	sv_fi_dict.check(word), 
-		# 	en_dict.check(word),
-		# 	de_dict.check(word),
-		# 	# no_dict.check(word),
-		# 	da_dict.check(word),
-		# 	es_dict.check(word),
-		# 	et_dict.check(word),
-		# 	cs_dict.check(word), 
-		# 	# cy_dict.check(word), 
-		# 	# fo_dict.check(word), 
-		# 	fr_dict.check(word), 
-		# 	ga_dict.check(word), 
-		# 	hr_dict.check(word), 
-		# 	hu_dict.check(word), 
-		# 	# is_dict.check(word), 
-		# 	it_dict.check(word), 
-		# 	lt_dict.check(word), 
-		# 	lv_dict.check(word), 
-		# 	nl_dict.check(word), 
-		# 	pl_dict.check(word), 
-		# 	sl_dict.check(word), 
-		# 	sk_dict.check(word)
-		# )
+		print(
+			word,
+			fi_dict.spell(word),
+			fii_dict.check(word), 
+			sv_dict.check(word), 
+			sv_fi_dict.check(word), 
+			en_dict.check(word),
+			de_dict.check(word),
+			# no_dict.check(word),
+			da_dict.check(word),
+			es_dict.check(word),
+			et_dict.check(word),
+			cs_dict.check(word), 
+			# cy_dict.check(word), 
+			# fo_dict.check(word), 
+			fr_dict.check(word), 
+			ga_dict.check(word), 
+			hr_dict.check(word), 
+			hu_dict.check(word), 
+			# is_dict.check(word), 
+			# it_dict.check(word), 
+			lt_dict.check(word), 
+			lv_dict.check(word), 
+			nl_dict.check(word), 
+			pl_dict.check(word), 
+			sl_dict.check(word), 
+			sk_dict.check(word)
+		)
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -218,7 +218,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			hr_dict.check(word) or 
 			hu_dict.check(word) or 
 			# is_dict.check(word) or 
-			it_dict.check(word) or 
+			# it_dict.check(word) or 
 			lt_dict.check(word) or 
 			lv_dict.check(word) or 
 			nl_dict.check(word) or 
@@ -226,7 +226,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			sl_dict.check(word) or 
 			sk_dict.check(word)
 		):
-			# print(f"\t\t{word} does not exist")
+			print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
@@ -268,12 +268,19 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
 # åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
 # n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+# mdccxc. 45 Ö® ettlfllft att, 4-&#x27;to. 
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
+# 1 <em>Österbottningen</em> | i GAMLAKARLEBY ffi har stor spridning, w företrädesvis
 # <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
 # '''
 
 orig_text = """
 SUomI
 ruottalan koski
+PUOLELLA — KUTEN TAVALLISTA.
+Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
+Ilmankos sitä "yliopistoksi" sanottaisiin.
 Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
 Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
 Tampereen Teknillinen Yliopisto
@@ -284,6 +291,9 @@ Klliaanin autonkuljetatjat tekemät perheineen ja Mieraineen huomennä klo 12 p�
 Kllalmia paljastettu. 
 Lehtien Bukarestista saamien tietojen mukaan on Rumaniassa päästy uuden kommunistisen järjestön jäljille, jonka tehtävänä on ollut sytyttää maan kaikki kirkot tuleen. 
 (Ab Indiana Corporation) v &#x27;«.
+Mäkelä-Henriksson och Marja Lounassalo]. 
+Hki: Helsingin <em>yliopiston</em> <em>kirjasto</em>, 1973. 15 s. Stencil.
+Barck, P. 0., Ett nytt
 
 VIIVVEI InII I II TA u <em>ADA</em> A Myös on meHIA musHkkl-tnatrv- KhIrRlA JuuLuIAVAnAA mentte]a
 Kaikissa suuremmissa kaupungeissa on toimeenpantu pidätyksiä. 
