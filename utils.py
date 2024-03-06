@@ -1392,8 +1392,8 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
 			# print(lcntHW)
 			
-			# ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
-			ltot = lque + lcol + lclp + lsnp + lcnt
+			ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
+			# ltot = lque + lcol + lclp + lsnp + lcnt
 			raw_texts_list.append( ltot )
 
 		print(
@@ -1412,7 +1412,7 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 			for subitem in itm 
 			if (
 				subitem and
-				len(subitem) >= 1 and
+				len(subitem) > 1 and
 				re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
 				re.search(r"\S", subitem) and
 				re.search(r"\D", subitem) and
