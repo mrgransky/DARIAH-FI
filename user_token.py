@@ -31,6 +31,11 @@ parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number def: 0 =
 
 args = parser.parse_args()
 print(args)
+
+if torch.cuda.is_available() and args.cudaNum + 1 > torch.cuda.device_count():
+	print(f"GPU: {args.cudaNum} > availble(={torch.cuda.device_count()}) => downgrading...")
+	args.cudaNum = torch.cuda.device_count()
+
 device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 
 # how to run (local Ubuntu 22.04.4 LTS):
