@@ -5,7 +5,7 @@
 ## $ nohup bash pouta_preprocess_docs.sh 0 > /media/volume/trash/NLF/nlf_preprocess_parallel_jobs.out 2>&1 & # with output saved in check_output.out
 
 ## $ nohup parallel -j 50 "bash pouta_preprocess_docs.sh {}" ::: {682..731} > /dev/null 2>&1 &
-## $ nohup parallel -j 50 "bash pouta_preprocess_docs.sh {}" ::: {683..731} > /media/volume/trash/NLF/nlf_preprocess_docs_parallel_jobs.out 2>&1 &
+## $ nohup parallel -j 50 "bash pouta_preprocess_docs.sh {}" ::: {683..724} > /media/volume/trash/NLF/nlf_preprocess_docs_parallel_jobs.out 2>&1 &
 
 USR_NAME="`whoami`"
 stars=$(printf '%*s' 100 '')
