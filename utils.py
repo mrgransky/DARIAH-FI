@@ -1300,7 +1300,7 @@ def get_raw_cntHWs(cnt_dict):
 	except Exception as e:
 		print(f"<!> highlighted_term does not exist!: {e}")
 		return
-	print(raw_highlighted_term)
+	print(f"nwp_HWs: {raw_highlighted_term}")
 	return raw_highlighted_term
 
 def get_raw_cntPTs(cnt_dict):
@@ -1325,9 +1325,10 @@ def get_raw_sn(results):
 	return snippets_list
 
 def get_raw_snHWs(search_results_list):
+	# print(search_results_list)
 	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
 	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
-	print(hw_snippets)
+	print(f"snHW: {hw_snippets}")
 	return hw_snippets
 
 def get_preprocessed_document(dframe, preprocessed_docs_fpath):
@@ -1387,10 +1388,10 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 			# print(lsnpHW)
 
 			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
-			lcntHW = [sent for sent in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if sent ] # ["", "", "", ...]
+			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
 			# print(lcntHW)
 			
-			ltot = lque + lcol + lclp + lsnp + lsnpHW + lcnt + lcntHW
+			ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
 			raw_texts_list.append( ltot )
 
 		print(
@@ -1401,10 +1402,20 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		)
 		print(f"Creating raw_docs_list(!#>?&) [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
 		t0 = time.time()
-		for itm in raw_texts_list:
-			for subitem in itm:
-				print(type(subitem), subitem)
-		
+
+		# for itm in raw_texts_list:
+		# 	for subitem in itm:
+		# 		print(type(subitem), len(subitem))
+		# 		if (
+		# 			re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
+		# 			re.search(r"\S", subitem) and
+		# 			re.search(r"\D", subitem) and
+		# 			max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
+		# 			re.search(r"\b(?=\D)\w{3,}\b", subitem)
+		# 		):
+		# 			# print(len(subitem))
+		# 			pass
+
 		raw_docs_list = [
 			subitem 
 			for itm in raw_texts_list 
