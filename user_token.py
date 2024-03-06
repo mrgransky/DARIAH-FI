@@ -27,7 +27,7 @@ parser.add_argument('--topTKs', default=5, type=int)
 parser.add_argument('--maxNumFeat', default=None, type=int) # default: None => all retrieved tokens extracted!
 parser.add_argument('-maxdf', '--minDocFreq', default=1, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
-parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number def: 0 => cuda:0')
+parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number[0..3] def: 0 => cuda:0')
 
 args = parser.parse_args()
 
@@ -36,11 +36,12 @@ if torch.cuda.is_available():
 
 if torch.cuda.is_available() and args.cudaNum + 1 > torch.cuda.device_count():
 	print(f"GPU: {args.cudaNum} > availble(={torch.cuda.device_count()}) => downgrading...")
-	args.cudaNum = torch.cuda.device_count()
+	args.cudaNum = torch.cuda.current_device()
 
 device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 print(args)
-
+print(device)
+# sys.exit(0)
 # how to run (local Ubuntu 22.04.4 LTS):
 # python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1
 
