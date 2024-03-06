@@ -48,8 +48,9 @@ def main():
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
 	
-	make_folder(folder_name=args.outDIR)
-	preprocessed_docs_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_docs.gz")
+	# make_folder(folder_name=args.outDIR)
+	os.makedirs(args.outDIR, exist_ok=True)
+	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_docs.gz")
 	preprocessed_docs = get_preprocessed_document(dframe=df_inp, preprocessed_docs_fpath=preprocessed_docs_fpath)
 
 
