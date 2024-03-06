@@ -1384,9 +1384,10 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 
 			lsnp = [sent for el in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 			lsnpHW = [sent for el in g[g["search_results_hw_snippets"].notnull()]["search_results_hw_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
-
+			print(lsnpHW)
 			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
 			lcntHW = [sent for sent in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if sent ] # ["", "", "", ...]
+			print(lcntHW)
 			
 			ltot = lque + lcol + lclp + lsnp + lsnpHW + lcnt + lcntHW
 			raw_texts_list.append( ltot )
