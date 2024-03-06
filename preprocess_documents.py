@@ -37,7 +37,7 @@ args = parser.parse_args()
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 
 def main():
-	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
+	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s) (GPU not required!)")
 	df_inp = load_pickle(fpath=args.inputDF)
 	print(f"-"*100)
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
@@ -48,11 +48,9 @@ def main():
 		print(f"Empty DF: {df_inp.shape} => Exit...")
 		return
 	
-	# make_folder(folder_name=args.outDIR)
 	os.makedirs(args.outDIR, exist_ok=True)
 	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_docs.gz")
-	preprocessed_docs = get_preprocessed_document(dframe=df_inp, preprocessed_docs_fpath=preprocessed_docs_fpath)
-
+	_ = get_preprocessed_document(dframe=df_inp, preprocessed_docs_fpath=preprocessed_docs_fpath)
 
 if __name__ == '__main__':
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
