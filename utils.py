@@ -1337,12 +1337,12 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
 	except Exception as e:
 		print(f"<!> preprocessed_docs not found {e}")
-		print(f"{f'Extracting texts search query phrases':<50}", end="")
+		print(f"{f'Extracting search query phrases':<50}", end="")
 		st_t = time.time()
 		dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		
-		print(f"{f'Extracting texts collection query phrases':<50}", end="")
+		print(f"{f'Extracting collection query phrases':<50}", end="")
 		st_t = time.time()
 		dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
@@ -1392,8 +1392,8 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
 			# print(lcntHW)
 			
-			ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
-			# ltot = lque + lcol + lclp + lsnp + lcnt
+			# ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
+			ltot = lque + lcol + lclp + lsnp + lcnt
 			raw_texts_list.append( ltot )
 
 		print(
@@ -1424,8 +1424,8 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		print(f"Elapsed_t: {time.time()-t0:.3f} s | len: {len(raw_docs_list)} | {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
 		raw_docs_list = list(set(raw_docs_list))
 		print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
-		pst = time.time()
 
+		pst = time.time()
 		with HiddenPrints(): # with no prints
 			preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 		
