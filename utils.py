@@ -1320,8 +1320,13 @@ def get_raw_cnt(cnt_dict):
 	return raw_content_text
 
 def get_raw_sn(results):
-	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if (sent and len(sent)>0)] # ["sentA", "sentB", "sentC"]
+	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if (sent and len(sent)>0)] # ["raw sentA>!", "raw <!?> sentB", "raw sentC öQ"]
 	return snippets_list
+
+def get_raw_snHWs(search_results_list):
+	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
+	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
+	return hw_snippets
 
 def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 	try:
@@ -1338,23 +1343,34 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"{f'Extracting texts clipping query phrases':<50}", end="")
+		print(f"{f'Extracting clipping query phrases':<50}", end="")
 		st_t = time.time()
 		dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"{f'Extracting texts newspaper content':<50}", end="")
+		print(f"{f'Extracting newspaper content':<50}", end="")
 		st_t = time.time()
-		dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
+		dframe['nwp_content_ocr_text'] = dframe["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		
-		print(f"{f'Extracting raw texts snippets':<50}", end="")
+		print(f"{f'Extracting newspaper content < HWs >':<50}", end="")
 		st_t = time.time()
-		dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_sn, na_action='ignore')
+		dframe['nwp_content_ocr_text_hw'] = dframe["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		
+		print(f"{f'Extracting raw snippets':<50}", end="")
+		st_t = time.time()
+		dframe['search_results_snippets'] = dframe["search_results"].map(get_raw_sn, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting raw snippets < HWs >':<50}", end="")
+		st_t = time.time()
+		dframe['search_results_hw_snippets'] = dframe["search_results"].map(get_raw_snHWs, na_action='ignore')
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
 		print(dframe.info(verbose=True, memory_usage="deep"))
 		print(f"#"*100)
+
 		users_list = list()
 		raw_texts_list = list()
 
@@ -1364,10 +1380,13 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 			lcol = [ph for ph in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
 			lclp = [ph for ph in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["", "", "", ...]
 
-			lsnp = [sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
-			lcnt = [sent for sent in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sent ] # ["", "", "", ...]
+			lsnp = [sent for el in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
+			lsnpHW = [sent for el in g[g["search_results_hw_snippets"].notnull()]["search_results_hw_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 
-			ltot = lque + lcol + lclp + lsnp + lcnt
+			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
+			lcntHW = [sent for sent in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if sent ] # ["", "", "", ...]
+			
+			ltot = lque + lcol + lclp + lsnp + lsnpHW + lcnt + lcntHW
 			raw_texts_list.append( ltot )
 
 		print(
@@ -1376,7 +1395,7 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 			type(raw_texts_list), 
 			any(elem is None for elem in raw_texts_list),
 		)
-		print(f"Creating raw_docs_list [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
+		print(f"Creating raw_docs_list(!#>?&) [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
 		t0 = time.time()
 		raw_docs_list = [
 			subitem 
@@ -1397,10 +1416,11 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
 		pst = time.time()
 
-		# with HiddenPrints(): # with no prints
-		# 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
+		with HiddenPrints(): # with no prints
+			preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 		
-		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
+		# preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
+		
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 

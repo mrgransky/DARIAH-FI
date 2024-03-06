@@ -492,7 +492,7 @@ def main():
 	topK=5
 
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
-	df_inp=load_pickle(fpath=args.inputDF)
+	df_inp = load_pickle(fpath=args.inputDF)
 	print(f"-"*100)
 	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
 	print( df_inp.info(memory_usage="deep", verbose=True) )
@@ -508,7 +508,7 @@ def main():
 	if args.maxNumFeat:
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	
-	make_folder(folder_name=args.outDIR)
+	os.makedirs(args.outDIR, exist_ok=True) # make_folder(folder_name=args.outDIR)
 	######################################## Creating/Loading BoWs ########################################
 	try:
 		BoWs = load_vocab(
@@ -526,7 +526,6 @@ def main():
 			MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
 			device_=device,
 		)
-		
 	######################################## Creating/Loading BoWs ########################################
 	print(f">> Remove column(s) with all zeros(if any): {list(df_inp.columns[(df_inp==0).all()])}")
 	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros

@@ -57,11 +57,6 @@ def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 	assert len(qu_list) == 1, f"query list length MUST be len(qu_list)==1, Now: {len(qu_list)}!!"
 	return lemmatizer_methods.get(lm)( clean_(docs=qu_list[0]) )
 
-def get_raw_snHWs(search_results_list):
-	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
-	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
-	return hw_snippets
-
 def get_lemmatized_snHWs(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
@@ -69,18 +64,12 @@ def get_lemmatized_cntHWs(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
-	# print(results)
 	return [tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
-	# if results:
-	# 	return [tklm for el in results if ( el and (lemmas:=lemmatizer_methods.get(lm)(el)) ) for tklm in lemmas if tklm ]
 
 def get_lemmatized_sn(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
 def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"):
-	# cleaned = clean_(docs=sentences)
-	# if cleaned:
-	# 	return lemmatizer_methods.get(lm)(cleaned)
 	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
 def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device_: str="cpu"):
@@ -192,7 +181,7 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefi
 		# The default min_df is 1, which means "ignore terms that appear in less than 1 document". Thus, the default setting does not ignore any terms.
 		################################################################################################################################################################
 		# Initialize TFIDF # not time consuming...
-		print(f"TFID for {len(preprocessed_docs)} raw corpus".center(80, " "))
+		print(f"TFID for {len(preprocessed_docs)} raw corpus [d1, d2, d3, ..., dN]".center(80, " "))
 		st_t = time.time()
 		tfidf_vec=TfidfVectorizer(
 			tokenizer=lemmatizer_methods.get(lm),
