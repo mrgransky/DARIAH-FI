@@ -88,7 +88,8 @@ def create_multilingual_pipeline(device: str):
 			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 			"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 		}
-		print(f"Creatin Stanza[{stanza.__version__}] MultilingualPipeline with {device} ")
+		print(f"Creating Stanza[{stanza.__version__}] MultilingualPipeline with {device}", end="\t")
+		tt = time.time()
 		# Create the MultilingualPipeline object
 		smp = MultilingualPipeline( 
 			lang_id_config=lang_id_config,
@@ -96,6 +97,7 @@ def create_multilingual_pipeline(device: str):
 			download_method=DownloadMethod.REUSE_RESOURCES,
 			device=device,
 		)
+		print(f"Elapsed_t: {time.time()-tt:.3f} sec")
 
 @cache
 def stanza_lemmatizer(docs: str="This is a <NORMAL> string!", device: str="cuda:0"):
