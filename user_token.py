@@ -27,10 +27,11 @@ parser.add_argument('--topTKs', default=5, type=int)
 parser.add_argument('--maxNumFeat', default=None, type=int) # default: None => all retrieved tokens extracted!
 parser.add_argument('-maxdf', '--minDocFreq', default=1, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
-parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number def: 0 => cuda:0') # torch.cuda.device_count()
+parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number def: 0 => cuda:0')
 
 args = parser.parse_args()
 print(args)
+device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 
 # how to run (local Ubuntu 22.04.4 LTS):
 # python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1
@@ -38,7 +39,6 @@ print(args)
 # how to run (Puhti):
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XXX --maxNumFeat -1
 
-device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
 
@@ -515,7 +515,7 @@ def main():
 			MIN_DF=int(args.minDocFreq), 
 			MAX_DF=float(args.maxDocFreq),
 			MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
-			device=device,
+			device_=device,
 		)
 		
 	######################################## Creating/Loading BoWs ########################################

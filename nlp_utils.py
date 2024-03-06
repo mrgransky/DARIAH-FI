@@ -1,11 +1,14 @@
 from tokenizer_utils import *
 from utils import *
 
+DEVICE: str="cpu"
+
 lemmatizer_methods = {
 	"nltk": nltk_lemmatizer,
 	"spacy": spacy_tokenizer,
 	"trankit": trankit_lemmatizer,
-	"stanza": stanza_lemmatizer,
+	# "stanza": stanza_lemmatizer,
+	"stanza": lambda docs: stanza_lemmatizer(docs, device=DEVICE),  # Pass args to stanza_lemmatizer
 }
 
 def get_agg_tk_apr(lst: List[str], wg: float, vb: Dict[str, int]):
@@ -114,9 +117,13 @@ def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"
 	# 	return lemmatizer_methods.get(lm)(cleaned)
 	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
-def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device: str="cpu"):
-	print(f"{f'Bag-of-Words {userName} device: {device}'.center(150, ' ')}")
-
+def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device_: str="cpu"):
+	print(f"{f'Bag-of-Words {userName} device: {device_}'.center(150, '-')}")
+	global DEVICE
+	DEVICE = device_
+	print(f"#"*100)
+	print(DEVICE)
+	print(f"#"*100)
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
 	preprocessed_docs_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_preprocessed_docs.gz")
@@ -173,8 +180,8 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefi
 			type(raw_texts_list), 
 			any(elem is None for elem in raw_texts_list),
 		)
-		print(f"Creating raw_docs_list: [..., ['', '', ...], [''], ['', '', '', ...], ...]", end="\t")
-		
+		print(f"Creating raw_docs_list [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
+		t0 = time.time()
 		raw_docs_list = [
 			subitem 
 			for itm in raw_texts_list 
@@ -189,16 +196,10 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefi
 				re.search(r"\b(?=\D)\w{3,}\b", subitem)
 			)
 		]
-
-		print(
-			len(raw_docs_list), 
-			type(raw_docs_list), 
-			any(elem is None for elem in raw_docs_list),
-		)
+		print(f"Elapsed_t: {time.time()-t0:.3f} s | len: {len(raw_docs_list)} | {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
 		raw_docs_list = list(set(raw_docs_list))
-		print(f"Cleaning {len(raw_docs_list)} Unq Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
+		print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
 		pst = time.time()
-
 		with HiddenPrints(): # with no prints
 			preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 		

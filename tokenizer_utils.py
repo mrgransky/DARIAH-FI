@@ -100,7 +100,7 @@ def create_multilingual_pipeline(device: str):
 		print(f"Elapsed_t: {time.time()-tt:.3f} sec")
 
 @cache
-def stanza_lemmatizer(docs: str="This is a <NORMAL> string!", device: str="cuda:0"):
+def stanza_lemmatizer(docs: str="This is a <NORMAL> string!", device=None):
 	# Ensure MultilingualPipeline object is created
 	create_multilingual_pipeline(device=device)
 	try:
