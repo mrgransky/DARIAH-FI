@@ -5,7 +5,7 @@
 ## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_nlf_output.out 2>&1 & # with output saved in check_output.out
 
 ## $ nohup parallel -j 50 "bash pouta_user_token.sh {}" ::: {682..731} > /dev/null 2>&1 &
-## $ nohup parallel -j 50 "bash pouta_user_token.sh {}" ::: {683..708} > /media/volume/trash/NLF/check_nlf_parallel_jobs.out 2>&1 &
+## $ nohup parallel -j 4 "bash pouta_user_token.sh {}" ::: {683..708} > /media/volume/trash/NLF/check_nlf_parallel_jobs.out 2>&1 &
 
 USR_NAME="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -36,6 +36,7 @@ echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 	python -u user_token.py \
 		--inputDF ${files[$qIDX]} \
 		--outDIR $DATAFRAME_DIR \
+		--cudaNum 3 \
 		--lmMethod 'stanza' \
 		--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
 		--maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nikeQ_$qIDX.out 2>&1 &
