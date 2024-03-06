@@ -51,11 +51,6 @@ def get_total_user_token_interest(df: pd.DataFrame):
 	# print(json.dumps(result, indent=2, ensure_ascii=False))
 	return result
 
-def get_raw_sqp(phrase_list):
-	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1! Now: {len(phrase_list)}"
-	phrase = phrase_list[0]
-	return phrase
-
 def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 	# qu_list = ['some word in this format with always length 1']
 	#print(len(qu_list), qu_list)
@@ -70,24 +65,8 @@ def get_raw_snHWs(search_results_list):
 def get_lemmatized_snHWs(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
-def get_raw_cntHWs(cnt_dict):
-	try:
-		raw_highlighted_term = cnt_dict.get("highlighted_term")
-	except Exception as e:
-		print(f"<!> highlighted_term does not exist!: {e}")
-		return
-	return raw_highlighted_term
-
 def get_lemmatized_cntHWs(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
-
-def get_raw_cntPTs(cnt_dict):
-	try:
-		raw_parsed_term_text = cnt_dict.get("parsed_term")
-	except Exception as e:
-		print(f"<!> parsed_term does not exist!: {e}")
-		return
-	return raw_parsed_term_text
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	# print(results)
@@ -101,15 +80,6 @@ def get_raw_sn(results):
 
 def get_lemmatized_sn(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
-
-def get_raw_cnt(cnt_dict):
-	# return cnt_dict.get("text")
-	try:
-		raw_content_text = cnt_dict.get("text")
-	except Exception as e:
-		print(f"<!> cnt_text does not exist!: {e}")
-		return
-	return raw_content_text
 
 def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"):
 	# cleaned = clean_(docs=sentences)

@@ -1289,6 +1289,36 @@ def extract_tar(fname):
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
 
+def get_raw_sqp(phrase_list):
+	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1! Now: {len(phrase_list)}"
+	phrase = phrase_list[0]
+	return phrase
+
+def get_raw_cntHWs(cnt_dict):
+	try:
+		raw_highlighted_term = cnt_dict.get("highlighted_term")
+	except Exception as e:
+		print(f"<!> highlighted_term does not exist!: {e}")
+		return
+	return raw_highlighted_term
+
+def get_raw_cntPTs(cnt_dict):
+	try:
+		raw_parsed_term_text = cnt_dict.get("parsed_term")
+	except Exception as e:
+		print(f"<!> parsed_term does not exist!: {e}")
+		return
+	return raw_parsed_term_text
+
+def get_raw_cnt(cnt_dict):
+	# return cnt_dict.get("text")
+	try:
+		raw_content_text = cnt_dict.get("text")
+	except Exception as e:
+		print(f"<!> cnt_text does not exist!: {e}")
+		return
+	return raw_content_text
+
 def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 	try:
 		preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
