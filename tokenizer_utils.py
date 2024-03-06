@@ -88,7 +88,7 @@ def create_multilingual_pipeline(device: str):
 			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 			"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
 		}
-
+		print(f"Creatin Stanza[{stanza.__version__}] MultilingualPipeline with {device} ")
 		# Create the MultilingualPipeline object
 		smp = MultilingualPipeline( 
 			lang_id_config=lang_id_config,
