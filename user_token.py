@@ -30,13 +30,16 @@ parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
 parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number def: 0 => cuda:0')
 
 args = parser.parse_args()
-print(args)
+
+if torch.cuda.is_available():
+	print(f"Available GPU(s) = {torch.cuda.device_count()}")
 
 if torch.cuda.is_available() and args.cudaNum + 1 > torch.cuda.device_count():
 	print(f"GPU: {args.cudaNum} > availble(={torch.cuda.device_count()}) => downgrading...")
 	args.cudaNum = torch.cuda.device_count()
 
 device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
+print(args)
 
 # how to run (local Ubuntu 22.04.4 LTS):
 # python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1
