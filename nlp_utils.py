@@ -115,7 +115,7 @@ def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"
 	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
 def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device: str="cpu"):
-	print(f"{f'Bag-of-Words {userName} device: {device}'.center(110, '-')}")
+	print(f"{f'Bag-of-Words {userName} device: {device}'.center(150, ' ')}")
 
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
