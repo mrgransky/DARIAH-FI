@@ -1289,6 +1289,87 @@ def extract_tar(fname):
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
 
+def get_preprocessed_document(dframe, preprocessed_docs_fpath):
+	try:
+		preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
+	except Exception as e:
+		print(f"<!> preprocessed_docs not found {e}")
+		print(f"{f'Extracting texts search query phrases':<50}", end="")
+		st_t = time.time()
+		dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		
+		print(f"{f'Extracting texts collection query phrases':<50}", end="")
+		st_t = time.time()
+		dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting texts clipping query phrases':<50}", end="")
+		st_t = time.time()
+		dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting texts newspaper content':<50}", end="")
+		st_t = time.time()
+		dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		
+		print(f"{f'Extracting raw texts snippets':<50}", end="")
+		st_t = time.time()
+		dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_sn, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(dframe.info(verbose=True, memory_usage="deep"))
+		print(f"#"*100)
+		users_list = list()
+		raw_texts_list = list()
+
+		for n, g in dframe.groupby("user_ip"):
+			users_list.append(n)
+			lque = [ph for ph in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(ph) > 0 ] # ["global warming", "econimic crisis", "", ]
+			lcol = [ph for ph in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
+			lclp = [ph for ph in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["", "", "", ...]
+
+			lsnp = [sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
+			lcnt = [sent for sent in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sent ] # ["", "", "", ...]
+
+			ltot = lque + lcol + lclp + lsnp + lcnt
+			raw_texts_list.append( ltot )
+
+		print(
+			len(users_list), 
+			len(raw_texts_list), 
+			type(raw_texts_list), 
+			any(elem is None for elem in raw_texts_list),
+		)
+		print(f"Creating raw_docs_list [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
+		t0 = time.time()
+		raw_docs_list = [
+			subitem 
+			for itm in raw_texts_list 
+			if itm 
+			for subitem in itm 
+			if (
+				re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
+				re.search(r"\S", subitem) and
+				re.search(r"\D", subitem) and
+				# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
+				max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
+				re.search(r"\b(?=\D)\w{3,}\b", subitem)
+			)
+		]
+		print(f"Elapsed_t: {time.time()-t0:.3f} s | len: {len(raw_docs_list)} | {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
+		raw_docs_list = list(set(raw_docs_list))
+		print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
+		pst = time.time()
+		with HiddenPrints(): # with no prints
+			preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
+		
+		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
+		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
+
+	return preprocessed_docs
+
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="destination/path/to/comp_dir"):
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
