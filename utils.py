@@ -1300,7 +1300,7 @@ def get_raw_cntHWs(cnt_dict):
 	except Exception as e:
 		print(f"<!> highlighted_term does not exist!: {e}")
 		return
-	print(f"nwp_HWs: {raw_highlighted_term}")
+	# print(f"nwp_HWs: {raw_highlighted_term}")
 	return raw_highlighted_term
 
 def get_raw_cntPTs(cnt_dict):
@@ -1328,7 +1328,7 @@ def get_raw_snHWs(search_results_list):
 	# print(search_results_list)
 	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
 	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
-	print(f"snHW: {hw_snippets}")
+	# print(f"snHW: {hw_snippets}")
 	return hw_snippets
 
 def get_preprocessed_document(dframe, preprocessed_docs_fpath):
@@ -1385,11 +1385,11 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 
 			lsnp = [sent for el in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 			lsnpHW = [sent for el in g[g["search_results_hw_snippets"].notnull()]["search_results_hw_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
-			# print(lsnpHW)
+			print(lsnpHW)
 
 			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
 			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
-			# print(lcntHW)
+			print(lcntHW)
 			
 			ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
 			raw_texts_list.append( ltot )
