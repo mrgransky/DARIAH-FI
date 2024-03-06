@@ -1319,6 +1319,10 @@ def get_raw_cnt(cnt_dict):
 		return
 	return raw_content_text
 
+def get_raw_sn(results):
+	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if (sent and len(sent)>0)] # ["sentA", "sentB", "sentC"]
+	return snippets_list
+
 def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 	try:
 		preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
