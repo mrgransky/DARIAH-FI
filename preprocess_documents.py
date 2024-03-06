@@ -1,5 +1,6 @@
 
 from utils import *
+
 parser = argparse.ArgumentParser(	
 	description='Pre processing Document for each log files of National Library of Finland (NLF) dataset', 
 	prog='Preprocess Logs', 
@@ -49,7 +50,7 @@ def main():
 	
 	make_folder(folder_name=args.outDIR)
 	preprocessed_docs_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_docs.gz")
-	preprocessed_docs = get_preprocessed_document(dframe=df_inp, preprocessed_docs_fpath)
+	preprocessed_docs = get_preprocessed_document(dframe=df_inp, preprocessed_docs_fpath=preprocessed_docs_fpath)
 
 
 if __name__ == '__main__':
