@@ -1401,6 +1401,10 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		)
 		print(f"Creating raw_docs_list(!#>?&) [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
 		t0 = time.time()
+		for itm in raw_texts_list:
+			for subitem in itm:
+				print(type(subitem), subitem)
+		
 		raw_docs_list = [
 			subitem 
 			for itm in raw_texts_list 
