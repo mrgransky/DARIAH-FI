@@ -1385,7 +1385,7 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 
 			lsnp = [sent for el in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 			lsnpHW = [sent for el in g[g["search_results_hw_snippets"].notnull()]["search_results_hw_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
-			print(lsnpHW)
+			# print(f"snHW: {lsnpHW}")
 
 			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
 			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
@@ -1403,18 +1403,20 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		print(f"Creating raw_docs_list(!#>?&) [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
 		t0 = time.time()
 
-		# for itm in raw_texts_list:
-		# 	for subitem in itm:
-		# 		print(type(subitem), len(subitem))
-		# 		if (
-		# 			re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
-		# 			re.search(r"\S", subitem) and
-		# 			re.search(r"\D", subitem) and
-		# 			max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
-		# 			re.search(r"\b(?=\D)\w{3,}\b", subitem)
-		# 		):
-		# 			# print(len(subitem))
-		# 			pass
+		for itm in raw_texts_list:
+			for subitem in itm:
+				print(type(subitem))
+				if (
+					subitem and
+					len(subitem) >= 1 and
+					re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
+					re.search(r"\S", subitem) and
+					re.search(r"\D", subitem) and
+					max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
+					re.search(r"\b(?=\D)\w{3,}\b", subitem)
+				):
+					print(len(subitem))
+					pass
 
 		raw_docs_list = [
 			subitem 
