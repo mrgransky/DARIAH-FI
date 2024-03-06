@@ -1300,6 +1300,7 @@ def get_raw_cntHWs(cnt_dict):
 	except Exception as e:
 		print(f"<!> highlighted_term does not exist!: {e}")
 		return
+	print(raw_highlighted_term)
 	return raw_highlighted_term
 
 def get_raw_cntPTs(cnt_dict):
@@ -1326,6 +1327,7 @@ def get_raw_sn(results):
 def get_raw_snHWs(search_results_list):
 	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
 	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
+	print(hw_snippets)
 	return hw_snippets
 
 def get_preprocessed_document(dframe, preprocessed_docs_fpath):
