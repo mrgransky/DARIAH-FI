@@ -1,5 +1,8 @@
 from utils import *
 
+# Define the global MultilingualPipeline object
+smp = None
+
 # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
 	import nltk
@@ -18,37 +21,32 @@ with HiddenPrints():
 		# raise_on_error=True,
 	)
 
-	# import trankit
-	# p = trankit.Pipeline('finnish-ftb', embedding='xlm-roberta-large', cache_dir=os.path.join(NLF_DATASET_PATH, 'trash'))
-	# p.add('swedish')
-	# p.add('russian')
-	# p.set_auto(True)
-
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
 
-	lang_id_config = {
-		"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
-	}
+	# lang_id_config = {
+	# 	"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
+	# }
 
-	lang_configs = {
-		# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
-		"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-		"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
-		"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
-		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
-	}
+	# lang_configs = {
+	# 	# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
+	# 	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+	# 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+	# 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+	# 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+	# 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
+	# 	"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
+	# 	"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
+	# 	"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
+	# }
 
-	smp = MultilingualPipeline(	
-		lang_id_config=lang_id_config,
-		lang_configs=lang_configs,
-		download_method=DownloadMethod.REUSE_RESOURCES,
-	)
+	# smp = MultilingualPipeline(	
+	# 	lang_id_config=lang_id_config,
+	# 	lang_configs=lang_configs,
+	# 	download_method=DownloadMethod.REUSE_RESOURCES,
+	# 	device="cuda:0",
+	# )
 
 	useless_upos_tags = [
 		"PUNCT",
@@ -72,19 +70,41 @@ with HiddenPrints():
 	STOPWORDS.extend(my_custom_stopwords)
 	UNQ_STW = list(set(STOPWORDS))
 
-def spacy_tokenizer(docs):
-	return None
+# Function to create the MultilingualPipeline object if not already created
+def create_multilingual_pipeline(device: str):
+	global smp
+	if smp is None:
+		lang_id_config = {
+			"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
+		}
+
+		lang_configs = {
+			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True},
+			"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
+			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
+			"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
+		}
+
+		# Create the MultilingualPipeline object
+		smp = MultilingualPipeline( 
+			lang_id_config=lang_id_config,
+			lang_configs=lang_configs,
+			download_method=DownloadMethod.REUSE_RESOURCES,
+			device=device,
+		)
 
 @cache
-def stanza_lemmatizer(docs):
+def stanza_lemmatizer(docs: str="This is a <NORMAL> string!", device: str="cuda:0"):
+	# Ensure MultilingualPipeline object is created
+	create_multilingual_pipeline(device=device)
 	try:
-		print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
-		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
+		print(f'Stanza[{stanza.__version__} device: {device}] Raw Input:\n{docs}\n')
 		st_t = time.time()
 		all_ = smp(docs)
-		# list comprehension: slow but functional alternative
-		# print(f"{f'{ len(all_.sentences) } sent.: { [ len(vsnt.words) for _, vsnt in enumerate(all_.sentences) ] } words':<40}", end="")
-		# lemmas_list = [ re.sub(r'"|#|_|\-','', wlm.lower()) for _, vsnt in enumerate(all_.sentences) for _, vw in enumerate(vsnt.words) if ( (wlm:=vw.lemma) and len(wlm)>=3 and len(wlm)<=40 and not re.search(r"\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+", wlm) and vw.upos not in useless_upos_tags and wlm not in UNQ_STW ) ]
 		lemmas_list = [ 
 			re.sub(r'["#_\-]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
@@ -105,7 +125,7 @@ def stanza_lemmatizer(docs):
 	print(f"Found {len(lemmas_list)} lemma(s) in {end_t-st_t:.2f} s".center(140, "-") )
 	return lemmas_list
 
-def trankit_lemmatizer(docs):
+def trankit_lemmatizer(docs, device: str="cuda:0"):
 	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')
 	# print(f'Raw inp words: { len( docs.split() ) }', end=" ")
 	st_t = time.time()
@@ -128,7 +148,10 @@ def trankit_lemmatizer(docs):
 	# print( lm )
 	return lm
 
-def nltk_lemmatizer(sentence):	
+def spacy_tokenizer(docs, device: str="cuda:0"):
+	return None
+
+def nltk_lemmatizer(sentence, device: str="cuda:0"):	
 	#print(f'Raw inp ({len(sentence)}): >>{sentence}<<', end='\t')
 	if not sentence:
 		return

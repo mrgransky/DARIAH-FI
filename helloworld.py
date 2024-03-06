@@ -24,6 +24,7 @@ nltk.download(
 	# raise_on_error=True,
 )
 
+tt = time.time()
 lang_id_config = {
 	"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
 }
@@ -45,7 +46,9 @@ smp = MultilingualPipeline(
 	lang_id_config=lang_id_config,
 	lang_configs=lang_configs,
 	download_method=DownloadMethod.REUSE_RESOURCES,
+	device="cuda:0",
 )
+print(f">> smp elasped_t: {time.time()-tt:.3f} sec")
 
 useless_upos_tags = [
 	"PUNCT", 
@@ -69,15 +72,45 @@ with open('meaningless_lemmas.txt', 'r') as file_:
 STOPWORDS.extend(my_custom_stopwords)
 UNQ_STW = list(set(STOPWORDS))
 
-
 # print(enchant.list_languages())
 # sys.exit(0)
+
+# def get_smp(device: str="cuda:0"):
+# 	lang_id_config = {
+# 		"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
+# 	}
+
+# 	lang_configs = {
+# 		# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
+# 		"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+# 		# "sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+# 		"sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+# 		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+# 		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+# 		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
+# 		"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
+# 		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
+# 		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
+# 	}
+
+# 	smp = MultilingualPipeline(	
+# 		lang_id_config=lang_id_config,
+# 		lang_configs=lang_configs,
+# 		download_method=DownloadMethod.REUSE_RESOURCES,
+# 		device=device,
+# 	)
+
+# 	return smp
 
 def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	try:
 		# print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
+		smp_t = time.time()
+		smp = get_smp()
+		print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
+
 		all_ = smp(docs)
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v)
@@ -171,34 +204,35 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	t0 = time.time()
 	cleaned_words = []
 	for word in words:
-		print(
-			word,
-			fi_dict.spell(word),
-			fii_dict.check(word), 
-			sv_dict.check(word), 
-			sv_fi_dict.check(word), 
-			en_dict.check(word),
-			de_dict.check(word),
-			# no_dict.check(word),
-			da_dict.check(word),
-			es_dict.check(word),
-			et_dict.check(word),
-			cs_dict.check(word), 
-			# cy_dict.check(word), 
-			# fo_dict.check(word), 
-			fr_dict.check(word), 
-			ga_dict.check(word), 
-			hr_dict.check(word), 
-			hu_dict.check(word), 
-			# is_dict.check(word), 
-			# it_dict.check(word), 
-			lt_dict.check(word), 
-			lv_dict.check(word), 
-			nl_dict.check(word), 
-			pl_dict.check(word), 
-			sl_dict.check(word), 
-			sk_dict.check(word)
-		)
+		print(word)
+		# print(
+		# 	word,
+		# 	fi_dict.spell(word),
+		# 	fii_dict.check(word), 
+		# 	sv_dict.check(word), 
+		# 	sv_fi_dict.check(word), 
+		# 	en_dict.check(word),
+		# 	de_dict.check(word),
+		# 	# no_dict.check(word),
+		# 	da_dict.check(word),
+		# 	es_dict.check(word),
+		# 	et_dict.check(word),
+		# 	cs_dict.check(word), 
+		# 	# cy_dict.check(word), 
+		# 	# fo_dict.check(word), 
+		# 	fr_dict.check(word), 
+		# 	ga_dict.check(word), 
+		# 	hr_dict.check(word), 
+		# 	hu_dict.check(word), 
+		# 	# is_dict.check(word), 
+		# 	# it_dict.check(word), 
+		# 	lt_dict.check(word), 
+		# 	lv_dict.check(word), 
+		# 	nl_dict.check(word), 
+		# 	pl_dict.check(word), 
+		# 	sl_dict.check(word), 
+		# 	sk_dict.check(word)
+		# )
 		if not (
 			fi_dict.spell(word) or 
 			fii_dict.check(word) or 
@@ -277,6 +311,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+229; Jyväskylän seminaari 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
+82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
 ruottalan koski
 PUOLELLA — KUTEN TAVALLISTA.
 Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
@@ -334,8 +370,8 @@ Pidätettnien lutumääm »ouiee
 Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
 Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
 Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
-Lauri Laurila ja Heikki Mattila.
-(joko kutoen tai ommel- ( len) saatte <em>ryijyn</em> uskomattoman &gt; 
+HiltulaZta n:o 2.
+Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
 huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
 n:o 3 i Napo by, Storkyro, 166, 167, 168. 
 <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o

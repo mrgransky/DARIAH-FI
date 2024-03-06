@@ -6,19 +6,16 @@ parser = argparse.ArgumentParser(
 	prog='RecSys USER-TOKEN', 
 	epilog='Developed by Farid Alijani',
 )
-
 parser.add_argument(
 	'-idf', 
 	'--inputDF', 
 	required=True,
-	# default=os.path.join(datasets_path, "nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump"), 
 	type=str,
 	help="Input DataFrame",
 )
 parser.add_argument(
 	'-odir', 
 	'--outDIR', 
-	# default="/scratch/project_2004072/Nationalbiblioteket/dataframes",
 	type=str, 
 	required=True, 
 	help='output directory to save files',
@@ -30,14 +27,18 @@ parser.add_argument('--topTKs', default=5, type=int)
 parser.add_argument('--maxNumFeat', default=None, type=int) # default: None => all retrieved tokens extracted!
 parser.add_argument('-maxdf', '--minDocFreq', default=1, type=int)
 parser.add_argument('-mindf', '--maxDocFreq', default=1.0, type=float)
+parser.add_argument('--cudaNum', type=int, default=0, help='CUDA Number def: 0 => cuda:0') # torch.cuda.device_count()
 
 args = parser.parse_args()
+print(args)
+
 # how to run (local Ubuntu 22.04.4 LTS):
 # python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1
 
 # how to run (Pouhti):
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XXX --maxNumFeat -1
 
+device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
 
@@ -501,10 +502,12 @@ def main():
 	make_folder(folder_name=args.outDIR)
 	######################################## Creating/Loading BoWs ########################################
 	try:
-		BoWs=load_vocab(fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0])
+		BoWs = load_vocab(
+			fname=[fn for fn in glob.glob(os.path.join(args.outDIR, "*.json")) if fn.startswith(f"{args.outDIR}/{fprefix}_lemmaMethod_{args.lmMethod}")][0]
+		)
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
-		BoWs=get_BoWs(
+		BoWs = get_BoWs(
 			dframe=df_inp, 
 			saveDIR=args.outDIR,
 			fprefix=fprefix, 
@@ -512,7 +515,9 @@ def main():
 			MIN_DF=int(args.minDocFreq), 
 			MAX_DF=float(args.maxDocFreq),
 			MAX_FEATURES=args.maxNumFeat, #TODO: must be checked for None!
+			device=device,
 		)
+		
 	######################################## Creating/Loading BoWs ########################################
 	print(f">> Remove column(s) with all zeros(if any): {list(df_inp.columns[(df_inp==0).all()])}")
 	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
@@ -1344,7 +1349,6 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	print(">> Done!")
 
 if __name__ == '__main__':
-	#os.system("clear")
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
 	main()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))
