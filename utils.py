@@ -1389,7 +1389,7 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 
 			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
 			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
-			print(lcntHW)
+			# print(lcntHW)
 			
 			ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
 			raw_texts_list.append( ltot )
