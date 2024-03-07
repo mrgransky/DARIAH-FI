@@ -1436,6 +1436,26 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 
 	return preprocessed_docs
 
+def get_compressed_concatenated_path(base_path: str) -> str:
+	"""
+	Creates a new path with the structure "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
+	based on the provided base path.
+
+	Args:
+			base_path (str): The base path to use for constructing the new path.
+
+	Returns:
+			str: The newly constructed path.
+	"""
+
+	# Extract components from the base path
+	base_dir, subdir = base_path.rsplit("/", 1)
+
+	# Construct the new path with desired components
+	comp_path = f"{base_dir}/compressed_concatenated_SPMs"
+
+	return comp_path
+
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="destination/path/to/comp_dir"):
 	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
 	t0 = time.time()
