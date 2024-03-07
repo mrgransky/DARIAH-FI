@@ -9109,3 +9109,7 @@ subst
 metsa
 hämeenkalu
 suomia
+intelligenssikoki
+intelligenssike
+intelligenssikoke
+älykoke

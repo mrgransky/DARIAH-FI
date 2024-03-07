@@ -75,40 +75,12 @@ UNQ_STW = list(set(STOPWORDS))
 # print(enchant.list_languages())
 # sys.exit(0)
 
-# def get_smp(device: str="cuda:0"):
-# 	lang_id_config = {
-# 		"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
-# 	}
-
-# 	lang_configs = {
-# 		# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
-# 		"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-# 		# "sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-# 		"sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-# 		"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-# 		"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-# 		"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
-# 		"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
-# 		"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-# 		"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
-# 	}
-
-# 	smp = MultilingualPipeline(	
-# 		lang_id_config=lang_id_config,
-# 		lang_configs=lang_configs,
-# 		download_method=DownloadMethod.REUSE_RESOURCES,
-# 		device=device,
-# 	)
-
-# 	return smp
-
 def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	try:
 		# print(f'Stanza[{stanza.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		smp_t = time.time()
-		smp = get_smp()
 		print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs)
@@ -276,107 +248,114 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-# orig_text = '''
-# sVenskA
-# Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
-# för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
-# af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
-# Styrelseledamot – det här ingår i rollen!
-# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-# I detta inlägg, det tredje i vår serie, 
-# tydliggör Lena Hasselborn, styrelsecoach på PwC, vad som ingår i rollen som styrelseledamot. 
-# Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
+orig_text = '''
+sVenskA
+Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
+för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
+af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
+Styrelseledamot – det här ingår i rollen!
+Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+I detta inlägg, det tredje i vår serie, 
+tydliggör Lena Hasselborn, styrelsecoach på PwC, vad som ingår i rollen som styrelseledamot. 
+Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
 
-# Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
+Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
 
-# Enligt larmet har en spårvagn kört in i en annan spårvagn bakifrån.
+Enligt larmet har en spårvagn kört in i en annan spårvagn bakifrån.
 
-# Räddningstjänsten är på plats med en ”större styrka”.
+Räddningstjänsten är på plats med en ”större styrka”.
 
-# På grund av olyckan har all spårvagnstrafik mot Angered ställts in.
+På grund av olyckan har all spårvagnstrafik mot Angered ställts in.
 
-# – Vi tittar på att sätta in ersättningstrafik, säger Christian Blomquist, störningskoordinator på Västtrafik, till GP.
-# En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
-# I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
-# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-# n:o 3 i Napo by, Storkyro, 166, 167, 168. 
-# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-# mdccxc. 45 Ö® ettlfllft att, 4-&#x27;to. 
-# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-# 1 <em>Österbottningen</em> | i GAMLAKARLEBY ffi har stor spridning, w företrädesvis
-# <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
-# '''
-
-orig_text = """
-SUomI
-229; Jyväskylän seminaari 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
-82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
-ruottalan koski
-PUOLELLA — KUTEN TAVALLISTA.
-Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
-Ilmankos sitä "yliopistoksi" sanottaisiin.
-Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
-Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
-Tampereen Teknillinen Yliopisto
-Osoite : Nimi: • I tillin II II 111 il ill II II Ullin lIIHIIIIMIIIIIIIIIIIHIIIIIIIIIIM
-arpavihon ostajalle. Sunnuntcnnll näytetään kuuluisaa filminäytelmää „Kamelianai,nen".
-Rumanlan kci 2tllwll'teatterissll.
-Klliaanin autonkuljetatjat tekemät perheineen ja Mieraineen huomennä klo 12 päimällä automatkan Pllltaniemelle Sutelanperään.
-Kllalmia paljastettu. 
-Lehtien Bukarestista saamien tietojen mukaan on Rumaniassa päästy uuden kommunistisen järjestön jäljille, jonka tehtävänä on ollut sytyttää maan kaikki kirkot tuleen. 
-(Ab Indiana Corporation) v &#x27;«.
-Mäkelä-Henriksson och Marja Lounassalo]. 
-Hki: Helsingin <em>yliopiston</em> <em>kirjasto</em>, 1973. 15 s. Stencil.
-Barck, P. 0., Ett nytt
-
-VIIVVEI InII I II TA u <em>ADA</em> A Myös on meHIA musHkkl-tnatrv- KhIrRlA JuuLuIAVAnAA mentte]a
-Kaikissa suuremmissa kaupungeissa on toimeenpantu pidätyksiä. 
-Järjestön johtaja on kuulusteluissa kertonut toimineensa Weinin kommunistikeskuksen antamien ohjeiden mukaan.
-Sähköyhtiöt ja asentajat!
-Kesäkorj suksiin muuntaja-asemille ja ulkolinjoille sopivat tarvikkeet ostatte meiltä edullisin tukkuhinnoin.
-Rauman Sähkö- ja Telefooniinko Urho Tuominen. Kauppak. 22. Puh. 11 43.
-UNIVERsITY LIBRARY AT HELsINKI 30 helsink helsingfors helsingfars
-J. VALLINKOsKI
-<em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
-Kuninkaallinen Turun Akatemia 1642—1828
-DIE DIssERTATIONEN DER
-"vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
-helsingin teknillinen reaalikoulu
-Yrjönpäivää juhlitaan
-mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
-mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
-mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
-muistcttatpaa!
-Salama Teatterissa
-rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
-Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
-N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-Suomen pääministeri | Helsingin pörssi ja suomen pankki 
-res lausuntaa lotta aune puhe kenttäpappi virtanen kuorolaulua vaasan
-Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-N:o 45
-rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
-Keskuspoliisi
-Kommunistien jouKKowangitfemista tahoilla maassa.
--!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-ätytsille
-Siffiffi ilmoitetaan
-Pidätettnien lutumääm »ouiee
-Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
-Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
-Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
-HiltulaZta n:o 2.
-Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
-huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+– Vi tittar på att sätta in ersättningstrafik, säger Christian Blomquist, störningskoordinator på Västtrafik, till GP.
+En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
+I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
+Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
 n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+mdccxc. 45 Ö® ettlfllft att, 4-&#x27;to. 
+EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
+1 <em>Österbottningen</em> | i GAMLAKARLEBY ffi har stor spridning, w företrädesvis
 <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
-Viihtyisä ja valoisa 6. kerroksen koti, hyvien kulkuyhteyksien ja palveluiden äärellä Kalliossa!
-"""
+Den 2 maj hissar Helsingfors Aktiebanks kontor i Nykarleby flaggan i topp. Kontoret firar 100 års jubileum. 
+'''
+
+# orig_text = """
+# SUomI
+# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+# metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
+# Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
+# mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkkiä lupaavan työskentelyn vielä ratkaisemattomien probleemien selvittämiseksi.
+# 229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
+# Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
+# Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
+# Ev. 17 T. 21: I—l 7. 18 F. 21:18-32. 19 L. 21:33—46 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
+# 82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
+# ruottalan koski
+# PUOLELLA — KUTEN TAVALLISTA.
+# Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
+# Ilmankos sitä "yliopistoksi" sanottaisiin.
+# Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
+# Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
+# Tampereen Teknillinen Yliopisto
+# Osoite : Nimi: • I tillin II II 111 il ill II II Ullin lIIHIIIIMIIIIIIIIIIIHIIIIIIIIIIM
+# arpavihon ostajalle. Sunnuntcnnll näytetään kuuluisaa filminäytelmää „Kamelianai,nen".
+# Rumanlan kci 2tllwll'teatterissll.
+# Klliaanin autonkuljetatjat tekemät perheineen ja Mieraineen huomennä klo 12 päimällä automatkan Pllltaniemelle Sutelanperään.
+# Kllalmia paljastettu. 
+# Lehtien Bukarestista saamien tietojen mukaan on Rumaniassa päästy uuden kommunistisen järjestön jäljille, jonka tehtävänä on ollut sytyttää maan kaikki kirkot tuleen. 
+# (Ab Indiana Corporation) v &#x27;«.
+# Mäkelä-Henriksson och Marja Lounassalo]. 
+# Hki: Helsingin <em>yliopiston</em> <em>kirjasto</em>, 1973. 15 s. Stencil.
+# Barck, P. 0., Ett nytt
+# VIIVVEI InII I II TA u <em>ADA</em> A Myös on meHIA musHkkl-tnatrv- KhIrRlA JuuLuIAVAnAA mentte]a
+# Kaikissa suuremmissa kaupungeissa on toimeenpantu pidätyksiä. 
+# Järjestön johtaja on kuulusteluissa kertonut toimineensa Weinin kommunistikeskuksen antamien ohjeiden mukaan.
+# Sähköyhtiöt ja asentajat!
+# Kesäkorj suksiin muuntaja-asemille ja ulkolinjoille sopivat tarvikkeet ostatte meiltä edullisin tukkuhinnoin.
+# Rauman Sähkö- ja Telefooniinko Urho Tuominen. Kauppak. 22. Puh. 11 43.
+# UNIVERsITY LIBRARY AT HELsINKI 30 helsink helsingfors helsingfars
+# J. VALLINKOsKI
+# <em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
+# Kuninkaallinen Turun Akatemia 1642—1828
+# DIE DIssERTATIONEN DER
+# "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
+# helsingin teknillinen reaalikoulu
+# Yrjönpäivää juhlitaan
+# mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
+# mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
+# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+# muistcttatpaa!
+# Salama Teatterissa
+# rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
+# Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
+# N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
+# Suomen pääministeri | Helsingin pörssi ja suomen pankki 
+# res lausuntaa lotta aune puhe kenttäpappi virtanen kuorolaulua vaasan
+# Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
+# Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+# N:o 45
+# rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+# Keskuspoliisi
+# Kommunistien jouKKowangitfemista tahoilla maassa.
+# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+# ätytsille
+# Siffiffi ilmoitetaan
+# Pidätettnien lutumääm »ouiee
+# Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+# Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
+# Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
+# HiltulaZta n:o 2.
+# Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
+# huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+# n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+# <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
+# Viihtyisä ja valoisa 6. kerroksen koti, hyvien kulkuyhteyksien ja palveluiden äärellä Kalliossa!
+# """
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
