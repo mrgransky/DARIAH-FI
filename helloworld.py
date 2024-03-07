@@ -284,6 +284,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
 Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
 metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
 Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
