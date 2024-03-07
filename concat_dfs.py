@@ -917,9 +917,9 @@ def run():
 
 	# save ALL concat files in dir as a tar archive file
 	comp_dir = get_compressed_concatenated_path(base_path=args.dfsPath)
-	print(f"comp_dir: {comp_dir}") # 	comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
 	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
 		print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
+		print(f"comp_dir: {comp_dir}") # 	comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
 		get_compressed_archive(
 			save_dir=args.dfsPath, 
 			compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz",

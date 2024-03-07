@@ -25,29 +25,6 @@ with HiddenPrints():
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
 
-	# lang_id_config = {
-	# 	"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
-	# }
-
-	# lang_configs = {
-	# 	# "en": {"processors":"tokenize,lemma,pos", "package":'eslspok',"tokenize_no_ssplit":True},
-	# 	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-	# 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-	# 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-	# 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-	# 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
-	# 	"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
-	# 	"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-	# 	"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
-	# }
-
-	# smp = MultilingualPipeline(	
-	# 	lang_id_config=lang_id_config,
-	# 	lang_configs=lang_configs,
-	# 	download_method=DownloadMethod.REUSE_RESOURCES,
-	# 	device="cuda:0",
-	# )
-
 	useless_upos_tags = [
 		"PUNCT",
 		"CCONJ",
@@ -86,7 +63,7 @@ def create_multilingual_pipeline(device: str):
 			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True},
 			"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
 			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-			"fr": {"processors":"tokenize,lemma,pos", "package":'sequoia',"tokenize_no_ssplit":True},
+			# "fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
 		}
 		print(f"Creating Stanza[{stanza.__version__}] < {device} MultilingualPipeline >", end=" ")
 		tt = time.time()
