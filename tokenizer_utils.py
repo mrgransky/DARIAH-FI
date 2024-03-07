@@ -51,8 +51,16 @@ with HiddenPrints():
 def create_multilingual_pipeline(device: str):
 	global smp
 	if smp is None:
-		lang_id_config = {
-			"langid_lang_subset": ['en', 'sv', 'da', 'ru', 'fi', 'et', 'de', 'fr']
+		lang_id_config={
+			"langid_lang_subset": [
+				'fi', 
+				'sv', 
+				'en', 
+				'da', 
+				'ru', 
+				'de', 
+				# 'fr',
+			]
 		}
 
 		lang_configs = {
