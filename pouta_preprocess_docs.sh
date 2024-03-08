@@ -32,8 +32,7 @@ if [ $qIDX -ge 0 ] && [ $qIDX -lt ${#files[@]} ]; then
 echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 	python -u preprocess_documents.py \
 		--inputDF ${files[$qIDX]} \
-		--outDIR $DATAFRAME_DIR \
-		--lmMethod 'stanza' >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
+		--outDIR $DATAFRAME_DIR >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
 else
 	echo "<!> Error: Invalid input query index: $qIDX"
 	echo "Please provide a valid query index between 0 and $((${#files[@]} - 1))."

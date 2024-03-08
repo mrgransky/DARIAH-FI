@@ -65,7 +65,8 @@ def create_multilingual_pipeline(device: str):
 
 		lang_configs = {
 			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+			# "sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+			"sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
 			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True},
