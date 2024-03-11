@@ -39,7 +39,7 @@ echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 		--cudaNum 3 \
 		--lmMethod 'stanza' \
 		--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
-		--maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nikeQ_$qIDX.out 2>&1 &
+		--maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
 else
 	echo "<!> Error: Invalid input query index: $qIDX"
 	echo "Please provide a valid query index between 0 and $((${#files[@]} - 1))."
