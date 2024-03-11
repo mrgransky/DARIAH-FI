@@ -4,8 +4,8 @@
 ## $ nohup bash pouta_user_token.sh 0 > /dev/null 2>&1 &
 ## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_nlf_output.out 2>&1 & # with output saved in check_output.out
 
-## $ nohup parallel -j 50 "bash pouta_user_token.sh {}" ::: {682..731} > /dev/null 2>&1 &
-## $ nohup parallel -j 4 "bash pouta_user_token.sh {}" ::: {683..708} > /media/volume/trash/NLF/nlf_usr_tk_parallel_jobs.out 2>&1 &
+## $ nohup parallel -j 8 "bash pouta_user_token.sh {}" ::: {682..731} > /dev/null 2>&1 &
+## $ nohup parallel -j 8 "bash pouta_user_token.sh {}" ::: {683..686} > /media/volume/trash/NLF/nlf_usr_tk_parallel_jobs.out 2>&1 &
 
 USR_NAME="`whoami`"
 stars=$(printf '%*s' 100 '')
