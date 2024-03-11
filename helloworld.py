@@ -40,8 +40,8 @@ lang_id_config = {
 
 lang_configs = {
 	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-	# "sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-	"sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+	# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # ftb wasn't accurate
@@ -372,5 +372,5 @@ Den 2 maj hissar Helsingfors Aktiebanks kontor i Nykarleby flaggan i topp. Konto
 # Mutta huomattavina osakkaina ovat myöskin belgialaiset, sveitsiläiset, hollantilaiset ja tshekkoslovakialaiset kapitalistit.
 # """
 
-cleaned_fin_text = clean_(docs=orig_text, del_misspelled=False)
+cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
