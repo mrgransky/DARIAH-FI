@@ -57,8 +57,9 @@ def create_multilingual_pipeline(device: str):
 			"langid_lang_subset": [
 				'fi', 
 				'sv', 
-				'en', 
-				'da', 
+				'en',
+				'da',
+				# 'nb', 
 				'ru', 
 				'de', 
 				# 'fr',
@@ -70,6 +71,7 @@ def create_multilingual_pipeline(device: str):
 			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True}, # errors!!!
 			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+			# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True},
 			"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},

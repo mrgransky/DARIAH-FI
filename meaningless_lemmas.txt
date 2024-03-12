@@ -6404,6 +6404,9 @@ havd
 tavaststj
 helsingfars
 helsingfor
+helslngfors
+helsingin
+helsingiv
 kvk
 aabafji
 kvjz
@@ -9153,7 +9156,6 @@ aurag
 kyrkog
 kirjastoa
 farmaciekår
-helsingiv
 jngfr
 hwilsoffa
 handl
@@ -9340,9 +9342,17 @@ musikhwilk
 lißzt
 omallmog
 sanomat
-helsingin
 sanomaa
 sanomi
 sanom
 kontt
 painp
+billshlle
+puhclimit
+noususuuntakeinottclija
+lagergr
+appelgr
+idhlkotilallinen
+appelg
+wtrtftr
+ktala
