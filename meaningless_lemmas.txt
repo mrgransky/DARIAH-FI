@@ -9257,3 +9257,5 @@ inskc
 inske
 easti
 maanvilj
+kauppak
+hämeenk
