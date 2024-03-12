@@ -774,7 +774,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	es_dict = enchant.Dict("es")
 	et_dict = enchant.Dict("et")
 	
-	ca_dict = enchant.Dict("ca")
 	cs_dict = enchant.Dict("cs")
 	cy_dict = enchant.Dict("cy")
 	fo_dict = enchant.Dict("fo")
@@ -815,7 +814,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			da_dict.check(word) or
 			es_dict.check(word) or
 			et_dict.check(word) or # estonian
-			ca_dict.check(word) or
 			cs_dict.check(word) or 
 			# cy_dict.check(word) or 
 			# fo_dict.check(word) or 

@@ -201,8 +201,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			de_dict.check(word),
 			# no_dict.check(word),
 			da_dict.check(word),
-			es_dict.check(word),
-			et_dict.check(word),
+			es_dict.check(word), 
+			et_dict.check(word), # estonian
 			cs_dict.check(word), 
 			# cy_dict.check(word), 
 			# fo_dict.check(word), 
@@ -298,53 +298,49 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Den 2 maj hissar Helsingfors Aktiebanks kontor i Nykarleby flaggan i topp. Kontoret firar 100 års jubileum. 
 # '''
 
-orig_text='''
-helsingi
-Island har bestemt seg: Sender bidrag til Eurovision
-Forfatteren og miljøforkjemperen Sidsel Mørck er død
-'''
-
-# orig_text = """
-# SUomI
-# URHO SEPPÄLÄ.
-# mielenkiintoisesti viljan siemenestä oppilas juho pesonen lausui runon ven paavo kolmannen
-# Pohjois-Hämeen
-# pohjois-hämeen osuuspankki
-# pohjois pohjanmaa
-# länsi uudenmaan hyvinvointialue
-# Sanomalehti Länsi-Suomi
-# itä-uudenmaan hyvinvointialue
-# etelä-karjalan hyvinvointialue
-# myös ylösnousemus josa nimittäin samalla yli toisen
-# I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
-# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-# metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
-# Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
-# mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkkiä lupaavan työskentelyn vielä ratkaisemattomien probleemien selvittämiseksi.
-# 229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
-# Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
-# Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
-# Ev. 17 T. 21: I—l 7. 18 F. 21:18-32. 19 L. 21:33—46 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
-# 82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
-# ruottalan koski
-# PUOLELLA — KUTEN TAVALLISTA.
-# Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
-# Ilmankos sitä "yliopistoksi" sanottaisiin.
-# Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
-# Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
-# Tampereen Teknillinen Yliopisto
-# Siffiffi ilmoitetaan
-# Pidätettnien lutumääm »ouiee
-# Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
-# Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
-# Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
-# HiltulaZta n:o 2.
-# Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
-# huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
-# n:o 3 i Napo by, Storkyro, 166, 167, 168. 
-# <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
-# Mutta huomattavina osakkaina ovat myöskin belgialaiset, sveitsiläiset, hollantilaiset ja tshekkoslovakialaiset kapitalistit.
-# """
+orig_text = """
+SUomI
+HELSINGFORS TEL. 524 &quot; ________________=___B Broderar! <em>OMPELUKONE</em> O&#x2F;V HUSQVARNA SYMASKIN Tammerfors, Helsingfors, Åbo
+kartanossa hyvinkäällä astutusmaksu puh hyvinkään sanomain asiamiehille hyvinkään sanomat
+URHO SEPPÄLÄ.
+mielenkiintoisesti viljan siemenestä oppilas juho pesonen lausui runon ven paavo kolmannen
+Pohjois-Hämeen
+pohjois-hämeen osuuspankki
+pohjois pohjanmaa
+länsi uudenmaan hyvinvointialue
+Sanomalehti Länsi-Suomi
+itä-uudenmaan hyvinvointialue
+etelä-karjalan hyvinvointialue
+myös ylösnousemus josa nimittäin samalla yli toisen
+I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
+Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
+Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
+mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkkiä lupaavan työskentelyn vielä ratkaisemattomien probleemien selvittämiseksi.
+229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
+Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
+Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
+Ev. 17 T. 21: I—l 7. 18 F. 21:18-32. 19 L. 21:33—46 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
+82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
+ruottalan koski
+PUOLELLA — KUTEN TAVALLISTA.
+Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
+Ilmankos sitä "yliopistoksi" sanottaisiin.
+Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
+Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
+Tampereen Teknillinen Yliopisto
+Siffiffi ilmoitetaan
+Pidätettnien lutumääm »ouiee
+Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
+Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
+HiltulaZta n:o 2.
+Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
+huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+<em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
+Mutta huomattavina osakkaina ovat myöskin belgialaiset, sveitsiläiset, hollantilaiset ja tshekkoslovakialaiset kapitalistit.
+"""
 
 # orig_text='''
 # SUomI x2
