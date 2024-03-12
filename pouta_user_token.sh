@@ -37,8 +37,6 @@ echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 		--inputDF ${files[$qIDX]} \
 		--outDIR $DATAFRAME_DIR \
 		--cudaNum 0 \
-		--lmMethod 'stanza' \
-		--qphrase 'Helsingin Pörssi ja Suomen Pankki' \
 		--maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
 else
 	echo "<!> Error: Invalid input query index: $qIDX"

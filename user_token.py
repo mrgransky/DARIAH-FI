@@ -20,7 +20,7 @@ parser.add_argument(
 	required=True, 
 	help='output directory to save files',
 )
-parser.add_argument('--qphrase', default="Juha Sipilä Sahalahti", type=str)
+parser.add_argument('--qphrase', default="Suomalaisten suhtautuminen konservatismiin", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)

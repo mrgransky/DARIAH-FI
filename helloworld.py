@@ -294,6 +294,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+URHO SEPPÄLÄ.
+Pohjois-Hämeen
 myös ylösnousemus josa nimittäin samalla yli toisen
 I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
 Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
