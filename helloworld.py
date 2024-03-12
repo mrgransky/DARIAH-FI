@@ -8,6 +8,9 @@ import nltk
 import re
 import time
 import sys
+import logging
+
+# logging.getLogger("stanza").setLevel(logging.WARNING) # disable stanza log messages with severity levels of WARNING and higher (ERROR, CRITICAL)
 
 nltk_modules = [
 	'punkt',
@@ -296,6 +299,12 @@ orig_text = """
 SUomI
 URHO SEPPÄLÄ.
 Pohjois-Hämeen
+pohjois-hämeen osuuspankki
+pohjois pohjanmaa
+länsi uudenmaan hyvinvointialue
+Sanomalehti Länsi-Suomi
+itä-uudenmaan hyvinvointialue
+etelä-karjalan hyvinvointialue
 myös ylösnousemus josa nimittäin samalla yli toisen
 I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
 Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
@@ -314,50 +323,6 @@ Ilmankos sitä "yliopistoksi" sanottaisiin.
 Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
 Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
 Tampereen Teknillinen Yliopisto
-Osoite : Nimi: • I tillin II II 111 il ill II II Ullin lIIHIIIIMIIIIIIIIIIIHIIIIIIIIIIM
-arpavihon ostajalle. Sunnuntcnnll näytetään kuuluisaa filminäytelmää „Kamelianai,nen".
-Rumanlan kci 2tllwll'teatterissll.
-Klliaanin autonkuljetatjat tekemät perheineen ja Mieraineen huomennä klo 12 päimällä automatkan Pllltaniemelle Sutelanperään.
-Kllalmia paljastettu. 
-Lehtien Bukarestista saamien tietojen mukaan on Rumaniassa päästy uuden kommunistisen järjestön jäljille, jonka tehtävänä on ollut sytyttää maan kaikki kirkot tuleen. 
-(Ab Indiana Corporation) v &#x27;«.
-Mäkelä-Henriksson och Marja Lounassalo]. 
-Hki: Helsingin <em>yliopiston</em> <em>kirjasto</em>, 1973. 15 s. Stencil.
-Barck, P. 0., Ett nytt
-VIIVVEI InII I II TA u <em>ADA</em> A Myös on meHIA musHkkl-tnatrv- KhIrRlA JuuLuIAVAnAA mentte]a
-Kaikissa suuremmissa kaupungeissa on toimeenpantu pidätyksiä. 
-Järjestön johtaja on kuulusteluissa kertonut toimineensa Weinin kommunistikeskuksen antamien ohjeiden mukaan.
-Sähköyhtiöt ja asentajat!
-Kesäkorj suksiin muuntaja-asemille ja ulkolinjoille sopivat tarvikkeet ostatte meiltä edullisin tukkuhinnoin.
-Rauman Sähkö- ja Telefooniinko Urho Tuominen. Kauppak. 22. Puh. 11 43.
-UNIVERsITY LIBRARY AT HELsINKI 30 helsink helsingfors helsingfars
-J. VALLINKOsKI
-<em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
-Kuninkaallinen Turun Akatemia 1642—1828
-DIE DIssERTATIONEN DER
-"vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
-helsingin teknillinen reaalikoulu
-Yrjönpäivää juhlitaan
-mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
-mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
-mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
-muistcttatpaa!
-Salama Teatterissa
-rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
-Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
-N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-Suomen pääministeri | Helsingin pörssi ja suomen pankki 
-res lausuntaa lotta aune puhe kenttäpappi virtanen kuorolaulua vaasan
-Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-N:o 45
-rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
-Keskuspoliisi
-Kommunistien jouKKowangitfemista tahoilla maassa.
--!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-ätytsille
 Siffiffi ilmoitetaan
 Pidätettnien lutumääm »ouiee
 Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
@@ -370,6 +335,54 @@ n:o 3 i Napo by, Storkyro, 166, 167, 168.
 <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
 Mutta huomattavina osakkaina ovat myöskin belgialaiset, sveitsiläiset, hollantilaiset ja tshekkoslovakialaiset kapitalistit.
 """
+
+# orig_text='''
+# SUomI x2
+# Osoite : Nimi: • I tillin II II 111 il ill II II Ullin lIIHIIIIMIIIIIIIIIIIHIIIIIIIIIIM
+# arpavihon ostajalle. Sunnuntcnnll näytetään kuuluisaa filminäytelmää „Kamelianai,nen".
+# Rumanlan kci 2tllwll'teatterissll.
+# Klliaanin autonkuljetatjat tekemät perheineen ja Mieraineen huomennä klo 12 päimällä automatkan Pllltaniemelle Sutelanperään.
+# Kllalmia paljastettu. 
+# Lehtien Bukarestista saamien tietojen mukaan on Rumaniassa päästy uuden kommunistisen järjestön jäljille, jonka tehtävänä on ollut sytyttää maan kaikki kirkot tuleen. 
+# (Ab Indiana Corporation) v &#x27;«.
+# Mäkelä-Henriksson och Marja Lounassalo]. 
+# Hki: Helsingin <em>yliopiston</em> <em>kirjasto</em>, 1973. 15 s. Stencil.
+# Barck, P. 0., Ett nytt
+# VIIVVEI InII I II TA u <em>ADA</em> A Myös on meHIA musHkkl-tnatrv- KhIrRlA JuuLuIAVAnAA mentte]a
+# Kaikissa suuremmissa kaupungeissa on toimeenpantu pidätyksiä. 
+# Järjestön johtaja on kuulusteluissa kertonut toimineensa Weinin kommunistikeskuksen antamien ohjeiden mukaan.
+# Sähköyhtiöt ja asentajat!
+# Kesäkorj suksiin muuntaja-asemille ja ulkolinjoille sopivat tarvikkeet ostatte meiltä edullisin tukkuhinnoin.
+# Rauman Sähkö- ja Telefooniinko Urho Tuominen. Kauppak. 22. Puh. 11 43.
+# UNIVERsITY LIBRARY AT HELsINKI 30 helsink helsingfors helsingfars
+# J. VALLINKOsKI
+# <em>TURUN AKATEMIAN</em> VAlTOsKIRJAT
+# Kuninkaallinen Turun Akatemia 1642—1828
+# DIE DIssERTATIONEN DER
+# "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
+# helsingin teknillinen reaalikoulu
+# Yrjönpäivää juhlitaan
+# mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
+# mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
+# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+# muistcttatpaa!
+# Salama Teatterissa
+# rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
+# Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
+# N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
+# Suomen pääministeri | Helsingin pörssi ja suomen pankki 
+# res lausuntaa lotta aune puhe kenttäpappi virtanen kuorolaulua vaasan
+# Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
+# Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+# N:o 45
+# rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
+# Keskuspoliisi
+# Kommunistien jouKKowangitfemista tahoilla maassa.
+# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+# ätytsille
+# '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)

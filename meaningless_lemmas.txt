@@ -976,6 +976,7 @@ yliopizto
 yliopizco
 ylioppilazlalo
 yliopr
+yliop
 wuotr
 wägncr
 asef
@@ -9234,3 +9235,4 @@ faufrarmifltt
 lvalmistama
 henriksg
 aabcasalcco
+hämeenlinta
