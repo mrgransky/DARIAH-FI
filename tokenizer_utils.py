@@ -17,7 +17,8 @@ with HiddenPrints():
 
 	# nltk.download(
 	# 	# 'all',
-	# 	nltk_modules,
+	# nltk_modules,
+	# 'stopwords',
 	# 	quiet=True,
 	# 	# raise_on_error=True,
 	# )
