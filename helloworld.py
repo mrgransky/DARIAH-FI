@@ -264,6 +264,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA
+mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
 Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
 Kontorsmannaförbundet 30 år
 Bestyrelsen för allmänna finska utställningen har af landets regering emottagit en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
