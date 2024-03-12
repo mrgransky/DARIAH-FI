@@ -12,20 +12,21 @@ import logging
 
 # logging.getLogger("stanza").setLevel(logging.WARNING) # disable stanza log messages with severity levels of WARNING and higher (ERROR, CRITICAL)
 
-nltk_modules = [
-	'punkt',
-	'stopwords',
-	'wordnet',
-	'averaged_perceptron_tagger', 
-	'omw-1.4',
-]
+# nltk_modules = [
+# 	'punkt',
+# 	'stopwords',
+# 	'wordnet',
+# 	'averaged_perceptron_tagger', 
+# 	'omw-1.4',
+# ]
 
-nltk.download(
-	# 'all',
-	nltk_modules,
-	quiet=True, 
-	# raise_on_error=True,
-)
+# nltk.download(
+# 	# 'all', # consume disspace and slow
+# 	# nltk_modules, # not required
+# 	'stopwords',
+# 	quiet=True, 
+# 	# raise_on_error=True,
+# )
 
 tt = time.time()
 lang_id_config = {
