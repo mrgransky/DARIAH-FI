@@ -8566,6 +8566,7 @@ november
 nov
 december
 dec
+decemb
 maanantai
 måndag
 monday
@@ -9333,3 +9334,15 @@ sundströfps
 tldntag
 galvamcering
 dagttstaa
+samwet
+conducteu
+musikhwilk
+lißzt
+omallmog
+sanomat
+helsingin
+sanomaa
+sanomi
+sanom
+kontt
+painp

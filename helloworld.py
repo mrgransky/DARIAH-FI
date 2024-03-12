@@ -299,6 +299,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 orig_text = """
 SUomI
 URHO SEPPÄLÄ.
+mielenkiintoisesti viljan siemenestä oppilas juho pesonen lausui runon ven paavo kolmannen
 Pohjois-Hämeen
 pohjois-hämeen osuuspankki
 pohjois pohjanmaa
