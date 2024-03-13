@@ -264,6 +264,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA
+ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
 mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
 Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
 Kontorsmannaförbundet 30 år

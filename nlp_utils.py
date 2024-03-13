@@ -7,7 +7,6 @@ lemmatizer_methods = {
 	"nltk": nltk_lemmatizer,
 	"spacy": spacy_tokenizer,
 	"trankit": trankit_lemmatizer,
-	# "stanza": stanza_lemmatizer,
 	"stanza": lambda docs: stanza_lemmatizer(docs, device=DEVICE),  # Pass args to stanza_lemmatizer
 }
 
