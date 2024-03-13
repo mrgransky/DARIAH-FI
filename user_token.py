@@ -291,7 +291,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 	dframe = dframe.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df_preprocessed = dframe.copy()
 	print(f">> Preparing df_preprocessed [initial] {type(df_preprocessed)} {df_preprocessed.shape}")
-
+	print(df_preprocessed.info(verbose=True, memory_usage="deep"))
+	print(f"<>"*55)
 	print(f"\n>> Getting {snFile} ...")
 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
 	# add 
