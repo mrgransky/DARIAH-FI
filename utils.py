@@ -725,7 +725,7 @@ def get_query_phrase(inp_url):
 	return params.get("query")
 
 @cache
-def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
