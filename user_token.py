@@ -301,7 +301,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		print(f"<!> Search query phrases [tokenization + lemmatization]...")
 		st_t = time.time()
 		# sq_list = df_preprocessed["search_query_phrase"].map(lambda lst: get_lemmatized_sqp(lst, lm=args.lmMethod) if lst else np.nan, na_action="ignore")
-		sq_list = df_preprocessed["cleaned_sq_phrase"].map(lambda lst: get_lemmatized_sqp(lst, lm=args.lmMethod) if lst else np.nan, na_action="ignore")
+		sq_list = df_preprocessed["cleaned_sq_phrase"].map(lambda ph: get_lemmatized_qu_(ph, lm=args.lmMethod) if lst else np.nan, na_action="ignore")
 		df_preprocessed["search_query_phrase_tklm"] = sq_list
 		print(f"\tElapsed_t: {time.time()-st_t:.2f} s")
 		save_pickle(pkl=sq_list, fname=sqFile)
