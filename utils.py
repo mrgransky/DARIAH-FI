@@ -729,7 +729,6 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
-	# docs = docs.lower()
 	t0 = time.time()
 	docs = re.sub(
 		r'[\{\}@®¤†±©§½✓%,+–;,=&\'\-$€£¥#*"°^~?!❁—.•()˶“”„:/।|‘’<>»«□™♦_■►▼▲❖★☆¶…\\\[\]]+',
@@ -754,7 +753,6 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	##########################################################################################
 	print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
 	print(f"<>"*100)
-	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
