@@ -65,107 +65,31 @@ def get_lemmatized_cntHWs(results, lm: str="stanza"):
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
 	return [tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
 
-def get_lemmatized_sn(results, lm: str="stanza"):
-	return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+def get_lemmatized_sn(results, lm: str="stanza", cleaned_docs: bool=False):
+	if cleaned_docs:
+		lemmatized_sn = lemmatized_sn = [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+		return lemmatized_sn
+	return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( el ) ) ) for tklm in lemmas if tklm ]
 
 def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"):
 	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
-def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device_: str="cpu"):
-	print(f"{f'Bag-of-Words {userName} device: {device_}'.center(150, '-')}")
+def get_BoWs(preprocessed_docs, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device_: str="cpu"):
+	print(f"{f'Bag-of-Words {userName} device: {device_} | Corpus of {len(preprocessed_docs)} preprocessed DOCs'.center(150, '-')}")
 	global DEVICE
 	DEVICE = device_
 	print(f"#"*100)
 	print(DEVICE)
 	print(f"#"*100)
+
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
 	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
-	preprocessed_docs_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_preprocessed_docs.gz")
-	preprocessed_docs = get_preprocessed_document(dframe, preprocessed_docs_fpath)
-	# try:
-	# 	preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
-	# except Exception as e:
-	# 	print(f"<!> preprocessed_docs not found {e}")
-	# 	print(f"{f'Extracting texts search query phrases':<50}", end="")
-	# 	st_t = time.time()
-	# 	dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
-	# 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		
-	# 	print(f"{f'Extracting texts collection query phrases':<50}", end="")
-	# 	st_t = time.time()
-	# 	dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
-	# 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	# 	print(f"{f'Extracting texts clipping query phrases':<50}", end="")
-	# 	st_t = time.time()
-	# 	dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
-	# 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	# 	print(f"{f'Extracting texts newspaper content':<50}", end="")
-	# 	st_t = time.time()
-	# 	dframe['ocr_raw_text'] = dframe["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
-	# 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		
-	# 	print(f"{f'Extracting raw texts snippets':<50}", end="")
-	# 	st_t = time.time()
-	# 	dframe['snippet_raw_text'] = dframe["search_results"].map(get_raw_sn, na_action='ignore')
-	# 	print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-	# 	print(dframe.info(verbose=True, memory_usage="deep"))
-	# 	print(f"#"*100)
-	# 	users_list = list()
-	# 	raw_texts_list = list()
-
-	# 	for n, g in dframe.groupby("user_ip"):
-	# 		users_list.append(n)
-	# 		lque = [ph for ph in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(ph) > 0 ] # ["global warming", "econimic crisis", "", ]
-	# 		lcol = [ph for ph in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
-	# 		lclp = [ph for ph in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["", "", "", ...]
-
-	# 		lsnp = [sent for el in g[g["snippet_raw_text"].notnull()]["snippet_raw_text"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
-	# 		lcnt = [sent for sent in g[g["ocr_raw_text"].notnull()]["ocr_raw_text"].values.tolist() if sent ] # ["", "", "", ...]
-
-	# 		ltot = lque + lcol + lclp + lsnp + lcnt
-	# 		raw_texts_list.append( ltot )
-
-	# 	print(
-	# 		len(users_list), 
-	# 		len(raw_texts_list), 
-	# 		type(raw_texts_list), 
-	# 		any(elem is None for elem in raw_texts_list),
-	# 	)
-	# 	print(f"Creating raw_docs_list [..., ['', '', ...], [''], ['', '', '', ...], ...]", end=" ")
-	# 	t0 = time.time()
-	# 	raw_docs_list = [
-	# 		subitem 
-	# 		for itm in raw_texts_list 
-	# 		if itm 
-	# 		for subitem in itm 
-	# 		if (
-	# 			re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
-	# 			re.search(r"\S", subitem) and
-	# 			re.search(r"\D", subitem) and
-	# 			# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
-	# 			max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
-	# 			re.search(r"\b(?=\D)\w{3,}\b", subitem)
-	# 		)
-	# 	]
-	# 	print(f"Elapsed_t: {time.time()-t0:.3f} s | len: {len(raw_docs_list)} | {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
-	# 	raw_docs_list = list(set(raw_docs_list))
-	# 	print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
-	# 	pst = time.time()
-	# 	with HiddenPrints(): # with no prints
-	# 		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
-		
-	# 	print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
-	# 	save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 
 	try:
 		tfidf_matrix = load_pickle(fpath=tfidf_rf_matrix_fpath)
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
 	except Exception as e:
 		print(f"<!> TFIDF does not exist\n{e}")
-		print(f"TfidfVectorizer [min_df[int]: {MIN_DF}, max_df[float]: {MAX_DF}], max_feat: {MAX_FEATURES}".center(160, " "))
 		################################################################################################################################################################
 		# max_df is used for removing terms that appear too frequently, also known as "corpus-specific stop words". For example:
 
@@ -180,7 +104,13 @@ def get_BoWs(dframe: pd.DataFrame, saveDIR: str="DIR", fprefix: str="fname_prefi
 		# The default min_df is 1, which means "ignore terms that appear in less than 1 document". Thus, the default setting does not ignore any terms.
 		################################################################################################################################################################
 		# Initialize TFIDF # not time consuming...
-		print(f"TFID for {len(preprocessed_docs)} raw corpus [d1, d2, d3, ..., dN]".center(80, " "))
+		print(
+			f"TFIDF min_df[int]: {MIN_DF} "
+			f"max_df[float]: {MAX_DF}] "
+			f"max_feat: {MAX_FEATURES} "
+			f"{len(preprocessed_docs)} raw corpus [d1, d2, d3, ..., dN]"
+			.center(160, " ")
+		)
 		st_t = time.time()
 		tfidf_vec=TfidfVectorizer(
 			tokenizer=lemmatizer_methods.get(lm),

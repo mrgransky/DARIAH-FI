@@ -239,6 +239,43 @@ def apply_weights(column, weight):
 		print(f"Unknown type! ERROR... {weight} {type(column)}")
 		return 0
 
+def get_learned_weights(df: pd.DataFrame):
+	learned_weights = list()
+
+	print(f"Leaning Weights df: {df.shape}".center(100, "-"))
+	# Learning Weights: TODO
+	column_weights = {
+		'qu_tokens': weightQueryAppearance,
+		'snippets_hw_token': weightSnippetHWAppearance,
+		'snippets_token': weightSnippetAppearance,
+		'nwp_content_hw_token': weightContentHWAppearance,
+		'nwp_content_lemma_all': weightContentAppearance,
+		'nwp_content_pt_token': weightContentPTAppearance
+	}
+
+	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
+	try:
+		token_data = load_pickle(fpath=tk_data_df_fname)
+	except Exception as e:
+		print(f"<!> {e}")
+		# Apply weights to each column
+		print(f">> Apply weights to each column [might take a while]...", end="\t")
+		t0 = time.time()
+		token_data = pd.concat([df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
+		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
+		save_pickle(pkl=token_data, fname=tk_data_df_fname)
+
+	print( token_data.info( verbose=True, memory_usage="deep") )
+	print("*"*80)
+
+	print(token_data.head(10))
+	print("*"*80)
+
+	print(token_data.tail(10))
+	print("*"*80)
+
+	return learned_weights
+
 def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool=False):
 	print(f"Getting USERs DataFrame from Input {type(dframe)} {dframe.shape}".center(150, "-"))
 	print(dframe.info(verbose=True, memory_usage="deep"))
@@ -253,16 +290,17 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 
 	dframe = dframe.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
 	df_preprocessed = dframe.copy()
-	print(f">> Preparing df_preprocessed [initial]: {df_preprocessed.shape}")
+	print(f">> Preparing df_preprocessed [initial] {type(df_preprocessed)} {df_preprocessed.shape}")
 
-	print(f"\n>> Getting {snFile} ...")	
+	print(f"\n>> Getting {snFile} ...")
 	df_preprocessed['search_results_snippets'] = df_preprocessed["search_results"].map(get_raw_sn, na_action='ignore')
+	# add 
 	try:
 		df_preprocessed["search_results_snippets_tklm"] = load_pickle(fpath=snFile)
 	except:
 		print(f"<!> Snippets [tokenization + lemmatization]...")
 		st_t = time.time()
-		sn_list = df_preprocessed['search_results_snippets'].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
+		sn_list = df_preprocessed['search_results_snippets'].map(lambda lst: get_lemmatized_sn(lst, lm=args.lmMethod, cleaned_docs=True) if lst else np.nan, na_action='ignore')
 		df_preprocessed['search_results_snippets_tklm'] = sn_list
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=sn_list, fname=snFile)
@@ -364,30 +402,34 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
 		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
 
-	user_df = pd.DataFrame(list(zip(users_list, 
-																	search_query_phrase_tokens_list, 
-																	search_results_hw_snippets_tokens_list, 
-																	search_results_snippets_tokens_list, 
-																	nwp_content_lemmas_all_list, 
-																	nwp_content_lemmas_separated_list,
-																	nwp_content_pt_tokens_list, 
-																	nwp_content_hw_tokens_list,
-																	nwp_content_raw_texts_list,
-																	search_results_snippets_raw_texts_list,
-																)
-															),
-																columns =['user_ip',
-																					'qu_tokens',
-																					'snippets_hw_token', 
-																					'snippets_token',
-																					'nwp_content_lemma_all',
-																					'nwp_content_lemma_separated',
-																					'nwp_content_pt_token',
-																					'nwp_content_hw_token',
-																					'nwp_content_raw_text',
-																					'snippets_raw_text',
-																				]
-															)
+	user_df = pd.DataFrame(
+		data = list(
+			zip(
+				users_list, 
+				search_query_phrase_tokens_list, 
+				search_results_hw_snippets_tokens_list, 
+				search_results_snippets_tokens_list, 
+				nwp_content_lemmas_all_list, 
+				nwp_content_lemmas_separated_list,
+				nwp_content_pt_tokens_list, 
+				nwp_content_hw_tokens_list,
+				nwp_content_raw_texts_list,
+				search_results_snippets_raw_texts_list,
+			)
+		),
+		columns = [
+			'user_ip',
+			'qu_tokens',
+			'snippets_hw_token', 
+			'snippets_token',
+			'nwp_content_lemma_all',
+			'nwp_content_lemma_separated',
+			'nwp_content_pt_token',
+			'nwp_content_hw_token',
+			'nwp_content_raw_text',
+			'snippets_raw_text',
+		]
+	)
 	print(f"Elapsed_t: {time.time()-st_t:.3f} sec {user_df.shape}")
 
 	# print("*"*80)
@@ -450,56 +492,19 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 	save_pickle(pkl=user_df, fname=user_df_fname)
 	return user_df
 
-def get_learned_weights(df: pd.DataFrame):
-	learned_weights = list()
-
-	print(f"Leaning Weights df: {df.shape}".center(100, "-"))
-	# Learning Weights: TODO
-	column_weights = {
-		'qu_tokens': weightQueryAppearance,
-		'snippets_hw_token': weightSnippetHWAppearance,
-		'snippets_token': weightSnippetAppearance,
-		'nwp_content_hw_token': weightContentHWAppearance,
-		'nwp_content_lemma_all': weightContentAppearance,
-		'nwp_content_pt_token': weightContentPTAppearance
-	}
-
-	tk_data_df_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_token_data_DataFrame_{len(bow)}_BoWs.gz")
-	try:
-		token_data = load_pickle(fpath=tk_data_df_fname)
-	except Exception as e:
-		print(f"<!> {e}")
-		# Apply weights to each column
-		print(f">> Apply weights to each column [might take a while]...", end="\t")
-		t0 = time.time()
-		token_data = pd.concat([df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
-		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
-		save_pickle(pkl=token_data, fname=tk_data_df_fname)
-
-	print( token_data.info( verbose=True, memory_usage="deep") )
-	print("*"*80)
-
-	print(token_data.head(10))
-	print("*"*80)
-
-	print(token_data.tail(10))
-	print("*"*80)
-
-	return learned_weights
-
 def main():
 	qu_phrase=args.qphrase
 	topK=5
 
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
-	df_inp = load_pickle(fpath=args.inputDF)
+	ORIGINAL_INP_DF = load_pickle(fpath=args.inputDF)
 	print(f"-"*100)
-	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
-	print( df_inp.info(memory_usage="deep", verbose=True) )
+	print(f"ORIGINAL_INPUT {type(ORIGINAL_INP_DF)} {ORIGINAL_INP_DF.shape}")
+	print( ORIGINAL_INP_DF.info(memory_usage="deep", verbose=True) )
 	print(f"-"*100)
 
-	if df_inp.shape[0] == 0:
-		print(f"Empty DF: {df_inp.shape} => Exit...")
+	if ORIGINAL_INP_DF.shape[0] == 0:
+		print(f"Empty DF: {ORIGINAL_INP_DF.shape} => Exit...")
 		return
 
 	# print(f">>RAW args.maxNumFeat: {args.maxNumFeat}")
@@ -509,6 +514,16 @@ def main():
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	
 	os.makedirs(args.outDIR, exist_ok=True) # make_folder(folder_name=args.outDIR)
+	
+	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_listed_docs.gz")
+	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_df.gz")
+
+	preprocessed_df, preprocessed_docs = get_preprocessed_doc(
+		dframe=ORIGINAL_INP_DF, 
+		preprocessed_docs_fpath=preprocessed_docs_fpath,
+		preprocessed_df_fpath=preprocessed_df_fpath,
+	)
+
 	######################################## Creating/Loading BoWs ########################################
 	try:
 		BoWs = load_vocab(
@@ -517,7 +532,7 @@ def main():
 	except Exception as e:
 		print(f"<!> Error Loading BoWs: {e}")
 		BoWs = get_BoWs(
-			dframe=df_inp, 
+			preprocessed_docs=preprocessed_docs, 
 			saveDIR=args.outDIR,
 			fprefix=fprefix, 
 			lm=args.lmMethod, 
@@ -527,16 +542,19 @@ def main():
 			device_=device,
 		)
 	######################################## Creating/Loading BoWs ########################################
-	print(f">> Remove column(s) with all zeros(if any): {list(df_inp.columns[(df_inp==0).all()])}")
-	df_inp = df_inp.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
+	print(f">> Remove column(s) with all zeros(if any) [ORIG df] {list(ORIGINAL_INP_DF.columns[(ORIGINAL_INP_DF==0).all()])}")
+	ORIGINAL_INP_DF = ORIGINAL_INP_DF.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
 
+	print(f">> Remove column(s) with all zeros(if any) [PREPROCESSED df] {list(preprocessed_df.columns[(preprocessed_df==0).all()])}")
+	preprocessed_df = preprocessed_df.dropna(axis=1, how='all') # remove column(s), eg "collection_query_phrase" with all zeros
 	######################################## Creating/Loading User_DF ########################################
 	print(f"Creating/Loading USERs DF".center(150, ' '))
 	try:
-		df_user=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
+		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
 	except Exception as e:
 		print(f"<!> {e}")
-		df_user=get_user_df(dframe=df_inp, bow=BoWs)
+		# df_user = get_user_df(dframe=ORIGINAL_INP_DF, bow=BoWs)
+		df_user = get_user_df(dframe=preprocessed_df, bow=BoWs)
 
 	print(f"USER_DF (detailed + user_token_interest): {type(df_user)} {df_user.shape}")
 	print(df_user.info(verbose=True, memory_usage="deep"))
@@ -558,17 +576,19 @@ def main():
 		usr_tk_spm_tokNames=load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"))		
 	except Exception as e:
 		print(f"<!> {e}")
-		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_scipy_spm(	df=df_user, 
-																																				vb=BoWs, 
-																																				spm_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"),
-																																				spm_rows_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"),
-																																				spm_cols_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
-																																			)
-	print(f"spMtx {usr_tk_spm.shape} | "
-				f"{len(usr_tk_spm_usrNames)} rows(users) | "
-				f"{len(usr_tk_spm_tokNames)} columns(tokens)"
-				.center(120, "-")
+		usr_tk_spm, usr_tk_spm_usrNames, usr_tk_spm_tokNames=get_scipy_spm(	
+			df=df_user, 
+			vb=BoWs, 
+			spm_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz"),
+			spm_rows_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz"),
+			spm_cols_fname=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz"),
 		)
+	print(
+		f"spMtx {usr_tk_spm.shape} "
+		f"{len(usr_tk_spm_usrNames)} rows(users) "
+		f"{len(usr_tk_spm_tokNames)} columns(tokens)"
+		.center(120, "-")
+	)
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
 
 	######################################################

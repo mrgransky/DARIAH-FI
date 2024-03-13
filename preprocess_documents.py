@@ -42,19 +42,25 @@ fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki
 
 def main():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s) (GPU not required!)")
-	df_inp = load_pickle(fpath=args.inputDF)
+	ORIGINAL_INP_DF = load_pickle(fpath=args.inputDF)
 	print(f"-"*100)
-	print(f"df_inp: {df_inp.shape} | {type(df_inp)}")
-	print( df_inp.info(memory_usage="deep", verbose=True) )
-	print(f"-"*100)
+	print(f"ORIGINAL_INPUT {type(ORIGINAL_INP_DF)} {ORIGINAL_INP_DF.shape}")
+	print( ORIGINAL_INP_DF.info(memory_usage="deep", verbose=True) )
 
-	if df_inp.shape[0] == 0:
-		print(f"Empty DF: {df_inp.shape} => Exit...")
+	if ORIGINAL_INP_DF.shape[0] == 0:
+		print(f"Empty DF: {ORIGINAL_INP_DF.shape} => Exit...")
 		return
 	
 	os.makedirs(args.outDIR, exist_ok=True)
-	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_docs.gz")
-	_ = get_preprocessed_document(dframe=df_inp, preprocessed_docs_fpath=preprocessed_docs_fpath)
+
+	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_listed_docs.gz")
+	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_df.gz")
+	
+	_, _ = get_preprocessed_doc(
+		dframe=ORIGINAL_INP_DF, 
+		preprocessed_docs_fpath=preprocessed_docs_fpath,
+		preprocessed_df_fpath=preprocessed_df_fpath,
+	)
 
 if __name__ == '__main__':
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(140, " "))

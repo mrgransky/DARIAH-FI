@@ -725,8 +725,8 @@ def get_query_phrase(inp_url):
 	return params.get("query")
 
 @cache
-def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
-	print(f'Raw Input:\n>>{docs}<<')
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
+	# print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	# docs = docs.lower()
@@ -752,8 +752,8 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
-	print(f"<>"*100)
+	# print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
+	# print(f"<>"*100)
 	# # print(f"{f'Preprocessed: { len( docs.split() ) } words':<30}{str(docs.split()[:3]):<65}", end="")
 	if not docs or len(docs) == 0 or docs == "":
 		return
@@ -1287,107 +1287,190 @@ def extract_tar(fname):
 		with tarfile.open(fname, 'r:gz') as tfile:
 			tfile.extractall(output_folder)
 
-def get_raw_sqp(phrase_list):
+def get_raw_sqp(phrase_list, cleaned_docs: bool=False):
 	assert len(phrase_list) == 1, f"<!> Wrong length for {phrase_list}, must be = 1! Now: {len(phrase_list)}"
-	phrase = phrase_list[0]
-	return phrase
-
-def get_raw_cntHWs(cnt_dict):
-	try:
-		raw_highlighted_term = cnt_dict.get("highlighted_term")
-	except Exception as e:
-		print(f"<!> highlighted_term does not exist!: {e}")
+	sq_phrase = phrase_list[0]
+	if not sq_phrase or len(sq_phrase)<2:
 		return
-	# print(f"nwp_HWs: {raw_highlighted_term}")
-	return raw_highlighted_term
+	if cleaned_docs:
+		cleaned_sq_phrase = clean_(docs=sq_phrase)
+		# print(sq_phrase)
+		# print(cleaned_sq_phrase)
+		# print(f"#"*100)
+		return cleaned_sq_phrase
+	return sq_phrase
 
-def get_raw_cntPTs(cnt_dict):
-	try:
-		raw_parsed_term_text = cnt_dict.get("parsed_term")
-	except Exception as e:
-		print(f"<!> parsed_term does not exist!: {e}")
+def get_raw_cntHWs(cnt_dict, cleaned_docs: bool=False):
+	nwp_hw_terms = cnt_dict.get("highlighted_term")
+	if not nwp_hw_terms:
 		return
-	return raw_parsed_term_text
+	if cleaned_docs:
+		cleaned_nwp_cntHWs = [cleaned_docs for elem in nwp_hw_terms if (elem and (cleaned_docs:=clean_(docs=elem)))]
+		# print(nwp_hw_terms)
+		# print(cleaned_nwp_cntHWs)
+		# print(f"#"*100)
+		return cleaned_nwp_cntHWs
+	return nwp_hw_terms
 
-def get_raw_cnt(cnt_dict):
-	# return cnt_dict.get("text")
-	try:
-		raw_content_text = cnt_dict.get("text")
-	except Exception as e:
-		print(f"<!> cnt_text does not exist!: {e}")
+def get_raw_cntPTs(cnt_dict, cleaned_docs: bool=False):
+	nwp_pts = cnt_dict.get("parsed_term")
+	if not nwp_pts:
 		return
-	return raw_content_text
+	if cleaned_docs:
+		cleaned_nwp_pts = [cdocs for elem in nwp_pts if (elem and (cdocs:=clean_(docs=elem)))]
+		# print(nwp_pts)
+		# print(cleaned_nwp_pts)
+		# print(f"#"*100)
+		return cleaned_nwp_pts
+	return nwp_pts
 
-def get_raw_sn(results):
-	snippets_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if (sent and len(sent)>0)] # ["raw sentA>!", "raw <!?> sentB", "raw sentC öQ"]
-	return snippets_list
+def get_raw_cnt(cnt_dict, cleaned_docs: bool=False, MIN_CHARs: int=5):
+	nwp_cnt_ocr = cnt_dict.get("text")
+	if (not nwp_cnt_ocr or len(nwp_cnt_ocr) <= MIN_CHARs):
+		return
+	# print(type(nwp_cnt_ocr), len(nwp_cnt_ocr))
+	# assert len(nwp_cnt_ocr) >= 10, f"worthless: {len(nwp_cnt_ocr)}\n{nwp_cnt_ocr}"
+	if cleaned_docs:
+		return clean_(docs=nwp_cnt_ocr)
+	return nwp_cnt_ocr
 
-def get_raw_snHWs(search_results_list):
-	# print(search_results_list)
-	#hw_snippets = [sn.get("terms") for sn in search_results_list if ( sn.get("terms") and len(sn.get("terms")) > 0 )] # [["A"], ["B"], ["C"]]
-	hw_snippets = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs] # ["A", "B", "C"]
-	# print(f"snHW: {hw_snippets}")
-	return hw_snippets
+def get_raw_sn(results, cleaned_docs: bool=False):
+	sn_txt_list = [sent for sn in results if sn.get("textHighlights").get("text") for sent in sn.get("textHighlights").get("text") if (sent and len(sent)>=3)] # ["raw sentA>!", "raw <!?> sentB", "raw sentC öQ"]
+	# print(type(sn_txt_list), len(sn_txt_list))
+	# print(any(elem is None for elem in sn_txt_list),)
 
-def get_preprocessed_document(dframe, preprocessed_docs_fpath):
+	if cleaned_docs:
+		sn_txt_list = [cdocs for elem in sn_txt_list if (elem and (cdocs:=clean_(docs=elem)) )]
 
+	if len(sn_txt_list) < 1:
+		return
+
+	assert len(sn_txt_list) >= 1, f"worthless snippet: {len(sn_txt_list)}\n{sn_txt_list}"
+	assert any(elem is None for elem in sn_txt_list) is False, f"worthless snippet contains none: {sn_txt_list}"	
+	return sn_txt_list
+
+def get_raw_snHWs(search_results_list, cleaned_docs: bool=False):
+	snHWs = [w for sn in search_results_list if ( (raw_snHWs:=sn.get("terms")) and len(raw_snHWs) > 0 ) for w in raw_snHWs if len(w) >= 3] # ["A", "B", "C"]
+
+	if cleaned_docs:
+		snHWs = [cdocs for elem in snHWs if (elem and (cdocs:=clean_(docs=elem)) )]
+
+	if len(snHWs) < 1:
+		return
+	assert len(snHWs) >= 1, f"worthless snippet: {len(snHWs)}\n{snHWs}"
+	assert any(elem is None for elem in snHWs) is False, f"worthless snippet contains none: {snHWs}"	
+	return snHWs
+
+def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocessed_list", preprocessed_df_fpath:str="/path/2/prerocessed_df"):
+	print(f"Preprocessing ORIGINAL INPUT {type(dframe)} {dframe.shape}".center(150, "-"))
+	print(dframe.info(verbose=True, memory_usage="deep"))
+	print("<>"*60)
 	try:
+		preprocessed_df = load_pickle(fpath=preprocessed_df_fpath)
 		preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
 	except Exception as e:
-		print(f"<!> preprocessed_docs not found {e}")
-		print(f"{f'Extracting search query phrases':<50}", end="")
-		st_t = time.time()
-		dframe["query_phrase_raw_text"] = dframe["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		print(f"<!> preprocessed NOT found\n{e}")
+		preprocessed_df = dframe.copy()
 		
-		print(f"{f'Extracting collection query phrases':<50}", end="")
+		print(f"{f'Extracting Raw collection query phrase(s)':<80}", end="")
 		st_t = time.time()
-		dframe["collection_query_phrase_raw_text"] = dframe["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
+		preprocessed_df["collection_sq_phrase"] = preprocessed_df["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"{f'Extracting clipping query phrases':<50}", end="")
+		print(f"{f'Extracting Cleaned collection query phrase(s)':<80}", end="")
 		st_t = time.time()
-		dframe["clipping_query_phrase_raw_text"] = dframe["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
+		preprocessed_df["cleaned_collection_sq_phrase"] = preprocessed_df["collection_query_phrase"].map(lambda lst: get_raw_sqp(lst, cleaned_docs=True), na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"{f'Extracting newspaper content':<50}", end="")
+		print(f"{f'Extracting Raw clipping query phrases':<80}", end="")
 		st_t = time.time()
-		dframe['nwp_content_ocr_text'] = dframe["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
+		preprocessed_df["clipping_sq_phrase"] = preprocessed_df["clipping_query_phrase"].map(get_raw_sqp, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned clipping query phrases':<80}", end="")
+		st_t = time.time()
+		preprocessed_df["cleaned_clipping_sq_phrase"] = preprocessed_df["clipping_query_phrase"].map(lambda lst: get_raw_sqp(lst, cleaned_docs=True), na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Raw search query phrase(s)':<80}", end="")
+		st_t = time.time()
+		preprocessed_df["sq_phrase"] = preprocessed_df["search_query_phrase"].map(get_raw_sqp, na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned search query phrase(s)':<80}", end="")
+		st_t = time.time()
+		preprocessed_df["cleaned_sq_phrase"] = preprocessed_df["search_query_phrase"].map(lambda lst: get_raw_sqp(lst, cleaned_docs=True), na_action="ignore")
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Raw snippets':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['search_results_snippets'] = preprocessed_df["search_results"].map(get_raw_sn, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned snippets':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['cleaned_search_results_snippets'] = preprocessed_df["search_results"].map(lambda res: get_raw_sn(res, cleaned_docs=True), na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Raw snippets < HWs >':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['search_results_hw_snippets'] = preprocessed_df["search_results"].map(get_raw_snHWs, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned snippets < HWs >':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['cleaned_search_results_hw_snippets'] = preprocessed_df["search_results"].map(lambda res: get_raw_snHWs(res, cleaned_docs=True), na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Raw newspaper content < HWs >':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['nwp_content_ocr_hw'] = preprocessed_df["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned newspaper content < HWs >':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['cleaned_nwp_content_ocr_hw'] = preprocessed_df["nwp_content_results"].map(lambda res: get_raw_cntHWs(res, cleaned_docs=True), na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Raw newspaper content < PTs >':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['nwp_content_pt'] = preprocessed_df["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned newspaper content < PTs >':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['cleaned_nwp_content_pt'] = preprocessed_df["nwp_content_results"].map(lambda res: get_raw_cntPTs(res, cleaned_docs=True), na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Raw newspaper content':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['nwp_content_ocr'] = preprocessed_df["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"{f'Extracting Cleaned newspaper content':<80}", end="")
+		st_t = time.time()
+		preprocessed_df['cleaned_nwp_content_ocr'] = preprocessed_df["nwp_content_results"].map(lambda res: get_raw_cnt(res, cleaned_docs=True), na_action='ignore')
+		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+
+		print(f"Preprocessed {type(preprocessed_df)} containing Raw & Cleaned Documents: {preprocessed_df.shape}".center(150, "-"))
+		print(preprocessed_df.info(verbose=True, memory_usage="deep"))
+		print(f"-"*150)
 		
-		print(f"{f'Extracting newspaper content < HWs >':<50}", end="")
-		st_t = time.time()
-		dframe['nwp_content_ocr_text_hw'] = dframe["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-		
-		print(f"{f'Extracting raw snippets':<50}", end="")
-		st_t = time.time()
-		dframe['search_results_snippets'] = dframe["search_results"].map(get_raw_sn, na_action='ignore')
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-		print(f"{f'Extracting raw snippets < HWs >':<50}", end="")
-		st_t = time.time()
-		dframe['search_results_hw_snippets'] = dframe["search_results"].map(get_raw_snHWs, na_action='ignore')
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-		print(dframe.info(verbose=True, memory_usage="deep"))
-		print(f"#"*100)
-
 		users_list = list()
 		raw_texts_list = list()
 
-		for n, g in dframe.groupby("user_ip"):
+		for n, g in preprocessed_df.groupby("user_ip"):
 			users_list.append(n)
-			lque = [ph for ph in g[g["query_phrase_raw_text"].notnull()]["query_phrase_raw_text"].values.tolist() if len(ph) > 0 ] # ["global warming", "econimic crisis", "", ]
-			lcol = [ph for ph in g[g["collection_query_phrase_raw_text"].notnull()]["collection_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
-			lclp = [ph for ph in g[g["clipping_query_phrase_raw_text"].notnull()]["clipping_query_phrase_raw_text"].values.tolist() if len(ph) > 0] # ["", "", "", ...]
+			lque = [ph for ph in g[g["sq_phrase"].notnull()]["sq_phrase"].values.tolist() if len(ph) > 0 ] # ["global warming", "econimic crisis", "", ]
+			lcol = [ph for ph in g[g["collection_sq_phrase"].notnull()]["collection_sq_phrase"].values.tolist() if len(ph) > 0] # ["independence day", "suomen pankki", "helsingin pörssi", ...]
+			lclp = [ph for ph in g[g["clipping_sq_phrase"].notnull()]["clipping_sq_phrase"].values.tolist() if len(ph) > 0] # ["", "", "", ...]
 
 			lsnp = [sent for el in g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 			lsnpHW = [sent for el in g[g["search_results_hw_snippets"].notnull()]["search_results_hw_snippets"].values.tolist() if el for sent in el if sent] # ["", "", "", ...]
 			# print(f"snHW: {lsnpHW}")
 
-			lcnt = [sent for sent in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sent ] # ["", "", "", ...]
-			lcntHW = [word for elm in g[g["nwp_content_ocr_text_hw"].notnull()]["nwp_content_ocr_text_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
+			lcnt = [sent for sent in g[g["nwp_content_ocr"].notnull()]["nwp_content_ocr"].values.tolist() if sent ] # ["", "", "", ...]
+			lcntHW = [word for elm in g[g["nwp_content_ocr_hw"].notnull()]["nwp_content_ocr_hw"].values.tolist() if elm for word in elm if word ] # ["", "", "", ...]
 			# print(lcntHW)
 			
 			ltot = lque + lcol + lclp + lsnp + lcnt + lcntHW + lsnpHW
@@ -1429,8 +1512,9 @@ def get_preprocessed_document(dframe, preprocessed_docs_fpath):
 		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
+		save_pickle(pkl=preprocessed_df, fname=preprocessed_df_fpath)
 
-	return preprocessed_docs
+	return preprocessed_df, preprocessed_docs
 
 def get_compressed_concatenated_path(base_path: str) -> str:
 	"""
