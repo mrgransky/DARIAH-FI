@@ -54,25 +54,30 @@ def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 	# qu_list = ['some word in this format with always length 1']
 	#print(len(qu_list), qu_list)
 	assert len(qu_list) == 1, f"query list length MUST be len(qu_list)==1, Now: {len(qu_list)}!!"
-	return lemmatizer_methods.get(lm)( clean_(docs=qu_list[0]) )
+	# return lemmatizer_methods.get(lm)( clean_(docs=qu_list[0]) )
+	return lemmatizer_methods.get(lm)( docs=qu_list[0] )
 
 def get_lemmatized_snHWs(results, lm: str="stanza"):
-	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	# return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( docs=el ) ) ) for tklm in lemmas if tklm ]
 
 def get_lemmatized_cntHWs(results, lm: str="stanza"):
-	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	# return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	return [ tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( docs=el ) ) ) for tklm in lemmas if tklm ]
 
 def get_lemmatized_cntPTs(results, lm: str="stanza"):
-	return [tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	# return [tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	return [tklm for el in results if ( el and len(el)>0 and ( lemmas:=lemmatizer_methods.get(lm)( docs=el ) ) ) for tklm in lemmas if tklm ]
 
-def get_lemmatized_sn(results, lm: str="stanza", cleaned_docs: bool=False):
-	if cleaned_docs:
-		lemmatized_sn = lemmatized_sn = [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
-		return lemmatized_sn
+def get_lemmatized_sn(results, lm: str="stanza"):
 	return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( el ) ) ) for tklm in lemmas if tklm ]
-
+	## XXXX not required to clean since results are already cleaned and saved in df XXXX
+	# return [ tklm for el in results if ( el and len(el)>0 and (lemmas:=lemmatizer_methods.get(lm)( clean_(docs=el) ) ) ) for tklm in lemmas if tklm ]
+	
 def get_lemmatized_cnt(sentences: str="This is a sample text!", lm: str="stanza"):
-	return lemmatizer_methods.get(lm)(clean_(docs=sentences))
+	return lemmatizer_methods.get(lm)( docs=sentences )
+	## XXXX not required to clean since sentences are already cleaned and saved in df XXXX
+	# return lemmatizer_methods.get(lm)(clean_(docs=sentences))
 
 def get_BoWs(preprocessed_docs, saveDIR: str="DIR", fprefix: str="fname_prefix", lm: str="stanza", MIN_DF: int=10, MAX_DF: float=0.8, MAX_FEATURES: int=None, device_: str="cpu"):
 	print(f"{f'Bag-of-Words {userName} device: {device_} | Corpus of {len(preprocessed_docs)} preprocessed DOCs'.center(150, '-')}")
