@@ -52,13 +52,13 @@ def get_total_user_token_interest(df: pd.DataFrame):
 
 def get_lemmatized_sqp(qu_list, lm: str="stanza"):
 	# qu_list = ['some word in this format with always length 1']
-	print(len(qu_list), qu_list)
+	# print(len(qu_list), qu_list)
 	assert len(qu_list) == 1, f"query list length MUST be len(qu_list)==1, Now: {len(qu_list)}!!"
 	return lemmatizer_methods.get(lm)( clean_(docs=qu_list[0]) )
 
 def get_lemmatized_qu_(phrase: str="this is sample query", lm: str="stanza"):
 	# qu_list = ['some word in this format with always length 1']
-	print(type(phrase), len(phrase), phrase)
+	# print(type(phrase), len(phrase), phrase)
 	return lemmatizer_methods.get(lm)( docs=phrase )
 
 def get_lemmatized_snHWs(results, lm: str="stanza"):
