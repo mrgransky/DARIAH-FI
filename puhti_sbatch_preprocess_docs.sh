@@ -11,7 +11,7 @@
 #SBATCH --mem=8G
 #SBATCH --partition=small
 #SBATCH --time=00-10:00:00
-#SBATCH --array=500-731,0-100
+#SBATCH --array=101-499
 #####SBATCH --gres=gpu:v100:1
 ##### x303: 0-150,580-731
 
