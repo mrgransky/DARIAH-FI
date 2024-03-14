@@ -137,6 +137,33 @@ usr_ = {
 if os.environ['USER']!="alijanif":
 	import enchant
 	import libvoikko
+	fi_dict = libvoikko.Voikko(language="fi")	
+	fii_dict = enchant.Dict("fi")
+	sv_dict = enchant.Dict("sv_SE")
+	sv_fi_dict = enchant.Dict("sv_FI")
+	en_dict = enchant.Dict("en")
+	de_dict = enchant.Dict("de")
+	no_dict = enchant.Dict("no")
+	da_dict = enchant.Dict("da")
+	es_dict = enchant.Dict("es")
+	et_dict = enchant.Dict("et")
+	
+	cs_dict = enchant.Dict("cs")
+	cy_dict = enchant.Dict("cy")
+	fo_dict = enchant.Dict("fo")
+	fr_dict = enchant.Dict("fr")
+	ga_dict = enchant.Dict("ga")
+	hr_dict = enchant.Dict("hr")
+	hu_dict = enchant.Dict("hu")
+	is_dict = enchant.Dict("is")
+	it_dict = enchant.Dict("it")
+	lt_dict = enchant.Dict("lt")
+	lv_dict = enchant.Dict("lv")
+	nl_dict = enchant.Dict("nl")
+	pl_dict = enchant.Dict("pl")
+	sl_dict = enchant.Dict("sl")
+	sk_dict = enchant.Dict("sk")
+
 
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
@@ -759,35 +786,7 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 
 @cache
 def remove_misspelled_(documents: str="This is a sample sentence."):
-	# print(f"Removing misspelled word(s)".center(100, " "))
-	# Create dictionaries for Finnish, Swedish, and English
-	fi_dict = libvoikko.Voikko(language="fi")	
-	fii_dict = enchant.Dict("fi")
-	sv_dict = enchant.Dict("sv_SE")
-	sv_fi_dict = enchant.Dict("sv_FI")
-	en_dict = enchant.Dict("en")
-	de_dict = enchant.Dict("de")
-	no_dict = enchant.Dict("no")
-	da_dict = enchant.Dict("da")
-	es_dict = enchant.Dict("es")
-	et_dict = enchant.Dict("et")
-	
-	cs_dict = enchant.Dict("cs")
-	cy_dict = enchant.Dict("cy")
-	fo_dict = enchant.Dict("fo")
-	fr_dict = enchant.Dict("fr")
-	ga_dict = enchant.Dict("ga")
-	hr_dict = enchant.Dict("hr")
-	hu_dict = enchant.Dict("hu")
-	is_dict = enchant.Dict("is")
-	it_dict = enchant.Dict("it")
-	lt_dict = enchant.Dict("lt")
-	lv_dict = enchant.Dict("lv")
-	nl_dict = enchant.Dict("nl")
-	pl_dict = enchant.Dict("pl")
-	sl_dict = enchant.Dict("sl")
-	sk_dict = enchant.Dict("sk")
-	
+	# print(f"Removing misspelled word(s)".center(100, " "))	
 	# Split the documents into words
 	documents = documents.title()
 	if not isinstance(documents, list):
@@ -825,8 +824,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			lv_dict.check(word) or 
 			nl_dict.check(word) or 
 			pl_dict.check(word) or 
-			sl_dict.check(word) or 
-			sk_dict.check(word)
+			sl_dict.check(word) #or 
+			# sk_dict.check(word)
 		):
 			# print(f"\t\t{word} does not exist")
 			pass

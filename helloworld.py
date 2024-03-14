@@ -27,6 +27,31 @@ import logging
 # 	quiet=True, 
 # 	# raise_on_error=True,
 # )
+fii_dict = enchant.Dict("fi")
+fi_dict = libvoikko.Voikko(language="fi")
+sv_dict = enchant.Dict("sv_SE")
+sv_fi_dict = enchant.Dict("sv_FI")
+en_dict = enchant.Dict("en")
+de_dict = enchant.Dict("de")
+no_dict = enchant.Dict("no")
+da_dict = enchant.Dict("da")
+es_dict = enchant.Dict("es")
+et_dict = enchant.Dict("et")
+cs_dict = enchant.Dict("cs")
+cy_dict = enchant.Dict("cy")
+fo_dict = enchant.Dict("fo")
+fr_dict = enchant.Dict("fr")
+ga_dict = enchant.Dict("ga")
+hr_dict = enchant.Dict("hr")
+hu_dict = enchant.Dict("hu")
+is_dict = enchant.Dict("is")
+it_dict = enchant.Dict("it")
+lt_dict = enchant.Dict("lt")
+lv_dict = enchant.Dict("lv")
+nl_dict = enchant.Dict("nl")
+pl_dict = enchant.Dict("pl")
+sl_dict = enchant.Dict("sl")
+sk_dict = enchant.Dict("sk")
 
 tt = time.time()
 lang_id_config = {
@@ -149,35 +174,7 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 	return docs
 
 def remove_misspelled_(documents: str="This is a sample sentence."):
-	# print(f"Removing misspelled word(s)".center(100, " "))
-	# Create dictionaries for Finnish, Swedish, and English
-	fii_dict = enchant.Dict("fi")
-	fi_dict = libvoikko.Voikko(language="fi")
-	sv_dict = enchant.Dict("sv_SE")
-	sv_fi_dict = enchant.Dict("sv_FI")
-	en_dict = enchant.Dict("en")
-	de_dict = enchant.Dict("de")
-	no_dict = enchant.Dict("no")
-	da_dict = enchant.Dict("da")
-	es_dict = enchant.Dict("es")
-	et_dict = enchant.Dict("et")
-	
-	cs_dict = enchant.Dict("cs")
-	cy_dict = enchant.Dict("cy")
-	fo_dict = enchant.Dict("fo")
-	fr_dict = enchant.Dict("fr")
-	ga_dict = enchant.Dict("ga")
-	hr_dict = enchant.Dict("hr")
-	hu_dict = enchant.Dict("hu")
-	is_dict = enchant.Dict("is")
-	it_dict = enchant.Dict("it")
-	lt_dict = enchant.Dict("lt")
-	lv_dict = enchant.Dict("lv")
-	nl_dict = enchant.Dict("nl")
-	pl_dict = enchant.Dict("pl")
-	sl_dict = enchant.Dict("sl")
-	sk_dict = enchant.Dict("sk")
-	
+	# print(f"Removing misspelled word(s)".center(100, " "))	
 	# Split the documents into words
 	documents = documents.title()
 	if not isinstance(documents, list):
@@ -217,7 +214,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			nl_dict.check(word), 
 			pl_dict.check(word), 
 			sl_dict.check(word), 
-			sk_dict.check(word)
+			# sk_dict.check(word)
 		)
 		if not (
 			fi_dict.spell(word) or 
@@ -243,8 +240,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			lv_dict.check(word) or 
 			nl_dict.check(word) or 
 			pl_dict.check(word) or 
-			sl_dict.check(word) or 
-			sk_dict.check(word)
+			sl_dict.check(word) #or 
+			# sk_dict.check(word)
 		):
 			print(f"\t\t{word} does not exist")
 			pass
@@ -262,90 +259,91 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA
-ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
-mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
-Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
-Kontorsmannaförbundet 30 år
-Bestyrelsen för allmänna finska utställningen har af landets regering emottagit en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
-hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
-Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
-1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
-2) Årsberättelse; 
-3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
-4) Reglemente för lcke-Officiela Afdelningen.
-Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
-för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
-af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
-Styrelseledamot – det här ingår i rollen!
-Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-I detta inlägg, det tredje i vår serie, 
-tydliggör Lena Hasselborn, styrelsecoach på PwC, vad som ingår i rollen som styrelseledamot. 
-Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
-Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
-Enligt larmet har en spårvagn kört in i en annan spårvagn bakifrån.
-Räddningstjänsten är på plats med en ”större styrka”.
-På grund av olyckan har all spårvagnstrafik mot Angered ställts in.
-– Vi tittar på att sätta in ersättningstrafik, säger Christian Blomquist, störningskoordinator på Västtrafik, till GP.
-En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
-I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
-Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-n:o 3 i Napo by, Storkyro, 166, 167, 168. 
-KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-mdccxc. 45 Ö® ettlfllft att, 4-&#x27;to. 
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-1 <em>Österbottningen</em> | i GAMLAKARLEBY ffi har stor spridning, w företrädesvis
-<em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
-Den 2 maj hissar Helsingfors Aktiebanks kontor i Nykarleby flaggan i topp. Kontoret firar 100 års jubileum. 
-'''
-
-# orig_text = """
-# SUomI
-# LAHTI LAHTIS.
-# HELSINGFORS TEL. 524 &quot; ________________=___B Broderar! <em>OMPELUKONE</em> O&#x2F;V HUSQVARNA SYMASKIN Tammerfors, Helsingfors, Åbo
-# kartanossa hyvinkäällä astutusmaksu puh hyvinkään sanomain asiamiehille hyvinkään sanomat
-# URHO SEPPÄLÄ.
-# mielenkiintoisesti viljan siemenestä oppilas juho pesonen lausui runon ven paavo kolmannen
-# Pohjois-Hämeen
-# pohjois-hämeen osuuspankki
-# pohjois pohjanmaa
-# länsi uudenmaan hyvinvointialue
-# Sanomalehti Länsi-Suomi
-# itä-uudenmaan hyvinvointialue
-# etelä-karjalan hyvinvointialue
-# myös ylösnousemus josa nimittäin samalla yli toisen
-# I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
-# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-# metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
-# Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
-# mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkkiä lupaavan työskentelyn vielä ratkaisemattomien probleemien selvittämiseksi.
-# 229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
-# Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
-# Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
-# Ev. 17 T. 21: I—l 7. 18 F. 21:18-32. 19 L. 21:33—46 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
-# 82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
-# ruottalan koski
-# PUOLELLA — KUTEN TAVALLISTA.
-# Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
-# Ilmankos sitä "yliopistoksi" sanottaisiin.
-# Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
-# Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
-# Tampereen Teknillinen Yliopisto
-# Siffiffi ilmoitetaan
-# Pidätettnien lutumääm »ouiee
-# Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
-# Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
-# Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
-# HiltulaZta n:o 2.
-# Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
-# huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+# orig_text = '''
+# sVenskA
+# ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
+# mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
+# Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
+# Kontorsmannaförbundet 30 år
+# Bestyrelsen för allmänna finska utställningen har af landets regering emottagit en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
+# hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
+# Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
+# 1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
+# 2) Årsberättelse; 
+# 3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
+# 4) Reglemente för lcke-Officiela Afdelningen.
+# Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
+# för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
+# af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
+# Styrelseledamot – det här ingår i rollen!
+# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+# I detta inlägg, det tredje i vår serie, 
+# tydliggör Lena Hasselborn, styrelsecoach på PwC, vad som ingår i rollen som styrelseledamot. 
+# Två spårvagnar har krockat i Kortedala i Göteborg. <em>Drumsö</em> Korkis Vippal kommer från Rågöarna!!!
+# Flera personer har skadats, det är oklart hur allvarligt, skriver polisen på sin hemsida.
+# Enligt larmet har en spårvagn kört in i en annan spårvagn bakifrån.
+# Räddningstjänsten är på plats med en ”större styrka”.
+# På grund av olyckan har all spårvagnstrafik mot Angered ställts in.
+# – Vi tittar på att sätta in ersättningstrafik, säger Christian Blomquist, störningskoordinator på Västtrafik, till GP.
+# En styrelseledamot i ett aktiebolag är en person som ingår i bolagets styrelse. 
+# I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
+# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
 # n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+# mdccxc. 45 Ö® ettlfllft att, 4-&#x27;to. 
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
+# 1 <em>Österbottningen</em> | i GAMLAKARLEBY ffi har stor spridning, w företrädesvis
 # <em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
-# Mutta huomattavina osakkaina ovat myöskin belgialaiset, sveitsiläiset, hollantilaiset ja tshekkoslovakialaiset kapitalistit.
-# """
+# Den 2 maj hissar Helsingfors Aktiebanks kontor i Nykarleby flaggan i topp. Kontoret firar 100 års jubileum. 
+# '''
+
+orig_text = """
+SUomI
+ABO£,£xcudJOH* KIA.MPE, Reg. Acad. Typogr.
+LAHTI LAHTIS.
+HELSINGFORS TEL. 524 &quot; ________________=___B Broderar! <em>OMPELUKONE</em> O&#x2F;V HUSQVARNA SYMASKIN Tammerfors, Helsingfors, Åbo
+kartanossa hyvinkäällä astutusmaksu puh hyvinkään sanomain asiamiehille hyvinkään sanomat
+URHO SEPPÄLÄ.
+mielenkiintoisesti viljan siemenestä oppilas juho pesonen lausui runon ven paavo kolmannen
+Pohjois-Hämeen
+pohjois-hämeen osuuspankki
+pohjois pohjanmaa
+länsi uudenmaan hyvinvointialue
+Sanomalehti Länsi-Suomi
+itä-uudenmaan hyvinvointialue
+etelä-karjalan hyvinvointialue
+myös ylösnousemus josa nimittäin samalla yli toisen
+I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
+Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
+Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
+mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkkiä lupaavan työskentelyn vielä ratkaisemattomien probleemien selvittämiseksi.
+229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
+Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
+Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
+Ev. 17 T. 21: I—l 7. 18 F. 21:18-32. 19 L. 21:33—46 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
+82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
+ruottalan koski
+PUOLELLA — KUTEN TAVALLISTA.
+Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
+Ilmankos sitä "yliopistoksi" sanottaisiin.
+Ruottala on kylä Tornion kaupungissa Kaakamajokivarressa Jäämerentien varrella.
+Pieni osa kylästä kuuluu Keminmaan kuntaan, mutta suurin osa kylän asukkaista asuu Tornion puolella.
+Tampereen Teknillinen Yliopisto
+Siffiffi ilmoitetaan
+Pidätettnien lutumääm »ouiee
+Malaga-kuvauskielellä kirjoittamaan sananmuodostussäännöstöön.
+Etsimä Pohjalahtelaiset kokoontuvat koululle, valvojat: 
+Kalle Oivio ja Matti Niemi. Mälkilän kylä kokoontuu Sipilään, valvojat: 
+HiltulaZta n:o 2.
+Muuttokirjaa anoneet: GMnen trpp. <em>Sakari Eronen</em> R&gt;epamäestä n:o t prjytH l perficineen muuttokirjaa
+huokealla. <em>Ryijyn</em> valmistaminen on S sitäpaitsi helppoa
+n:o 3 i Napo by, Storkyro, 166, 167, 168. 
+<em>Knuters</em>, n:o 17 i <em>Hindsby</em>, Sibbo, 160, 161, 162. Korhonens, I., 1&#x2F;2 n:o
+Mutta huomattavina osakkaina ovat myöskin belgialaiset, sveitsiläiset, hollantilaiset ja tshekkoslovakialaiset kapitalistit.
+"""
 
 # orig_text='''
 # SUomI x2
