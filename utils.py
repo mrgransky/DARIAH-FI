@@ -164,7 +164,6 @@ if os.environ['USER']!="alijanif":
 	sl_dict = enchant.Dict("sl")
 	sk_dict = enchant.Dict("sk")
 
-
 NLF_DATASET_PATH = usr_[os.environ['USER']]
 userName = os.path.expanduser("~")
 rpath = os.path.join( NLF_DATASET_PATH, f"results" )
