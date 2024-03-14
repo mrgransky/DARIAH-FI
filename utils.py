@@ -725,8 +725,8 @@ def get_query_phrase(inp_url):
 	return params.get("query")
 
 @cache
-def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
-	print(f'Raw Input:\n>>{docs}<<')
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
+	# print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	t0 = time.time()
@@ -751,8 +751,8 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
-	print(f"<>"*100)
+	# print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
+	# print(f"<>"*100)
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
@@ -1511,6 +1511,10 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 		save_pickle(pkl=preprocessed_df, fname=preprocessed_df_fpath)
+
+		df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
+		cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
+		cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
 
 	return preprocessed_df, preprocessed_docs
 

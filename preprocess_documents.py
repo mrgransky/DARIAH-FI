@@ -55,7 +55,12 @@ def main():
 
 	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_listed_docs.gz")
 	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_df.gz")
-	
+	# with HiddenPrints(): # with no prints
+	# 	_, _ = get_preprocessed_doc(
+	# 		dframe=ORIGINAL_INP_DF, 
+	# 		preprocessed_docs_fpath=preprocessed_docs_fpath,
+	# 		preprocessed_df_fpath=preprocessed_df_fpath,
+	# 	)
 	_, _ = get_preprocessed_doc(
 		dframe=ORIGINAL_INP_DF, 
 		preprocessed_docs_fpath=preprocessed_docs_fpath,
