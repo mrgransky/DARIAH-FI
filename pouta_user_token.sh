@@ -17,7 +17,7 @@ echo "${stars// /*}"
 HOME_DIR=$(echo $HOME)
 STORAGE_DIR="/media/volume" # Pouta
 # STORAGE_DIR="$HOME_DIR/datasets" # local
-DATAFRAME_DIR="$STORAGE_DIR/Nationalbiblioteket/dataframes_xx"
+DATAFRAME_DIR="$STORAGE_DIR/Nationalbiblioteket/dataframes_x12"
 files=($STORAGE_DIR/Nationalbiblioteket/datasets/*.dump)
 echo "HOME DIR $HOME_DIR"
 echo "STORAGE_DIR: $STORAGE_DIR"
