@@ -725,8 +725,8 @@ def get_query_phrase(inp_url):
 	return params.get("query")
 
 @cache
-def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
-	# print(f'Raw Input:\n>>{docs}<<')
+def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
+	print(f'Raw Input:\n>>{docs}<<')
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	t0 = time.time()
@@ -751,8 +751,8 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=False):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	# print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
-	# print(f"<>"*100)
+	print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
+	print(f"<>"*100)
 	if not docs or len(docs) == 0 or docs == "":
 		return
 	return docs
