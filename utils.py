@@ -1511,6 +1511,7 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 		save_pickle(pkl=preprocessed_df, fname=preprocessed_df_fpath)
+		print(f">> Saving cleaned_sq_phrase into excel file... ")
 
 		df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
 		cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
