@@ -5,7 +5,7 @@
 ## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_nlf_output.out 2>&1 & # with output saved in check_output.out
 
 ## $ nohup parallel -j 8 "bash pouta_user_token.sh {}" ::: {682..731} > /dev/null 2>&1 &
-## $ nohup parallel -j 4 "bash pouta_user_token.sh {}" ::: {729..731} > /media/volume/trash/NLF/nlf_usr_tk_parallel_jobs_cuda3_729_731.out 2>&1 &
+## $ nohup parallel -j 4 "bash pouta_user_token.sh {}" ::: {726..728} > /media/volume/trash/NLF/nlf_usr_tk_parallel_jobs_cuda2_726_728.out 2>&1 &
 
 USR_NAME="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -36,7 +36,7 @@ echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 	python -u user_token.py \
 		--inputDF ${files[$qIDX]} \
 		--outDIR $DATAFRAME_DIR \
-		--cudaNum 3 \
+		--cudaNum 2 \
 		--maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
 else
 	echo "<!> Error: Invalid input query index: $qIDX"
