@@ -13,7 +13,7 @@ parser.add_argument(
 	required=True,
 	help='Path to directory of df_concat',
 )
-parser.add_argument('-q', '--qphrase', default="Helsingin Pörssi ja Suomen Pankki", type=str)
+parser.add_argument('-q', '--qphrase', default="Suomen Kommunistinen Puolue", type=str)
 parser.add_argument('-lm', '--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
 parser.add_argument('--topTKs', default=5, type=int)
@@ -23,6 +23,9 @@ fprefix: str = "FILE_PREFIXname_TBR"
 
 # how to run:
 # python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "Tampereen Teknillinen Yliopisto"
+
+# in Pouta:
+# $ nohup python -u concat_dfs.py --dfsPath /media/volume/Nationalbiblioteket/dataframes_yy > concat_x19_check.out & 
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)
