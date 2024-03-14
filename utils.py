@@ -53,7 +53,7 @@ from matplotlib.colors import Colormap as cm
 sz=16
 MODULE=60
 params = {
-		'figure.figsize':	(sz*1.0, sz*0.5),  # W, H
+		'figure.figsize':	(sz*1.0, sz*0.49),  # W, H
 		'figure.dpi':		200,
 		#'figure.autolayout': True,
 		#'figure.constrained_layout.use': True,
@@ -195,7 +195,7 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	#print(f"\n\n>> user_idx: {user_idx} - ")
 	
 	# tk_indeces_sorted_no_0 = np.where(matrix[user_idx, :] != 0, matrix[user_idx, :], np.nan).argsort()[:(matrix[user_idx, :] != 0).sum()]
-	# print(tk_indeces_sorted_no_0[-50:])
+	# print(tk_indeces_sorted_no_0[-40:])
 	# tks_name = [k for idx in tk_indeces_sorted_no_0 for k, v in bow.items() if v==idx]
 	# tks_value_all = matrix[user_idx, tk_indeces_sorted_no_0]
 	
@@ -205,8 +205,8 @@ def get_tokens_byUSR(sp_mtrx, df_usr_tk, bow, user="ip1025",):
 	tks_name = list(tk_dict.keys())
 	tks_value_all = list(tk_dict.values())
 	
-	#print(tks_name[:50])
-	#print(tks_value_all[:50])
+	#print(tks_name[:40])
+	#print(tks_value_all[:40])
 
 	assert len(tks_name) == len(tks_value_all), f"found {len(tks_name)} tokens names & {len(tks_value_all)} tokens values"
 
@@ -369,7 +369,7 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	print("<>"*40)
 	print(df[["nwp_content_results", "search_query_phrase", "search_results" ]].head(10))
 
-	# with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1500):
+	# with pd.option_context('display.max_rows', None, 'display.max_colwidth', 1400):
 	# 	print(df[["user_ip",
 	# 						"timestamp",
 	# 						#"search_query_phrase", 
@@ -402,9 +402,9 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 
 	# print(json.dumps(df["search_results"][1][0], indent=2, ensure_ascii=False))
 	# print(json.dumps(df.loc[1, "search_results"][0], indent=2, ensure_ascii=False))
-	# print("#"*150)
+	# print("#"*140)
 
-	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1500):
+	# with pd.option_context('display.max_rows', 300, 'display.max_colwidth', 1400):
 	# 	print(df[[#nwp_content_results", 
 	# 						"nwp_content_referer",
 	# 						]
@@ -413,7 +413,7 @@ def analyze_df(df: pd.DataFrame, fname: str="unkonwn"):
 	# print("<>"*100)
 	# print(list(df["nwp_content_results"][4].keys()))
 	
-	# print("#"*150)
+	# print("#"*140)
 	# print(json.dumps(df["nwp_content_results"][4], indent=2, ensure_ascii=False))
 	
 	print("DONE".center(80, "-"))
@@ -890,14 +890,14 @@ def get_inv_doc_freq(user_token_df: pd.DataFrame, file_name: str="MUST_BE_SET"):
 	return idf
 
 def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
-	print(f"Inverse document frequency for {type(spMtx)} {spMtx.shape} {spMtx.dtype}".center(150, " "))
+	print(f"Inverse document frequency for {type(spMtx)} {spMtx.shape} {spMtx.dtype}".center(140, " "))
 	st_t=time.time()
 	nUsers, _ = spMtx.shape
 	doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
 	#doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
 	idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term), dtype=np.float32)
 	#idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term))
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {idf.shape} {type(idf)} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB".center(150, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {idf.shape} {type(idf)} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB".center(140, " "))
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
@@ -1078,7 +1078,7 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 		userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
 		# uNorms[ui]=np.linalg.norm(userInterest)
 		uNorms[ui]=np.linalg.norm(userInterest**exponent)
-	print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~215 sec
+	print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~210 sec
 	usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(uNorms)}_nUSRs.gz")
 	save_pickle(pkl=uNorms, fname=usrNorm_fname)
 	return uNorms
@@ -1197,7 +1197,7 @@ def get_query_vec(mat, mat_row, mat_col, tokenized_qu_phrases=["åbo", "akademi"
 	return query_vector
 
 def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0):
-	print(f"Optimized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(150, "-"))
+	print(f"Optimized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(140, "-"))
 	print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
 	print(f"<quVec> {type(query_vec)} {query_vec.shape} {query_vec.dtype}")
 	print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
@@ -1218,13 +1218,13 @@ def get_optimized_cs(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0)
 		# temp_cs_multiplier=np.sum(usrInterest_noNorms*quInterest_nonZeros) # added Nov 10th
 
 		usrInterest=(usrInterest*(1/usrInterestNorm))#**0.1 # seems faster
-		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)), exponent=0.1)#~0.35s 1cpu=>~0.07s 8cpu
+		# usrInterest=numba_exp(array=(usrInterest*(1/usrInterestNorm)), exponent=0.1)#~0.3s 1cpu=>~0.07s 8cpu
 
 		usrInterest=(usrInterest**exponent) # added Nov 30th
 
 		cs[ui]=np.sum(usrInterest*quInterest_nonZeros)
 		# cs[ui]*=temp_cs_multiplier # added Nov 10th
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(cs)} {cs.dtype} {cs.shape}".center(150, "-"))
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(cs)} {cs.dtype} {cs.shape}".center(140, "-"))
 	return cs # (nUsers,)
 
 def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
@@ -1247,9 +1247,9 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 		update_vec=cosine_sim[nonzero_idx_CCS]*userInterest # (nTokens,)
 		avg_rec[nonzero_idxs]+=update_vec # (nTokens,) + (len(idx_nonzeros),)
 	avg_rec*=(1/np.sum(cosine_sim))# (nTokens,)
-	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, "-"))	
+	print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(140, "-"))	
 	return avg_rec #(nTokens,) #(nTokens_shrinked,) # smaller matrix
-	# print(f"Getting avgRecSysVec (1 x nTokens={spMtx.shape[1]})".center(150, " "))
+	# print(f"Getting avgRecSysVec (1 x nTokens={spMtx.shape[1]})".center(140, " "))
 	# print(f"<spMtx> {type(spMtx)} {spMtx.shape} {spMtx.dtype}")
 	# print(f"<Cosine> {type(cosine_sim)} {cosine_sim.shape} {cosine_sim.dtype}")
 	# print(f"<IDF> {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}")
@@ -1265,7 +1265,7 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	# 	update_vec=cosine_sim[ui]*userInterest # (nTokens,)
 	# 	avg_rec[nonzero_idxs]+=update_vec # (nTokens,) + (len(idx_nonzeros),)
 	# avg_rec*=(1/np.sum(cosine_sim)) # (nTokens,)
-	# print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(150, " "))	
+	# print(f"Elapsed_t: {time.time()-st_t:.2f} s {type(avg_rec)} {avg_rec.dtype} {avg_rec.shape}".center(140, " "))	
 	# return avg_rec # (nTokens,)
 
 def get_topK_tokens(mat_cols, avgrec, qu: List[str], K: int=100):
@@ -1322,7 +1322,7 @@ def get_raw_cntPTs(cnt_dict, cleaned_docs: bool=False):
 		return cleaned_nwp_pts
 	return nwp_pts
 
-def get_raw_cnt(cnt_dict, cleaned_docs: bool=False, MIN_CHARs: int=5):
+def get_raw_cnt(cnt_dict, cleaned_docs: bool=False, MIN_CHARs: int=4):
 	nwp_cnt_ocr = cnt_dict.get("text")
 	if (not nwp_cnt_ocr or len(nwp_cnt_ocr) <= MIN_CHARs):
 		return
@@ -1360,7 +1360,7 @@ def get_raw_snHWs(search_results_list, cleaned_docs: bool=False):
 	return snHWs
 
 def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocessed_list", preprocessed_df_fpath:str="/path/2/prerocessed_df"):
-	print(f"Preprocessing ORIGINAL INPUT {type(dframe)} {dframe.shape}".center(150, "-"))
+	print(f"Preprocessing ORIGINAL INPUT {type(dframe)} {dframe.shape}".center(140, "-"))
 	print(dframe.info(verbose=True, memory_usage="deep"))
 	print("<>"*60)
 	try:
@@ -1450,9 +1450,9 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		preprocessed_df['cleaned_nwp_content_ocr'] = preprocessed_df["nwp_content_results"].map(lambda res: get_raw_cnt(res, cleaned_docs=True), na_action='ignore')
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"Preprocessed {type(preprocessed_df)} containing Raw & Cleaned Documents: {preprocessed_df.shape}".center(150, "-"))
+		print(f"Preprocessed {type(preprocessed_df)} containing Raw & Cleaned Documents: {preprocessed_df.shape}".center(140, "-"))
 		print(preprocessed_df.info(verbose=True, memory_usage="deep"))
-		print(f"-"*150)
+		print(f"-"*140)
 		
 		users_list = list()
 		raw_texts_list = list()
@@ -1496,7 +1496,7 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 				re.search(r"\S", subitem) and
 				re.search(r"\D", subitem) and
 				# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
-				max([len(el) for el in subitem.split()]) > 4 and # longest word within the subitem is at least 5 characters
+				max([len(el) for el in subitem.split()]) >= 4 and # longest word within the subitem is at least 4 characters
 				re.search(r"\b(?=\D)\w{3,}\b", subitem)
 			)
 		]
