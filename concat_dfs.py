@@ -1022,6 +1022,15 @@ def run():
 
 if __name__ == '__main__':
 	# os.system("clear")
-	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
+	print(
+		f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+		.center(160, " ")
+	)
+	START_EXECUTION_TIME = time.time()
 	run()
-	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(150, " "))
+	END_EXECUTION_TIME = time.time()
+	print(
+		f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} "
+		f"TOTAL_ELAPSED_TIME: {END_EXECUTION_TIME-START_EXECUTION_TIME:.1f} sec"
+		.center(160, " ")
+	)
