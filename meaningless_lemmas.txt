@@ -9446,3 +9446,5 @@ tqrveri
 rnhannr
 kaupunlci
 tcxtile
+puhelimet
+puhelim

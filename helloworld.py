@@ -135,7 +135,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 			for _, vw in enumerate(vsnt.words) 
 			if ( 
 					(wlm:=vw.lemma)
-					and 5 <= len(wlm) <= 40
+					and 4 <= len(wlm) <= 43
 					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+', wlm) 
 					and vw.upos not in useless_upos_tags 
 					and wlm not in UNQ_STW
@@ -301,6 +301,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+mattila palkinto launonen kalle uotila uitto sameli salonen ohra palk salomon ranta
 ABO£,£xcudJOH* KIA.MPE, Reg. Acad. Typogr.
 LAHTI LAHTIS.
 HELSINGFORS TEL. 524 &quot; ________________=___B Broderar! <em>OMPELUKONE</em> O&#x2F;V HUSQVARNA SYMASKIN Tammerfors, Helsingfors, Åbo
