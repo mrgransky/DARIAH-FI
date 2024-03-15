@@ -259,7 +259,7 @@ def get_learned_weights(df: pd.DataFrame):
 	except Exception as e:
 		print(f"<!> {e}")
 		# Apply weights to each column
-		print(f">> Apply weights to each column [might take a while]...", end="\t")
+		print(f"{f'>> Apply weights to each column [might take a while]...':<120}", end="")
 		t0 = time.time()
 		token_data = pd.concat([df[col].apply(lambda x: apply_weights(x, column_weights[col])) for col in column_weights], axis=1)
 		print(f"Elapsed_t: {time.time()-t0:.2f} s | token_data: {type(token_data)} {token_data.shape}")
@@ -446,39 +446,39 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 	if learned_weights:
 		weights = get_learned_weights(df=user_df)
 
-	print(f"Implicit Feedback of each category  using 'fixed constant' weights | user_df {user_df.shape}".center(150, "-"))
+	print(f"Implicit Feedback of each category using 'fixed constant' weights user_df {user_df.shape}".center(150, "-"))
 	imf_st_t = time.time()
 	users_df_detailed_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_users_DataFrame_detailed_{len(bow)}_BoWs.gz")
 	try:
 		load_pickle(fpath=users_df_detailed_fname)
 	except Exception as e:
 		print(f"<!> {e}")
-		print(f"usrInt_qu_tk", end="\t")
+		print(f"{f'usrInt_qu_tk':<80}", end="")
 		st_t = time.time()
 		user_df["usrInt_qu_tk"] = user_df['qu_tokens'].map(lambda lst: get_agg_tk_apr(lst, wg=weightQueryAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 		
-		print(f"usrInt_sn_hw_tk", end="\t")
+		print(f"{f'usrInt_sn_hw_tk':<80}", end="")
 		st_t = time.time()
 		user_df["usrInt_sn_hw_tk"] = user_df['snippets_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"usrInt_sn_tk", end="\t")
+		print(f"{f'usrInt_sn_tk':<80}", end="")
 		st_t = time.time()
 		user_df["usrInt_sn_tk"] = user_df['snippets_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightSnippetAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"usrInt_cnt_hw_tk", end="\t")
+		print(f"{f'usrInt_cnt_hw_tk':<80}", end="")
 		st_t = time.time()
 		user_df["usrInt_cnt_hw_tk"] = user_df['nwp_content_hw_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentHWAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"usrInt_cnt_pt_tk", end="\t")
+		print(f"{f'usrInt_cnt_pt_tk':<80}", end="")
 		st_t = time.time()
 		user_df["usrInt_cnt_pt_tk"] = user_df['nwp_content_pt_token'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentPTAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
 
-		print(f"usrInt_cnt_tk", end="\t")
+		print(f"{f'usrInt_cnt_tk':<80}", end="")
 		st_t = time.time()
 		user_df["usrInt_cnt_tk"] = user_df['nwp_content_lemma_all'].map(lambda lst: get_agg_tk_apr(lst, wg=weightContentAppearance, vb=bow) if lst else np.nan, na_action="ignore")
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
@@ -486,7 +486,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		print("#"*80)
 		save_pickle(pkl=user_df, fname=users_df_detailed_fname)
 		
-	print(f"<TOTAL> user_token_interest {user_df.shape}", end="\t")	
+	print(f"{f'<TOTAL> user_token_interest {user_df.shape}':<80}", end="")
 	# print( user_df.info( verbose=True, memory_usage="deep") )
 	# print("#"*80)
 	st_t = time.time()
@@ -933,7 +933,7 @@ def get_nwp_cnt_by_nUsers_with_max(cos_sim, cos_sim_idx, sp_mtrx, users_tokens_d
 		winner_user = None
 		winner_content = None
 		for iUSR, vUSR in enumerate(nUsers_with_max_cosine):
-			print(vUSR, end="\t")
+			print(vUSR, end=" ")
 			tboost, idoc = users_tokens_df[users_tokens_df["user_ip"]==vUSR]["selected_content"].values.tolist()[0].get(recTK)
 			print(f"[total_boost, idoc]: [{tboost}, {idoc}]")
 			if tboost > max_boost:
