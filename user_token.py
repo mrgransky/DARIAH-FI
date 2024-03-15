@@ -359,13 +359,13 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		save_pickle(pkl=cntHW_list, fname=cntHWFile)
 
 	print(f"\n>> Getting {cntFile} ...")	
-	# df_preprocessed['nwp_content_ocr_text'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
+	# df_preprocessed['nwp_content_ocr'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
 		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
 	except:
 		print(f"<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
-		# cntLMs = df_preprocessed["nwp_content_ocr_text"].map(lambda raw_snt: get_lemmatized_cnt(sentences=raw_snt, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
+		# cntLMs = df_preprocessed["nwp_content_ocr"].map(lambda raw_snt: get_lemmatized_cnt(sentences=raw_snt, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
 		cntLMs = df_preprocessed["cleaned_nwp_content_ocr"].map(lambda sent: get_lemmatized_cnt(sentences=sent, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
 		df_preprocessed['nwp_content_ocr_text_tklm'] = cntLMs
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
@@ -407,7 +407,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
 		nwp_content_lemmas_all_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
 		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
-		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr_text"].notnull()]["nwp_content_ocr_text"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
+		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr"].notnull()]["nwp_content_ocr"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
 
 	user_df = pd.DataFrame(
 		data = list(

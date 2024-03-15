@@ -301,6 +301,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+siitä vasemmalle pohjoiseen xvii cois sai yöllä
+olemassa kullan temppeli kokoon
 mattila palkinto launonen kalle uotila uitto sameli salonen ohra palk salomon ranta
 ABO£,£xcudJOH* KIA.MPE, Reg. Acad. Typogr.
 LAHTI LAHTIS.
