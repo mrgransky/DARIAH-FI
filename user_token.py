@@ -307,15 +307,15 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		save_pickle(pkl=sq_list, fname=sqFile)
 
 	print(f"\n>> Getting {cntPTFile} ...")	
-	# df_preprocessed['nwp_content_ocr_text_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
+	# df_preprocessed['nwp_content_ocr_pt'] = df_preprocessed["nwp_content_results"].map(get_raw_cntPTs, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_pt_tklm"] = load_pickle(fpath=cntPTFile)
+		df_preprocessed["nwp_content_ocr_pt_tklm"] = load_pickle(fpath=cntPTFile)
 	except:
 		print(f"<!> Content Parsed Terms [tokenization + lemmatization]...")
 		st_t = time.time()
-		# cntPT_list = df_preprocessed["nwp_content_ocr_text_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
+		# cntPT_list = df_preprocessed["nwp_content_ocr_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		cntPT_list = df_preprocessed["cleaned_nwp_content_pt"].map(lambda lst: get_lemmatized_cntPTs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_pt_tklm'] = cntPT_list
+		df_preprocessed['nwp_content_ocr_pt_tklm'] = cntPT_list
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=cntPT_list, fname=cntPTFile)
 
@@ -346,28 +346,28 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 		save_pickle(pkl=snHW_list, fname=snHWFile)
 	
 	print(f"\n>> Getting {cntHWFile} ...")	
-	# df_preprocessed['nwp_content_ocr_text_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
+	# df_preprocessed['nwp_content_ocr_hw'] = df_preprocessed["nwp_content_results"].map(get_raw_cntHWs, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_hw_tklm"] = load_pickle(fpath=cntHWFile)
+		df_preprocessed["nwp_content_ocr_hw_tklm"] = load_pickle(fpath=cntHWFile)
 	except:
 		print(f"<!> Content Highlighted Words [tokenization + lemmatization]...")
 		st_t = time.time()
-		# cntHW_list = df_preprocessed["nwp_content_ocr_text_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
+		# cntHW_list = df_preprocessed["nwp_content_ocr_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
 		cntHW_list = df_preprocessed["cleaned_nwp_content_ocr_hw"].map(lambda lst: get_lemmatized_cntHWs(lst, lm=args.lmMethod) if lst else np.nan, na_action='ignore')
-		df_preprocessed['nwp_content_ocr_text_hw_tklm'] = cntHW_list
+		df_preprocessed['nwp_content_ocr_hw_tklm'] = cntHW_list
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=cntHW_list, fname=cntHWFile)
 
 	print(f"\n>> Getting {cntFile} ...")	
 	# df_preprocessed['nwp_content_ocr'] = df_preprocessed["nwp_content_results"].map(get_raw_cnt, na_action='ignore')
 	try:
-		df_preprocessed["nwp_content_ocr_text_tklm"] = load_pickle(fpath=cntFile)
+		df_preprocessed["nwp_content_ocr_tklm"] = load_pickle(fpath=cntFile)
 	except:
 		print(f"<!> Contents [tokenization + lemmatization]...")
 		st_t = time.time()
 		# cntLMs = df_preprocessed["nwp_content_ocr"].map(lambda raw_snt: get_lemmatized_cnt(sentences=raw_snt, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
 		cntLMs = df_preprocessed["cleaned_nwp_content_ocr"].map(lambda sent: get_lemmatized_cnt(sentences=sent, lm=args.lmMethod), na_action='ignore') # ex) "my car is black." => out: ["car", "black"]
-		df_preprocessed['nwp_content_ocr_text_tklm'] = cntLMs
+		df_preprocessed['nwp_content_ocr_tklm'] = cntLMs
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(150, " "))
 		save_pickle(pkl=cntLMs, fname=cntFile)
 
@@ -396,8 +396,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 
 		search_query_phrase_tokens_list.append( [tk for tokens in g[g["search_query_phrase_tklm"].notnull()]["search_query_phrase_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		search_results_hw_snippets_tokens_list.append( [tk for tokens in g[g["search_results_hw_snippets_tklm"].notnull()]["search_results_hw_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		nwp_content_hw_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_hw_tklm"].notnull()]["nwp_content_ocr_text_hw_tklm"].values.tolist() if tokens for tk in tokens if tk] )
-		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_text_pt_tklm"].notnull()]["nwp_content_ocr_text_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		nwp_content_hw_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_hw_tklm"].notnull()]["nwp_content_ocr_hw_tklm"].values.tolist() if tokens for tk in tokens if tk] )
+		nwp_content_pt_tokens_list.append( [tk for tokens in g[g["nwp_content_ocr_pt_tklm"].notnull()]["nwp_content_ocr_pt_tklm"].values.tolist() if tokens for tk in tokens if tk] )
 		
 		# time consuming...
 		search_results_snippets_tokens_list.append( [ tk for tokens in g[g["search_results_snippets_tklm"].notnull()]["search_results_snippets_tklm"].values.tolist() if tokens for tk in tokens if tk] )
@@ -405,8 +405,8 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 	
 		#print( len( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() ) )
 		#print( g[g["search_results_snippets"].notnull()]["search_results_snippets"].values.tolist() )
-		nwp_content_lemmas_all_list.append( [tk for tokens in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
-		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_text_tklm"].notnull()]["nwp_content_ocr_text_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
+		nwp_content_lemmas_all_list.append( [tk for tokens in g[g["nwp_content_ocr_tklm"].notnull()]["nwp_content_ocr_tklm"].values.tolist() if tokens for tk in tokens if tk] ) #[tk1, tk2, tk3, ...]
+		nwp_content_lemmas_separated_list.append( [lm for lm in g[g["nwp_content_ocr_tklm"].notnull()]["nwp_content_ocr_tklm"].values.tolist() if lm ] ) #[ [tk1, tk2, ...], [tk1, tk2, ...], [tk1, tk2, ...], ... ]
 		nwp_content_raw_texts_list.append( [sentences for sentences in g[g["nwp_content_ocr"].notnull()]["nwp_content_ocr"].values.tolist() if sentences ] ) # [cnt1, cnt2, …, cntN]
 
 	user_df = pd.DataFrame(
