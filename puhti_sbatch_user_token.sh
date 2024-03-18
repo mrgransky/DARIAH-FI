@@ -8,10 +8,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=369G
+#SBATCH --mem=292G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=726-731,0-80
+#SBATCH --array=726-731,2-80
 #SBATCH --gres=gpu:v100:1
 
 ##### x303: 0-150,580-731
