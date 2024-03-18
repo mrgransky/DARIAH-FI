@@ -8,12 +8,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=402G
-#SBATCH --partition=hugemem
+#SBATCH --mem=200G
+#SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=1
+#SBATCH --array=39,48-49
+#SBATCH --gres=gpu:v100:1
 
-####SBATCH --gres=gpu:v100:1
 ##### x303: 0-150,580-731
 ##### 726-731,2-80
 user="`whoami`"
