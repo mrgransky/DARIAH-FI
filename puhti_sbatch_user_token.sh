@@ -8,14 +8,14 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=292G
-#SBATCH --partition=gpu
+#SBATCH --mem=402G
+#SBATCH --partition=hugemem
 #SBATCH --time=03-00:00:00
-#SBATCH --array=726-731,2-80
-#SBATCH --gres=gpu:v100:1
+#SBATCH --array=1
 
+####SBATCH --gres=gpu:v100:1
 ##### x303: 0-150,580-731
-
+##### 726-731,2-80
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
 txt="$user began Slurm job: `date`"
