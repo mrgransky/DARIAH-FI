@@ -130,13 +130,14 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# 	print()
 
 		lemmas_list = [ 
-			re.sub(r'["#_\-]', '', wlm.lower())
+			# re.sub(r'["#_\-]', '', wlm.lower())
+			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
 			if ( 
 					(wlm:=vw.lemma)
 					and 4 <= len(wlm) <= 43
-					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+', wlm) 
+					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
 					and vw.upos not in useless_upos_tags 
 					and wlm not in UNQ_STW
 			)
