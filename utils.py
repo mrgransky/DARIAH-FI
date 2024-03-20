@@ -631,7 +631,7 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	# print("<>"*50)
 	# print(df[["user_ip", "timestamp", "prev_time"]].tail(50))
 	# print("<>"*50)
-	th = datetime.timedelta(days=0, seconds=0, minutes=5)
+	th = datetime.timedelta(days=0, seconds=0, minutes=1)
 	# print(th, type(th))
 	df = df[df['prev_time'].isnull() | df['timestamp'].sub(df['prev_time']).gt(th)]
 	df = df.drop(['prev_time', 'client_request_line', 'status', 'bytes_sent', 'user_agent', 'session_id'], axis=1, errors='ignore')
@@ -1510,10 +1510,10 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 		save_pickle(pkl=preprocessed_df, fname=preprocessed_df_fpath)
 
-		print(f">> Saving cleaned_sq_phrase into excel file... ")
-		df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
-		cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
-		cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
+		# print(f">> Saving cleaned_sq_phrase into excel file... ")
+		# df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
+		# cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
+		# cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
 
 	return preprocessed_df, preprocessed_docs
 

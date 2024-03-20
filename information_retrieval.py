@@ -6,7 +6,7 @@ from utils import *
 
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('-qlf', '--queryLogFile', required=True, type=str, help="Query log file") # smallest
-parser.add_argument('--dsPath', required=True, type=str, help='Save DataFrame in directory | Def: None')
+parser.add_argument('--dsPath', required=True, type=str, help='Save DataFrame in directory')
 
 args = parser.parse_args()
 
@@ -119,8 +119,8 @@ def single_query(file_="", ts=None, browser_show=False):
 	#print(df.tail(30))
 	#save_(df, infile=f"SINGLEQuery_timestamp_{ts}_{file_}")
 
-def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
-	print(f"Query Log File: {file_}")
+def scrape_query(file_: str=args.queryLogFile, ts: List[str]=None):
+	print(f"Input Query Log File: {file_}")
 	# check if queryLogFile.dump already exist: return
 	log_file_name = file_[file_.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
 	if os.path.isfile(os.path.join(args.dsPath, f"{log_file_name}.dump")):
@@ -145,7 +145,7 @@ def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 				#f"unknown pages: {df.referer.str.count('/collections').sum()}."
 				)
 	print("*"*150)
-	
+	return
 	parsing_t = time.time()
 	print(f">> Scraping Newspaper Content Pages...")
 	st_nwp_content_t = time.time()
@@ -188,7 +188,7 @@ def all_queries(file_: str=args.queryLogFile, ts: List[str]=None):
 	save_pickle( pkl=df, fname=os.path.join( args.dsPath, f'{log_file_name}.dump') )
 
 def run():
-	make_folder(folder_name=args.dsPath)
+	os.makedirs(args.dsPath, exist_ok=True) # make_folder(folder_name=args.dsPath)
 	# all_log_files = [lf[ lf.rfind("/")+1: ] for lf in natsorted( glob.glob( os.path.join(dpath, "*.log") ) )]
 	"""	
 	# run single log file	
@@ -198,13 +198,22 @@ def run():
 							)
 	"""		
 	# run all log files using array in batch
-	all_queries(
+	scrape_query(
 		file_=args.queryLogFile,
 		#ts=["14:30:00", "14:56:59"],
 	)
 
 if __name__ == '__main__':
-	# os.system('clear')
-	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
+	# os.system("clear")
+	print(
+		f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+		.center(160, " ")
+	)
+	START_EXECUTION_TIME = time.time()
 	run()
-	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(120, " "))
+	END_EXECUTION_TIME = time.time()
+	print(
+		f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} "
+		f"TOTAL_ELAPSED_TIME: {END_EXECUTION_TIME-START_EXECUTION_TIME:.1f} sec"
+		.center(160, " ")
+	)
