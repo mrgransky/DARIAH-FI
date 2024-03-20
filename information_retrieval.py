@@ -2,7 +2,7 @@ from url_scraping import *
 from utils import *
 
 # how to run in background:
-# nohup python -u nationalbiblioteket_logs.py --query 0 --saveDF True > logNEW_q0.out &
+# nohup python -u information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dsPath /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX > logNEW_q0.out &
 
 # how to run Puhti:
 # python information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dsPath /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX
@@ -148,7 +148,7 @@ def scrape_query(file_: str=args.queryLogFile, ts: List[str]=None):
 				#f"unknown pages: {df.referer.str.count('/collections').sum()}."
 				)
 	print("*"*150)
-	return
+	# return
 	parsing_t = time.time()
 	print(f">> Scraping Newspaper Content Pages...")
 	st_nwp_content_t = time.time()
