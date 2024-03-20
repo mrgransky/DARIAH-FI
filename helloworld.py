@@ -302,6 +302,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+kalle salonen emil karl karlsson heikki petter emil rask anton
 siitä vasemmalle pohjoiseen xvii cois sai yöllä
 olemassa kullan temppeli kokoon
 mattila palkinto launonen kalle uotila uitto sameli salonen ohra palk salomon ranta
