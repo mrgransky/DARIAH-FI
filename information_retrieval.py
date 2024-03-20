@@ -4,6 +4,9 @@ from utils import *
 # how to run in background:
 # nohup python -u nationalbiblioteket_logs.py --query 0 --saveDF True > logNEW_q0.out &
 
+# how to run Puhti:
+# python information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dsPath /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX
+
 parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
 parser.add_argument('-qlf', '--queryLogFile', required=True, type=str, help="Query log file") # smallest
 parser.add_argument('--dsPath', required=True, type=str, help='Save DataFrame in directory')
