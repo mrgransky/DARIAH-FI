@@ -216,7 +216,7 @@ def scrap_search_page(URL):
 
 @cache
 def scrap_newspaper_content_page(URL):
-	print(f"{URL:<170}", end=" ")
+	print(f"{URL:<200}", end=" ")
 	# print(f"URL: {URL}")
 	URL = re.sub(r'amp;', '', URL)
 	if re.search(r'\/\w+\/binding\/\d+\?page=\d+', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
