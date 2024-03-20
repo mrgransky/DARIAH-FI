@@ -61,7 +61,8 @@ def create_multilingual_pipeline(device: str):
 				'da',
 				# 'nb', 
 				'ru', 
-				'de', 
+				'de',
+				'et',
 				# 'fr',
 			]
 		}
@@ -90,7 +91,7 @@ def create_multilingual_pipeline(device: str):
 		print(f"Elapsed_t: {time.time()-tt:.3f} sec")
 
 @cache
-def stanza_lemmatizer(docs: str="This is a <NORMAL> string!", device=None):
+def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	# Ensure MultilingualPipeline object is created
 	create_multilingual_pipeline(device=device)
 	try:
@@ -98,13 +99,13 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> string!", device=None):
 		st_t = time.time()
 		all_ = smp(docs)
 		lemmas_list = [ 
-			re.sub(r'[";&#<>_\-]', '', wlm.lower())
+			re.sub(r'["+^.;$\[\]&#<>_\-]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
 			if ( 
 					(wlm:=vw.lemma)
-					and 4 <= len(wlm) <= 43
-					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\s+', wlm) 
+					and 4 <= len(wlm) <= 40
+					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|^|\s+', wlm) 
 					and vw.upos not in useless_upos_tags 
 					and wlm not in UNQ_STW
 			)
