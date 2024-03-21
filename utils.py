@@ -769,7 +769,6 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 	docs = re.sub(
 		r'\s{2,}', 
 		" ", 
-		# re.sub(r'\b\w{,2}\b', ' ', docs).strip() 
 		re.sub(r'\b\w{,2}\b', ' ', docs)#.strip() 
 	).strip()
 	##########################################################################################
@@ -777,7 +776,7 @@ def clean_(docs: str="This is a <NORMAL> string!!", del_misspelled: bool=True):
 		docs = remove_misspelled_(documents=docs)
 	docs = docs.lower()
 	##########################################################################################
-	print(f'Cleaned Input [elasped_t: {time.time()-t0:.3f} s]:\n{docs}')
+	print(f'Cleaned Input [elasped_t: {time.time()-t0:.4f} s]:\n{docs}')
 	print(f"<>"*100)
 	if not docs or len(docs) == 0 or docs == "":
 		return
