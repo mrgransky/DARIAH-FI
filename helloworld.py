@@ -302,6 +302,8 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = """
 SUomI
+tiedusteluorganisaatio puolustusvoimat
+"Tuomas Pintamo"
 kalle salonen emil karl karlsson heikki petter emil rask anton
 siitä vasemmalle pohjoiseen xvii cois sai yöllä
 olemassa kullan temppeli kokoon

@@ -899,7 +899,7 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
-		
+
 def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname"):
 	print(f"SciPy SparseMtx (detailed) user_df: {df.shape} |BoWs|: {len(vb)}".center(120, " "))
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving

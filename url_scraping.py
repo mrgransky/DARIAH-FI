@@ -216,7 +216,7 @@ def scrap_search_page(URL):
 
 @cache
 def scrap_newspaper_content_page(URL):
-	print(f"{URL:<200}", end=" ")
+	print(f"{URL:<180}", end=" ")
 	# print(f"URL: {URL}")
 	URL = re.sub(r'amp;', '', URL)
 	if re.search(r'\/\w+\/binding\/\d+\?page=\d+', URL) or (re.search(r'(\/binding\/\d+\?term=)', URL) and re.search(r'(&page=\d+)', URL)):
@@ -283,10 +283,11 @@ def scrap_newspaper_content_page(URL):
 		api_url = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/ocr-hits/{parsed_url.path.split('/')[-1]}"
 		rs_api_url = checking_(url=api_url, prms=parameters)
 		NWP_CONTENT_RESULTS["highlighted_term"] = [d.get("text") for d in rs_api_url.json()]
-	except (json.JSONDecodeError,
-					json.decoder.JSONDecodeError,
-					Exception,
-				) as e:
+	except (
+		json.JSONDecodeError,
+		json.decoder.JSONDecodeError,
+		Exception,
+	) as e:
 		print(f"<!HWs!> {e}")
 		
 	try:
