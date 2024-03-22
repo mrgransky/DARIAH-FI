@@ -37,7 +37,8 @@ echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 		--cudaNum 1 \
 		--inputDF ${files[$qIDX]} \
 		--outDIR $DATAFRAME_DIR \
-		--maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
+		--maxNumFeat $maxNumFeatures >$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 & # overwrite if already exists!
+		# --maxNumFeat $maxNumFeatures >>$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 &
 else
 	echo "<!> Error: Invalid input query index: $qIDX"
 	echo "Please provide a valid query index between 0 and $((${#files[@]} - 1))."
