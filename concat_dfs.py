@@ -977,7 +977,7 @@ def run():
 		avgrec=avgRecSys,
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
-		K=80,
+		K=120,
 	)
 	print(len(topKtokens), topKtokens)
 
@@ -1019,7 +1019,7 @@ def run():
 		avgrec=avgRecSys_shrinked,
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
-		K=80,
+		K=120,
 	)
 	print(len(topKtokens_shrinked), topKtokens_shrinked)
 
