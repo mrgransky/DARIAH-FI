@@ -975,7 +975,8 @@ def run():
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
-		qu=tokenized_query_phrase,
+		raw_query=args.qphrase,
+		tok_query=tokenized_query_phrase,
 		K=80,
 	)
 	print(len(topKtokens), topKtokens)
@@ -1016,7 +1017,8 @@ def run():
 	topKtokens_shrinked=get_topK_tokens(
 		mat_cols=concat_shrinked_spm_tokNames,
 		avgrec=avgRecSys_shrinked,
-		qu=tokenized_query_phrase,
+		raw_query=args.qphrase,
+		tok_query=tokenized_query_phrase,
 		K=80,
 	)
 	print(len(topKtokens_shrinked), topKtokens_shrinked)
