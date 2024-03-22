@@ -1266,7 +1266,7 @@ def get_avg_rec(spMtx, cosine_sim, idf_vec, spMtx_norm):
 	# return avg_rec # (nTokens,)
 
 def get_topK_tokens(mat_cols, avgrec, tok_query: List[str], raw_query: str="Raw Query Phrase!", K: int=100):
-	print(f"Query: raw: {raw_query} | {raw_query.lower().split()} | tk: {tok_query} {}")
+	print(f"Query: raw: {raw_query} | {raw_query.lower().split()} | tk: {tok_query}")
 	# return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:]][::-1] # n
 	return [mat_cols[iTK] for iTK in avgrec.argsort()[-K:] if ( mat_cols[iTK] not in tok_query and mat_cols[iTK] not in raw_query.lower().split() )][::-1] # 
 
