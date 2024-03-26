@@ -69,12 +69,13 @@ def create_multilingual_pipeline(device: str):
 
 		lang_configs = {
 			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+			# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # TDT
+			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True}, # FTB
 			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True}, # errors!!!
 			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True},
 			"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
 			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
 			# "fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
