@@ -307,6 +307,10 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 orig_text = """
 antisemitismi ja Ateismi
 SUomI | Vaskivuoren lukio
+Muistettavaa Tammikuu. 16. Jäsentenväl. hiihtokilp.. 
+Urheiluliitto. 16. Hiihto- ja Kävelyretki, Urheiluliitto. 
+15 —16. Kans. painikilp., Toverit, Viipuri. 23. 
+Piirin hiihtomest. kilp. Kaiku. 23. Kans. voimistelukilp.,
 Huomattavin osa maamme kristil-i listä tyttötyötä on kyllä tässä kirjassa saanut tarpeellisen ja odotetun oppaan. 
 kauklahden kirjasto - torvisoittokunta - torwisoittokunta
 Iisalmen uimahalli
