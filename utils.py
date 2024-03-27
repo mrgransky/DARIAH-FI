@@ -1032,7 +1032,7 @@ def get_df_spm(df: pd.DataFrame):
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
-	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö) [on the fly] Memory Intensive".center(150, " "))
+	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö) [Memory Intensive done on the fly]")
 	st_t = time.time()
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
@@ -1045,11 +1045,12 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	# sanity check for nonzeros for cols:
 	st_t = time.time()
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
-	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s")
+	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.f} s")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
-	print("-"*70)
+	print("-"*60)
 	print(usr_tk_unpacked_df.info(memory_usage="deep"))
-	print("-"*70)
+	print(f"usr_tk_unpacked_df {type(usr_tk_unpacked_df)} {usr_tk_unpacked_df.shape}")
+	print("-"*60)
 	return usr_tk_unpacked_df
 
 def get_df_files(fpath: str="MUST_BE_DEFINED"):
