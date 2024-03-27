@@ -307,6 +307,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 orig_text = """
 antisemitismi ja Ateismi
 SUomI | Vaskivuoren lukio
+venäjää
 Muistettavaa Tammikuu. 16. Jäsentenväl. hiihtokilp.. 
 Urheiluliitto. 16. Hiihto- ja Kävelyretki, Urheiluliitto. 
 15 —16. Kans. painikilp., Toverit, Viipuri. 23. 

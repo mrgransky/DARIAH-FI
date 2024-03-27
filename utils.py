@@ -1032,7 +1032,7 @@ def get_df_spm(df: pd.DataFrame):
 	return sdf
 
 def get_unpacked_user_token_interest(df: pd.DataFrame):
-	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö) [on the fly]".center(170, " "))
+	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö) [on the fly] Memory Intensive".center(150, " "))
 	st_t = time.time()
 	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
 	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])

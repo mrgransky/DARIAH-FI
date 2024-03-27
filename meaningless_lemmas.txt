@@ -9538,3 +9538,5 @@ elem
 tloppaa
 painikilp
 johark
+suoma
+monar
