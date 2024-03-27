@@ -135,12 +135,12 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
-			if ( 
-					(wlm:=vw.lemma)
-					and 4 <= len(wlm) <= 43
-					and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
-					and vw.upos not in useless_upos_tags 
-					and wlm not in UNQ_STW
+			if (
+				(wlm:=vw.lemma)
+				and 5 <= len(wlm) <= 43
+				and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
+				and vw.upos not in useless_upos_tags 
+				and wlm not in UNQ_STW
 			)
 		]
 		end_t = time.time()
@@ -305,8 +305,11 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # '''
 
 orig_text = """
-SUomI
+antisemitismi ja Ateismi
+SUomI | Vaskivuoren lukio
+Huomattavin osa maamme kristil-i listä tyttötyötä on kyllä tässä kirjassa saanut tarpeellisen ja odotetun oppaan. 
 kauklahden kirjasto - torvisoittokunta - torwisoittokunta
+Iisalmen uimahalli
 jyväskylän sähkövalaistuskeskusasema
 helsingin sähköwalaistuskeskusasemalla
 helsingin sähkövalaistuskeskusasemalla
@@ -326,7 +329,7 @@ länsi uudenmaan hyvinvointialue
 Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
 etelä-karjalan hyvinvointialue
 myös ylösnousemus josa nimittäin samalla yli toisen
-I medaljens omskrift läses: „VIII:as Ylein. Suomen Maanwiljelyskokous"
+Ylein. Suomen Maanwiljelyskokous"
 Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
 metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
 Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
@@ -334,7 +337,6 @@ mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkk
 229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
 Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
 Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
-Ev. 17 T. 21: I—l 7. 18 F. 21:18-32. 19 L. 21:33—46 1863—1937, 1937, s. 273; I. <em>Pelkonen</em> laud.kirj. s. 42.
 82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
 ruottalan koski
 PUOLELLA — KUTEN TAVALLISTA.
