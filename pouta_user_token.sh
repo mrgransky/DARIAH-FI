@@ -5,7 +5,7 @@
 ## $ nohup bash pouta_user_token.sh 0 > /media/volume/trash/NLF/check_nlf_output.out 2>&1 & # with output saved in check_output.out
 
 ## $ nohup parallel -j 8 "bash pouta_user_token.sh {}" ::: {682..731} > /dev/null 2>&1 &
-## $ nohup parallel -j 4 "bash pouta_user_token.sh {}" ::: {686..688} > /media/volume/trash/NLF/nlf_usr_tk_parallel_jobs_cuda2_686_688.out 2>&1 &
+## $ nohup parallel -j 4 "bash pouta_user_token.sh {}" ::: {683..685} > /media/volume/trash/NLF/nlf_usr_tk_parallel_jobs_cuda3_683_685.out 2>&1 &
 # x717 x727 => memory error=> check for later
 USR_NAME="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -34,7 +34,7 @@ echo "${stars// /*}"
 if [ $qIDX -ge 0 ] && [ $qIDX -lt ${#files[@]} ]; then
 echo "Processing Q[$qIDX]: ${files[$qIDX]}"
 	python -u user_token.py \
-		--cudaNum 2 \
+		--cudaNum 3 \
 		--inputDF ${files[$qIDX]} \
 		--outDIR $DATAFRAME_DIR \
 		--maxNumFeat $maxNumFeatures >$STORAGE_DIR/Nationalbiblioteket/trash/nk_q_$qIDX.out 2>&1 & # overwrite if already exists!
