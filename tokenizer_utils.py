@@ -63,7 +63,7 @@ def create_multilingual_pipeline(device: str):
 				'ru',
 				'et',
 				'de',
-				# 'fr',
+				'fr',
 			]
 		}
 
@@ -78,7 +78,7 @@ def create_multilingual_pipeline(device: str):
 			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
 			"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
 			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-			# "fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
+			"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
 		}
 		print(f"Creating Stanza[{stanza.__version__}] < {device} MultilingualPipeline >", end=" ")
 		tt = time.time()
