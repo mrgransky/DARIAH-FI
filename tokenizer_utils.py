@@ -100,7 +100,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 		st_t = time.time()
 		all_ = smp(docs)
 		lemmas_list = [ 
-			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
+			re.sub(r'[";=&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
 			if (
