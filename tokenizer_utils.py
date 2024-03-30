@@ -101,8 +101,8 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 		all_ = smp(docs)
 		lemmas_list = [ 
 			re.sub(r'[";=&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
-			for _, vsnt in enumerate(all_.sentences) 
-			for _, vw in enumerate(vsnt.words) 
+			for _, vsnt in enumerate(all_.sentences)
+			for _, vw in enumerate(vsnt.words)
 			if (
 				(wlm:=vw.lemma)
 				and 5 <= len(wlm) <= 43
