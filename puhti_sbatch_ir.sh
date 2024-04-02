@@ -6,12 +6,13 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=12G
+#SBATCH --mem-per-cpu=10G
 #SBATCH --partition=small
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=366-731%20
+#SBATCH --array=0-366
+####SBATCH --array=366-731%20
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"
