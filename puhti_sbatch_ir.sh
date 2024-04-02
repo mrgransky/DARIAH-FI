@@ -11,8 +11,8 @@
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=0-366
-####SBATCH --array=366-731%20
+#SBATCH --array=367-731%20
+#####SBATCH --array=0-366
 
 stars=$(printf '%*s' 100 '')
 txt="SLURM JOB STARTED AT: `date`"
