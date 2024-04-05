@@ -719,7 +719,7 @@ def load_pickle(fpath:str="unknown",):
 		with gzip.open(fpath, mode='rb') as f:
 			pkl=dill.load(f)
 	except gzip.BadGzipFile as ee:
-		print(f"<!> {ee} gzip.open NOT functional => traditional openning...")
+		print(f"<!> {ee} gzip.open() NOT functional => traditional openning...")
 		with open(fpath, mode='rb') as f:
 			pkl=dill.load(f)
 	except Exception as e:

@@ -61,26 +61,43 @@ def create_multilingual_pipeline(device: str):
 				'da',
 				# 'nb', 
 				'ru',
-				'et',
+				# 'et', # causes wrong lemmas: 
 				'de',
 				'fr',
 			]
 		}
 
+		# # without lemma store option: (must be slower)
+		# lang_configs = {
+		# 	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
+		# 	# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # TDT
+		# 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True}, # FTB
+		# 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		# 	# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True}, # errors!!!
+		# 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		# 	# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		# 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
+		# 	# "et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
+		# 	"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
+		# 	"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
+		# }
+
+		# with lemma store option: (must be faster)
 		lang_configs = {
-			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-			# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # TDT
-			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True}, # FTB
-			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-			# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True}, # errors!!!
-			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-			# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-			"et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
-			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-			"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
+			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True, "lemma_store_results":True}, # TDT
+			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True, "lemma_store_results":True}, # FTB
+			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True, "lemma_store_results":True}, # errors!!!
+			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True, "lemma_store_results":True},
+			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True, "lemma_store_results":True},
+			"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True, "lemma_store_results":True},
 		}
-		print(f"Creating Stanza[{stanza.__version__}] < {device} MultilingualPipeline >", end=" ")
+
+		print(f"Creating Stanza[{stanza.__version__}] < {device} MultilingualPipeline >")
 		tt = time.time()
 		# Create the MultilingualPipeline object
 		smp = MultilingualPipeline( 
@@ -90,6 +107,7 @@ def create_multilingual_pipeline(device: str):
 			device=device,
 		)
 		print(f"Elapsed_t: {time.time()-tt:.3f} sec")
+		print("#"*80)
 
 @cache
 def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
@@ -116,7 +134,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 		print(f"<!> Stanza Error: {e}")
 		return
 	print( lemmas_list )
-	print(f"Found {len(lemmas_list)} lemma(s) in {end_t-st_t:.2f} s".center(140, "-") )
+	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
 	return lemmas_list
 
 def trankit_lemmatizer(docs, device: str="cuda:0"):
