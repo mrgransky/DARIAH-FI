@@ -43,7 +43,7 @@ print(args)
 print(device)
 # sys.exit(0)
 # how to run (local Ubuntu 22.04.4 LTS):
-# python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1
+# python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1 --lmMethod 'trankit'
 
 # how to run (Puhti):
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x61 --maxNumFeat -1
@@ -522,8 +522,8 @@ def main():
 	
 	os.makedirs(args.outDIR, exist_ok=True) # make_folder(folder_name=args.outDIR)
 	
-	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_listed_docs.gz")
-	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_df.gz")
+	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_listed_docs.gz")
+	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_df.gz")
 
 	preprocessed_df, preprocessed_docs = get_preprocessed_doc(
 		dframe=ORIGINAL_INP_DF, 

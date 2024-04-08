@@ -1,7 +1,7 @@
 from utils import *
 
 # Define the global MultilingualPipeline object
-smp = None
+lemmatizer_multi_lingual_pipeline = None
 
 # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
@@ -23,6 +23,9 @@ with HiddenPrints():
 	# 	# raise_on_error=True,
 	# )
 
+	import trankit
+	from trankit import Pipeline
+
 	import stanza
 	from stanza.pipeline.multilingual import MultilingualPipeline
 	from stanza.pipeline.core import DownloadMethod
@@ -42,7 +45,6 @@ with HiddenPrints():
 		"INTJ",
 		# "X", # foriegn words will be excluded,
 	]
-
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 	with open('meaningless_lemmas.txt', 'r') as file_:
 		my_custom_stopwords=[line.strip() for line in file_]
@@ -50,9 +52,9 @@ with HiddenPrints():
 	UNQ_STW = list(set(STOPWORDS))
 
 # Function to create the MultilingualPipeline object if not already created
-def create_multilingual_pipeline(device: str):
-	global smp
-	if smp is None:
+def create_stanza_multilingual_pipeline(device: str):
+	global lemmatizer_multi_lingual_pipeline
+	if lemmatizer_multi_lingual_pipeline is None:
 		lang_id_config={
 			"langid_lang_subset": [
 				'fi', 
@@ -100,23 +102,43 @@ def create_multilingual_pipeline(device: str):
 		print(f"Creating Stanza[{stanza.__version__}] < {device} MultilingualPipeline >")
 		tt = time.time()
 		# Create the MultilingualPipeline object
-		smp = MultilingualPipeline( 
+		lemmatizer_multi_lingual_pipeline = MultilingualPipeline( 
 			lang_id_config=lang_id_config,
 			lang_configs=lang_configs,
 			download_method=DownloadMethod.REUSE_RESOURCES,
 			device=device,
 		)
-		print(f"Elapsed_t: {time.time()-tt:.3f} sec")
+		print(f"lemmatizer_multi_lingual_pipeline Elapsed_t: {time.time()-tt:.3f} sec")
 		print("#"*80)
+
+def create_trankit_multilingual_pipeline(device: str):
+	print(f"Trankit creating multilingual_pipeline ...")
+	tt = time.time()
+	#lemmatizer_multi_lingual_pipeline = Pipeline('auto', embedding='xlm-roberta-large') # time-consuming and large models (unnecessary languages)
+	lemmatizer_multi_lingual_pipeline = Pipeline(
+		lang='finnish-ftb',
+		gpu=True,
+		embedding='xlm-roberta-large', 
+		cache_dir='/home/farid/datasets/Nationalbiblioteket/trash',
+	)
+	lemmatizer_multi_lingual_pipeline.add('english')
+	lemmatizer_multi_lingual_pipeline.add('swedish')
+	lemmatizer_multi_lingual_pipeline.add('danish')
+	lemmatizer_multi_lingual_pipeline.add('russian')
+	lemmatizer_multi_lingual_pipeline.add('french')
+	lemmatizer_multi_lingual_pipeline.add('german')
+	lemmatizer_multi_lingual_pipeline.set_auto(True)
+	print(f">> lemmatizer_multi_lingual_pipeline Elasped_t: {time.time()-tt:.3f} sec")
+	print("#"*80)
 
 @cache
 def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	# Ensure MultilingualPipeline object is created
-	create_multilingual_pipeline(device=device)
+	create_stanza_multilingual_pipeline(device=device)
 	try:
 		print(f'Stanza[{stanza.__version__} device: {device}] Raw Input:\n{docs}\n')
 		st_t = time.time()
-		all_ = smp(docs)
+		all_ = lemmatizer_multi_lingual_pipeline(docs)
 		lemmas_list = [ 
 			re.sub(r'[";=&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences)
@@ -137,27 +159,48 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
 	return lemmas_list
 
-def trankit_lemmatizer(docs, device: str="cuda:0"):
+@cache
+def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	# print(f'Raw: (len: {len(docs)}) >>{docs}<<')
 	# print(f'Raw inp words: { len( docs.split() ) }', end=" ")
-	st_t = time.time()
-	if not docs:
-		return
+	create_trankit_multilingual_pipeline(device=device)
+	try:
+		print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
+		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
+		st_t = time.time()
+		all_ = lemmatizer_multi_lingual_pipeline( docs )
+		print(all_)
+		print(type(all_))
+		print(json.dumps(all_, indent=2, ensure_ascii=False))
+		print("#"*100)
 
-	# treat all as document
-	docs = re.sub(r'\"|<[^>]+>|[~*^][\d]+', '', docs)
-	docs = re.sub(r'[%,+;,=&\'*"°^~?!—.•()“”:/‘’<>»«♦■\\\[\]-]+', ' ', docs ).strip()
-	
-	# print(f'preprocessed: len: {len(docs)}:\n{docs}')
-	if ( not docs or len(docs)==0 ):
-		return
+		# for i, v in enumerate(all_.get("sentences")):
+		# 	# print(i, v, type(v)) # shows <class 'dict'> entire dict of id, text, lemma, upos, ...
+		# 	for ii, vv in enumerate(v.get("tokens")):
+		# 		print(ii, vv.get("text"), vv.get("lemma"), vv.get("upos"))
+		# 		# print(f"<>")
+		# 	print('-'*50)
 
-	all_dict = p(docs)
-	#lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Z](\.| |\:)+|\b[a-z](\.| |\:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNQ_STW ) ] 
-	lm = [ tk.get("lemma").lower() for sent in all_dict.get("sentences") for tk in sent.get("tokens") if ( tk.get("lemma") and len(re.sub(r'\b[A-Za-z](\.| |:)+', '', tk.get("lemma") ) ) > 2 and tk.get("upos") not in useless_upos_tags and tk.get("lemma").lower() not in UNQ_STW ) ]
-	print(f"Elapsed_t: {time.time()-st_t:.3f} sec")
-	# print( lm )
-	return lm
+		lemmas_list = [ 
+			# re.sub(r'["#_\-]', '', wlm.lower())
+			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
+			for _, vsnt in enumerate(all_.get("sentences"))
+			for _, vw in enumerate(vsnt.get("tokens"))
+			if (
+				(wlm:=vw.get("lemma"))
+				and 5 <= len(wlm) <= 43
+				and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
+				and vw.get("upos") not in useless_upos_tags 
+				and wlm not in UNQ_STW
+			)
+		]
+		end_t = time.time()
+	except Exception as e:
+		print(f"<!> trankit Error: {e}")
+		return
+	print( lemmas_list )
+	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
+	return lemmas_list
 
 def spacy_tokenizer(docs, device: str="cuda:0"):
 	return None

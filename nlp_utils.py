@@ -6,7 +6,7 @@ DEVICE: str="cpu"
 lemmatizer_methods = {
 	"nltk": nltk_lemmatizer,
 	"spacy": spacy_tokenizer,
-	"trankit": trankit_lemmatizer,
+	"trankit": lambda docs: trankit_lemmatizer(docs, device=DEVICE), # Pass args to stanza_lemmatizer
 	"stanza": lambda docs: stanza_lemmatizer(docs, device=DEVICE),  # Pass args to stanza_lemmatizer
 }
 

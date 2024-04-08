@@ -20,11 +20,6 @@ parser.add_argument(
 	required=True, 
 	help='output directory to save files',
 )
-parser.add_argument(
-	'--lmMethod', 
-	default="stanza", 
-	type=str,
-)
 
 args = parser.parse_args()
 
@@ -41,7 +36,7 @@ args = parser.parse_args()
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 
 def main():
-	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s) (GPU not required!)")
+	print(f"Running {__file__} using {nb.get_num_threads()} CPU core(s) (GPU not required!)")
 	ORIGINAL_INP_DF = load_pickle(fpath=args.inputDF)
 	print(f"-"*100)
 	print(f"ORIGINAL_INPUT {type(ORIGINAL_INP_DF)} {ORIGINAL_INP_DF.shape}")
@@ -53,8 +48,8 @@ def main():
 	
 	os.makedirs(args.outDIR, exist_ok=True)
 
-	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_listed_docs.gz")
-	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_preprocessed_df.gz")
+	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_listed_docs.gz")
+	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_df.gz")
 	# with HiddenPrints(): # with no prints
 	# 	_, _ = get_preprocessed_doc(
 	# 		dframe=ORIGINAL_INP_DF, 

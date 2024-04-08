@@ -52,7 +52,6 @@ sl_dict = enchant.Dict("sl")
 sk_dict = enchant.Dict("sk")
 
 tt = time.time()
-# tmp = Pipeline('auto', embedding='xlm-roberta-large')
 #tmp = Pipeline('auto', embedding='xlm-roberta-large') # time-consuming and large models (unnecessary languages)
 tmp = Pipeline(
 	lang='finnish-ftb',
@@ -60,11 +59,12 @@ tmp = Pipeline(
 	embedding='xlm-roberta-large', 
 	cache_dir='/home/farid/datasets/Nationalbiblioteket/trash',
 )
-
-tmp.add('swedish')
 tmp.add('english')
-# tmp.add('russian')
-# tmp.add('estonian')
+tmp.add('swedish')
+tmp.add('danish')
+tmp.add('russian')
+tmp.add('french')
+tmp.add('german')
 tmp.set_auto(True)
 print(f">> tmp elasped_t: {time.time()-tt:.3f} sec")
 
@@ -104,12 +104,12 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(json.dumps(all_, indent=2, ensure_ascii=False))
 		# print("#"*100)
 
-		for i, v in enumerate(all_.get("sentences")):
-			# print(i, v, type(v)) # shows <class 'dict'> entire dict of id, text, lemma, upos, ...
-			for ii, vv in enumerate(v.get("tokens")):
-				print(ii, vv.get("text"), vv.get("lemma"), vv.get("upos"))
-				# print(f"<>")
-			print('-'*50)
+		# for i, v in enumerate(all_.get("sentences")):
+		# 	# print(i, v, type(v)) # shows <class 'dict'> entire dict of id, text, lemma, upos, ...
+		# 	for ii, vv in enumerate(v.get("tokens")):
+		# 		print(ii, vv.get("text"), vv.get("lemma"), vv.get("upos"))
+		# 		# print(f"<>")
+		# 	print('-'*50)
 
 		lemmas_list = [ 
 			# re.sub(r'["#_\-]', '', wlm.lower())
