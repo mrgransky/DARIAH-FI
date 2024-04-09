@@ -940,7 +940,6 @@ def run():
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	tokenized_query_phrase = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
 	print(f"Raw < {args.qphrase} > lemmatized into {len(tokenized_query_phrase)} lemma(s): {tokenized_query_phrase}")
-
 	query_vector=get_query_vec(
 		mat=concat_spm_U_x_T,
 		mat_row=concat_spm_usrNames,
@@ -949,7 +948,8 @@ def run():
 	)
 	print(
 		f"quVec {type(query_vector)} {query_vector.dtype} {query_vector.shape}\n"
-		f"Allzero? {np.all(query_vector==0.0)} NonZeros: {np.count_nonzero(query_vector)} "
+		f"Allzero? {np.all(query_vector==0.0)}\n"
+		f"NonZeros: {np.count_nonzero(query_vector)}\n"
 		f"@ idx(s): {np.where(query_vector.flatten()!=0)[0]}\n"
 		f"{[f'idx[{qidx}] {concat_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector.flatten()!=0)[0])]}"
 	)
@@ -963,7 +963,6 @@ def run():
 		idf_vec=idf_vec,
 		spMtx_norm=usrNorms, # must be adjusted, accordingly!
 	)
-
 	avgRecSys=get_avg_rec(
 		spMtx=concat_spm_U_x_T,
 		cosine_sim=ccs**5,
@@ -996,8 +995,9 @@ def run():
 	)
 	print(
 		f"quVec [SHRINKED] {type(query_vector_shrinked)} {query_vector_shrinked.dtype} {query_vector_shrinked.shape}\n"
-		f"Allzero? {np.all(query_vector_shrinked==0.0)} NonZeros: {np.count_nonzero(query_vector_shrinked)} "
-		f"@ idx(s): {np.where(query_vector_shrinked.flatten()!=0)[0]} "
+		f"Allzero? {np.all(query_vector_shrinked==0.0)}\n"
+		f"NonZeros: {np.count_nonzero(query_vector_shrinked)}\n"
+		f"@ idx(s): {np.where(query_vector_shrinked.flatten()!=0)[0]}\n"
 		f"{[f'idx[{qidx}] {concat_shrinked_spm_tokNames[qidx]}' for _, qidx in enumerate(np.where(query_vector_shrinked.flatten()!=0)[0])]}"
 	)
 	if np.all( query_vector_shrinked==0.0 ):
@@ -1018,7 +1018,11 @@ def run():
 		spMtx_norm=usrNorms_shrinked,
 	)
 	print("#"*100)
-	print(f"Recommendation Result[ShRINKED]:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {tokenized_query_phrase}\n")
+	print(
+		f"Recommendation Result[ShRINKED]:\n"
+		f"Raw Query Phrase: < {args.qphrase} >\n"
+		f"Lemmatized Query: {tokenized_query_phrase}\n"
+	)
 	topKtokens_shrinked=get_topK_tokens(
 		mat_cols=concat_shrinked_spm_tokNames,
 		avgrec=avgRecSys_shrinked,
