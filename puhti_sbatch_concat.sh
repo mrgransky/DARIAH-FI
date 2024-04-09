@@ -8,9 +8,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=450G
-#SBATCH --partition=hugemem
-#SBATCH --time=03-00:00:00
+#SBATCH --mem=480G
+#SBATCH --partition=hugemem_longrun
+#SBATCH --time=11-00:00:00
 ####SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
