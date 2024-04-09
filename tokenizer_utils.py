@@ -1,5 +1,4 @@
 from utils import *
-
 # Define the global MultilingualPipeline object
 lemmatizer_multi_lingual_pipeline = None
 
@@ -55,6 +54,7 @@ with HiddenPrints():
 def create_stanza_multilingual_pipeline(device: str):
 	global lemmatizer_multi_lingual_pipeline
 	if lemmatizer_multi_lingual_pipeline is None:
+		print(f"Initialize Stanza {stanza.__version__} Multilingual Pipeline using {device}".center(130, "-"))
 		lang_id_config={
 			"langid_lang_subset": [
 				'fi', 
@@ -99,7 +99,6 @@ def create_stanza_multilingual_pipeline(device: str):
 			"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True, "lemma_store_results":True},
 		}
 
-		print(f"Creating Stanza[{stanza.__version__}] < {device} MultilingualPipeline >")
 		tt = time.time()
 		# Create the MultilingualPipeline object
 		lemmatizer_multi_lingual_pipeline = MultilingualPipeline( 
@@ -108,28 +107,28 @@ def create_stanza_multilingual_pipeline(device: str):
 			download_method=DownloadMethod.REUSE_RESOURCES,
 			device=device,
 		)
-		print(f"lemmatizer_multi_lingual_pipeline Elapsed_t: {time.time()-tt:.3f} sec")
-		print("#"*80)
+		print(f"Elapsed_t: {time.time()-tt:.3f} sec".center(130, "-"))
 
 def create_trankit_multilingual_pipeline(device: str):
-	print(f"Trankit creating multilingual_pipeline ...")
-	tt = time.time()
-	#lemmatizer_multi_lingual_pipeline = Pipeline('auto', embedding='xlm-roberta-large') # time-consuming and large models (unnecessary languages)
-	lemmatizer_multi_lingual_pipeline = Pipeline(
-		lang='finnish-ftb',
-		gpu=True,
-		embedding='xlm-roberta-large', 
-		cache_dir='/home/farid/datasets/Nationalbiblioteket/trash',
-	)
-	lemmatizer_multi_lingual_pipeline.add('english')
-	lemmatizer_multi_lingual_pipeline.add('swedish')
-	lemmatizer_multi_lingual_pipeline.add('danish')
-	lemmatizer_multi_lingual_pipeline.add('russian')
-	lemmatizer_multi_lingual_pipeline.add('french')
-	lemmatizer_multi_lingual_pipeline.add('german')
-	lemmatizer_multi_lingual_pipeline.set_auto(True)
-	print(f">> lemmatizer_multi_lingual_pipeline Elasped_t: {time.time()-tt:.3f} sec")
-	print("#"*80)
+	global lemmatizer_multi_lingual_pipeline
+	if lemmatizer_multi_lingual_pipeline is None:
+		print(f"Initialize Trankit {trankit.__version__} Multilingual Pipeline using {device}".center(130, "-"))
+		tt = time.time()
+		#lemmatizer_multi_lingual_pipeline = Pipeline('auto', embedding='xlm-roberta-large') # time-consuming and large models (unnecessary languages)
+		lemmatizer_multi_lingual_pipeline = Pipeline(
+			lang='finnish-ftb',
+			gpu=True,
+			embedding='xlm-roberta-large', 
+			cache_dir='/home/farid/datasets/Nationalbiblioteket/trash',
+		)
+		lemmatizer_multi_lingual_pipeline.add('english')
+		lemmatizer_multi_lingual_pipeline.add('swedish')
+		lemmatizer_multi_lingual_pipeline.add('danish')
+		lemmatizer_multi_lingual_pipeline.add('russian')
+		lemmatizer_multi_lingual_pipeline.add('french')
+		lemmatizer_multi_lingual_pipeline.add('german')
+		lemmatizer_multi_lingual_pipeline.set_auto(True)
+		print(f"Elasped_t: {time.time()-tt:.3f} sec".center(130, "-"))
 
 @cache
 def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
@@ -165,14 +164,14 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	# print(f'Raw inp words: { len( docs.split() ) }', end=" ")
 	create_trankit_multilingual_pipeline(device=device)
 	try:
-		print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
+		# print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		st_t = time.time()
 		all_ = lemmatizer_multi_lingual_pipeline( docs )
-		print(all_)
-		print(type(all_))
-		print(json.dumps(all_, indent=2, ensure_ascii=False))
-		print("#"*100)
+		# print(all_)
+		# print(type(all_))
+		# print(json.dumps(all_, indent=2, ensure_ascii=False))
+		# print("#"*100)
 
 		# for i, v in enumerate(all_.get("sentences")):
 		# 	# print(i, v, type(v)) # shows <class 'dict'> entire dict of id, text, lemma, upos, ...
@@ -198,8 +197,13 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	except Exception as e:
 		print(f"<!> trankit Error: {e}")
 		return
-	print( lemmas_list )
+	# print( lemmas_list )
 	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
+	# del all_
+	# torch.cuda.empty_cache()
+	# gc.collect()
+	# cuda.select_device(torch.cuda.current_device()) # choosing second GPU 
+	# cuda.close()
 	return lemmas_list
 
 def spacy_tokenizer(docs, device: str="cuda:0"):

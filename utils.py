@@ -22,12 +22,12 @@ import logging
 import gzip
 import tarfile
 import shutil
-
 from pandas.api.types import is_datetime64_any_dtype
 
 import numpy as np
 import pandas as pd
 import numba as nb
+from numba import cuda
 
 from natsort import natsorted
 from collections import Counter, defaultdict
@@ -49,6 +49,7 @@ import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
 # matplotlib.use("Agg")
+torch.backends.cudnn.benchmark = True
 
 sz=16
 MODULE=60

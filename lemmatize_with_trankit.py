@@ -288,6 +288,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI | Vaskivuoren lukio
+kappalaisen virkatalossa syrjäisessä vieremän kylässä oli juhanilla nuorena tilaisuus tutustua samon ihanaan
 Matruusin koulutus
 kuukautissuoja
 antisemitismi ja Ateismi
