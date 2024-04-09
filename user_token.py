@@ -607,7 +607,10 @@ def main():
 	#get_user_n_maxVal_byTK(usr_tk_spm, df_user, BoWs, )
 	# plot_heatmap_sparse(usr_tk_spm, df_user, BoWs, ifb_log10=False)
 	
-	query_phrase_tk = get_lemmatized_sqp(qu_list=[qu_phrase], lm=args.lmMethod)
+	query_phrase_tk = get_lemmatized_sqp(
+		qu_list=[qu_phrase], 
+		lm=args.lmMethod,
+	)
 	print(f"Raw Query Phrase: {qu_phrase} contains {len(query_phrase_tk)} lemma(s)\t{query_phrase_tk}")
 	query_vector = np.zeros(len(BoWs))
 	for qutk in query_phrase_tk:

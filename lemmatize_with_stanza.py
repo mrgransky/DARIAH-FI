@@ -331,6 +331,12 @@ orig_text = '''
 SUomI | Vaskivuoren lukio
 Matruusin koulutus
 kuukautissuoja
+tietopuolisille kursseille. 
+Pääsyvaatimuksina on: kansakoulun kurssi, 
+terve ruumiin rakenne, ikä mieluummin 18 vuotta...laskento, kauppalaskento, 
+tavaran hinnoittaminen, suom. ja routs. 
+kauppakirjeenvaihto, kauppaoppi, kauppamaantiede, kielet...Kotkassa 1910. 
+Etelä-Suomen kirjapaino Raussilan kansakoulun wesikatto annetaan urakkahuutokaupalla t. k. 12 p...
 antisemitismi ja Ateismi
 venäjää
 Oikeistososialistinen Socialdemokraten huomauttaa,

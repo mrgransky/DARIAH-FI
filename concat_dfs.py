@@ -971,13 +971,18 @@ def run():
 		spMtx_norm=usrNorms,
 	)
 	print("<>"*25)
-	print(f"Recommendation Result:\nRaw Query Phrase: < {args.qphrase} >\nLemmatized Query: {tokenized_query_phrase}\n")
+	print(
+		f"Recommendation Result:\n"
+		f"Raw Query Phrase: < {args.qphrase} >\n"
+		f"Lemmatized Query: {tokenized_query_phrase}\n"
+	)
 	topKtokens=get_topK_tokens(
 		mat_cols=concat_spm_tokNames,
 		avgrec=avgRecSys,
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
-		K=120,
+		meaningless_lemmas_list=UNQ_STW, # generated in tokenizer_utils.py
+		K=1000,
 	)
 	print(len(topKtokens), topKtokens)
 
@@ -1019,7 +1024,8 @@ def run():
 		avgrec=avgRecSys_shrinked,
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
-		K=120,
+		meaningless_lemmas_list=UNQ_STW, # generated in tokenizer_utils.py
+		K=1000, # time-consuming
 	)
 	print(len(topKtokens_shrinked), topKtokens_shrinked)
 
