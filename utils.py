@@ -800,37 +800,29 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	cleaned_words = []
 	for word in words:
 		if not (
-			fi_dict.spell(word) or 
-			fii_dict.check(word) or 
-			sv_dict.check(word) or 
-			sv_fi_dict.check(word) or 
-			en_dict.check(word) or
-			de_dict.check(word) or
-			# no_dict.check(word) or
-			da_dict.check(word) or
-			es_dict.check(word) or
-			et_dict.check(word) or # estonian
-			cs_dict.check(word) or 
-			# cy_dict.check(word) or 
-			# fo_dict.check(word) or 
-			fr_dict.check(word) or 
-			ga_dict.check(word) or 
-			hr_dict.check(word) or 
-			hu_dict.check(word) or 
-			# is_dict.check(word) or 
-			# it_dict.check(word) or 
-			lt_dict.check(word) or 
-			lv_dict.check(word) or 
-			nl_dict.check(word) or 
-			pl_dict.check(word) or 
-			sl_dict.check(word) #or 
-			# sk_dict.check(word)
+			fi_dict.spell(word)
+			or fii_dict.check(word)
+			or sv_dict.check(word)
+			or sv_fi_dict.check(word)
+			or en_dict.check(word)
+			or de_dict.check(word)
+			or da_dict.check(word)
+			or es_dict.check(word)
+			or et_dict.check(word)
+			or cs_dict.check(word)
+			or fr_dict.check(word)
+			or ga_dict.check(word)
+			or hr_dict.check(word)
+			or hu_dict.check(word)
+			or lt_dict.check(word)
+			or lv_dict.check(word)
+			or nl_dict.check(word)
+			or sl_dict.check(word)
 		):
 			# print(f"\t\t{word} does not exist")
 			pass
 		else:
 			cleaned_words.append(word)
-
 	# Join the cleaned words back into a string
 	cleaned_text = " ".join(cleaned_words)
 	# print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
