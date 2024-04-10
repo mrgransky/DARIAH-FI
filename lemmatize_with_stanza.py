@@ -228,10 +228,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			ga_dict.check(word), 
 			hr_dict.check(word), 
 			hu_dict.check(word), 
-			lt_dict.check(word), 
-			lv_dict.check(word), 
-			nl_dict.check(word), 
-			sl_dict.check(word), 
 		)
 		if not (
 			fi_dict.spell(word)
@@ -248,10 +244,6 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			or ga_dict.check(word)
 			or hr_dict.check(word)
 			or hu_dict.check(word)
-			or lt_dict.check(word)
-			or lv_dict.check(word)
-			or nl_dict.check(word)
-			or sl_dict.check(word)
 		):
 			print(f"\t\t{word} does not exist")
 			pass
@@ -271,118 +263,73 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA
-<em>Narinen</em>, med vilken han har ett tvåårigt barn. 
-Narinen anhölls även, men frigavs efter det förhör med henn
-brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
-helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
-Korpholmens spetälskehospital
-ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
-mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
-Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
-Kontorsmannaförbundet 30 år
-Bestyrelsen för allmänna finska utställningen har af landets regering emottagit en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
-hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
-Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
-1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
-2) Årsberättelse; 
-3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
-4) Reglemente för lcke-Officiela Afdelningen.
-Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
-för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
-af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
-Styrelseledamot – det här ingår i rollen!
-Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-I detta inlägg, det tredje i vår serie, 
-I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
-Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-'''
-
 # orig_text = '''
-# SUomI
-# Suoranaista ihran poissulattamiskykyä hieronnalla ei ole, 
-# kuten toisinaan näytään mainittavan.
-# Matruusin koulutus
-# kuukautissuoja
-# tietopuolisille kursseille. 
-# Pääsyvaatimuksina on: kansakoulun kurssi, 
-# terve ruumiin rakenne, ikä mieluummin 18 vuotta...laskento, kauppalaskento, 
-# tavaran hinnoittaminen, suom. ja routs. 
-# Liikuntahoidon yhteydessä on otettava hierontaa, 
-# joka on omiansa virkistämään lihaksia ja lisäämäänkin niiden työkykyä. 
-# antisemitismi ja Ateismi
-# venäjää
-# Oikeistososialistinen Socialdemokraten huomauttaa,
-# Oikeistofosialistinen Socialdem«' kraten huomauttaa, 
-# Muistettavaa Tammikuu. 16. Jäsentenväl. hiihtokilp.. 
-# Urheiluliitto. 16. Hiihto- ja Kävelyretki, Urheiluliitto. 
-# 15 —16. Kans. painikilp., Toverit, Viipuri. 23. 
-# Piirin hiihtomest. kilp. Kaiku. 23. Kans. voimistelukilp.,
-# Huomattavin osa maamme kristil-i listä tyttötyötä on kyllä tässä kirjassa saanut tarpeellisen ja odotetun oppaan. 
-# kauklahden kirjasto - torvisoittokunta - torwisoittokunta
-# Iisalmen uimahalli | helsingin tuomiokirkko | helsingin seurakuntayhtymä
-# jyväskylän sähkövalaistuskeskusasema | tuomiokirkkoseurakunta | helsingin hiippakunta
-# helsingin sähköwalaistuskeskusasemalla
-# helsingin sähkövalaistuskeskusasemalla
-# Mustalaiset - aineistoa romaneista
-# tiedusteluorganisaatio puolustusvoimat
-# kalle salonen emil karl karlsson heikki petter emil rask anton
-# siitä vasemmalle pohjoiseen xvii cois sai yöllä
-# olemassa kullan temppeli kokoon
-# mattila palkinto launonen kalle uotila uitto sameli salonen ohra palk salomon ranta
-# ABO£,£xcudJOH* KIA.MPE, Reg. Acad. Typogr.
-# HELSINGFORS TEL. 524 &quot; ________________=___B Broderar! <em>OMPELUKONE</em> O&#x2F;V HUSQVARNA SYMASKIN Tammerfors, Helsingfors, Åbo
-# kartanossa hyvinkäällä astutusmaksu puh hyvinkään sanomain asiamiehille hyvinkään sanomat
-# URHO SEPPÄLÄ.
-# mielenkiintoisesti viljan siemenestä oppilas juho pesonen lausui runon ven paavo kolmannen
-# Pohjois-Hämeen pohjois-hämeen osuuspankki pohjois pohjanmaa
-# länsi uudenmaan hyvinvointialue
-# Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
-# etelä-karjalan hyvinvointialue
-# myös ylösnousemus josa nimittäin samalla yli toisen
-# Ylein. Suomen Maanwiljelyskokous"
-# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-# metodiikan ja ensimmäiset tulokset nerokkaasti suunnitellusta psykodiagnostisesta koemenetelmästä, jota sittemmin on totuttu nimittämään hänen mukaansa. 1 )
-# Tämän jälkeenkin hän jatkoi uuras* tustaan menetelmänsä parantamiseksi, 
-# mutta ennenaikainen kuolema katkaisi jo seuraavan vuoden alkupuoliskolla yhtäkkiä lupaavan työskentelyn vielä ratkaisemattomien probleemien selvittämiseksi.
-# 229; Jyväskylän seminaari 6 >>ESBO och Björneborg Jyväskylän yliopiston kauppakorkeakoulu
-# Helsink Jywäskylän yliopisto on Jyväskylässä sijaitseva suomalainen yliopisto. 
-# Jyväskylän yliopisto on monitieteinen tiedeyliopisto, jossa opiskelijoita on noin 15 000 ja henkilökuntaa noin 2 600. <em>Mattei</em> 
-# 82 Hautajärvi, Juho Juhonp. (Hauta-Junnu)
-# ruottalan koski
-# PUOLELLA — KUTEN TAVALLISTA.
-# Brainerd, tammik. 12 p. — Tn <em>mari</em> McCli iiahan on kumonnut verottajan jiäätöksen, jolla
-# Kuninkaallinen Turun Akatemia 1642—1828
-# DIE DIssERTATIONEN DER
-# "vanhala nikkilä"~6 | Vanhala Nikkilä - Pietarila ja nykyään | <em>Michelspiltom</em>.
-# helsingin teknillinen reaalikoulu
-# Yrjönpäivää juhlitaan
-# mcchdilmsmi mcchdollffuulsi mcchdollhmj riksdag kräv mcchdollisimmclv mcchdollisimmclv 
-# mcchdollisimmclv mcchdollisnn mcchdollisnn mcchdvllffuus 
-# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
-# muistcttatpaa!
-# Salama Teatterissa
-# rhythms mxafl faslf faslm fasmiffl faspcnfi fastighetsntmnd. "alina keskinen" - iiiifff Vaili Siviä -
-# Pasi Klemettinen Taustialan Sipilä >>> Taustiala <<<<<<
-# N. ESPLANADG. 35 Platsagenter: Tammerfors: Vaind Kajanne Kuopio: Kuopion Kemikalikauppa Uleaborg: Oulun Kemikalikauppa
-# Suomen pääministeri | Helsingin pörssi ja suomen pankki 
-# res lausuntaa lotta aune puhe kenttäpappi virtanen kuorolaulua vaasan
-# Vilho Rokkola | <em>Juho Huppunen</em> | xxxx <em>Levijoki</em>
-# Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-# N:o 45
-# rOI M 1 1 US : Antinkatu 15. Fuh«hn 6 52. Av. ia perjantaina lisäksi 6—12 ip. <em>Drumsö<\em> Korkis Vippal kommer från Rågöarna!!!
-# Keskuspoliisi
-# Kommunistien jouKKowangitfemista tahoilla maassa.
-# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-# ätytsille
+# sVenskA
+# <em>Narinen</em>, med vilken han har ett tvåårigt barn. 
+# Narinen anhölls även, men frigavs efter det förhör med henn
+# brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
+# helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
+# Korpholmens spetälskehospital
+# ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
+# mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
+# Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
+# Kontorsmannaförbundet 30 år
+# Bestyrelsen för allmänna finska utställningen har af landets regering emottagit en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
+# hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
+# Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
+# 1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
+# 2) Årsberättelse; 
+# 3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
+# 4) Reglemente för lcke-Officiela Afdelningen.
+# Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
+# för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
+# af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
+# Styrelseledamot – det här ingår i rollen!
+# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+# I detta inlägg, det tredje i vår serie, 
+# I majoriteten av alla svenska aktiebolag finns det enbart en ordinarie ledamot i styrelsen som är ensamt ansvarig för bolaget. 
+# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
+# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 # '''
+
+orig_text = '''
+SUomI
+Tämä on tietenkin yksityis-seikka, mutta samaan lopputulokseen tullaan, jos käydään samanlaatuisia valituksia tarkastamaan suomalaisten ja alkuperäisten venäläisten läänien välistä tavaranvaihtoa koskevilla numeroilla. 
+Vuonna 1899 tuotiin Suomeen venäläisiä tavaroita 85 miljoonan nikan edestä, ja ulkomaalaisia 165,898,000 mkan edestä. 
+Venäläisistä tavaroista oli noin 45 milj. mkan edestä viljaa, kaloja y. m.
+ruokatavaroita, joita saa Venäjällekin viedä ilman tullimaksuja; ulkomaan paikoista ei tuoda Suomeen tällaisia tavaroita juuri nimeksikään. Tullimaksuja sai Suomen rajamaan tullilaitos 10.324,976 milj. 
+markkaa venäläisistä tavaroista ja 23.500.722 markkaa ulkomaalaisista. 
+Jos nyt laskemme pois viljaja raaka- ainemäärät, joista ei kanneta tullia, niin Suomen virallisen tilaston nojalla voimme sanoa että yli 10 milj. 
+mkkaa on otettu venäläisistä tavaroista, joitten raha-arvo nousee 9.416,407 markkaan, on siis otettu memmäti, kuin itse tavarat maksavat; ulkomaan tavaroista, joitten rahaarvo nousee 107.012,054 markkaan, on otettu 23' milj. 
+markkaa, melkein viisi kertaa vähemmän, kuin niiden raha- arvo on.
+Suomalainen puolue Nuorsuomal. puolue Sos. demokr. puolue Krist. työw. puolue Ruotsal. puolue Murenin puolue Hylätty...Suomalainen puolue Nuorsuomal. 
+puolue Sos. demokr. puolue Krist. työw. puolue Ruotsal. puolue Murenin puolue Hylätty...Suomalainen puolue Nuorsuomal. puolue Sosialidemokr. puolue Krist. 
+puolue Ruotsalainen puolue Murenin puolue Kurn...
+Suoranaista ihran poissulattamiskykyä hieronnalla ei ole, 
+kuten toisinaan näytään mainittavan.
+Matruusin koulutus
+kuukautissuoja
+tietopuolisille kursseille. 
+Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
+etelä-karjalan hyvinvointialue
+myös ylösnousemus josa nimittäin samalla yli toisen
+Ylein. Suomen Maanwiljelyskokous"
+Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+DIE DIssERTATIONEN DER
+mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+muistcttatpaa!
+Salama Teatterissa
+Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+Keskuspoliisi
+Kommunistien jouKKowangitfemista tahoilla maassa.
+-!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+ätytsille
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)

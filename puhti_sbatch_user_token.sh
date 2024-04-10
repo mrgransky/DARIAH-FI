@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_dec
+#SBATCH --job-name=nikeQ
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -11,11 +11,13 @@
 #SBATCH --mem=130G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=300-366
+#SBATCH --array=0-364
 #SBATCH --gres=gpu:v100:1
-####SBATCH --array=39,48-49
+
+#### SBATCH --array=39,48-49
 ##### x303: 0-150,580-731
 ##### 726-731,2-80
+
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
 txt="$user began Slurm job: `date`"

@@ -9564,3 +9564,5 @@ foissa
 irtis
 korvfabri
 garft
+krist
+vivis
