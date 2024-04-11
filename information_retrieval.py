@@ -13,7 +13,7 @@ parser.add_argument('--dsPath', required=True, type=str, help='Save DataFrame in
 
 args = parser.parse_args()
 
-def scrape_query(fpath: str=args.queryLogFile, ts: List[str]=None):
+def scrape_log_(fpath: str=args.queryLogFile, ts: List[str]=None):
 	print(f"Input Query Log File: {fpath}")
 	qeury_log_raw_fname = fpath[fpath.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
 	scraped_query_fname = os.path.join(args.dsPath, f'{qeury_log_raw_fname}.gz')
@@ -83,7 +83,7 @@ def scrape_query(fpath: str=args.queryLogFile, ts: List[str]=None):
 
 def run():
 	os.makedirs(args.dsPath, exist_ok=True) # make_folder(folder_name=args.dsPath)
-	scrape_query(
+	scrape_log_(
 		fpath=args.queryLogFile,
 		#ts=["14:30:00", "14:56:59"],
 	)
