@@ -9568,3 +9568,5 @@ krist
 vivis
 naantal
 vihapuht
+islaminki
+väärre
