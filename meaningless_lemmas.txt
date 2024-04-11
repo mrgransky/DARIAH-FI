@@ -9566,3 +9566,5 @@ korvfabri
 garft
 krist
 vivis
+naantal
+vihapuht

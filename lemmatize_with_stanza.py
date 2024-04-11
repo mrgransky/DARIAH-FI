@@ -297,7 +297,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
-Tämä on tietenkin yksityis-seikka, mutta samaan lopputulokseen tullaan, jos käydään samanlaatuisia valituksia tarkastamaan suomalaisten ja alkuperäisten venäläisten läänien välistä tavaranvaihtoa koskevilla numeroilla. 
+kiistettyä, vaan koska Laitala näkee arvoSeen sopivaksi väärre-' leili setviä asioita ja osuuskuntamme toimintaa, katsomme...
 Vuonna 1899 tuotiin Suomeen venäläisiä tavaroita 85 miljoonan nikan edestä, ja ulkomaalaisia 165,898,000 mkan edestä. 
 Venäläisistä tavaroista oli noin 45 milj. mkan edestä viljaa, kaloja y. m.
 ruokatavaroita, joita saa Venäjällekin viedä ilman tullimaksuja; ulkomaan paikoista ei tuoda Suomeen tällaisia tavaroita juuri nimeksikään. Tullimaksuja sai Suomen rajamaan tullilaitos 10.324,976 milj. 
