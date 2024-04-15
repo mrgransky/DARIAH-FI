@@ -297,6 +297,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+"Sappio" | Kitö uno wikman
 kiistettyä, vaan koska Laitala näkee arvoSeen sopivaksi väärre-' leili setviä asioita ja osuuskuntamme toimintaa, katsomme...
 Vuonna 1899 tuotiin Suomeen venäläisiä tavaroita 85 miljoonan nikan edestä, ja ulkomaalaisia 165,898,000 mkan edestä. 
 Venäläisistä tavaroista oli noin 45 milj. mkan edestä viljaa, kaloja y. m.
