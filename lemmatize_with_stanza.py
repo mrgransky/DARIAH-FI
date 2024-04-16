@@ -266,7 +266,19 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA
-Högsta domstolen
+Enligt vederbörande kronofogdars härhos underdånigst bifogade rapporter, har skörden af de olika växtlagen inom länet utfallit på följande sätt: 
+af hvete god afkastning i Lempäälä, Somero och Janakkala läusmansdistrikter, för öfrigt en medelmåttig afkomst, 
+men torde böra anmärkas att odlingen af detta sädesslag inom länet är af ganska ringa betydenhet; 
+af råg god eller riklig afkomst i södra delen af Ruovesi härad, i Birkkala socken, 
+Ylöjärvi och Tottijärvi kapeller samt delar af Lempäälä och Wesilaks socknar af Birkkala härad, 
+i Somero länsmansdistrikt af Tammela härad, Hauho distrikt af Hauho härad samt Padasjoki distrikt af Hollola härad, 
+mera än medelmåttig afkastning i norra, vestra och mellersta delarne af Ruovesi härad, 
+i Tammela, Jokkis och Sääksmäki distrikter af Tammela härad, i Janakkala distrikt af Hauho härad, 
+hela Jämsä härad samt Lampis distrikt af Hollola härad och medelmåttig skörd i öfriga delar af länet; 
+af korn och hafra godt eller mera än medelmåttigt utbyte i största delen af länet:
+fria nervändar, sinnesceller som reagerar på mekanisk retning, höga och låga temperaturer
+Den första sammanfattningen gjordes av Nervänder år 1887 med en mindre skrift, där han ägnade ”bildsnidarekonsten” 15 sidor.
+högsta domstolen | text i den ordning, som i allmänhet är antagen i ortodoxa bönböcker, d. v. s. först komma morgonbönerna, sedan 
 Petiroskoij och Kandalaikis, voro redan, under vårt vinterkrig 1939 —1940 färdiga ända tiilil den finländska gränsen...
 Andersson och sångare från Borgå. Välkommen. Ernestas. Tonsdag kl. 8 e. m. friluftsmöte vid festplatsen. Pastor Gösta...
 Hamniarstr.mi, svenske kustbevakningscheien, greve Posse, norske tullchefen Hekto en och generaldirektör Poppius
