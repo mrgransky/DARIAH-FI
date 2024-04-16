@@ -264,100 +264,63 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA
-Enligt vederbörande kronofogdars härhos underdånigst bifogade rapporter, har skörden af de olika växtlagen inom länet utfallit på följande sätt: 
-af hvete god afkastning i Lempäälä, Somero och Janakkala läusmansdistrikter, för öfrigt en medelmåttig afkomst, 
-men torde böra anmärkas att odlingen af detta sädesslag inom länet är af ganska ringa betydenhet; 
-af råg god eller riklig afkomst i södra delen af Ruovesi härad, i Birkkala socken, 
-Ylöjärvi och Tottijärvi kapeller samt delar af Lempäälä och Wesilaks socknar af Birkkala härad, 
-i Somero länsmansdistrikt af Tammela härad, Hauho distrikt af Hauho härad samt Padasjoki distrikt af Hollola härad, 
-mera än medelmåttig afkastning i norra, vestra och mellersta delarne af Ruovesi härad, 
-i Tammela, Jokkis och Sääksmäki distrikter af Tammela härad, i Janakkala distrikt af Hauho härad, 
-hela Jämsä härad samt Lampis distrikt af Hollola härad och medelmåttig skörd i öfriga delar af länet; 
-af korn och hafra godt eller mera än medelmåttigt utbyte i största delen af länet:
-fria nervändar, sinnesceller som reagerar på mekanisk retning, höga och låga temperaturer
-Den första sammanfattningen gjordes av Nervänder år 1887 med en mindre skrift, där han ägnade ”bildsnidarekonsten” 15 sidor.
-högsta domstolen | text i den ordning, som i allmänhet är antagen i ortodoxa bönböcker, d. v. s. först komma morgonbönerna, sedan 
-Petiroskoij och Kandalaikis, voro redan, under vårt vinterkrig 1939 —1940 färdiga ända tiilil den finländska gränsen...
-Andersson och sångare från Borgå. Välkommen. Ernestas. Tonsdag kl. 8 e. m. friluftsmöte vid festplatsen. Pastor Gösta...
-Hamniarstr.mi, svenske kustbevakningscheien, greve Posse, norske tullchefen Hekto en och generaldirektör Poppius
-För att utröna betans förmåga av självbefruktning utfördes experiment med genetiska egenskaper som indikatorer.
-Fredagens program upptog besök å Betanien, metodistförsamlingens sjuk- och systerhem,
-som ligger förtjusande vackert och St Jörgens hospitaler för spetälska.
-En mycket stor del av landets jordbruk skedde i form av svedjeodling och växelbruket
-på detta område bestod i att man efter det skogen svedj ef ällts lät stammarna ligga i två år,
-därefter brände sveden midsommartiden, sådde råg på hösten, 
-skördade densamma följande höst, bärgade hö året därefter, 
-lät sveden stå kringgärdad i 6 å 7 år så att återväxten icke avbetades varefter densamma tidigast om 10 ä 15 år åter var färdig att användas. 
-<em>Narinen</em>, med vilken han har ett tvåårigt barn. 
-Narinen anhölls även, men frigavs efter det förhör med henn
-brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
-helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
-Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
-mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
-Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
-Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
-en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
-hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
-Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
-1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
-2) Årsberättelse; 
-3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
-4) Reglemente för lcke-Officiela Afdelningen.
-Redogörelse från ■ % , Kejserliga Alexanders-Universitetet -■',- . ■' ' ’ 
-för rcktoratstriennium ifrån början af hösttermin 1854 till samma tid 1857, *X . . 
-af Universitetets n. v. Rektor X t ■ ' ‘ Helsingfors, tryckt hos J. C. Frenckell & Son, 1857.
-Styrelseledamot – det här ingår i rollen!
-Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-'''
-
 # orig_text = '''
-# SUomI
-# tuotantolehmät palk vuokko oim segerman väre segerman myrtti jarva palk
-# ala porri mäenpää kokemäki jaakola forsgren hämeenlinna
-# tanska
-# Tilanomistaja Madso Peter Bernt Jörgensen Sandalgaard, Vonge, Törring, Tanska; | 
-# kauklahden kirjasto | taidetehdas porvoo
-# "Sappio" | Kitö uno wikman
-# kiistettyä, vaan koska Laitala näkee arvoSeen sopivaksi väärre-' leili setviä asioita ja osuuskuntamme toimintaa, katsomme...
-# Vuonna 1899 tuotiin Suomeen venäläisiä tavaroita 85 miljoonan nikan edestä, ja ulkomaalaisia 165,898,000 mkan edestä. 
-# Venäläisistä tavaroista oli noin 45 milj. mkan edestä viljaa, kaloja y. m.
-# ruokatavaroita, joita saa Venäjällekin viedä ilman tullimaksuja; ulkomaan paikoista ei tuoda Suomeen tällaisia tavaroita juuri nimeksikään. Tullimaksuja sai Suomen rajamaan tullilaitos 10.324,976 milj. 
-# markkaa venäläisistä tavaroista ja 23.500.722 markkaa ulkomaalaisista. 
-# Jos nyt laskemme pois viljaja raaka- ainemäärät, joista ei kanneta tullia, niin Suomen virallisen tilaston nojalla voimme sanoa että yli 10 milj. 
-# mkkaa on otettu venäläisistä tavaroista, joitten raha-arvo nousee 9.416,407 markkaan, on siis otettu memmäti, kuin itse tavarat maksavat; ulkomaan tavaroista, joitten rahaarvo nousee 107.012,054 markkaan, on otettu 23' milj. 
-# markkaa, melkein viisi kertaa vähemmän, kuin niiden raha- arvo on.
-# Suomalainen puolue Nuorsuomal. puolue Sos. demokr. puolue Krist. työw. puolue Ruotsal. puolue Murenin puolue Hylätty...Suomalainen puolue Nuorsuomal. 
-# puolue Sos. demokr. puolue Krist. työw. puolue Ruotsal. puolue Murenin puolue Hylätty...Suomalainen puolue Nuorsuomal. puolue Sosialidemokr. puolue Krist. 
-# puolue Ruotsalainen puolue Murenin puolue Kurn...
-# Suoranaista ihran poissulattamiskykyä hieronnalla ei ole, 
-# kuten toisinaan näytään mainittavan.
-# Matruusin koulutus
-# kuukautissuoja
-# tietopuolisille kursseille. 
-# Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
-# etelä-karjalan hyvinvointialue
-# myös ylösnousemus josa nimittäin samalla yli toisen
-# Ylein. Suomen Maanwiljelyskokous"
-# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-# DIE DIssERTATIONEN DER
-# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
-# muistcttatpaa!
-# Salama Teatterissa
-# Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-# Keskuspoliisi
-# Kommunistien jouKKowangitfemista tahoilla maassa.
-# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-# ätytsille
+# sVenskA
+# på detta område bestod i att man efter det skogen svedj ef ällts lät stammarna ligga i två år,
+# därefter brände sveden midsommartiden, sådde råg på hösten, 
+# skördade densamma följande höst, bärgade hö året därefter, 
+# lät sveden stå kringgärdad i 6 å 7 år så att återväxten icke avbetades varefter densamma tidigast om 10 ä 15 år åter var färdig att användas. 
+# <em>Narinen</em>, med vilken han har ett tvåårigt barn. 
+# Narinen anhölls även, men frigavs efter det förhör med henn
+# brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
+# helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
+# Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
+# mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
+# Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
+# Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
+# en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
+# hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
+# Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
+# 1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
+# 2) Årsberättelse; 
+# 3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
+# 4) Reglemente för lcke-Officiela Afdelningen.
+# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
+# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 # '''
+
+orig_text = '''
+SUomI
+Siionin viisaitten Baselissa 1897 pitämän kongressin pöytäkirjoja säilytetään siionilaisten pääkansliassa.
+tuotantolehmät palk vuokko oim segerman väre segerman myrtti jarva palk
+ala porri mäenpää kokemäki jaakola forsgren hämeenlinna
+tanska
+Tilanomistaja Madso Peter Bernt Jörgensen Sandalgaard, Vonge, Törring, Tanska; | 
+kauklahden kirjasto | taidetehdas porvoo
+Matruusin koulutus
+kuukautissuoja
+tietopuolisille kursseille. 
+Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
+etelä-karjalan hyvinvointialue
+myös ylösnousemus josa nimittäin samalla yli toisen
+Ylein. Suomen Maanwiljelyskokous"
+Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+DIE DIssERTATIONEN DER
+mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+muistcttatpaa!
+Salama Teatterissa
+Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+Keskuspoliisi
+Kommunistien jouKKowangitfemista tahoilla maassa.
+-!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+ätytsille
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)

@@ -9597,3 +9597,6 @@ vrtsi
 siirtoma
 eurovid
 eurovisio
+danielso
+savij
+baseli
