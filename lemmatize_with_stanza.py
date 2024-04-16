@@ -266,6 +266,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA
+Högsta domstolen
 Petiroskoij och Kandalaikis, voro redan, under vårt vinterkrig 1939 —1940 färdiga ända tiilil den finländska gränsen...
 Andersson och sångare från Borgå. Välkommen. Ernestas. Tonsdag kl. 8 e. m. friluftsmöte vid festplatsen. Pastor Gösta...
 Hamniarstr.mi, svenske kustbevakningscheien, greve Posse, norske tullchefen Hekto en och generaldirektör Poppius

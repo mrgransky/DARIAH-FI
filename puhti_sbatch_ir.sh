@@ -6,12 +6,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=10G
+#SBATCH --mem-per-cpu=8G
 #SBATCH --partition=small
 #SBATCH --time=03-00:00:00
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --array=367-731
+#SBATCH --array=418-420
 #####SBATCH --array=367-731%10
 #####SBATCH --array=0-366
 
