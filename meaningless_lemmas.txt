@@ -9595,3 +9595,5 @@ descarsesi
 rekto
 vrtsi
 siirtoma
+eurovid
+eurovisio
