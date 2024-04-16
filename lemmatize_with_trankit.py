@@ -98,6 +98,7 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 	try:
 		print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
+		docs = docs.title()
 		st_t = time.time()
 		all_ = tmp( docs )
 		# print(type(all_))

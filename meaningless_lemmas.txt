@@ -8568,10 +8568,13 @@ dec
 decemb
 maanantai
 måndag
+mandag
 monday
 tiistai
 tisdag
+tirsdag
 tuesday
+tonsdag
 keskiviikko
 onsdag
 wednesday
@@ -8583,10 +8586,12 @@ fredag
 friday
 lauantai
 lördag
+lørdag
 lördagk
 saturday
 sunnuntai
 söndag
+søndag
 sunday
 vkcka
 tskillig
@@ -9570,3 +9575,8 @@ naantal
 vihapuht
 islaminki
 väärre
+hämeenli
+hämeenläin
+studentsang
+tielihti
+iwerskela

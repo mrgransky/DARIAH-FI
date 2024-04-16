@@ -136,6 +136,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	create_stanza_multilingual_pipeline(device=device)
 	try:
 		print(f'Stanza[{stanza.__version__} device: {device}] Raw Input:\n{docs}\n')
+		docs = docs.title()
 		st_t = time.time()
 		all_ = lemmatizer_multi_lingual_pipeline(docs)
 		lemmas_list = [ 
@@ -166,6 +167,7 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	try:
 		# print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
+		docs = docs.title()
 		st_t = time.time()
 		all_ = lemmatizer_multi_lingual_pipeline( docs )
 		# print(all_)
