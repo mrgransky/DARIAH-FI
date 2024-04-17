@@ -295,6 +295,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+Suomen Teollisuusteknikkojen Liitto | Suomen Teollisuus Teknikkojen Liitto
 Siionin viisaitten Baselissa 1897 pitämän kongressin pöytäkirjoja säilytetään siionilaisten pääkansliassa.
 tuotantolehmät palk vuokko oim segerman väre segerman myrtti jarva palk
 ala porri mäenpää kokemäki jaakola forsgren hämeenlinna

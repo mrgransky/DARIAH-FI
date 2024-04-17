@@ -1489,14 +1489,14 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 			if itm 
 			for subitem in itm 
 			if (
-				subitem and
-				len(subitem) > 1 and
-				re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem) and
-				re.search(r"\S", subitem) and
-				re.search(r"\D", subitem) and
-				# max([len(el) for el in subitem.split()]) > 2 and # longest word within the subitem is at least 3 characters 
-				max([len(el) for el in subitem.split()]) >= 4 and # longest word within the subitem is at least 4 characters
-				re.search(r"\b(?=\D)\w{3,}\b", subitem)
+				subitem
+				and len(subitem) > 1
+				and re.search(r'[a-zA-Z|ÄäÖöÅåüÜúùßẞàñéèíóò]', subitem)
+				and re.search(r"\S", subitem)
+				and re.search(r"\D", subitem)
+				# and max([len(el) for el in subitem.split()]) > 2 # longest word within the subitem is at least 3 characters 
+				and max([len(el) for el in subitem.split()]) >= 4 # longest word within the subitem is at least 4 characters
+				and re.search(r"\b(?=\D)\w{3,}\b", subitem)
 			)
 		]
 		print(f"Elapsed_t: {time.time()-t0:.3f} s | len: {len(raw_docs_list)} | {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
@@ -1504,17 +1504,20 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
 
 		pst = time.time()
+
 		# with HiddenPrints(): # with no prints
 		# 	preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]		
+
 		preprocessed_docs = [cdocs for _, vsnt in enumerate(raw_docs_list) if ((cdocs:=clean_(docs=vsnt)) and len(cdocs)>1) ]
+
 		print(f"Corpus of {len(preprocessed_docs)} raw docs [d1, d2, d3, ..., dN] created in {time.time()-pst:.1f} s")
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 		save_pickle(pkl=preprocessed_df, fname=preprocessed_df_fpath)
 
-		# print(f">> Saving cleaned_sq_phrase into excel file... ")
-		# df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
-		# cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
-		# cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
+		print(f">> Saving cleaned_sq_phrase into excel file... ")
+		df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
+		cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
+		cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
 
 	return preprocessed_df, preprocessed_docs
 

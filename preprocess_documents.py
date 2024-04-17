@@ -24,7 +24,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 # how to run (local Ubuntu 22.04.4 LTS):
-# python preprocess_documents.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX
+# python preprocess_documents.py --inputDF ~/datasets/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX
 
 # how to run (Puhti):
 # python preprocess_documents.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_XXX
@@ -45,17 +45,18 @@ def main():
 	if ORIGINAL_INP_DF.shape[0] == 0:
 		print(f"Empty DF: {ORIGINAL_INP_DF.shape} => Exit...")
 		return
-	
-	os.makedirs(args.outDIR, exist_ok=True)
 
+	os.makedirs(args.outDIR, exist_ok=True)
 	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_listed_docs.gz")
 	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_df.gz")
+
 	# with HiddenPrints(): # with no prints
 	# 	_, _ = get_preprocessed_doc(
 	# 		dframe=ORIGINAL_INP_DF, 
 	# 		preprocessed_docs_fpath=preprocessed_docs_fpath,
 	# 		preprocessed_df_fpath=preprocessed_df_fpath,
 	# 	)
+
 	_, _ = get_preprocessed_doc(
 		dframe=ORIGINAL_INP_DF, 
 		preprocessed_docs_fpath=preprocessed_docs_fpath,

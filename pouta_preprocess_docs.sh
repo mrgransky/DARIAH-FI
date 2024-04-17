@@ -18,7 +18,8 @@ HOME_DIR=$(echo $HOME)
 STORAGE_DIR="/media/volume" # Pouta
 # STORAGE_DIR="$HOME_DIR/datasets" # local
 DATAFRAME_DIR="$STORAGE_DIR/Nationalbiblioteket/dataframes_xx"
-files=($STORAGE_DIR/Nationalbiblioteket/datasets/*.dump)
+# files=($STORAGE_DIR/Nationalbiblioteket/datasets/*.dump)
+files=($STORAGE_DIR/Nationalbiblioteket/NLF_DATASET/*.gz) # newly scraped NLF data (17.04.2024)
 echo "HOME DIR $HOME_DIR"
 echo "STORAGE_DIR: $STORAGE_DIR"
 echo "DATAFRAME_DIR: $DATAFRAME_DIR"
