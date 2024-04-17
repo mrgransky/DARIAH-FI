@@ -1448,10 +1448,6 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		st_t = time.time()
 		preprocessed_df['cleaned_nwp_content_ocr'] = preprocessed_df["nwp_content_results"].map(lambda res: get_raw_cnt(res, cleaned_docs=True), na_action='ignore')
 		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
-
-		print(f"Preprocessed {type(preprocessed_df)} containing Raw & Cleaned Documents: {preprocessed_df.shape}".center(140, "-"))
-		print(preprocessed_df.info(verbose=True, memory_usage="deep"))
-		print(f"-"*140)
 		
 		users_list = list()
 		raw_texts_list = list()
@@ -1518,6 +1514,10 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
 		cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
 		cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
+
+	print(f"Preprocessed {type(preprocessed_df)} containing Raw & Cleaned Documents: {preprocessed_df.shape}".center(140, "-"))
+	print(preprocessed_df.info(verbose=True, memory_usage="deep"))
+	print(f"-"*140)
 
 	return preprocessed_df, preprocessed_docs
 
