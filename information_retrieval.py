@@ -30,15 +30,16 @@ def scrape_log_(fpath: str=args.queryLogFile, ts: List[str]=None):
 		print(f"<!> Empty DF_init: {df.shape}, Nothing to retrieve, Stop Executing...")
 		return
 
-	print(f"{f'Page Analysis'.center(150, ' ')}\n"
-				f"search pages: {df.referer.str.count('/search').sum()}, "
-				f"collection pages: {df.referer.str.count('/collections').sum()}, "
-				f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "
-				f"paper-for-day pages: {df.referer.str.count('/papers-for-day').sum()}, "
-				f"clippings pages: {df.referer.str.count('/clippings').sum()}, "
-				f"newspaper content pages: {df.referer.str.count('term=').sum()}, "
-				#f"unknown pages: {df.referer.str.count('/collections').sum()}."
-				)
+	print(
+		f"{f'Page Analysis'.center(150, ' ')}\n"
+		f"search pages: {df.referer.str.count('/search').sum()}, "
+		f"collection pages: {df.referer.str.count('/collections').sum()}, "
+		f"serial publication pages: {df.referer.str.count('/serial-publications').sum()}, "
+		f"paper-for-day pages: {df.referer.str.count('/papers-for-day').sum()}, "
+		f"clippings pages: {df.referer.str.count('/clippings').sum()}, "
+		f"newspaper content pages: {df.referer.str.count('term=').sum()}, "
+		#f"unknown pages: {df.referer.str.count('/collections').sum()}."
+	)
 	print("*"*150)
 	# return
 	parsing_t = time.time()

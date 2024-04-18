@@ -138,7 +138,7 @@ def scrap_collection_page(URL):
 	return COLLECTION_RESULTS
 
 @cache
-def scrap_search_page(URL):
+def scrap_search_page(URL: str="www.example.com"):
 	print(f"{URL:<200}", end=" ")
 	st_t = time.time()
 	parsed_url, parameters = get_parsed_url_parameters(URL)
@@ -148,45 +148,48 @@ def scrap_search_page(URL):
 	offset_pg=( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
 	search_pg_api = f"{parsed_url.scheme}://{parsed_url.netloc}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
 	
-	payload = {	"authors": parameters.get('author') if parameters.get('author') else [],
-							"collections": parameters.get('collection') if parameters.get('collection') else [],
-							"districts": [], # TODO: must be investigated!!
-							"endDate": parameters.get('endDate')[0] if parameters.get('endDate') else None,
-							"exactCollectionMaterialType": "false", # TODO: must be investigated!!
-							"formats": parameters.get('formats') if parameters.get('formats') else [],
-							"fuzzy": parameters.get('fuzzy')[0] if parameters.get('fuzzy') else "false",
-							"hasIllustrations": parameters.get('hasIllustrations')[0] if parameters.get('hasIllustrations') else "false",
-							"importStartDate": parameters.get('importStartDate')[0] if parameters.get('importStartDate') else None,
-							"importTime": parameters.get('importTime')[0] if parameters.get('importStartDate') else "ANY",
-							"includeUnauthorizedResults": parameters.get('showUnauthorizedResults')[0] if parameters.get('showUnauthorizedResults') else "false",
-							"languages": parameters.get('lang') if parameters.get('lang') else [],
-							"orderBy": parameters.get('orderBy')[0] if parameters.get('orderBy') else "IMPORT_DATE",
-							"pages": parameters.get('pages')[0]  if parameters.get('pages') else "",
-							"publicationPlaces": parameters.get('publicationPlace') if parameters.get('publicationPlace') else [],
-							"publications": parameters.get('title') if parameters.get('title') else [],
-							"publishers": parameters.get('publisher') if parameters.get('publisher') else [],
-							"query": parameters.get('query')[0] if parameters.get('query') else "",
-							"queryTargetsMetadata": parameters.get('qMeta')[0] if parameters.get('qMeta') else "false",
-							"queryTargetsOcrText": parameters.get('qOcr')[0] if parameters.get('qOcr') else "true",
-							"requireAllKeywords": parameters.get('requireAllKeywords')[0]  if parameters.get('requireAllKeywords') else "false",
-							"searchForBindings": parameters.get('searchForBindings')[0]  if parameters.get('searchForBindings') else "false",
-							"showLastPage": parameters.get('showLastPage')[0]  if parameters.get('showLastPage') else "false",
-							"startDate": parameters.get('startDate')[0] if parameters.get('startDate') else None,
-							"tags": parameters.get('tag') if parameters.get('tag') else [],
-							}
+	payload = {
+		"authors": parameters.get('author') if parameters.get('author') else [],
+		"collections": parameters.get('collection') if parameters.get('collection') else [],
+		"districts": [], # TODO: must be investigated!!
+		"endDate": parameters.get('endDate')[0] if parameters.get('endDate') else None,
+		"exactCollectionMaterialType": "false", # TODO: must be investigated!!
+		"formats": parameters.get('formats') if parameters.get('formats') else [],
+		"fuzzy": parameters.get('fuzzy')[0] if parameters.get('fuzzy') else "false",
+		"hasIllustrations": parameters.get('hasIllustrations')[0] if parameters.get('hasIllustrations') else "false",
+		"importStartDate": parameters.get('importStartDate')[0] if parameters.get('importStartDate') else None,
+		"importTime": parameters.get('importTime')[0] if parameters.get('importStartDate') else "ANY",
+		"includeUnauthorizedResults": parameters.get('showUnauthorizedResults')[0] if parameters.get('showUnauthorizedResults') else "false",
+		"languages": parameters.get('lang') if parameters.get('lang') else [],
+		"orderBy": parameters.get('orderBy')[0] if parameters.get('orderBy') else "IMPORT_DATE",
+		"pages": parameters.get('pages')[0]  if parameters.get('pages') else "",
+		"publicationPlaces": parameters.get('publicationPlace') if parameters.get('publicationPlace') else [],
+		"publications": parameters.get('title') if parameters.get('title') else [],
+		"publishers": parameters.get('publisher') if parameters.get('publisher') else [],
+		"query": parameters.get('query')[0] if parameters.get('query') else "",
+		"queryTargetsMetadata": parameters.get('qMeta')[0] if parameters.get('qMeta') else "false",
+		"queryTargetsOcrText": parameters.get('qOcr')[0] if parameters.get('qOcr') else "true",
+		"requireAllKeywords": parameters.get('requireAllKeywords')[0]  if parameters.get('requireAllKeywords') else "false",
+		"searchForBindings": parameters.get('searchForBindings')[0]  if parameters.get('searchForBindings') else "false",
+		"showLastPage": parameters.get('showLastPage')[0]  if parameters.get('showLastPage') else "false",
+		"startDate": parameters.get('startDate')[0] if parameters.get('startDate') else None,
+		"tags": parameters.get('tag') if parameters.get('tag') else [],
+	}
 	
-	headers = {	'Content-type': 'application/json',
-							'Accept': 'application/json; text/plain; */*', 
-							'Cache-Control': 'no-cache',
-							'Connection': 'keep-alive',
-							'Pragma': 'no-cache',
-							}
+	headers = {
+		'Content-type': 'application/json',
+		'Accept': 'application/json; text/plain; */*', 
+		'Cache-Control': 'no-cache',
+		'Connection': 'keep-alive',
+		'Pragma': 'no-cache',
+	}
 
 	try:
-		r = requests.post(url=search_pg_api, 
-											json=payload, 
-											headers=headers,
-											)
+		r = requests.post(
+			url=search_pg_api, 
+			json=payload, 
+			headers=headers,
+		)
 		res = r.json()
 		# a list of up to 20 results, each of which contains: 
 		#print(res.keys()): ['bindingId', 'bindingTitle', 'publicationId', 'generalType', 'authorized', 'authors', 'pageNumber', 'language', 'publisher', 'issue', 'importDate', 'dateAccuracy', 'placeOfPublication', 'textHighlights', 'terms', 'score', 'url', 'thumbnailUrl', 'date']
@@ -196,20 +199,21 @@ def scrap_search_page(URL):
 	# except Exception as e:
 	# 	print(f"<!> {e}")
 	# 	return
-	except (requests.exceptions.Timeout,
-					requests.exceptions.ConnectionError, 
-					requests.exceptions.RequestException, 
-					requests.exceptions.TooManyRedirects,
-					requests.exceptions.InvalidSchema,
-					ValueError, 
-					TypeError, 
-					IndexError,
-					EOFError, 
-					RuntimeError,
-					json.JSONDecodeError,
-					json.decoder.JSONDecodeError,
-					Exception, 
-				) as e:
+	except (
+		requests.exceptions.Timeout,
+		requests.exceptions.ConnectionError, 
+		requests.exceptions.RequestException, 
+		requests.exceptions.TooManyRedirects,
+		requests.exceptions.InvalidSchema,
+		ValueError, 
+		TypeError, 
+		IndexError,
+		EOFError, 
+		RuntimeError,
+		json.JSONDecodeError,
+		json.decoder.JSONDecodeError,
+		Exception, 
+	) as e:
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args}")
 		return
 	return SEARCH_RESULTS
