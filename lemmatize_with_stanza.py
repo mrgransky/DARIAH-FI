@@ -227,7 +227,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			cs_dict.check(word), 
 			fr_dict.check(word), 
 			ga_dict.check(word), 
-			hr_dict.check(word), 
+			hr_dict.check(word), # Croatian
 			hu_dict.check(word), 
 		)
 		if not (
