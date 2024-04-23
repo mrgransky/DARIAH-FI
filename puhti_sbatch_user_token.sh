@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=120G
+#SBATCH --mem=108G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
 #SBATCH --array=0-364,697-731
@@ -34,8 +34,8 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
-# files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz) # newly scraped NLF data (17.04.2024)
-files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
+files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz) # newly scraped NLF data (17.04.2024)
+# files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" # x58: 30-80 & 725-731
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
