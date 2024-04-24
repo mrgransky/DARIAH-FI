@@ -739,7 +739,7 @@ def get_parsed_url_parameters(inp_url):
 
 	#print(f">> Explore url parameters ...")
 	params = urllib.parse.parse_qs( p_url.query, keep_blank_values=True)
-	#print(parameters)
+	#print(params)
 	return p_url, params
 
 def get_query_phrase(inp_url):	
@@ -748,7 +748,7 @@ def get_query_phrase(inp_url):
 
 	#print(f">> Explore url parameters ...")
 	params = urllib.parse.parse_qs( p_url.query, keep_blank_values=True)
-	#print(parameters)
+	#print(params)
 	return params.get("query")
 
 @cache

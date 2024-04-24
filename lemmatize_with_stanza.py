@@ -266,6 +266,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA
+högtidligheter som hålles vid hjältegraven den bör ligger rätt förhållande till gravarna och monumentet och plats inte
 115 4 Hämeenlinna k — 11.30- N:o 342. Porvoo, Borgå—<em>Kankkila</em>, Kankböle S ko 1 X Km X 1 ko S 18.30; 10.15 8.30 16
 på detta område bestod i att man efter det skogen svedj ef ällts lät stammarna ligga i två år,
 därefter brände sveden midsommartiden, sådde råg på hösten, 
