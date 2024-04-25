@@ -264,66 +264,66 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA
-högtidligheter som hålles vid hjältegraven den bör ligger rätt förhållande till gravarna och monumentet och plats inte
-115 4 Hämeenlinna k — 11.30- N:o 342. Porvoo, Borgå—<em>Kankkila</em>, Kankböle S ko 1 X Km X 1 ko S 18.30; 10.15 8.30 16
-på detta område bestod i att man efter det skogen svedj ef ällts lät stammarna ligga i två år,
-därefter brände sveden midsommartiden, sådde råg på hösten, 
-skördade densamma följande höst, bärgade hö året därefter, 
-lät sveden stå kringgärdad i 6 å 7 år så att återväxten icke avbetades varefter densamma tidigast om 10 ä 15 år åter var färdig att användas. 
-<em>Narinen</em>, med vilken han har ett tvåårigt barn. 
-Narinen anhölls även, men frigavs efter det förhör med henn
-brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
-helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
-Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
-mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
-Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
-Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
-en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
-hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
-Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
-1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
-2) Årsberättelse; 
-3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
-4) Reglemente för lcke-Officiela Afdelningen.
-Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-'''
-
 # orig_text = '''
-# SUomI
-# Suomen Teollisuusteknikkojen Liitto | Suomen Teollisuus Teknikkojen Liitto
-# Siionin viisaitten Baselissa 1897 pitämän kongressin pöytäkirjoja säilytetään siionilaisten pääkansliassa.
-# tuotantolehmät palk vuokko oim segerman väre segerman myrtti jarva palk
-# ala porri mäenpää kokemäki jaakola forsgren hämeenlinna
-# tanska
-# Tilanomistaja Madso Peter Bernt Jörgensen Sandalgaard, Vonge, Törring, Tanska; | 
-# kauklahden kirjasto | taidetehdas porvoo
-# Matruusin koulutus
-# kuukautissuoja
-# tietopuolisille kursseille. 
-# Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
-# etelä-karjalan hyvinvointialue
-# myös ylösnousemus josa nimittäin samalla yli toisen
-# Ylein. Suomen Maanwiljelyskokous"
-# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-# DIE DIssERTATIONEN DER
-# mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-# mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-# tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
-# muistcttatpaa!
-# Salama Teatterissa
-# Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-# Keskuspoliisi
-# Kommunistien jouKKowangitfemista tahoilla maassa.
-# -!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-# ätytsille
+# sVenskA
+# högtidligheter som hålles vid hjältegraven den bör ligger rätt förhållande till gravarna och monumentet och plats inte
+# 115 4 Hämeenlinna k — 11.30- N:o 342. Porvoo, Borgå—<em>Kankkila</em>, Kankböle S ko 1 X Km X 1 ko S 18.30; 10.15 8.30 16
+# <em>Narinen</em>, med vilken han har ett tvåårigt barn. 
+# Narinen anhölls även, men frigavs efter det förhör med henn
+# brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
+# helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
+# Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
+# mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
+# Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
+# Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
+# en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
+# hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
+# Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
+# 1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
+# 2) Årsberättelse; 
+# 3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
+# 4) Reglemente för lcke-Officiela Afdelningen.
+# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
+# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 # '''
+
+orig_text = '''
+SUomI
+vesterlunds konk sept helsingfors garv konk okt leppävirta tampereen
+tallessa. Kalevalan kuvaus siis vihollisen valhetta ja vihapuhetta. Minuun tämä 
+kepeä olento teki hykäyttävän juhlallisen...Rikolliset olivat mikä Laihialta; 
+mikä Jurvasta ja sakot vallidelivat aina sen mukaan, oliko vastaajan plarjlla
+Suomen Teollisuusteknikkojen Liitto | Suomen Teollisuus Teknikkojen Liitto
+Siionin viisaitten Baselissa 1897 pitämän kongressin pöytäkirjoja säilytetään siionilaisten pääkansliassa.
+tuotantolehmät palk vuokko oim segerman väre segerman myrtti jarva palk
+ala porri mäenpää kokemäki jaakola forsgren hämeenlinna
+tanska
+Tilanomistaja Madso Peter Bernt Jörgensen Sandalgaard, Vonge, Törring, Tanska; | 
+kauklahden kirjasto | taidetehdas porvoo
+Matruusin koulutus
+kuukautissuoja
+tietopuolisille kursseille. 
+Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
+etelä-karjalan hyvinvointialue
+myös ylösnousemus josa nimittäin samalla yli toisen
+Ylein. Suomen Maanwiljelyskokous"
+Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+DIE DIssERTATIONEN DER
+mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
+mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
+tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
+muistcttatpaa!
+Salama Teatterissa
+Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
+Keskuspoliisi
+Kommunistien jouKKowangitfemista tahoilla maassa.
+-!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
+ätytsille
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
