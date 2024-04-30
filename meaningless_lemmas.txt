@@ -9654,3 +9654,5 @@ tampereen
 göteborgi
 stålhandsk
 pianinos
+geori
+kolonier
