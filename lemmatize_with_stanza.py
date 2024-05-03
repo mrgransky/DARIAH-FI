@@ -293,6 +293,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+siirtomaat
 vesterlunds konk sept helsingfors garv konk okt leppävirta tampereen
 tallessa. Kalevalan kuvaus siis vihollisen valhetta ja vihapuhetta. Minuun tämä 
 kepeä olento teki hykäyttävän juhlallisen...Rikolliset olivat mikä Laihialta; 
