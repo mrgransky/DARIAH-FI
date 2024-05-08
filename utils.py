@@ -1542,7 +1542,7 @@ def get_compressed_concatenated_path(base_path: str) -> str:
 	return comp_path
 
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="destination/path/to/comp_dir"):
-	print(f">> Saving: {os.path.join(save_dir, compressed_fname)}")
+	print(f"Compressing file {os.path.join(save_dir, compressed_fname)}".center(150, "-"))
 	t0 = time.time()
 	concat_files = [fname for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
 	compressed_fpath = os.path.join(save_dir, compressed_fname)
@@ -1552,8 +1552,10 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 			file_path = os.path.join(save_dir, file_)
 			tfile.add(file_path, arcname=file_)
 	compressed_fsize = os.path.getsize(compressed_fpath) / (1024 * 1024) # in MB
-	print(f"Elapsed_t: {time.time()-t0:.2f} sec | {compressed_fsize:.2f} MB")
+	print(f"Elapsed_t: {time.time()-t0:.1f} sec | {compressed_fsize:.1f} MB".center(150, "-"))
+
 	try:
+		print(f">> Copying to {compressed_dir} ...")
 		shutil.copy2(compressed_fpath, compressed_dir)
 	except Exception as e:
 		print(f"<!> {e}")

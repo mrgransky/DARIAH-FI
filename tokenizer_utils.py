@@ -136,11 +136,11 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	create_stanza_multilingual_pipeline(device=device)
 	try:
 		print(f'Stanza[{stanza.__version__} device: {device}] Raw Input:\n{docs}\n')
-		docs = docs.title()
+		# docs = docs.title()
 		st_t = time.time()
 		all_ = lemmatizer_multi_lingual_pipeline(docs)
 		lemmas_list = [ 
-			re.sub(r'[";=&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
+			re.sub(r'[";=&#<>_\-\+\^\.\$\[\]]', '', wlm)
 			for _, vsnt in enumerate(all_.sentences)
 			for _, vw in enumerate(vsnt.words)
 			if (

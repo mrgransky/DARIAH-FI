@@ -9588,9 +9588,13 @@ vivis
 naantal
 vihapuht
 islaminki
+islamia
+islama
+islaminop
 väärre
 hämeenli
 hämeenläin
+hameenlinna
 studentsang
 tielihti
 iwerskela
@@ -9635,6 +9639,7 @@ också
 theol
 postik
 bruns
+plötsli
 plötsligen
 jämsänkosk
 samfundets
@@ -9786,3 +9791,10 @@ opiston
 tidningens
 pömpel
 pieksämä
+wrightin
+matchen
+bibliotekariens
+stadsbibliotekens
+folkhjälpen
+biblioteket
+karie

@@ -925,10 +925,12 @@ def run():
 	print("-"*120)
 
 	# save ALL concat files in dir as a tar archive file
+	# comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
 	comp_dir = get_compressed_concatenated_path(base_path=args.dfsPath)
-	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")): # check
+
+	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")):
 		print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
-		print(f"comp_dir: {comp_dir}") # 	comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
+		print(f">> comp_dir: {comp_dir}")
 		get_compressed_archive(
 			save_dir=args.dfsPath, 
 			compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz",
@@ -986,7 +988,7 @@ def run():
 	print(len(topKtokens), topKtokens)
 
 	################################################# SHRINKED ################################################# 
-	print(f"Shrinked Query".center(150, "#"))
+	print(f"Shrinked Implementation [Token(s) seen by more than 1 User]".center(150, " "))
 	query_vector_shrinked=get_query_vec(
 		mat=concat_shrinked_spm_U_x_T,
 		mat_row=concat_shrinked_spm_usrNames,
@@ -1017,9 +1019,8 @@ def run():
 		idf_vec=idf_vec_shrinked,
 		spMtx_norm=usrNorms_shrinked,
 	)
-	print("#"*100)
 	print(
-		f"Recommendation Result[ShRINKED]:\n"
+		f"Recommendation Result[SHRINKED]:\n"
 		f"Raw Query Phrase: < {args.qphrase} >\n"
 		f"Lemmatized Query: {tokenized_query_phrase}\n"
 	)
@@ -1029,7 +1030,7 @@ def run():
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
 		meaningless_lemmas_list=UNQ_STW, # generated in tokenizer_utils.py
-		K=1000, # time-consuming
+		K=1000,
 	)
 	print(len(topKtokens_shrinked), topKtokens_shrinked)
 
