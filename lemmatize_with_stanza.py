@@ -293,6 +293,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+ouluun
 opiston kurssit
 siirtomaat
 loise
