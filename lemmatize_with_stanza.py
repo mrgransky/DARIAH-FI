@@ -117,8 +117,8 @@ useless_upos_tags = [
 	"ADP", 
 	"PRON", 
 	"PART", 
-	"ADV", 
 	"INTJ", 
+	# "ADV", 
 	# "X", # foriegn words will be excluded,
 ]
 
@@ -293,7 +293,11 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
+wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun
+uhalla kunnallislautakunnan puolesta karl huutokauppoja pakkohuutokaupalla
 ouluun
+meidän eli taloin päälle että cosca
 opiston kurssit
 siirtomaat
 loise
