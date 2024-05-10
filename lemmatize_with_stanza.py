@@ -141,9 +141,9 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		# print(type(all_))
-		# print(all_)
-		# print("#"*100)
+		print(type(all_))
+		print(all_)
+		print("#"*100)
 
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
@@ -153,7 +153,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# 	print('-'*50)
 
 		lemmas_list = [
-			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm)
+			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.sentences) 
 			for _, vw in enumerate(vsnt.words) 
 			if (
@@ -261,83 +261,57 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-# orig_text = '''
-# sVenskA
-# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
-# och sä småningom får man väl i Dragsvik se resultatet av hennes överläggningar med vår svenska blblioteksinspektör magister Barbro Boldt.
-# Esbo domkyrkas församlingsgård
-# högtidligheter som hålles vid hjältegraven den bör ligger rätt förhållande till gravarna och monumentet och plats inte
-# 115 4 Hämeenlinna k — 11.30- N:o 342. Porvoo, Borgå—<em>Kankkila</em>, Kankböle S ko 1 X Km X 1 ko S 18.30; 10.15 8.30 16
-# <em>Narinen</em>, med vilken han har ett tvåårigt barn. 
-# Narinen anhölls även, men frigavs efter det förhör med henn
-# brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
-# helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
-# Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
-# mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
-# Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
-# Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
-# en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
-# hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
-# Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
-# 1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
-# 2) Årsberättelse; 
-# 3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
-# 4) Reglemente för lcke-Officiela Afdelningen.
-# Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-# I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-# Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-# åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
-# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-# '''
-
 orig_text = '''
-SUomI
-heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
-wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun
-uhalla kunnallislautakunnan puolesta karl huutokauppoja pakkohuutokaupalla
-ouluun
-meidän eli taloin päälle että cosca
-opiston kurssit
-siirtomaat
-loise
-loisa
-loinen
-loisi
-loine
-loisti
-loisen
-loiset
-vesterlunds konk sept helsingfors garv konk okt leppävirta tampereen
-tallessa. Kalevalan kuvaus siis vihollisen valhetta ja vihapuhetta. Minuun tämä 
-kepeä olento teki hykäyttävän juhlallisen...Rikolliset olivat mikä Laihialta; 
-mikä Jurvasta ja sakot vallidelivat aina sen mukaan, oliko vastaajan plarjlla
-Suomen Teollisuusteknikkojen Liitto | Suomen Teollisuus Teknikkojen Liitto
-Siionin viisaitten Baselissa 1897 pitämän kongressin pöytäkirjoja säilytetään siionilaisten pääkansliassa.
-tuotantolehmät palk vuokko oim segerman väre segerman myrtti jarva palk
-ala porri mäenpää kokemäki jaakola forsgren hämeenlinna
-Tilanomistaja Madso Peter Bernt Jörgensen Sandalgaard, Vonge, Törring, Tanska;
-kauklahden kirjasto | taidetehdas porvoo
-Matruusin koulutus
-kuukautissuoja
-tietopuolisille kursseille. Kansalaisopisto on Suomen suurin oppilaitosmuoto.
-Sanomalehti Länsi-Suomi itä-uudenmaan hyvinvointialue
-etelä-karjalan hyvinvointialue
-myös ylösnousemus josa nimittäin samalla yli toisen
-Ylein. Suomen Maanwiljelyskokous"
-Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-DIE DIssERTATIONEN DER
-mcche mcchelinirrk mcchellnlnk mcchelm mcchk mcchl mcchingunkurmautsenll mcchioistctti 
-mcchtlghrßc mcchnmm mcchowik mcchoofliftmma mcchta mccicl mcciipanf meciipanf mccjsu mecjsu 
-tilallisen tytär Mirja H i dm a n ja tilallinen <em>Veikko Anttila</em>, molemmat Halikosta.
-muistcttatpaa!
-Salama Teatterissa
-Albin Rimppi Toivainen, Juva, Suomi >> Juristi, varatuomari <<< Matts Michelsson, Sukula,
-Keskuspoliisi
-Kommunistien jouKKowangitfemista tahoilla maassa.
--!£auqitjciMjd oasat suoranaisena jattona aikai seinnnn tapahtuneille pii osallisuus salaisen fonnnuni stipuolueen toim
-ätytsille
+sVenskA idrottsförbundet
+Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
+och sä småningom får man väl i Dragsvik se resultatet av hennes överläggningar med vår svenska blblioteksinspektör magister Barbro Boldt.
+Esbo domkyrkas församlingsgård
+högtidligheter som hålles vid hjältegraven den bör ligger rätt förhållande till gravarna och monumentet och plats inte
+115 4 Hämeenlinna k — 11.30- N:o 342. Porvoo, Borgå—<em>Kankkila</em>, Kankböle S ko 1 X Km X 1 ko S 18.30; 10.15 8.30 16
+<em>Narinen</em>, med vilken han har ett tvåårigt barn. 
+Narinen anhölls även, men frigavs efter det förhör med henn
+brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
+helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
+Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
+mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
+Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
+Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
+en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
+hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
+Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
+1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
+2) Årsberättelse; 
+3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
+4) Reglemente för lcke-Officiela Afdelningen.
+Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
+I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
+Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
+åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
+KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 '''
+
+# orig_text = '''
+# SUomI
+# siirtomaat
+# heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
+# wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun
+# uhalla kunnallislautakunnan puolesta karl huutokauppoja pakkohuutokaupalla
+# ouluun
+# meidän eli taloin päälle että cosca
+# opiston kurssit
+# siirtomaa
+# loise
+# loisa
+# loinen
+# loisi
+# loine
+# loisti
+# loisen
+# loiset
+# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
+# ätytsille
+# '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)

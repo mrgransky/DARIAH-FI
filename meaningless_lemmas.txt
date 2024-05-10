@@ -9611,7 +9611,6 @@ holmq
 descarsesi
 rekto
 vrtsi
-siirtoma
 eurovid
 eurovisio
 danielso
@@ -9804,3 +9803,9 @@ sibeliu
 svepska
 svepsk
 genom
+stali
+nyslo
+ehdokasli
+tuomiokirko
+persona
+tikkurilas
