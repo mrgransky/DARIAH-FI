@@ -9809,3 +9809,4 @@ ehdokasli
 tuomiokirko
 persona
 tikkurilas
+osuuska
