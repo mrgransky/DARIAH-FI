@@ -9810,3 +9810,10 @@ tuomiokirko
 persona
 tikkurilas
 osuuska
+talisma
+stockmanti
+alask
+annonsfris
+machin
+raukanliitto
+berli
