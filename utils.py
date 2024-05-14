@@ -893,9 +893,11 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 
 	#######################################################################################################################
-	print(f">> USERs (rows) with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}")
+	print(f"USERs (rows) with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}/{user_token_df.shape[0]}")
 	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users out of {user_token_df.shape[0]} with all zero cols...")
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
+	# TODO: remove cols in meaningless lemmas
+
 	#######################################################################################################################
 
 	if user_token_df.isnull().values.any():
@@ -903,8 +905,7 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 		print(f"Converting {user_token_df.isna().sum().sum()} cells of NaNs to cells of 0.0...", end="\t")
 		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
 		print(f"Elapsed_t: {time.time()-t:.2f} s")
-	# print( user_token_df.info(memory_usage="deep") )
-
+	print( user_token_df.info(memory_usage="deep") )
 	print(
 		f"Getting spMtx Cleaned user_token_df: {user_token_df.shape} "
 		f"nNaNs({user_token_df.isnull().values.any()})[!!!MUST BE ZERO/FALSE!!!]: {user_token_df.isna().sum().sum()} "
@@ -914,11 +915,14 @@ def get_scipy_spm(df: pd.DataFrame, vb: Dict[str, float], spm_fname: str="SPM_fn
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
 	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # (n_usr x n_vb)
-	print(f"Elapsed_t: {time.time()-t:.1f} s {type(sparse_matrix)} (nUsers x nTokens): {sparse_matrix.shape}\n"
-				f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} {sparse_matrix.toarray().dtype} |Non-zero(s)|: {sparse_matrix.count_nonzero()} "
-				f"byte[count]: {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB")
 	##########################Sparse Matrix info##########################
-	print("-"*120)
+	print(
+		f"Elapsed_t: {time.time()-t:.1f} s {type(sparse_matrix)} {sparse_matrix.toarray().dtype} (nUsers x nTokens): {sparse_matrix.shape}\n"
+		f"|tot_elem|: {sparse_matrix.shape[0]*sparse_matrix.shape[1]} |Non-zero(s)|: {sparse_matrix.count_nonzero()}\n"
+		f"byte[count]: {sum([sys.getsizeof(i) for i in sparse_matrix.data])/1e6:.2f} MB"
+	)
+	print("-"*160)
+	
 	save_pickle(pkl=sparse_matrix, fname=spm_fname)
 	save_pickle(pkl=list(user_token_df.index), fname=spm_rows_fname)
 	save_pickle(pkl=list(user_token_df.columns), fname=spm_cols_fname)
@@ -1151,7 +1155,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 		spMtx_shrinked = spMtx[:, tk_idx_seen_by_more_than_1user] # more than 1 user
 	spMtx_row_shrinked = spMtx_rows
 	spMtx_col_shrinked = spMtx_cols[tk_idx_seen_by_more_than_1user]
-	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked)
+	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked) # np.array(["A", "B", "C", "D"]) => {"A":0, "B":1, "C":2, "D":3,}
 
 	print(
 		f"Elapsed_t: {time.time()-t0:.1f} s {type(spMtx_shrinked)} {spMtx_shrinked.shape} "
@@ -1165,7 +1169,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 	spm_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_USERs_vs_TOKENs_{spMtx_shrinked.shape[0]}_nUSRs_x_{spMtx_shrinked.shape[1]}_nTOKs.gz")
 	spm_rows_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_rows_{spMtx_shrinked.shape[0]}_nUSRs.gz")
 	spm_cols_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_cols_{spMtx_shrinked.shape[1]}_nTOKs.gz")
-	concat_bow_shrinked_fname=os.path.join(save_dir, f"{prefix_fname}_spMtx_x_{spMtx_shrinked.shape[1]}_BoWs.json")
+	concat_bow_shrinked_fname = os.path.join(save_dir, f"{prefix_fname}_spMtx_x_{spMtx_shrinked.shape[1]}_BoWs.json")
 
 	save_pickle(pkl=spMtx_shrinked, fname=spm_shrinked_fname)
 	save_pickle(pkl=spMtx_row_shrinked, fname=spm_rows_shrinked_fname)

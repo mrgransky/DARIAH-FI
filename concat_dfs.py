@@ -845,10 +845,12 @@ def run():
 		)
 	
 	try:
-		idf_vec=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_idf_vec_1_x_*_nTOKs.gz')[0])
+		idf_vec = load_pickle(
+			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_idf_vec_1_x_*_nTOKs.gz')[0]
+		)
 	except Exception as e:
 		print(f"<!> idf file not available! {e}")
-		idf_vec=get_idf(
+		idf_vec = get_idf(
 			spMtx=concat_spm_U_x_T,
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
