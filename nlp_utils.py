@@ -138,7 +138,7 @@ def get_BoWs(preprocessed_docs, saveDIR: str="DIR", fprefix: str="fname_prefix",
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
 		save_pickle(pkl=tfidf_matrix, fname=tfidf_rf_matrix_fpath)
 	
-	print(f">> Creating [sorted] BoWs: (token: idx) TFID: {type(tfidf_matrix)} {tfidf_matrix.dtype} {tfidf_matrix.shape}")
+	print(f"Creating [sorted] BoWs: (token: idx) TFID: {type(tfidf_matrix)} {tfidf_matrix.dtype} {tfidf_matrix.shape}")
 	
 	# BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	BOWs = {k: int(v) for k, v in sorted(tfidf_vec.vocabulary_.items(), key=lambda item: item[1])} # ascending
@@ -151,11 +151,14 @@ def get_BoWs(preprocessed_docs, saveDIR: str="DIR", fprefix: str="fname_prefix",
 	feat_names = tfidf_vec.get_feature_names_out()
 
 	# example:
-	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3}
+	# vb = {"example": 0, "is": 1, "simple": 2, "this": 3} # sorted example
 	#	   		example   is         simple     this	
 	# 0  		0.377964  0.377964   0.377964   0.377964
 
-	print(f"Features: {type(feat_names)} {feat_names.dtype} {feat_names.shape}  BoWs: {len(BOWs)} {type(BOWs)} TFIDF: {tfidf_matrix.shape}")
+	print(
+		f"Features: {type(feat_names)} {feat_names.dtype} {feat_names.shape} {feat_names[:5]}\n"
+		f"BoWs: {len(BOWs)} {type(BOWs)}\n"
+		f"TFIDF: {type(tfidf_matrix)} {tfidf_matrix.dtype} {tfidf_matrix.shape}")
 	assert len(BOWs) == tfidf_matrix.shape[1], f"size of vocabs: {len(BoWs)} != tfidf_matrix: {tfidf_matrix.shape[1]}"
 	print(f"{f'Bag-of-Words [ Complete: {userName} ]'.center(110, '-')}")
 	return BOWs

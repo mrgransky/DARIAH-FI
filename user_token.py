@@ -560,7 +560,9 @@ def main():
 	######################################## Creating/Loading User_DF ########################################
 	print(f"Creating/Loading USERs DF".center(150, ' '))
 	try:
-		df_user = load_pickle(fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz"))
+		df_user = load_pickle(
+			fpath=os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_user_df_{len(BoWs)}_BoWs.gz")
+		)
 	except Exception as e:
 		print(f"<!> {e}")
 		# df_user = get_user_df(dframe=ORIGINAL_INP_DF, bow=BoWs)
