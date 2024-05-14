@@ -8560,6 +8560,7 @@ augusti
 aug
 september
 sept
+octobre
 october
 oktober
 oct
@@ -9581,6 +9582,7 @@ kalev
 foissa
 irtis
 korvfabri
+snickerifabri
 garft
 krist
 vivis
@@ -9818,3 +9820,15 @@ machin
 raukanliitto
 berli
 kurssili
+isbergi
+englantiisi
+åkerlundi
+förvuna
+sparras
+canad
+canadia
+fejfri
+percent
+procent
+smatra
+annon
