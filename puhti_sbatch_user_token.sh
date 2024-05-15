@@ -1,17 +1,17 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ
+#SBATCH --job-name=nikeQ_EXCEPTIONAL
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=99G
-#SBATCH --partition=gpu
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=100G
+#SBATCH --partition=large
 #SBATCH --time=03-00:00:00
-#SBATCH --array=610-731
+#SBATCH --array=30-80,725-731
 #SBATCH --gres=gpu:v100:1
 
 #### SBATCH --array=39,48-49
@@ -36,7 +36,7 @@ echo "${stars// /*}"
 echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz) # newly scraped NLF data (17.04.2024)
 # files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" # x58: 30-80 & 725-731
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x58" # x58: 30-80 & 725-731
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
