@@ -581,7 +581,7 @@ def main():
 	# 		f.write("\n")
 
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
-	print(f"Sparse Matrix Generation [users X tokens]".center(120, '-'))
+	print(f"Sparse Matrix Generation [users X tokens]".center(160, '-'))
 
 	# TODO: rename SPM file Names while removing BoWs length:
 	sparse_matrix_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz")

@@ -893,29 +893,28 @@ def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 
 	#######################################################################################################################
+	print(f">>>> Apllying Extra Cleaning on RAW unpacked_df: {user_token_df.shape} before generating SPM...")
+	ttime_start = time.time()
 	print(f"USERs (rows) with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}/{user_token_df.shape[0]}")
 	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users out of {user_token_df.shape[0]} with all zero cols...")
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
 
 	# TODO: remove cols in meaningless lemmas
 	# Identify columns to be removed
-	ttime_start = time.time()
 	columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
 	print(f"< {len(columns_to_be_removed)} > columns to be removed from meaningless lemmas:\n{columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=columns_to_be_removed)
-	print(f"Elapsed_t: {time.time()-ttime_start:.2f} sec")
-
-	#######################################################################################################################
 	if user_token_df.isnull().values.any():
 		t=time.time()
 		print(f"Converting {user_token_df.isna().sum().sum()} cells of NaNs to cells of 0.0...", end="\t")
 		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
-		print(f"Elapsed_t: {time.time()-t:.2f} s")
+		print(f"took {time.time()-t:.1f} s")
 
-	print(f"Cleaned USER-TOKEN DF:{user_token_df.shape}".center(80, "+"))
+	print(f"Cleaned USER-TOKEN DF:{user_token_df.shape} Elapsed_t: {time.time()-ttime_start:.1f} sec".center(65, "+"))
 	print( user_token_df.info(memory_usage="deep") )
-	print(f"DONE!".center(80, "+"))
+	print(f"DONE!".center(65, "+"))
+	#######################################################################################################################
 
 	print(
 		f"Getting spMtx Cleaned user_token_df: {user_token_df.shape} "
@@ -1051,10 +1050,10 @@ def get_unpacked_user_token_interest(df: pd.DataFrame):
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
 	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s")
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
-	print("-"*60)
+	print("-"*100)
+	print(f"USER TOKEN [RAW unpacked_df] {type(usr_tk_unpacked_df)} {usr_tk_unpacked_df.shape}")
 	print(usr_tk_unpacked_df.info(memory_usage="deep"))
-	print(f"usr_tk_unpacked_df {type(usr_tk_unpacked_df)} {usr_tk_unpacked_df.shape}")
-	print("-"*60)
+	print("-"*100)
 	return usr_tk_unpacked_df
 
 def get_df_files(fpath: str="MUST_BE_DEFINED"):
