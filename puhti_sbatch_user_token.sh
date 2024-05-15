@@ -12,7 +12,7 @@
 #SBATCH --partition=large
 #SBATCH --time=03-00:00:00
 #SBATCH --array=30-80,725-731
-#SBATCH --gres=gpu:v100:1
+####SBATCH --gres=gpu:v100:1
 
 #### SBATCH --array=39,48-49
 ##### x303: 0-150,580-731
