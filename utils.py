@@ -888,8 +888,8 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
 
-def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM_fname", spm_rows_fname: str="SPM_rows_fname", spm_cols_fname: str="SPM_cols_fname",):
-	print(f"SciPy SparseMtx (detailed) user_df: {df.shape}".center(120, " "))
+def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols",):
+	print(f"SciPy Sparse Matrix Generating from (detailed) user_df: {df.shape}".center(120, " "))
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 
 	#######################################################################################################################
@@ -899,10 +899,12 @@ def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM
 
 	# TODO: remove cols in meaningless lemmas
 	# Identify columns to be removed
+	ttime_start = time.time()
 	columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
-	print(f"{len(columns_to_be_removed)} columns to be removed: {columns_to_be_removed}")
+	print(f"< {len(columns_to_be_removed)} > columns to be removed from meaningless lemmas:\n{columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=columns_to_be_removed)
+	print(f"Elapsed_t: {time.time()-ttime_start:.2f} sec")
 
 	#######################################################################################################################
 	if user_token_df.isnull().values.any():
@@ -914,7 +916,7 @@ def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM
 	print(f"Cleaned USER-TOKEN DF:{user_token_df.shape}".center(80, "+"))
 	print( user_token_df.info(memory_usage="deep") )
 	print(f"DONE!".center(80, "+"))
-	
+
 	print(
 		f"Getting spMtx Cleaned user_token_df: {user_token_df.shape} "
 		f"nNaNs({user_token_df.isnull().values.any()})[!!!MUST BE ZERO/FALSE!!!]: {user_token_df.isna().sum().sum()} "

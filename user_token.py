@@ -41,15 +41,15 @@ if torch.cuda.is_available() and args.cudaNum + 1 > torch.cuda.device_count():
 device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 print(args)
 print(device)
-# sys.exit(0)
+
 # how to run (local Ubuntu 22.04.4 LTS):
 # python user_token.py --inputDF ~/datasets/Nationalbiblioteket/datasets/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1 --lmMethod 'trankit'
 
 # how to run (Puhti):
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x732 --maxNumFeat -1
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
 
-# newly built dataset with gz extension:
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x732 --maxNumFeat -1
+# (Puhti) Newly built dataset with gz extension:
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
