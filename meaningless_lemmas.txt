@@ -9832,3 +9832,5 @@ percent
 procent
 smatra
 annon
+porvu
+jacobsso
