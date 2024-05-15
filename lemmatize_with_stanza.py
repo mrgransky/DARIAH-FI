@@ -127,7 +127,8 @@ STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 with open('meaningless_lemmas.txt', 'r') as file_:
 	my_custom_stopwords=[line.strip() for line in file_]
 STOPWORDS.extend(my_custom_stopwords)
-UNQ_STW = list(set(STOPWORDS))
+# UNQ_STW = list(set(STOPWORDS))
+UNQ_STW = set(STOPWORDS)
 
 # print(enchant.list_languages())
 # sys.exit(0)
@@ -263,36 +264,18 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA idrottsförbundet
+En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
 Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
-och sä småningom får man väl i Dragsvik se resultatet av hennes överläggningar med vår svenska blblioteksinspektör magister Barbro Boldt.
-Esbo domkyrkas församlingsgård
-högtidligheter som hålles vid hjältegraven den bör ligger rätt förhållande till gravarna och monumentet och plats inte
-115 4 Hämeenlinna k — 11.30- N:o 342. Porvoo, Borgå—<em>Kankkila</em>, Kankböle S ko 1 X Km X 1 ko S 18.30; 10.15 8.30 16
-<em>Narinen</em>, med vilken han har ett tvåårigt barn. 
-Narinen anhölls även, men frigavs efter det förhör med henn
-brännare med vekar parti amp minut priserna billigaste rettig amp kommissionslager 
-helsingfors cigarrer snus parti till fabrikspriser och konditioner hos 
-Korpholmens spetälskehospital | ordf. doktor Arthur Gylling samt drkns ordf. kapten <em>Jacob</em> Lundqvist och v. ordf. gårdsägaren Albert Eriksson
-mellan nordiska länderna enligt vad statsminister erlander meddelat vid samtal med expressen börjar man med
-Kontorsmannaförbundets ombudsman hovrättsauskultanten <em>Sven Sevelius</em>, vilken tillika övertar befattningen som Förlagsföreningens
-Kontorsmannaförbundet 30 år - Bestyrelsen för allmänna finska utställningen har af landets regering emottagit 
-en tacksägelseskrifvelse i anledning af den lyckliga anordningen af finska allmänna utställningen, 
-hvarjemte till bestyrelsens ordförande, friherre J. A. von Born, öfverlemnats ett exemplar i guld af utställningens prismedalj. — 
-Fängelseföreningen i Finland har af trycket utgifvit sin af centralutskottet afgifna sjette årsberättelse. Denna innehåller: 
-1) Föredrag vid fängelseföreningens årsdag den 19 januari af fältprosten K. J. G. Sirelius; 
-2) Årsberättelse; 
-3) Iustruktion för fängelseföreningens i Finland agenter i Helsingfors; 
-4) Reglemente för lcke-Officiela Afdelningen.
-Hur får du en styrelse som faktiskt bidrar till bolagets framgång och skapar värde för ägarna? 
-I vår bloggserie, Rätt sätt i styrelsearbete, ger vi tips och råd på hur du kan göra skillnad. 
-Om styrelsen har färre än tre ledamöter måste det även finnas en styrelsesuppleant.
-åbo valde vid årsmöte till ordf hrr Sipilä till viceordf hrr ekholm som styrelseledamöter.
 KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
 EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 '''
 
 # orig_text = '''
 # SUomI
+# Israelin valtio
+# Israel
+# Israelis
+# Israelin itsenäistyminen ja myyttinen historia
 # siirtomaat
 # heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
 # wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun

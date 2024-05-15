@@ -1158,11 +1158,14 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 		spMtx_csr = spMtx.tocsr()
 		tk_idx_seen_by_more_than_1user = np.asarray((spMtx_csr > 0).sum(axis=0)).squeeze() > 1
 		spMtx_shrinked_csr = spMtx_csr[:, tk_idx_seen_by_more_than_1user]
-		spMtx_shrinked = spMtx_shrinked_csr.tolil()
+		#spMtx_shrinked = spMtx_shrinked_csr.tolil() # makes everything SLOW
+		spMtx_shrinked = spMtx_shrinked_csr#.tolil() # Faster
 	else:
 		print(f">> Time-Inefficient approach...")
-		tk_idx_seen_by_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))	
+		tk_idx_seen_by_more_than_1user = np.squeeze(np.asarray((np.sum(spMtx > 0, axis=0 ) > 1)))
 		spMtx_shrinked = spMtx[:, tk_idx_seen_by_more_than_1user] # more than 1 user
+	
+	print(f"Getting Shrinked SPMs Rows & Cols...")
 	spMtx_row_shrinked = spMtx_rows
 	spMtx_col_shrinked = spMtx_cols[tk_idx_seen_by_more_than_1user]
 	concat_BoW_shrinked = get_concat_bow(spMtx_col_shrinked) # np.array(["A", "B", "C", "D"]) => {"A":0, "B":1, "C":2, "D":3,}

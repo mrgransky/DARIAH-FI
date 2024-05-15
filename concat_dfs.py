@@ -942,7 +942,6 @@ def run():
 			upload_2_gdrive=False,
 			compressed_dir=comp_dir,
 		)
-
 	#########################################################################################################################
 	print(f"Input Query Phrase(s): < {args.qphrase} > ".center(150, " "))
 	tokenized_query_phrase = get_lemmatized_sqp(qu_list=[args.qphrase], lm=args.lmMethod)
