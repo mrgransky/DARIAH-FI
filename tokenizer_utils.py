@@ -48,7 +48,8 @@ with HiddenPrints():
 	with open('meaningless_lemmas.txt', 'r') as file_:
 		my_custom_stopwords=[line.strip() for line in file_]
 	STOPWORDS.extend(my_custom_stopwords)
-	UNQ_STW = list(set(STOPWORDS))
+	# UNQ_STW = list(set(STOPWORDS))
+	UNQ_STW = set(STOPWORDS)
 
 # Function to create the MultilingualPipeline object if not already created
 def create_stanza_multilingual_pipeline(device: str):
