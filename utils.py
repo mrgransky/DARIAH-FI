@@ -1174,7 +1174,7 @@ def get_shrinked_spMtx(spMtx, spMtx_rows, spMtx_cols, save_dir, prefix_fname, us
 	# shrinking the BIG sparse matrix:
 	print(
 		f"Shrinking Origial BIG {type(spMtx)} {spMtx.shape} "
-		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(180, " ")
+		f"rows: {spMtx_rows.shape} cols: {spMtx_cols.shape}".center(180, "-")
 	)
 	t0=time.time()
 

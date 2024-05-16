@@ -1002,7 +1002,7 @@ def run():
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
 		meaningless_lemmas_list=UNQ_STW, # generated in tokenizer_utils.py
-		K=500,
+		K=200,
 	)
 	print(len(topKtokens), topKtokens)
 
@@ -1049,7 +1049,7 @@ def run():
 		raw_query=args.qphrase,
 		tok_query=tokenized_query_phrase,
 		meaningless_lemmas_list=UNQ_STW, # generated in tokenizer_utils.py
-		K=1000,
+		K=200,
 	)
 	print(len(topKtokens_shrinked), topKtokens_shrinked)
 
