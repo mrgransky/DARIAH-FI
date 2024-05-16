@@ -801,11 +801,15 @@ def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	make_folder(folder_name=args.dfsPath)
 
-	# TODO: rename SPM file Names while removing BoWs length: must be adopted from user_token.py get_scipy_spm function
-	sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
-	sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
-	sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
 	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
+	# TODO: rename SPM file Names while removing BoWs length: must be adopted from user_token.py get_scipy_spm function
+	# sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
+	# sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
+	# sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
+
+	sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_UxT.gz')
+	sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_rows.gz')
+	sp_mtx_cols_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_cols.gz')
 
 	print(
 		f"{len(sp_mtx_files)} spMtx files | " 
@@ -873,12 +877,18 @@ def run():
 			prefix_fname=fprefix,
 		) # (nUsers,) 
 
-	################################################# SHRINKED ################################################# 
+	################################################# SHRINKED #################################################
 	try:
 		# load shrinked spMtx
-		concat_shrinked_spm_U_x_T=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0])
-		concat_shrinked_spm_usrNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_rows_*_nUSRs.gz')[0])
-		concat_shrinked_spm_tokNames=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_cols_*_nTOKs.gz')[0])
+		concat_shrinked_spm_U_x_T = load_pickle(
+			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0]
+		)
+		concat_shrinked_spm_usrNames = load_pickle(
+			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_rows_*_nUSRs.gz')[0]
+		)
+		concat_shrinked_spm_tokNames=load_pickle(
+			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_spMtx_cols_*_nTOKs.gz')[0]
+		)
 	except Exception as e:
 		print(f"<!> No Shrinked_SPM concat files found {e} [might take a while]...")
 		concat_shrinked_spm_U_x_T, concat_shrinked_spm_usrNames, concat_shrinked_spm_tokNames = get_shrinked_spMtx(
