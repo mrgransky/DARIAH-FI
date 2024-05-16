@@ -22,7 +22,7 @@ args = parser.parse_args()
 fprefix: str = "FILE_PREFIXname_TBR"
 
 # how to run:
-# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "marxismi"
+# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x732 --qphrase "marxismi"
 
 # in Pouta:
 # $ nohup python -u concat_dfs.py --dfsPath /media/volume/Nationalbiblioteket/dataframes_yy > concat_x19_check.out & 
@@ -817,7 +817,8 @@ def run():
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
 
 	global fprefix, RES_DIR
-	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
+	# fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
+	fprefix=f"concatinated_732_SPMs" # temporary
 
 	RES_DIR=make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
@@ -860,10 +861,12 @@ def run():
 		)
 
 	try:
-		usrNorms=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_users_norm_1_x_*_nUSRs.gz')[0])
+		usrNorms = load_pickle(
+			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_users_norm_1_x_*_nUSRs.gz')[0]
+		)
 	except Exception as e:
 		print(f"<!> usrNorm file not found! {e}")
-		usrNorms=get_idfed_users_norm(
+		usrNorms = get_idfed_users_norm(
 			spMtx=concat_spm_U_x_T,
 			idf_vec=idf_vec,
 			save_dir=args.dfsPath,
