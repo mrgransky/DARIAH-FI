@@ -8586,6 +8586,7 @@ wednesday
 torstai
 torst
 torsdag
+torsdage
 torsda
 torsd
 thursday
@@ -9835,3 +9836,18 @@ annon
 porvu
 jacobsso
 falskelige
+osakeppa
+granku
+merfors
+tampi
+siines
+postbo
+christl
+lifva
+jatkosoti
+direktoro
+osakepa
+såsim
+paliv
+ivaha
+havata
