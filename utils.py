@@ -1067,11 +1067,20 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 	return spm_files
 
 def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
+	######################## Scipy userNorm ########################
 	# print(f"Scipy userNorm:", end=" ")
 	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
+	######################## Scipy userNorm ########################
 
-	# print(f"Customized Users Norm", end=" ")
-	# t0=time.time()
+	print(f"Customized Users Norm", end=" ")
+	print(
+			f"spMtx {type(spMtx)} {spMtx.shape} {spMtx.dtype}\n"
+			f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}"
+		)
+
+	t0=time.time()
+
+	######################## Inefficient Customized userNorm ########################
 	# nUsers, _ = spMtx.shape
 	# uNorms=np.zeros(nUsers, dtype=np.float32)
 	# idf_squeezed=np.squeeze(np.asarray(idf_vec))
@@ -1080,16 +1089,9 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 	# 	userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
 	# 	# uNorms[ui]=np.linalg.norm(userInterest)
 	# 	uNorms[ui]=np.linalg.norm(userInterest**exponent)
-	# print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~210 sec
-	# usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(uNorms)}_nUSRs.gz")
-	# save_pickle(pkl=uNorms, fname=usrNorm_fname)
-	# return uNorms
+	######################## Inefficient Customized userNorm ########################
 
 	################ Most optimized as of 16.05.2024 ################
-	print(
-			f"spMtx {type(spMtx)} {spMtx.shape} {spMtx.dtype}\n"
-			f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}"
-		)
 	# Ravel the IDF vector
 	idf_squeezed = idf_vec.ravel()
 	# Multiply the sparse matrix by the IDF vector
@@ -1099,6 +1101,12 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 		idf_weighted_spMtx.data **= exponent
 	# Compute the norm for each user (row)
 	uNorms = np.sqrt(idf_weighted_spMtx.multiply(idf_weighted_spMtx).sum(axis=1)).A1
+	################ Most optimized as of 16.05.2024 ################
+
+	usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(uNorms)}_nUSRs.gz")
+	save_pickle(pkl=uNorms, fname=usrNorm_fname)
+	print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~210 sec
+
 	return uNorms
 
 def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: str="file_prefix"):
