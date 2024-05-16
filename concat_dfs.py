@@ -817,8 +817,8 @@ def run():
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
 
 	global fprefix, RES_DIR
-	# fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
-	fprefix=f"concatinated_732_SPMs" # temporary
+	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
+	# fprefix=f"concatinated_732_SPMs" # temporary
 
 	RES_DIR=make_result_dir(infile=fprefix)
 	# print(fprefix, RES_DIR)
