@@ -22,7 +22,7 @@ args = parser.parse_args()
 fprefix: str = "FILE_PREFIXname_TBR"
 
 # how to run:
-# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x732 --qphrase "marxismi"
+# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "marxismi"
 
 # in Pouta:
 # $ nohup python -u concat_dfs.py --dfsPath /media/volume/Nationalbiblioteket/dataframes_yy > concat_x19_check.out & 
@@ -910,10 +910,12 @@ def run():
 		)
 
 	try:
-		usrNorms_shrinked=load_pickle(fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_users_norm_1_x_*_nUSRs.gz')[0])
+		usrNorms_shrinked = load_pickle(
+			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_shrinked_users_norm_1_x_*_nUSRs.gz')[0]
+		)
 	except Exception as e:
 		print(f"<!> SHRINKED usrNorm file not found! {e}")
-		usrNorms_shrinked=get_idfed_users_norm(
+		usrNorms_shrinked = get_idfed_users_norm(
 			spMtx=concat_shrinked_spm_U_x_T,
 			idf_vec=idf_vec_shrinked,
 			save_dir=args.dfsPath,
