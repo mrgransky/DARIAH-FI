@@ -262,40 +262,41 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA idrottsförbundet
-byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
-En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
-Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
-KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-'''
-
 # orig_text = '''
-# SUomI
-# Israelin valtio
-# Israel
-# Israelis
-# Israelin itsenäistyminen ja myyttinen historia
-# siirtomaat
-# heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
-# wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun
-# uhalla kunnallislautakunnan puolesta karl huutokauppoja pakkohuutokaupalla
-# ouluun
-# meidän eli taloin päälle että cosca
-# opiston kurssit
-# siirtomaa
-# loise
-# loisa
-# loinen
-# loisi
-# loine
-# loisti
-# loisen
-# loiset
-# Vuonna 1921 sveitsiläinen psykiatri Hermann Rorschach jul* kaisi 
-# ätytsille
+# sVenskA idrottsförbundet
+# byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
+# En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
+# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
+# KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 # '''
+
+orig_text = '''
+SUomI
+perää siitä moi mitään sanoa ketään löppösiään kääntämään työn hakemista marten tahi dollaria
+huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+Israelin valtio
+Israel
+Israelis
+Israelin itsenäistyminen ja myyttinen historia
+siirtomaat
+heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
+wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun
+uhalla kunnallislautakunnan puolesta karl huutokauppoja pakkohuutokaupalla
+ouluun
+meidän eli taloin päälle että cosca
+opiston kurssit
+siirtomaa
+loise
+loisa
+loinen
+loisi
+loine
+loisti
+loisen
+loiset
+ätytsille
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
