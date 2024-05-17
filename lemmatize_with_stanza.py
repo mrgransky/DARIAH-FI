@@ -264,6 +264,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA idrottsförbundet
+byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
 En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
 Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
 KffiffiffiffiMffiKäiSKraälSSSäiSiäfiSJSSSSiälJSiffi
