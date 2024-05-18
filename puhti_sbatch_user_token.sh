@@ -7,12 +7,12 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=150G
-#SBATCH --partition=large
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=120G
+#SBATCH --partition=gpu
 #SBATCH --time=00-04:00:00
-#SBATCH --array=0-399
-###SBATCH --gres=gpu:v100:1
+#SBATCH --array=400-731
+#SBATCH --gres=gpu:v100:1
 
 #### SBATCH --array=39,48-49
 ##### x303: 0-150,580-732
