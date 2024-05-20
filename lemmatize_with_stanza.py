@@ -224,9 +224,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			et_dict.check(word),
 			cs_dict.check(word), 
 			fr_dict.check(word), 
-			ga_dict.check(word), 
-			hr_dict.check(word), # Croatian
-			hu_dict.check(word), 
+			# ga_dict.check(word), 
+			# hr_dict.check(word), # Croatian
+			# hu_dict.check(word), 
 		)
 		if not (
 			fi_dict.spell(word)
@@ -240,9 +240,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			or et_dict.check(word)
 			or cs_dict.check(word)
 			or fr_dict.check(word)
-			or ga_dict.check(word) # TODO: to be removed!
-			or hr_dict.check(word) # TODO: to be removed!
-			or hu_dict.check(word) # TODO: to be removed!
+			# or ga_dict.check(word) # TODO: to be removed!
+			# or hr_dict.check(word) # TODO: to be removed!
+			# or hu_dict.check(word) # TODO: to be removed!
 		):
 			print(f"\t\t{word} does not exist")
 			pass
@@ -279,27 +279,6 @@ Minä olen kuitenkin vakautettu siitä, että tämä hetki tulee koittamaan, kos
 kerrassaan mieluista nyt taasen löytää herrat kommunistit porvarillisen oikeusjärjestyksen etu vartijoina.
 perää siitä moi mitään sanoa ketään löppösiään kääntämään työn hakemista marten tahi dollaria
 huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
-Israelin valtio
-Israel
-Israelis
-Israelin itsenäistyminen ja myyttinen historia
-siirtomaat
-heinonen savonlinna sortavala lieksa nurmes sotkamo kajaani
-wain manuksi quot joku aika takaperin asikkalan siellä hän kuitenkin jonkun
-uhalla kunnallislautakunnan puolesta karl huutokauppoja pakkohuutokaupalla
-ouluun
-meidän eli taloin päälle että cosca
-opiston kurssit
-siirtomaa
-loise
-loisa
-loinen
-loisi
-loine
-loisti
-loisen
-loiset
-ätytsille
 '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)

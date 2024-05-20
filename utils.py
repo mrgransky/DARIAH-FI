@@ -811,9 +811,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 			or et_dict.check(word)
 			or cs_dict.check(word)
 			or fr_dict.check(word)
-			or ga_dict.check(word)
-			or hr_dict.check(word)
-			or hu_dict.check(word)
+			# or ga_dict.check(word)
+			# or hr_dict.check(word)
+			# or hu_dict.check(word)
 		):
 			# print(f"\t\t{word} does not exist")
 			pass
