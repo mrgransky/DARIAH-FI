@@ -273,6 +273,10 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+Vain internationalki j» internationalin, Zurichin ja Moskova n välillä, voidaan luoda yhteisrintama. 
+Meidän on kysyttävi itseltämme, onko ajankohta tähän kypsä. Tällä hetkellä ei niin näytä olevan. 
+Minä olen kuitenkin vakautettu siitä, että tämä hetki tulee koittamaan, koska historiallinen välttämättömyys sen aiheuttaa.»
+kerrassaan mieluista nyt taasen löytää herrat kommunistit porvarillisen oikeusjärjestyksen etu vartijoina.
 perää siitä moi mitään sanoa ketään löppösiään kääntämään työn hakemista marten tahi dollaria
 huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
 Israelin valtio
