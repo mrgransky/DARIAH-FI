@@ -1414,12 +1414,12 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		print(f"{f'Extracting Raw collection query phrase(s)':<80}", end="")
 		st_t = time.time()
 		preprocessed_df["collection_sq_phrase"] = preprocessed_df["collection_query_phrase"].map(get_raw_sqp, na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.1f} s")
 
 		print(f"{f'Extracting Cleaned collection query phrase(s)':<80}", end="")
 		st_t = time.time()
 		preprocessed_df["cleaned_collection_sq_phrase"] = preprocessed_df["collection_query_phrase"].map(lambda lst: get_raw_sqp(lst, cleaned_docs=True), na_action="ignore")
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.1f} s")
 
 		print(f"{f'Extracting Raw clipping query phrases':<80}", end="")
 		st_t = time.time()
@@ -1489,7 +1489,7 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		print(f"{f'Extracting Cleaned newspaper content':<80}", end="")
 		st_t = time.time()
 		preprocessed_df['cleaned_nwp_content_ocr'] = preprocessed_df["nwp_content_results"].map(lambda res: get_raw_cnt(res, cleaned_docs=True), na_action='ignore')
-		print(f"Elapsed_t: {time.time()-st_t:.3f} s")
+		print(f"Elapsed_t: {time.time()-st_t:.1f} s")
 		
 		users_list = list()
 		raw_texts_list = list()
@@ -1537,7 +1537,7 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 				and re.search(r"\b(?=\D)\w{3,}\b", subitem)
 			)
 		]
-		print(f"Elapsed_t: {time.time()-t0:.3f} s | len: {len(raw_docs_list)} | {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
+		print(f"Elapsed_t: {time.time()-t0:.1f} s len: {len(raw_docs_list)} {type(raw_docs_list)} any None? {any(elem is None for elem in raw_docs_list)}")
 		raw_docs_list = list(set(raw_docs_list))
 		print(f"Cleaning {len(raw_docs_list)} unique Raw Docs [Query Search + Collection + Clipping + Snippets + Content OCR]...")
 
@@ -1552,10 +1552,12 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		save_pickle(pkl=preprocessed_docs, fname=preprocessed_docs_fpath)
 		save_pickle(pkl=preprocessed_df, fname=preprocessed_df_fpath)
 
-		print(f">> Saving cleaned_sq_phrase into excel file... ")
-		df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
-		cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
-		cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
+		# ###########################################################################################################################
+		# print(f">> Saving cleaned_sq_phrase into excel file... ")
+		# df_filtered = preprocessed_df[preprocessed_df['cleaned_sq_phrase'].notnull()]  # Filter for non-null values
+		# cleaned_sq_phrase = df_filtered['cleaned_sq_phrase']  # Select the cleaned_sq_phrase column
+		# cleaned_sq_phrase.to_excel(f'{preprocessed_df_fpath}_cleaned_sq_phrase.xlsx', index=False)
+		# ###########################################################################################################################
 
 	print(f"Preprocessed {type(preprocessed_df)} containing Raw & Cleaned Documents: {preprocessed_df.shape}".center(140, "-"))
 	print(preprocessed_df.info(verbose=True, memory_usage="deep"))
