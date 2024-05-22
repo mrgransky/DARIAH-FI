@@ -142,9 +142,9 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		print(type(all_))
-		print(all_)
-		print("#"*100)
+		# print(type(all_))
+		# print(all_)
+		# print("#"*100)
 
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
@@ -273,6 +273,32 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
+Johannes, myymälänh, Mariank. 5 as. 8. Rahja, Martti Erkki, aliperämieskok., Aninankatu 4 B 9. Sylvi Ester, kotiap., Hot. Knut Posse. Rahko, 
+Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
+Tarhurintie 1, Ke. Anni Kyllikki, Karjalank. 10 C. Antti, Naurisk. 11, Ke. Antti, Kunnalliskoti. Dagmar, rouva, Jukolank. 3 as. 3, Py. Eino Olari, 
+liikeap., Viidesk. 7 as. 1, So. Ellen Elina, työ!., Viidesk. 7 as. 1, So. Elsa, rouva, Uusikoivistontie 2 as. 2, Kä. Emil Arvid, teurastaja, 
+Viidesk. 7, So. Emma Karoliina, opettaja, Pellervonk. 10. Harry Harald, kauppamatk., Jukolank. 3. Hilja, kotiap., Suvik. 18 as. 2, VV. Hilja, liikeap., 
+Tallik. 2 as. 2, Kj. Hilja Lempi, rouva, Tallik. 2 as. 1, Kj. Hilja Elina, rouva, Viidesk. 7 as. 1, So. Hulda, rouva, Karjaportink. 6 as. 7. 
+lda Maria, työ!., Harjuk. 17, Kg. lda Emilia, rouva, Tarhurintie 1, Ke. lrja Alina, omp., Harjuk. 18 as. 2, Kg. Jenny Maria, rouva, Ensimäinenk. 
+3 as. 7. Johannes, työm., Ensimäinenk. 3 as. 7. Juho, puuseppä, Jukolank. 3, Ke. Juho, yövart., Kannaksentie 83. Kaarlo Henrik, raitiov.kulj., 
+Soimak. 22. Katri, rouva, Lipontie 39 as. 6, So. Kerttu, talousap., Torkkelink. 18 as. 8. Laila Maria, kappaomp., Tallik. 2 as. 3 Kj. Linda, modisti, 
+Ojak. 34, Ke. Maire Mirjam, kotiap., Erkonk. 2 C 29. Martta Kyllikki, rouva, Sandelsink. 26. Martta Maria, rouva, Tallik. 2 as. 3, Kj. Martti Arvid, 
+Viidesk. 7 as. 1, So. Onni Armas, autonkulj., Ojak. 25, Ke. Pekka, työm., Valtak. 39 —41, Ke. Selma Aliisa, Kunnalliskoti. Taimi Ellen, rouva, Pontuksenk. 18 as. 12. Tauno Pärttyli, vet.lämm., 
+Sandelsink. 26. Teuvo, tullivart., Tallik. 2 as. 1, Kj. 
+Unto, ylim. tullim., Tallik. 2 as. 2, Kj. Vilho, varastoin., Karjaportink. 6, as. 7. Vilho Ludvig, varastoni., Uusikoivist.tie 2. Väinö Armas, lämm., 
+Pontuksenk. 18. Väinö, työm., Lipontie 39 as. 6, Sn. Väinö Johannes, kirvesm., Suvik. 18 as. 2.
+Rahina, Helmi Aino, myyjätär, Ludvigink. 23. Rahtola, Eino Arvid, poliisikonst., poliisikontt. Uuras, Esisaari. Elna, rouva, Esisaari, kaup.talo. 
+Rahunen, Aimo, liikeap., Soimak. 9 as. 2, Py. A., Viipurin Ruoka- ja Näkkileipäleipomo, Pellervonk. 7 puh. 1571. Anna S., leskirouva, 
+Maununk. 11 as. 18. Anna Helena, rouva, Soimalk. 9 as. 2. Emil Juho, työni., Kullervonk. 29 as. 3. Esteri, rouva, Talikkalank. 29, Ta. Lyyli Helena, 
+rouva, Papulank. 10 as. 9. Martta, rouva, Talikkalank. 16 as. 2. Olli, vaihdem., Talikkalank. 29, Ta. Olavi Henrik, lämm., Majurink. 4 as. 9. Oskari, 
+kirvesm., Vilkonmäki 7, Ko. Pekka, työm., Soimak. 9 as. 2, Py. Reino, konttoristi, Maununk. 11 as. 18. Reino Olavi, Talikkalank. 29 as. 2. Toivo, autonkulj., Talikkalank. 16 as. 2. Siiri, kotiapul., Soimak. 9 as. 2, Py. Viljo Kauko, Talikkalank. 29. 
+Räihä, Laina Amalia, rva, Janak. 1 as. 7, Ko. Niilo, työm., Kullervonk. 35 as. 6. Raij, Olof Alarik, opisk., Kullervonk. 7 as. 3. Raija, Helena, Kirkkosaarenk. 6 as. 32. Raije, Frans Oskar, ent. ylijun., Mustolank., livosen talo, Th. Karin Matilda, rva, 
+Mustolank., livosen t. Raijola, Jenny Amalia, rva, Oppipolku 4 as. 4. Maria Sofia, leskirva, Koivistontie 8, Kä. Sulo Orvo, mittam., Oppipolku 4 as. 4, Ha. Raikas, Aini Inkeri, pankkivirk., Lallukank. 6. Antti Adolf, insin., Äyräpäänk. 10 B 27. P. 3881. lmpi 
+Maria, rouva, Äyräpäänk. 10 B 27. Lauri, liikem., Piispank. 6, Puunhankinta Oy. P. 546. Mauno Sulo, asiap., Kevätpolku 12, VV. Sulo, leipuri, Kevätpolku 12, W. Railanto, Ester Annikki, kontt.ap., Ainonk. 3 Olga Maria, rouva, Ainonk. 3 as. 16. Orvokki, yliopp., Ainonk. 3 as. 16. Railava, Valdemar, mek.opp., 
+Rantak. 1 as. 2. Railip, Veikko Sampsa, rak.ins., Linn.k. 39 A. Railo, Tyyne, rouva, Maaskolan tila, Ojala. Viljo Ilmari, työnjoht., 
+Maaskolan tila. Railonkoski, Hugo Ludvig, luutn., Maun.k. 1 F. lrene Meiram, rouva, Maununk. 1 F 56. Rainala, Valdemar, kontt., Linnansaarenk. 12 as. 1. P. 1523. Rainamo, Ada Kare liina, rouva, It. puistok. 31 Anton, konst., 
+Honkalantie 28 as. 5. Hilda Katri, rouva, Honkalantie 28 as. 5. Taavi Vilhelm, edust., It. puistok. 31 as. 3.
 Vain internationalki j» internationalin, Zurichin ja Moskova n välillä, voidaan luoda yhteisrintama. 
 Meidän on kysyttävi itseltämme, onko ajankohta tähän kypsä. Tällä hetkellä ei niin näytä olevan. 
 Minä olen kuitenkin vakautettu siitä, että tämä hetki tulee koittamaan, koska historiallinen välttämättömyys sen aiheuttaa.»

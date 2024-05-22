@@ -879,10 +879,8 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	print(f"Inverse document frequency for {type(spMtx)} {spMtx.shape} {spMtx.dtype}".center(140, " "))
 	st_t=time.time()
 	nUsers, _ = spMtx.shape
-	doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
-	#doc_freq_term=np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
-	idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term), dtype=np.float32)
-	#idf=np.log10((1 + nUsers) / (1.0 + doc_freq_term))
+	doc_freq_term = np.asarray(np.sum(spMtx > 0, axis=0), dtype=np.float32)
+	idf = np.log10((1 + nUsers) / (1.0 + doc_freq_term), dtype=np.float32)
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {idf.shape} {type(idf)} {idf.dtype} byte[count]: {idf.nbytes/1e6:.2f} MB".center(140, " "))
 	idf_fname=os.path.join(save_dir, f"{prefix_fname}_idf_vec_1_x_{idf.shape[1]}_nTOKs.gz")
 	save_pickle(pkl=idf, fname=idf_fname)
@@ -1069,7 +1067,7 @@ def get_spm_files(fpath: str="MUST_BE_DEFINED"):
 def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	######################## Scipy userNorm ########################
 	# print(f"Scipy userNorm:", end=" ")
-	# uNorms=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
+	# users_norm=linalg.norm(concat_spm_U_x_T, axis=1) # (nUsers,) ~8.0 sec
 	######################## Scipy userNorm ########################
 
 	print(f"Customized Users Norm", end=" ")
@@ -1082,16 +1080,16 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 
 	######################## Inefficient Customized userNorm ########################
 	# nUsers, _ = spMtx.shape
-	# uNorms=np.zeros(nUsers, dtype=np.float32)
+	# users_norm=np.zeros(nUsers, dtype=np.float32)
 	# idf_squeezed=np.squeeze(np.asarray(idf_vec))
 	# for ui in np.arange(nUsers, dtype=np.int32):
 	# 	nonzero_idxs=np.nonzero(spMtx[ui, :])[1] # necessary!
 	# 	userInterest=np.squeeze(spMtx[ui,nonzero_idxs].toarray())*idf_squeezed[nonzero_idxs] #(nTokens,)x(nTokens,)
-	# 	# uNorms[ui]=np.linalg.norm(userInterest)
-	# 	uNorms[ui]=np.linalg.norm(userInterest**exponent)
+	# 	# users_norm[ui]=np.linalg.norm(userInterest)
+	# 	users_norm[ui]=np.linalg.norm(userInterest**exponent)
 	######################## Inefficient Customized userNorm ########################
 
-	################ Most optimized as of 16.05.2024 ################
+	######################## Most optimized as of 16.05.2024 ########################
 	# Ravel the IDF vector
 	idf_squeezed = idf_vec.ravel()
 	# Multiply the sparse matrix by the IDF vector
@@ -1100,14 +1098,14 @@ def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="sav
 	if exponent != 1.0:
 		idf_weighted_spMtx.data **= exponent
 	# Compute the norm for each user (row)
-	uNorms = np.sqrt(idf_weighted_spMtx.multiply(idf_weighted_spMtx).sum(axis=1)).A1
-	################ Most optimized as of 16.05.2024 ################
+	users_norm = np.sqrt(idf_weighted_spMtx.multiply(idf_weighted_spMtx).sum(axis=1)).A1
+	######################## Most optimized as of 16.05.2024 ########################
 
-	usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(uNorms)}_nUSRs.gz")
-	save_pickle(pkl=uNorms, fname=usrNorm_fname)
-	print(f"elapsed_t: {time.time()-t0:.2f} s {type(uNorms)} {uNorms.shape} {uNorms.dtype}") # ~210 sec
+	usrNorm_fname=os.path.join(save_dir, f"{prefix_fname}_users_norm_1_x_{len(users_norm)}_nUSRs.gz")
+	save_pickle(pkl=users_norm, fname=usrNorm_fname)
+	print(f"elapsed_t: {time.time()-t0:.2f} s {type(users_norm)} {users_norm.shape} {users_norm.dtype}") # ~210 sec
 
-	return uNorms
+	return users_norm
 
 def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: str="file_prefix"):
 	# SPMs: [(spm1, spm1_row, spm1_col), (spm1, spm1_row, spm1_col), ..., (spmN, spmN_row, spmN_col)]
