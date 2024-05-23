@@ -41,7 +41,7 @@ with HiddenPrints():
 		"PRON",
 		"PART",
 		"INTJ",
-		# "ADV",
+		"ADV", 
 		# "X", # foriegn words will be excluded,
 	]
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
