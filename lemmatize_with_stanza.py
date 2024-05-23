@@ -264,6 +264,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA idrottsförbundet
+< arbetets krävande natur ><
 vapen tillåtet endast för gardenas och nas medlemmar samt för respektive
 byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
 En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
