@@ -901,7 +901,7 @@ def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM
 	# Identify columns to be removed
 	columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
-	print(f"< {len(columns_to_be_removed)} > columns to be removed from meaningless lemmas:\n{columns_to_be_removed}")
+	print(f"< {len(columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=columns_to_be_removed)
 	if user_token_df.isnull().values.any():
 		t=time.time()
