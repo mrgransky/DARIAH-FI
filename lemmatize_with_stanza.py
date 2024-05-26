@@ -142,9 +142,9 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		# print(type(all_))
-		# print(all_)
-		# print("#"*100)
+		print(type(all_))
+		print(all_)
+		print("#"*100)
 
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
@@ -256,35 +256,32 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 # orig_text = '''
 # enGliSH with Swedish genealogists
+# the reliability helsingin sanomat advertising paper helsingin sanomat only finnish paper with own
 # Poitzell Genealogy and Poitzell Family History Information 
 # Finnish and Swedish Cellulose Unions helped genealogists
 # The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA idrottsförbundet
-< arbetets krävande natur ><
-vapen tillåtet endast för gardenas och nas medlemmar samt för respektive
-byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
-En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
-Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-'''
-
 # orig_text = '''
-# SUomI
-# Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
-# Johannes, myymälänh, Mariank. 5 as. 8. Rahja, Martti Erkki, aliperämieskok., Aninankatu 4 B 9. Sylvi Ester, kotiap., Hot. Knut Posse. Rahko, 
-# Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
-# Tarhurintie 1, Ke. Anni Kyllikki, Karjalank. 10 C. Antti, Naurisk. 11, Ke. Antti, Kunnalliskoti. Dagmar, rouva, Jukolank. 3 as. 3, Py. Eino Olari, 
-# liikeap., Viidesk. 7 as. 1, So. Ellen Elina, työ!., Viidesk. 7 as. 1, So. Elsa, rouva, Uusikoivistontie 2 as. 2, Kä. Emil Arvid, teurastaja, 
-# Meidän on kysyttävi itseltämme, onko ajankohta tähän kypsä. Tällä hetkellä ei niin näytä olevan. 
-# Minä olen kuitenkin vakautettu siitä, että tämä hetki tulee koittamaan, koska historiallinen välttämättömyys sen aiheuttaa.»
-# kerrassaan mieluista nyt taasen löytää herrat kommunistit porvarillisen oikeusjärjestyksen etu vartijoina.
-# perää siitä moi mitään sanoa ketään löppösiään kääntämään työn hakemista marten tahi dollaria
-# huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+# sVenskA idrottsförbundet
+# < arbetets krävande natur ><
+# vapen tillåtet endast för gardenas och nas medlemmar samt för respektive
+# byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
+# En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
+# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
 # '''
+
+orig_text = '''
+SUomI
+helsingin sanomat
+klo tiistaina torstaina lauantaina uukuniemelle kautta klo tiistaina torstaina
+Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
+Johannes, myymälänh, Mariank. 5 as. 8. Rahja, Martti Erkki, aliperämieskok., Aninankatu 4 B 9. Sylvi Ester, kotiap., Hot. Knut Posse. Rahko, 
+Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
+huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
