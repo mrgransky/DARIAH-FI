@@ -275,10 +275,10 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
-helsingin sanomat
+tietävän asiasta mitään schmidt lähti alakertaan ferguson seurasi myöhemmin juoma oli hyvää loistava
+kuhmoinen lahti lammi luopioinen orivesi nokia riihimäki ruovesi somero tampers turenki
 klo tiistaina torstaina lauantaina uukuniemelle kautta klo tiistaina torstaina
 Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
-Johannes, myymälänh, Mariank. 5 as. 8. Rahja, Martti Erkki, aliperämieskok., Aninankatu 4 B 9. Sylvi Ester, kotiap., Hot. Knut Posse. Rahko, 
 Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
 huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
 '''
