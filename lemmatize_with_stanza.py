@@ -263,25 +263,26 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-# orig_text = '''
-# sVenskA idrottsförbundet
-# < arbetets krävande natur ><
-# vapen tillåtet endast för gardenas och nas medlemmar samt för respektive
-# byggmäst kolonialv handl dcläg firma taipale amp forstadius åggelby baggböle aggelby docksarb bärgmansg
-# En finskspråkig sång skulle kunna representera Sverige i Eurovisionens schlagerfestival.
-# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
-# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-# '''
-
 orig_text = '''
-SUomI
-tietävän asiasta mitään schmidt lähti alakertaan ferguson seurasi myöhemmin juoma oli hyvää loistava
-kuhmoinen lahti lammi luopioinen orivesi nokia riihimäki ruovesi somero tampers turenki
-klo tiistaina torstaina lauantaina uukuniemelle kautta klo tiistaina torstaina
-Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
-Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
-huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+sVenskA idrottsförbundet
+< arbetets krävande natur ><
+En yngling gick med dröjande steg uppför backen mot kyrkan , som stolt reste sin höga spira mot himlen . 
+Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna, 
+EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
+Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi, 
+Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
+men tillika började han fundera på, vad sången kunde betyda.
 '''
+
+# orig_text = '''
+# SUomI
+# tietävän asiasta mitään schmidt lähti alakertaan ferguson seurasi myöhemmin juoma oli hyvää loistava
+# kuhmoinen lahti lammi luopioinen orivesi nokia riihimäki ruovesi somero tampers turenki
+# klo tiistaina torstaina lauantaina uukuniemelle kautta klo tiistaina torstaina
+# Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
+# Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
+# huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+# '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
