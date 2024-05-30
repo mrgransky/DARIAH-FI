@@ -886,7 +886,7 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
 
-def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols",):
+def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols",):
 	print(f"SciPy Sparse Matrix Generating from (detailed) user_df: {df.shape}".center(120, " "))
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
 
@@ -897,12 +897,15 @@ def get_scipy_spm(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM
 	print(f"Droping {user_token_df.shape[0] - np.sum(np.sum(user_token_df > 0, axis=1) > 0)} users out of {user_token_df.shape[0]} with all zero cols...")
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
 
-	# TODO: remove cols in meaningless lemmas
-	# Identify columns to be removed
-	columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
+	# Identify columns (from meaningless lemmas txt file) to be removed:
+	meaningless_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
-	print(f"< {len(columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{columns_to_be_removed}")
-	user_token_df = user_token_df.drop(columns=columns_to_be_removed)
+	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
+	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
+
+	# TODO: remove cols with zero results of NLF:
+	# zero_nlf_results_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
+
 	if user_token_df.isnull().values.any():
 		t=time.time()
 		print(f"Converting {user_token_df.isna().sum().sum()} cells of NaNs to cells of 0.0...", end="\t")
@@ -1597,14 +1600,15 @@ def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="co
 			file_path = os.path.join(save_dir, file_)
 			tfile.add(file_path, arcname=file_)
 	compressed_fsize = os.path.getsize(compressed_fpath) / (1024 * 1024) # in MB
-	print(f"Elapsed_t: {time.time()-t0:.1f} sec | {compressed_fsize:.1f} MB".center(150, "-"))
-
+	
 	try:
 		print(f">> Copying to {compressed_dir} ...")
 		shutil.copy2(compressed_fpath, compressed_dir)
 	except Exception as e:
 		print(f"<!> {e}")
-	
+
 	if upload_2_gdrive:
 		upload_to_google_drive(folder_name="NLF", archived_fname=compressed_fpath)
 		# upload_to_google_drive(folder_id="1rstAr9W4PC2ueHyLH-Igoxifrzv7aD2Z", archived_fname=compressed_fpath)
+	
+	print(f"Elapsed_t: {time.time()-t0:.1f} sec | {compressed_fsize:.1f} MB".center(150, "-"))
