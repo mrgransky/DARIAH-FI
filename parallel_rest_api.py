@@ -50,6 +50,24 @@ payload = {
 MY_QUERY_PHRASE : str = "referensbibliotek"
 my_list = ['finland', 'öppen', 'komma', 'svensk', 'fartyg', 'regering', 'meddela', 'ryssland', 'övrig', 'london', 'hjältegrav', 'runeberg', 'engelsk', 'vicehär', 'hålla', 'finnas', 'tyskland', 'blott', 'suppleant', 'skriva', 'plats', 'fråga', 'kvinna', 'ärkebiskop', 'färgblindhet', 'stockholm', 'jordfästning', 'hjält', 'finländsk', 'england', 'helsingfors', 'koffert', 'hjälp', 'person', 'besättning', 'imperialism', 'arbetare', 'ledare', 'sänka', 'förening', 'bombardera', 'flykting', 'intresse', 'köpenhamn', 'korrespondent', 'redan', 'procession', 'gammal', 'kyrka', 'folkhjälp', 'medlem', 'släkting', 'värld', 'sphinx', 'styrelse', 'representant', 'sverige', 'neutral', 'understöd', 'vapenbroder', 'vänna', 'soldat', 'förhållande', 'lämna', 'besluta', 'yttervärld', 'sända', 'arbete', 'befolkning', 'maskin', 'följande', 'sydvästkust', 'människa', 'eriksgata', 'förvaltningsråd', 'växla', 'endast', 'insamling', 'belgien', 'vacker', 'ångare', 'strid', 'nämligen', 'utrikesminister', 'spansk', 'kreditanstalt', 'besiktning', 'allmän', 'militär', 'flygare', 'naturligtvis', 'utlåning', 'ingenjör', 'främst', 'börja', 'norrie', 'teatern', 'hembygd', 'amerik', 'hemtrakt']
 
+def filter_zero_elements(numbers, words):
+	"""
+	Filters elements with zero values from two lists and returns the filtered lists.
+
+	Args:
+			numbers: A list of numbers.
+			words: A list of words.
+
+	Returns:
+			A tuple containing two lists:
+					- numbers_list: A list of numbers with zeros removed.
+					- words_list: A list of words with corresponding indices to the filtered numbers.
+	"""
+
+	numbers_list = [num for num, word in zip(numbers, words) if num != 0]
+	words_list = [word for num, word in zip(numbers, words) if num != 0]
+	return numbers_list, words_list
+
 def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 	st_t = time.time()
 	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_QUERY + " " + INPUT_TOKEN)
@@ -115,52 +133,35 @@ async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_li
 		return num_NLF_pages
 
 
-# # OLD implementation: inefficient
-# start_time = time.time()
-# TOKENs_num_NLF_pages = [
-# 	# NUMBER_OF_PAGEs
-# 	get_num_NLF_pages(INPUT_QUERY=MY_QUERY_PHRASE, INPUT_TOKEN=tk)
-# 	for tk in my_list
-# 	# if(
-# 	# 	(NUMBER_OF_PAGEs:=get_num_NLF_pages(INPUT_QUERY=MY_QUERY_PHRASE, INPUT_TOKEN=tk))
-# 	# )
-# ]
-# print(f"TOTAL Elapsed_t: {time.time()-start_time:.1f} | Initial TK list: {len(TOKENs_list)} | {len(TOKENs_num_NLF_pages)} PAGE(s)")
-# print(TOKENs_num_NLF_pages)
-# print("#"*100)
+# OLD implementation: inefficient
+start_time = time.time()
+TOKENs_num_NLF_pages = [
+	# NUMBER_OF_PAGEs
+	get_num_NLF_pages(INPUT_QUERY=MY_QUERY_PHRASE, INPUT_TOKEN=tk)
+	for tk in my_list
+	# if(
+	# 	(NUMBER_OF_PAGEs:=get_num_NLF_pages(INPUT_QUERY=MY_QUERY_PHRASE, INPUT_TOKEN=tk))
+	# )
+]
+print(f"TOTAL Elapsed_t: {time.time()-start_time:.1f} | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages)} PAGE(s)")
+print(TOKENs_num_NLF_pages)
+print("#"*100)
 
-# # asynchronous implementation: efficient
-# start_time_async = time.time()
-# TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(qu=MY_QUERY_PHRASE, TOKENs_list=my_list))
-# print(f"TOTAL Elapsed_t: {time.time() - start_time_async:.1f} | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages_async)} PAGE(s)")
-# print(TOKENs_num_NLF_pages_async)
-# print(my_list)
+# asynchronous implementation: efficient
+start_time_async = time.time()
+TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(qu=MY_QUERY_PHRASE, TOKENs_list=my_list))
+print(f"TOTAL Elapsed_t: {time.time() - start_time_async:.1f} | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages_async)} PAGE(s)")
+print(TOKENs_num_NLF_pages_async)
 
-# print(np.all(TOKENs_num_NLF_pages==TOKENs_num_NLF_pages_async))
+print("#"*100)
+print(my_list)
+print(np.all(TOKENs_num_NLF_pages==TOKENs_num_NLF_pages_async))
 
-def filter_zero_elements(numbers, words):
-	"""
-	Filters elements with zero values from two lists and returns the filtered lists.
+# # Example usage
+# numbers = [0, 10, 11, 22, 0, 5, 8, 9, 1, 0]
+# words = ['finland', 'öppen', 'komma', 'svensk', 'fartyg', 'regering', 'meddela', 'ryssland', 'övrig', 'london']
 
-	Args:
-			numbers: A list of numbers.
-			words: A list of words.
+# numbers_list, words_list = filter_zero_elements(numbers, words)
 
-	Returns:
-			A tuple containing two lists:
-					- numbers_list: A list of numbers with zeros removed.
-					- words_list: A list of words with corresponding indices to the filtered numbers.
-	"""
-
-	numbers_list = [num for num, word in zip(numbers, words) if num != 0]
-	words_list = [word for num, word in zip(numbers, words) if num != 0]
-	return numbers_list, words_list
-
-# Example usage
-numbers = [0, 10, 11, 22, 0, 5, 8, 9, 1, 0]
-words = ['finland', 'öppen', 'komma', 'svensk', 'fartyg', 'regering', 'meddela', 'ryssland', 'övrig', 'london']
-
-numbers_list, words_list = filter_zero_elements(numbers, words)
-
-print(f"Numbers without zeros: {numbers_list}")
-print(f"Corresponding words: {words_list}")
+# print(f"Numbers without zeros: {numbers_list}")
+# print(f"Corresponding words: {words_list}")

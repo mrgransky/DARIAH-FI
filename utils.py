@@ -22,6 +22,9 @@ import logging
 import gzip
 import tarfile
 import shutil
+import aiohttp
+import asyncio
+
 from pandas.api.types import is_datetime64_any_dtype
 
 import numpy as np
@@ -886,6 +889,45 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
 
+async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
+	st_t = time.time()
+	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_TK)
+	# print(f"{URL:<150}", end=" ")
+	parsed_url = urllib.parse.urlparse(URL)
+	parameters = urllib.parse.parse_qs(parsed_url.query, keep_blank_values=True)
+	offset_pg = (int(re.search(r'page=(\d+)', URL).group(1)) - 1) * 20 if re.search(r'page=(\d+)', URL) else 0
+	search_page_request_url = f"{DIGI_HOME_PAGE_URL}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
+	payload["query"] = parameters.get('query')[0] if parameters.get('query') else ""
+	payload["requireAllKeywords"] = parameters.get('requireAllKeywords')[0] if parameters.get('requireAllKeywords') else "false"
+	try:
+		async with session.post(
+			url=search_page_request_url,
+			json=payload,
+			headers=headers,
+		) as response:
+				response.raise_for_status()
+				res = await response.json()
+				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
+				# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
+				return TOTAL_NUM_NLF_RESULTs
+	except aiohttp.ClientError as e:
+		print(f"<!> Error: {e}")
+		return None
+
+async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_list: List[str]=["tk1", "tk2"]):
+	async with aiohttp.ClientSession() as session:
+		tasks = [
+			NUMBER_OF_PAGES
+			for tk in TOKENs_list
+			if (
+				(NUMBER_OF_PAGES:=get_num_NLF_pages_async(session, INPUT_TK=tk))
+			)
+		]
+		num_NLF_pages = await asyncio.gather(*tasks)
+		# # Filter out None and 0 values
+		# num_NLF_pages = [pages for pages in num_NLF_pages if pages not in [None, 0]]
+		return num_NLF_pages
+
 def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols",):
 	print(f"SciPy Sparse Matrix Generating from (detailed) user_df: {df.shape}".center(120, " "))
 	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
@@ -904,17 +946,24 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
 
 	# TODO: remove cols with zero results of NLF:
-	# zero_nlf_results_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
+	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=user_token_df.columns))
+	zero_nlf_results_columns_to_be_removed = [word for num in TOKENs_num_NLF_pages_async if num in [None, 0]]
+	print(f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n{zero_nlf_results_columns_to_be_removed}")
+	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed)
 
 	if user_token_df.isnull().values.any():
 		t=time.time()
-		print(f"Converting {user_token_df.isna().sum().sum()} cells of NaNs to cells of 0.0...", end="\t")
+		print(f"Converting {user_token_df.isna().sum().sum()} cells of NaNs to cells of 0.0", end="\t")
 		user_token_df=user_token_df.fillna(value=0.0).astype(np.float32)
 		print(f"took {time.time()-t:.1f} s")
 
-	print(f"Cleaned USER-TOKEN DF:{user_token_df.shape} Elapsed_t: {time.time()-ttime_start:.1f} sec".center(65, "+"))
+	print(
+		f"Cleaned USER-TOKEN DF:{user_token_df.shape} "
+		f"Elapsed_t: {time.time()-ttime_start:.1f} s"
+		.center(100, "+")
+	)
 	print( user_token_df.info(memory_usage="deep") )
-	print(f"DONE!".center(65, "+"))
+	print(f"DONE".center(100, "+"))
 	#######################################################################################################################
 
 	print(
