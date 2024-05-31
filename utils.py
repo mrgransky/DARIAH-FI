@@ -685,29 +685,26 @@ def get_df_pseudonymized_logs(infile="", TIMESTAMP=None):
 	return df
 
 def checking_(url, prms=None):
-	#print(f"\t\tValidation & Update")
 	try:
 		r = requests.get(url, params=prms,)
 		r.raise_for_status() # raise exception if NOT >>>>>>> 200 <<<<<<<<!
-		#print(f">> HTTP family: {r.status_code} => Exists: {r.ok}")
-		#print(r.headers)
-		#print()
 		return r
 	except requests.exceptions.HTTPError as ehttp: # not 200 : not ok!
 		#print(url)
 		print(f"Req {ehttp} {ehttp.response.status_code}")
 		return
 		#pass
-	except (requests.exceptions.Timeout,
-					requests.exceptions.ConnectionError, 
-					requests.exceptions.RequestException, 
-					requests.exceptions.TooManyRedirects,
-					requests.exceptions.InvalidSchema,
-					ValueError, 
-					TypeError, 
-					EOFError, 
-					RuntimeError,
-					) as e:
+	except (
+			requests.exceptions.Timeout,
+			requests.exceptions.ConnectionError, 
+			requests.exceptions.RequestException, 
+			requests.exceptions.TooManyRedirects,
+			requests.exceptions.InvalidSchema,
+			ValueError,
+			TypeError,
+			EOFError,
+			RuntimeError,
+		) as e:
 		print(f"{type(e).__name__} line {e.__traceback__.tb_lineno} in {__file__}: {e.args} | {url}")
 		return
 	except Exception as e:
@@ -945,10 +942,14 @@ async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
 				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
 				# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
 				return TOTAL_NUM_NLF_RESULTs
-	except aiohttp.ClientError as e:
+	except (
+			aiohttp.ClientError, 
+			asyncio.TimeoutError, 
+			Exception
+		) as e:
 		print(f"<!> Error: {e}")
-		return None
-
+		# return None
+		return
 async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_list: List[str]=["tk1", "tk2"]):
 	async with aiohttp.ClientSession() as session:
 		tasks = [
@@ -975,12 +976,14 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
 
 	# Identify columns (from meaningless lemmas txt file) to be removed:
+	print(f"Removing column(s) from meaningless lemmas txt file...")
 	meaningless_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
 	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
 
 	# TODO: remove cols with zero results of NLF:
+	print(f"Removing column(s) with ZERO NLF result pages...")
 	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=user_token_df.columns))
 	zero_nlf_results_columns_to_be_removed = [word for num in TOKENs_num_NLF_pages_async if num in [None, 0]]
 	print(f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n{zero_nlf_results_columns_to_be_removed}")
