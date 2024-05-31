@@ -947,9 +947,10 @@ async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
 			asyncio.TimeoutError, 
 			Exception
 		) as e:
-		print(f"<!> Error: {e}")
+		print(f"<!> ERR < {e} > URL: {URL}")
 		# return None
 		return
+
 async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_list: List[str]=["tk1", "tk2"]):
 	async with aiohttp.ClientSession() as session:
 		tasks = [
@@ -976,14 +977,14 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
 
 	# Identify columns (from meaningless lemmas txt file) to be removed:
-	print(f"Removing column(s) from meaningless lemmas txt file...")
+	print(f"Checking {len(user_token_df.columns)} column(s) if they are in meaningless lemmas txt file...")
 	meaningless_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
 	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
 
-	# TODO: remove cols with zero results of NLF:
-	print(f"Removing column(s) with ZERO NLF result pages...")
+	# TODO: remove cols with zero results of NLF (Timeout Session):
+	print(f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages [might take a while]...")
 	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=user_token_df.columns))
 	zero_nlf_results_columns_to_be_removed = [word for num in TOKENs_num_NLF_pages_async if num in [None, 0]]
 	print(f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n{zero_nlf_results_columns_to_be_removed}")
