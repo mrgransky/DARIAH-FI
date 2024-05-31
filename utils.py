@@ -54,6 +54,41 @@ from matplotlib.colors import Colormap as cm
 # matplotlib.use("Agg")
 torch.backends.cudnn.benchmark = True
 
+SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
+DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
+headers = {
+	'Content-type': 'application/json',
+	'Accept': 'application/json; text/plain; */*',
+	'Cache-Control': 'no-cache',
+	'Connection': 'keep-alive',
+	'Pragma': 'no-cache',
+}
+payload = {
+	"authors": [],
+	"collections": [],
+	"districts": [],
+	"endDate": None,
+	"exactCollectionMaterialType": "false",
+	"formats": [],
+	"fuzzy": "false",
+	"hasIllustrations": "false",
+	"importStartDate": None,
+	"importTime": "ANY",
+	"includeUnauthorizedResults": "false",
+	"languages": [],
+	"orderBy": "RELEVANCE",
+	"pages": "",
+	"publicationPlaces": [],
+	"publications": [],
+	"publishers": [],
+	"queryTargetsMetadata": "false",
+	"queryTargetsOcrText": "true",
+	"searchForBindings": "false",
+	"showLastPage": "false",
+	"startDate": None,
+	"tags": [],
+}
+
 sz=16
 MODULE=60
 params = {

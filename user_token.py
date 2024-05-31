@@ -49,7 +49,7 @@ print(device)
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
 
 # (Puhti) NEWLY created dataset with gz extension:
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
