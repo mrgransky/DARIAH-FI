@@ -10116,3 +10116,4 @@ bambuputkihuonekutehda
 edustatehda
 setnina
 biossot
+elämänalo

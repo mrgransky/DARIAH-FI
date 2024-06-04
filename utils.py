@@ -6,7 +6,6 @@ import torch
 # import faiss
 import subprocess
 import urllib
-import requests
 import joblib
 import pickle
 import dill
@@ -25,6 +24,9 @@ import shutil
 import aiohttp
 import asyncio
 
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from pandas.api.types import is_datetime64_any_dtype
 
 import numpy as np
@@ -88,6 +90,9 @@ payload = {
 	"startDate": None,
 	"tags": [],
 }
+session = requests.Session()
+retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+session.mount('https://', HTTPAdapter(max_retries=retries))
 
 sz=16
 MODULE=60
@@ -921,6 +926,32 @@ def get_idf(spMtx, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
 	save_pickle(pkl=idf, fname=idf_fname)
 	return idf
 
+@cache
+def get_nlf_pages(INPUT_QUERY: str="global warming"):
+	st_t = time.time()
+	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_QUERY)
+	print(f"{URL:<150}", end=" ")
+	parsed_url = urllib.parse.urlparse(URL)
+	parameters = urllib.parse.parse_qs( parsed_url.query, keep_blank_values=True)
+	offset_pg = ( int( re.search(r'page=(\d+)', URL).group(1) )-1)*20 if re.search(r'page=(\d+)', URL) else 0
+	search_page_request_url = f"{DIGI_HOME_PAGE_URL}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
+	payload["query"] = parameters.get('query')[0] if parameters.get('query') else ""
+	payload["requireAllKeywords"] = parameters.get('requireAllKeywords')[0] if parameters.get('requireAllKeywords') else "false"
+	try:
+		r = session.post(
+			url=search_page_request_url, 
+			json=payload, 
+			headers=headers,
+		)
+		r.raise_for_status()  # Raise HTTPError for bad status codes
+		res = r.json()
+		TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
+		print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time()-st_t:.1f} sec")
+	except requests.exceptions.RequestException as e:
+		print(f"<!> Error: {e}")
+		return
+	return TOTAL_NUM_NLF_RESULTs
+
 async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
 	st_t = time.time()
 	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_TK)
@@ -951,7 +982,7 @@ async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
 		# return None
 		return
 
-async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_list: List[str]=["tk1", "tk2"]):
+async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2"]):
 	async with aiohttp.ClientSession() as session:
 		tasks = [
 			NUMBER_OF_PAGES

@@ -152,12 +152,23 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				and wlm not in UNQ_STW
 			)
 		]
-		end_t = time.time()
 	except Exception as e:
 		print(f"<!> Stanza Error: {e}")
 		return
+	##########################################################################################################################
+	# TODO: remove cols with zero results of NLF (Timeout Session):
+	print(f"raw {len(lemmas_list)} lemma(s):\n{lemmas_list}")
+	print(f"Asynchronous checking of {len(lemmas_list)} lemma(s) for possible ZERO NLF result pages [might take a while]", end="\t")
+	async_st_time = time.time()
+	lemmas_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=lemmas_list))
+	lemmas_list_tmp = lemmas_list
+	lemmas_num_NLF_pages_async_tmp = lemmas_num_NLF_pages_async
+	lemmas_list = [word for num, word in zip(lemmas_num_NLF_pages_async_tmp, lemmas_list_tmp) if (num and num != 0) ]
+	print(f"Elapsed_t: {time.time()-async_st_time:.2f} sec")
+	##########################################################################################################################
+	end_t = time.time()
 	print( lemmas_list )
-	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
+	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(160, "-") )
 	return lemmas_list
 
 @cache
