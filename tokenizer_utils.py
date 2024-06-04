@@ -120,7 +120,7 @@ def create_trankit_multilingual_pipeline(device: str):
 			lang='finnish-ftb',
 			gpu=True,
 			embedding='xlm-roberta-large', 
-			cache_dir=f'{os.environ['HOME']}/datasets/Nationalbiblioteket/trash' os.environ['USER']!="alijanif" else '/scratch/project_2004072/trashes/',
+			cache_dir=f"{os.environ['HOME']}/datasets/Nationalbiblioteket/trash" if os.environ['USER']!="alijanif" else '/scratch/project_2004072/trashes/',
 		)
 		lemmatizer_multi_lingual_pipeline.add('english')
 		lemmatizer_multi_lingual_pipeline.add('swedish')
