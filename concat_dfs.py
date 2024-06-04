@@ -22,7 +22,7 @@ args = parser.parse_args()
 fprefix: str = "FILE_PREFIXname_TBR"
 
 # how to run:
-# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "marxismi"
+# python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "marxismi" --lmMethod "stanza"
 
 # in Pouta:
 # $ nohup python -u concat_dfs.py --dfsPath /media/volume/Nationalbiblioteket/dataframes_yy > concat_x19_check.out & 
@@ -801,10 +801,15 @@ def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	make_folder(folder_name=args.dfsPath)
 
-	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
-	sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_UxT.gz')
-	sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_rows.gz')
-	sp_mtx_cols_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_cols.gz')
+	# sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
+	# sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_UxT.gz')
+	# sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_rows.gz')
+	# sp_mtx_cols_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_cols.gz')
+
+	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'_*_vocabs.json')
+	sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'*_SPM_UxT.gz')
+	sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'*_SPM_rows.gz')
+	sp_mtx_cols_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'*_SPM_cols.gz')
 
 	print(
 		f"{len(sp_mtx_files)} spMtx files | " 
