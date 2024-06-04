@@ -978,9 +978,9 @@ async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
 			asyncio.TimeoutError, 
 			Exception
 		) as e:
-		print(f"<!> ERR < {e} > URL: {URL}")
-		# return None
-		return
+				print(f"<!> ERR < {e} > URL: {URL}")
+				# return None
+				return
 
 async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2"]):
 	async with aiohttp.ClientSession() as session:
@@ -1014,12 +1014,21 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
 
-	# # TODO: remove cols with zero results of NLF (Timeout Session):
-	# print(f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages [might take a while]...")
-	# TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=user_token_df.columns))
-	# zero_nlf_results_columns_to_be_removed = [word for num in TOKENs_num_NLF_pages_async if num in [None, 0]]
-	# print(f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n{zero_nlf_results_columns_to_be_removed}")
-	# user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed)
+	##################################################################################################################
+	# TODO: remove cols with zero results of NLF (Timeout Session):
+	print(f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages [might take a while]...")
+	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=user_token_df.columns)) # sending > 450K tokens => EXPENSIVE!!!!!
+	zero_nlf_results_columns_to_be_removed = [
+		word 
+		for num in TOKENs_num_NLF_pages_async 
+		if num in [None, 0]
+	]
+	print(
+		f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n"
+		f"{zero_nlf_results_columns_to_be_removed}"
+	)
+	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed)
+	##################################################################################################################
 
 	if user_token_df.isnull().values.any():
 		t=time.time()
@@ -1044,7 +1053,7 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	)
 	t=time.time()
 	# sparse_matrix = csr_matrix(user_token_df.values, dtype=np.float32) # nUsers x nTokens
-	sparse_matrix=lil_matrix(user_token_df.values, dtype=np.float32) # nUsers x nTokens
+	sparse_matrix = lil_matrix(user_token_df.values, dtype=np.float32) # nUsers x nTokens
 	##########################Sparse Matrix info##########################
 	print(
 		f"Elapsed_t: {time.time()-t:.1f} s {type(sparse_matrix)} {sparse_matrix.toarray().dtype} (nUsers x nTokens): {sparse_matrix.shape}\n"

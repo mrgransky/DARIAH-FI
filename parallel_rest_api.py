@@ -114,9 +114,13 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
 				# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
 				return TOTAL_NUM_NLF_RESULTs
-	except aiohttp.ClientError as e:
-		print(f"<!> Error: {e}")
-		return None
+	except (
+		aiohttp.ClientError,
+		asyncio.TimeoutError, 
+		Exception,
+		) as e:
+			print(f"<!> ERR < {e} > URL: {URL}")
+			return
 
 async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_list: List[str]=["tk1", "tk2"]):
 	async with aiohttp.ClientSession() as session:
@@ -133,7 +137,7 @@ async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_li
 		return num_NLF_pages
 
 
-# OLD implementation: inefficient
+# OLD inefficient implementation: 
 start_time = time.time()
 TOKENs_num_NLF_pages = [
 	# NUMBER_OF_PAGEs
@@ -143,14 +147,14 @@ TOKENs_num_NLF_pages = [
 	# 	(NUMBER_OF_PAGEs:=get_num_NLF_pages(INPUT_QUERY=MY_QUERY_PHRASE, INPUT_TOKEN=tk))
 	# )
 ]
-print(f"TOTAL Elapsed_t: {time.time()-start_time:.1f} | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages)} PAGE(s)")
+print(f"< Traditional approach > TOTAL Elapsed_t: {time.time()-start_time:.1f} sec | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages)} PAGE(s)")
 print(TOKENs_num_NLF_pages)
 print("#"*100)
 
 # asynchronous implementation: efficient
 start_time_async = time.time()
 TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(qu=MY_QUERY_PHRASE, TOKENs_list=my_list))
-print(f"TOTAL Elapsed_t: {time.time() - start_time_async:.1f} | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages_async)} PAGE(s)")
+print(f"< Asynchronous approach> TOTAL Elapsed_t: {time.time() - start_time_async:.1f} sec | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages_async)} PAGE(s)")
 print(TOKENs_num_NLF_pages_async)
 
 print("#"*100)
