@@ -10122,3 +10122,5 @@ kangasa
 kangasal
 urkutehda
 posli
+orive
+orived

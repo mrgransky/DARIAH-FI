@@ -300,6 +300,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+Oriveden Kenkätehdas |
 machinery turku abo marin rauma maury amp son helsinki
 svinhufvud tasavallan presidentiksi tuurna otto arno kaupunginjohtaja vara uoman viipuri
 bambuputkihuonekutehda
