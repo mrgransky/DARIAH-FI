@@ -10118,3 +10118,7 @@ setnina
 biossot
 elämänalo
 siitossonna
+kangasa
+kangasal
+urkutehda
+posli

@@ -802,11 +802,6 @@ def run():
 	make_folder(folder_name=args.dfsPath)
 
 	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
-	# TODO: rename SPM file Names while removing BoWs length: must be adopted from user_token.py get_scipy_spm function
-	# sp_mtx_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_U_x_T_*_BoWs.gz')
-	# sp_mtx_rows_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_user_ip_names_*_BoWs.gz')
-	# sp_mtx_cols_files=get_spm_files(fpath=args.dfsPath+'/'+'nike*_USERs_TOKENs_spm_token_names_*_BoWs.gz')
-
 	sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_UxT.gz')
 	sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_rows.gz')
 	sp_mtx_cols_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_cols.gz')
@@ -821,7 +816,7 @@ def run():
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
 
 	global fprefix, RES_DIR
-	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs"
+	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs_lm_{args.lmMethod}"
 	# fprefix=f"concatinated_732_SPMs" # temporary
 
 	RES_DIR=make_result_dir(infile=fprefix)
@@ -846,7 +841,7 @@ def run():
 		)
 	except Exception as e:
 		print(f"<!> No SPM concat files found! {e} Generating in progress... [might take a while]")
-		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames=get_user_token_spm_concat(
+		concat_spm_U_x_T, concat_spm_usrNames, concat_spm_tokNames = get_user_token_spm_concat(
 			SPMs=[(load_pickle(fpath=spm_fpath), load_pickle(fpath=spm_usr_fpath), load_pickle(fpath=spm_tk_fpath)) for spm_fpath, spm_usr_fpath, spm_tk_fpath in zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files)],
 			save_dir=args.dfsPath,
 			prefix_fname=fprefix,
@@ -947,13 +942,14 @@ def run():
 	# save ALL concat files in dir as a tar archive file
 	# comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
 	comp_dir = get_compressed_concatenated_path(base_path=args.dfsPath)
-
-	if not os.path.isfile(os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")):
-		print(f'>> fpath: {os.path.join(args.dfsPath, f"concat_x{len(sp_mtx_files)}.tar.gz")} does not exist, creating...')
+	concat_compressed_fname = f"concat_x{len(sp_mtx_files)}_lm_{args.lmMethod}.tar.gz"
+	
+	if not os.path.isfile(os.path.join(args.dfsPath, concat_compressed_fname)):
+		print(f'>> fpath: {os.path.join(args.dfsPath, concat_compressed_fname)} does not exist, creating...')
 		print(f">> comp_dir: {comp_dir}")
 		get_compressed_archive(
 			save_dir=args.dfsPath, 
-			compressed_fname=f"concat_x{len(sp_mtx_files)}.tar.gz",
+			compressed_fname=concat_compressed_fname,
 			upload_2_gdrive=False,
 			compressed_dir=comp_dir,
 		)
