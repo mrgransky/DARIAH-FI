@@ -120,7 +120,7 @@ def create_trankit_multilingual_pipeline(device: str):
 			lang='finnish-ftb',
 			gpu=True,
 			embedding='xlm-roberta-large', 
-			cache_dir='/home/farid/datasets/Nationalbiblioteket/trash',
+			cache_dir=f'{os.environ['HOME']}/datasets/Nationalbiblioteket/trash' os.environ['USER']!="alijanif" else '/scratch/project_2004072/trashes/',
 		)
 		lemmatizer_multi_lingual_pipeline.add('english')
 		lemmatizer_multi_lingual_pipeline.add('swedish')
@@ -207,10 +207,10 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				and wlm not in UNQ_STW
 			)
 		]
-		end_t = time.time()
 	except Exception as e:
 		print(f"<!> trankit Error: {e}")
 		return
+	end_t = time.time()
 	# print( lemmas_list )
 	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
 	# del all_
