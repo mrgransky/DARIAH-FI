@@ -177,7 +177,7 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 	# print(f'Raw inp words: { len( docs.split() ) }', end=" ")
 	create_trankit_multilingual_pipeline(device=device)
 	try:
-		# print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
+		print(f'Trankit[{trankit.__version__}] Raw Input:\n{docs}\n')
 		# print(f"{f'nW: { len( docs.split() ) }':<10}{str(docs.split()[:7]):<150}", end="")
 		docs = docs.title()
 		st_t = time.time()
@@ -202,7 +202,8 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 			if (
 				(wlm:=vw.get("lemma"))
 				and 5 <= len(wlm) <= 43
-				and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
+				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
+				and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) 
 				and vw.get("upos") not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
@@ -211,8 +212,8 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 		print(f"<!> trankit Error: {e}")
 		return
 	end_t = time.time()
-	# print( lemmas_list )
-	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(140, "-") )
+	print( lemmas_list )
+	print(f"Found {len(lemmas_list)} lemma(s) Elapsed_t: {end_t-st_t:.3f} sec".center(160, "-") )
 	# del all_
 	# torch.cuda.empty_cache()
 	# gc.collect()
