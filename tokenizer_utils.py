@@ -194,15 +194,13 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 		# 		# print(f"<>")
 		# 	print('-'*50)
 
-		lemmas_list = [ 
-			# re.sub(r'["#_\-]', '', wlm.lower())
-			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
+		lemmas_list = [
+			re.sub(r'[";=&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
 			for _, vsnt in enumerate(all_.get("sentences"))
 			for _, vw in enumerate(vsnt.get("tokens"))
 			if (
 				(wlm:=vw.get("lemma"))
 				and 5 <= len(wlm) <= 43
-				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
 				and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) 
 				and vw.get("upos") not in useless_upos_tags 
 				and wlm not in UNQ_STW
