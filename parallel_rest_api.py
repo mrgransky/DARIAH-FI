@@ -47,26 +47,9 @@ payload = {
 	"startDate": None,
 	"tags": [],
 }
+
 MY_QUERY_PHRASE : str = "referensbibliotek"
 my_list = ['finland', 'öppen', 'komma', 'svensk', 'fartyg', 'regering', 'meddela', 'ryssland', 'övrig', 'london', 'hjältegrav', 'runeberg', 'engelsk', 'vicehär', 'hålla', 'finnas', 'tyskland', 'blott', 'suppleant', 'skriva', 'plats', 'fråga', 'kvinna', 'ärkebiskop', 'färgblindhet', 'stockholm', 'jordfästning', 'hjält', 'finländsk', 'england', 'helsingfors', 'koffert', 'hjälp', 'person', 'besättning', 'imperialism', 'arbetare', 'ledare', 'sänka', 'förening', 'bombardera', 'flykting', 'intresse', 'köpenhamn', 'korrespondent', 'redan', 'procession', 'gammal', 'kyrka', 'folkhjälp', 'medlem', 'släkting', 'värld', 'sphinx', 'styrelse', 'representant', 'sverige', 'neutral', 'understöd', 'vapenbroder', 'vänna', 'soldat', 'förhållande', 'lämna', 'besluta', 'yttervärld', 'sända', 'arbete', 'befolkning', 'maskin', 'följande', 'sydvästkust', 'människa', 'eriksgata', 'förvaltningsråd', 'växla', 'endast', 'insamling', 'belgien', 'vacker', 'ångare', 'strid', 'nämligen', 'utrikesminister', 'spansk', 'kreditanstalt', 'besiktning', 'allmän', 'militär', 'flygare', 'naturligtvis', 'utlåning', 'ingenjör', 'främst', 'börja', 'norrie', 'teatern', 'hembygd', 'amerik', 'hemtrakt']
-
-def filter_zero_elements(numbers, words):
-	"""
-	Filters elements with zero values from two lists and returns the filtered lists.
-
-	Args:
-			numbers: A list of numbers.
-			words: A list of words.
-
-	Returns:
-			A tuple containing two lists:
-					- numbers_list: A list of numbers with zeros removed.
-					- words_list: A list of words with corresponding indices to the filtered numbers.
-	"""
-
-	numbers_list = [num for num, word in zip(numbers, words) if num != 0]
-	words_list = [word for num, word in zip(numbers, words) if num != 0]
-	return numbers_list, words_list
 
 def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 	st_t = time.time()
@@ -122,20 +105,19 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 			print(f"<!> ERR < {e} > URL: {URL}")
 			return
 
-async def get_num_NLF_pages_asynchronous_run(qu: str="global warming", TOKENs_list: List[str]=["tk1", "tk2"]):
+async def get_num_NLF_pages_asynchronous_run(qu: str = "global warming", TOKENs_list: List[str] = ["tk1", "tk2"], batch_size: int = 25):
 	async with aiohttp.ClientSession() as session:
-		tasks = [
-			NUMBER_OF_PAGES
-			for tk in TOKENs_list
-			if (
-				(NUMBER_OF_PAGES:=get_recommendation_num_NLF_pages_async(session, INPUT_QUERY=qu, REC_TK=tk))
-			)
-		]
-		num_NLF_pages = await asyncio.gather(*tasks)
-		# # Filter out None and 0 values
-		# num_NLF_pages = [pages for pages in num_NLF_pages if pages not in [None, 0]]
+		for i in range(0, len(TOKENs_list), batch_size):
+			batch = TOKENs_list[i:i + batch_size]
+			tasks = [
+				NUMBER_OF_PAGES
+				for tk in batch
+				if (
+					NUMBER_OF_PAGES:=get_recommendation_num_NLF_pages_async(session, INPUT_QUERY=qu, REC_TK=tk)
+				)
+			]
+			num_NLF_pages = await asyncio.gather(*tasks)
 		return num_NLF_pages
-
 
 # OLD inefficient implementation: 
 start_time = time.time()
@@ -153,19 +135,9 @@ print("#"*100)
 
 # asynchronous implementation: efficient
 start_time_async = time.time()
-TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(qu=MY_QUERY_PHRASE, TOKENs_list=my_list))
+TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(qu=MY_QUERY_PHRASE, TOKENs_list=my_list, batch_size=min(len(my_list), 1000)))
 print(f"< Asynchronous approach> TOTAL Elapsed_t: {time.time() - start_time_async:.1f} sec | Initial TK list: {len(my_list)} | {len(TOKENs_num_NLF_pages_async)} PAGE(s)")
 print(TOKENs_num_NLF_pages_async)
-
 print("#"*100)
 print(my_list)
 print(np.all(TOKENs_num_NLF_pages==TOKENs_num_NLF_pages_async))
-
-# # Example usage
-# numbers = [0, 10, 11, 22, 0, 5, 8, 9, 1, 0]
-# words = ['finland', 'öppen', 'komma', 'svensk', 'fartyg', 'regering', 'meddela', 'ryssland', 'övrig', 'london']
-
-# numbers_list, words_list = filter_zero_elements(numbers, words)
-
-# print(f"Numbers without zeros: {numbers_list}")
-# print(f"Corresponding words: {words_list}")

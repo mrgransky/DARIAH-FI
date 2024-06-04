@@ -982,18 +982,18 @@ async def get_num_NLF_pages_async(session, INPUT_TK: str="pollution"):
 				# return None
 				return
 
-async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2"]):
+async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2"], batch_size: int=1000):
 	async with aiohttp.ClientSession() as session:
-		tasks = [
-			NUMBER_OF_PAGES
-			for tk in TOKENs_list
-			if (
-				(NUMBER_OF_PAGES:=get_num_NLF_pages_async(session, INPUT_TK=tk))
-			)
-		]
-		num_NLF_pages = await asyncio.gather(*tasks)
-		# # Filter out None and 0 values
-		# num_NLF_pages = [pages for pages in num_NLF_pages if pages not in [None, 0]]
+		for i in range(0, len(TOKENs_list), batch_size):
+			batch = TOKENs_list[i:i + batch_size]
+			tasks = [
+				NUMBER_OF_PAGES
+				for tk in batch
+				if (
+					(NUMBER_OF_PAGES:=get_num_NLF_pages_async(session, INPUT_TK=tk))
+				)
+			]
+			num_NLF_pages = await asyncio.gather(*tasks)
 		return num_NLF_pages
 
 def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols",):
@@ -1015,9 +1015,12 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
 
 	##################################################################################################################
-	# TODO: remove cols with zero results of NLF (Timeout Session):
+	# TODO: remove cols with zero results of NLF (Timeout Session): # XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 	print(f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages [might take a while]...")
-	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(TOKENs_list=user_token_df.columns)) # sending > 450K tokens => EXPENSIVE!!!!!
+	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(
+		TOKENs_list=user_token_df.columns), 
+		batch_size=min(len(user_token_df.columns), 1000),
+	)
 	zero_nlf_results_columns_to_be_removed = [
 		word 
 		for num in TOKENs_num_NLF_pages_async 
