@@ -1017,9 +1017,11 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	##################################################################################################################
 	# TODO: remove cols with zero results of NLF (Timeout Session): # XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 	print(f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages [might take a while]...")
-	TOKENs_num_NLF_pages_async = asyncio.run(get_num_NLF_pages_asynchronous_run(
-		TOKENs_list=user_token_df.columns), 
-		batch_size=min(len(user_token_df.columns), 1000),
+	TOKENs_num_NLF_pages_async = asyncio.run(
+		get_num_NLF_pages_asynchronous_run(
+			TOKENs_list=user_token_df.columns, 
+			batch_size=min(len(user_token_df.columns), 500),
+		)
 	)
 	zero_nlf_results_columns_to_be_removed = [
 		word 
