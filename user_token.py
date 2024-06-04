@@ -586,7 +586,6 @@ def main():
 	sparse_matrix_users_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_rows.gz")
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
 	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
-
 	try:
 		usr_tk_spm = load_pickle(fpath=sparse_matrix_fname)
 		usr_tk_spm_usrNames = load_pickle(fpath=sparse_matrix_users_names_fname)
