@@ -996,9 +996,12 @@ async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2
 			num_NLF_pages = await asyncio.gather(*tasks)
 		return num_NLF_pages
 
-def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols",):
+def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked"):
 	print(f"SciPy Sparse Matrix Generating from (detailed) user_df: {df.shape}".center(120, " "))
-	user_token_df = get_unpacked_user_token_interest(df=df) # done on the fly... no saving
+	user_token_df = get_unpacked_user_token_interest(
+		df=df,
+		usr_tk_unpacked_df_fname=df_unpacked_fname,
+	)
 
 	#######################################################################################################################
 	print(f">>>> Apllying Extra Cleaning on RAW unpacked_df: {user_token_df.shape} before generating SPM...")
@@ -1016,11 +1019,15 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 
 	##################################################################################################################
 	# TODO: remove cols with zero results of NLF (Timeout Session): # XXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	print(f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages [might take a while]...")
+	batch_sz: int = min(len(user_token_df.columns), 200)
+	print(
+		f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages"
+		f" with batch_size: {batch_sz} [might take a while]..."
+	)
 	TOKENs_num_NLF_pages_async = asyncio.run(
 		get_num_NLF_pages_asynchronous_run(
 			TOKENs_list=user_token_df.columns, 
-			batch_size=min(len(user_token_df.columns), 500),
+			batch_size=batch_sz,
 		)
 	)
 	zero_nlf_results_columns_to_be_removed = [
@@ -1171,21 +1178,31 @@ def get_df_spm(df: pd.DataFrame):
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s | memory: {sdf.memory_usage(index=True, deep=True).sum()/1e6:.2f} MB | sparsity: {sdf.sparse.density:.6f}")
 	return sdf
 
-def get_unpacked_user_token_interest(df: pd.DataFrame):
-	print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö) [Memory Intensive done on the fly]")
+def get_unpacked_user_token_interest(df: pd.DataFrame, usr_tk_unpacked_df_fname: str="DF_user_token_unpacked"):
 	st_t = time.time()
-	usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
-	usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
-	usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {usr_tk_unpacked_df.shape}" 
-				f" | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
-				f" | nZeros: {(usr_tk_unpacked_df==0.0).sum().sum()}"
-				f" | memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB"
-			)
+	try:
+		# load unpacked_df
+		usr_tk_unpacked_df = load_pickle(fpath=usr_tk_unpacked_df_fname)
+	except Exception as e:
+		print(f"<!> {e}")
+		print(f"Unpacking nested dict of TKs Pandas[{pd.__version__}] DF: {df.shape} & reindex cols (A, B,..., Ö)")
+		usr_tk_unpacked_df=pd.json_normalize(df["user_token_interest"]).set_index(df["user_ip"])
+		usr_tk_unpacked_df=usr_tk_unpacked_df.reindex(columns=sorted(usr_tk_unpacked_df.columns), index=df["user_ip"])
+		usr_tk_unpacked_df=usr_tk_unpacked_df.astype(np.float32)
+		save_pickle(pkl=usr_tk_unpacked_df, fname=usr_tk_unpacked_df_fname)	
+	print(
+		f"Elapsed_t: {time.time()-st_t:.1f} s {usr_tk_unpacked_df.shape}" 
+		f" | nNaNs {usr_tk_unpacked_df.isnull().values.any()}: {usr_tk_unpacked_df.isna().sum().sum()}"
+		f" | nZeros: {(usr_tk_unpacked_df==0.0).sum().sum()}"
+		f" | memory: {usr_tk_unpacked_df.memory_usage(index=True, deep=True).sum()/1e9:.1f} GB"
+	)
 	# sanity check for nonzeros for cols:
-	st_t = time.time()
+	sanity_check_time_start = time.time()
 	zero_cols=[col for col, is_zero in ((usr_tk_unpacked_df==0).sum() == usr_tk_unpacked_df.shape[0]).items() if is_zero]
-	print(f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} Elapsed_t: {time.time()-st_t:.2f} s")
+	print(
+		f"< Sanity Check > {len(zero_cols)} column(s) of ALL zeros: {zero_cols} "
+		f"Elapsed_t: {time.time()-sanity_check_time_start:.2f} s"
+	)
 	assert len(zero_cols)==0, f"<!> Error! There exist {len(zero_cols)} column(s) with all zero values!"
 	print("-"*100)
 	print(f"USER TOKEN [RAW unpacked_df] {type(usr_tk_unpacked_df)} {usr_tk_unpacked_df.shape}")

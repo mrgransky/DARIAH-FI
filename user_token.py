@@ -582,15 +582,10 @@ def main():
 
 	######################################## Creating/Loading Sparse Mtx [user vs. token] ########################################
 	print(f"Sparse Matrix Generation [users X tokens]".center(160, '-'))
-
-	# TODO: rename SPM file Names while removing BoWs length:
-	# sparse_matrix_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_U_x_T_{len(BoWs)}_BoWs.gz")
-	# sparse_matrix_users_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_user_ip_names_{len(BoWs)}_BoWs.gz")
-	# sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_spm_token_names_{len(BoWs)}_BoWs.gz")	
-
 	sparse_matrix_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_UxT.gz")
 	sparse_matrix_users_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_rows.gz")
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
+	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
 
 	try:
 		usr_tk_spm = load_pickle(fpath=sparse_matrix_fname)
@@ -604,6 +599,7 @@ def main():
 			spm_fname=sparse_matrix_fname,
 			spm_rows_fname=sparse_matrix_users_names_fname,
 			spm_cols_fname=sparse_matrix_tokens_names_fname,
+			df_unpacked_fname=dataframe_user_token_fname,
 		)
 	print(
 		f"spMtx {usr_tk_spm.shape} "
