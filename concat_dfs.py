@@ -801,11 +801,6 @@ def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
 	make_folder(folder_name=args.dfsPath)
 
-	# sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_*_vocabs.json')
-	# sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_UxT.gz')
-	# sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_rows.gz')
-	# sp_mtx_cols_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_SPM_cols.gz')
-
 	sp_mtx_concat_BoWs=get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'_*_vocabs.json')
 	sp_mtx_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'*_SPM_UxT.gz')
 	sp_mtx_rows_files = get_spm_files(fpath=args.dfsPath+'/'+'nike*_'+args.lmMethod+'*_SPM_rows.gz')
@@ -819,6 +814,9 @@ def run():
 	)
 	# assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 4 SPMs files (+1 BoWs) have different length!"
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
+	if (len(sp_mtx_files)==0 or len(sp_mtx_rows_files)==0 or len(sp_mtx_cols_files)==0):
+		print(f"<!> Error! no SPMs found!")
+		return
 
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs_lm_{args.lmMethod}"
