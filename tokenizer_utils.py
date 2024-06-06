@@ -148,8 +148,8 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				(wlm:=vw.lemma)
 				and 5 <= len(wlm) <= 43
 				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # original stanza no problem!
-				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # does not exclude words starting with digits! 
-				and not re.search(r'\b(?=\d|\w)(?:\w*(\w)(\1{2,})\w*|\d+\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm)
+				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # does not exclude words containing digits! 
+				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # excludes words containing digits! 
 				and vw.upos not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
@@ -203,8 +203,8 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 			if (
 				(wlm:=vw.get("lemma"))
 				and 5 <= len(wlm) <= 43
-				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # does not exclude words starting with digits! 
-				and not re.search(r'\b(?=\d|\w)(?:\w*(\w)(\1{2,})\w*|\d+\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm)
+				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # does not exclude words containing digits! 
+				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # excludes words containing digits! 
 				and vw.get("upos") not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
