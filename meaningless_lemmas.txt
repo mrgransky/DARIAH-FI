@@ -8495,6 +8495,7 @@ sistl
 antip
 uha
 tammikuu
+tammikuun
 tammik
 helmikuu
 helmik
@@ -10127,3 +10128,11 @@ aalala
 unionbanki
 säästöpanka
 loima
+donen
+zimmermanna
+zimmerma
+hagense
+overfas
+amala
+putma
+kyrkomöt
