@@ -122,7 +122,7 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 		asyncio.TimeoutError, 
 		Exception,
 		) as e:
-			print(f"<!> ERR < {e} > URL: {URL}")
+			# print(f"<!> ERR < {e} > URL: {URL}")
 			return
 
 async def get_num_NLF_pages_asynchronous_run(qu: str = "global warming", TOKENs_list: List[str] = ["tk1", "tk2"], batch_size: int = 25):
