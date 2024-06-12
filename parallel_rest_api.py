@@ -108,6 +108,23 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 	max_retries = 5  # Maximum number of retries
 	retries = 0
 
+	# while retries < max_retries:
+	# 	try:
+	# 		async with session.post(url=search_page_request_url, json=payload, headers=headers) as response:
+	# 			response.raise_for_status()
+	# 			res = await response.json()
+	# 			TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
+	# 			return TOTAL_NUM_NLF_RESULTs
+	# 	except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+	# 		if e.status == 429:  # Too Many Requests
+	# 			retries += 1
+	# 			retry_delay = min(retry_delay * 2, 60)  # Exponential backoff with a maximum delay of 60 seconds
+	# 			print(f"<!> {e} URL: {URL:<150} Retrying in {retry_delay:<5} sec ({retries}/{max_retries})")
+	# 			await asyncio.sleep(retry_delay + random.uniform(0, 1))  # Add a random delay to avoid synchronizing with other clients
+	# 		else:
+	# 			print(f"ERR < {e} > URL: {URL}")
+	# 			return
+
 	while retries < max_retries:
 		try:
 			async with session.post(url=search_page_request_url, json=payload, headers=headers) as response:
@@ -115,11 +132,16 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 				res = await response.json()
 				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
 				return TOTAL_NUM_NLF_RESULTs
-		except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+		except asyncio.TimeoutError:
+			retries += 1
+			retry_delay = min(retry_delay * 2, 60)  # Exponential backoff with a maximum delay of 60 seconds
+			print(f"Timeout error. Retrying in {retry_delay} seconds... ({retries}/{max_retries})")
+			await asyncio.sleep(retry_delay + random.uniform(0, 1))  # Add a random delay to avoid synchronizing with other clients
+		except aiohttp.ClientError as e:
 			if e.status == 429:  # Too Many Requests
 				retries += 1
 				retry_delay = min(retry_delay * 2, 60)  # Exponential backoff with a maximum delay of 60 seconds
-				print(f"<!> {e} URL: {URL:<150} Retrying in {retry_delay:<5} sec ({retries}/{max_retries})")
+				print(f"ERR < {e} > URL: {URL}. Retrying in {retry_delay} seconds... ({retries}/{max_retries})")
 				await asyncio.sleep(retry_delay + random.uniform(0, 1))  # Add a random delay to avoid synchronizing with other clients
 			else:
 				print(f"ERR < {e} > URL: {URL}")
