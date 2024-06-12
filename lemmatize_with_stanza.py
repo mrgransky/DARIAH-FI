@@ -301,7 +301,12 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
-Oriveden Kenkätehdas |
+Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
+Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
+Ellemme ota huomioon höyryllä taivutettua puuta, joka soveltuu ainoastaan joukkovalmistukseen ja ristivaneerin enentynyttä käyttöä, ei tietysti puun käytössä ammoin käytettynä materiaalina olekaan myöhempi aika voinut tuoda mitään positiivisesti uutta. 
+Huonekalujen parannetut käytännöinsimmät muodot ovat usein puhtaasti näennäisiä ja tarjoavat tuskin minkäänlaisia etuisuuksia arkielämän käytännössä mukavuuteensa nähden, ja useat muodot päinvastoin ovat pahimmassa tapauksessa edeltäjiään epämukavammat. 
+Myöskin suuremmat hygieeniset arvot, kuten tomuvapaus, todellisuudessa ovat ainoastaan tunteeseen eli mieltymykseen vetoavia eivätkä omiaan nostamaan kansan terveystasoa. 
+Muussa tapauksessa olisivat kai lääkäritkin funktionalismin ensimmäisiä profeettojaOriveden Kenkätehdas |
 machinery turku abo marin rauma maury amp son helsinki
 svinhufvud tasavallan presidentiksi tuurna otto arno kaupunginjohtaja vara uoman viipuri
 bambuputkihuonekutehda

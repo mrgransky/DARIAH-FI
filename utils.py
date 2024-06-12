@@ -737,7 +737,7 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	with open(fname, mode="r", encoding="utf-8") as fr:
 		vb = json.load(fr)
 	fsize_dump = os.stat( fname ).st_size / 1e6
-	print(f"Elapsed_t: {time.time()-st_t:.3f} s | {fsize_dump:.2f} MB".center(110, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(vb)} | {fsize_dump:.2f} MB".center(120, " "))
 	return vb
 
 def save_pickle(pkl, fname:str=""):
