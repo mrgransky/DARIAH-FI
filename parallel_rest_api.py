@@ -1,3 +1,5 @@
+from utils import *
+
 # import numpy as np
 # import urllib
 # import time
@@ -18,7 +20,8 @@
 # SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
 # DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
 
-from utils import *
+# run using nohup:
+# nohup python -u parallel_rest_api.py > rest_api_all_length_batch.out 2>&1 & 
 
 headers = {
 	'Content-type': 'application/json',
@@ -71,6 +74,49 @@ my_list = list(vb.keys())
 print(len(my_list), type(my_list))
 # # sys.exit()
 
+async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="global warming", REC_TK: str="pollution"):
+	st_t = time.time()
+	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_QUERY + " " + REC_TK)
+	# print(f"{URL:<150}", end=" ")
+	parsed_url = urllib.parse.urlparse(URL)
+	parameters = urllib.parse.parse_qs(parsed_url.query, keep_blank_values=True)
+	offset_pg = (int(re.search(r'page=(\d+)', URL).group(1)) - 1) * 20 if re.search(r'page=(\d+)', URL) else 0
+	search_page_request_url = f"{DIGI_HOME_PAGE_URL}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
+	payload["query"] = parameters.get('query')[0] if parameters.get('query') else ""
+	payload["requireAllKeywords"] = parameters.get('requireAllKeywords')[0] if parameters.get('requireAllKeywords') else "false"
+	try:
+		async with session.post(
+			url=search_page_request_url,
+			json=payload,
+			headers=headers,
+		) as response:
+				response.raise_for_status()
+				res = await response.json()
+				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
+				# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
+				return TOTAL_NUM_NLF_RESULTs
+	except (
+		aiohttp.ClientError,
+		asyncio.TimeoutError,
+		Exception,
+		) as e:
+			print(f"<!> ERR < {e} > URL: {URL}")
+			return
+
+async def get_num_NLF_pages_asynchronous_run(qu: str = "global warming", TOKENs_list: List[str] = ["tk1", "tk2"], batch_size: int = 25):
+	async with aiohttp.ClientSession() as session:
+		for i in range(0, len(TOKENs_list), batch_size):
+			batch = TOKENs_list[i:i + batch_size]
+			tasks = [
+				NUMBER_OF_PAGES
+				for tk in batch
+				if (
+					NUMBER_OF_PAGES:=get_recommendation_num_NLF_pages_async(session, INPUT_QUERY=qu, REC_TK=tk)
+				)
+			]
+			num_NLF_pages = await asyncio.gather(*tasks)
+		return num_NLF_pages
+
 def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 	st_t = time.time()
 	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_QUERY + " " + INPUT_TOKEN)
@@ -96,49 +142,6 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 		return
 	return TOTAL_NUM_NLF_RESULTs
 
-async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="global warming", REC_TK: str="pollution"):
-	st_t = time.time()
-	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(INPUT_QUERY + " " + REC_TK)
-	# print(f"{URL:<150}", end=" ")
-	parsed_url = urllib.parse.urlparse(URL)
-	parameters = urllib.parse.parse_qs(parsed_url.query, keep_blank_values=True)
-	offset_pg = (int(re.search(r'page=(\d+)', URL).group(1)) - 1) * 20 if re.search(r'page=(\d+)', URL) else 0
-	search_page_request_url = f"{DIGI_HOME_PAGE_URL}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
-	payload["query"] = parameters.get('query')[0] if parameters.get('query') else ""
-	payload["requireAllKeywords"] = parameters.get('requireAllKeywords')[0] if parameters.get('requireAllKeywords') else "false"
-	try:
-		async with session.post(
-			url=search_page_request_url,
-			json=payload,
-			headers=headers,
-		) as response:
-				response.raise_for_status()
-				res = await response.json()
-				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
-				# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
-				return TOTAL_NUM_NLF_RESULTs
-	except (
-		aiohttp.ClientError,
-		asyncio.TimeoutError, 
-		Exception,
-		) as e:
-			# print(f"<!> ERR < {e} > URL: {URL}")
-			return
-
-async def get_num_NLF_pages_asynchronous_run(qu: str = "global warming", TOKENs_list: List[str] = ["tk1", "tk2"], batch_size: int = 25):
-	async with aiohttp.ClientSession() as session:
-		for i in range(0, len(TOKENs_list), batch_size):
-			batch = TOKENs_list[i:i + batch_size]
-			tasks = [
-				NUMBER_OF_PAGES
-				for tk in batch
-				if (
-					NUMBER_OF_PAGES:=get_recommendation_num_NLF_pages_async(session, INPUT_QUERY=qu, REC_TK=tk)
-				)
-			]
-			num_NLF_pages = await asyncio.gather(*tasks)
-		return num_NLF_pages
-
 # # OLD inefficient implementation: 
 # start_time = time.time()
 # TOKENs_num_NLF_pages = [
@@ -154,10 +157,10 @@ async def get_num_NLF_pages_asynchronous_run(qu: str = "global warming", TOKENs_
 # print("#"*100)
 
 # asynchronous implementation: efficient
-# batchSZ = min(len(my_list), 2500)
+# batchSZ = min(len(my_list), 100)
 batchSZ = min(len(my_list), np.inf)
 
-print(f"< Asynchronous approach>  using {batchSZ} batches, [might take a while]...")
+print(f"< Asynchronous approach>  using <{batchSZ}> batches, [might take a while]...")
 start_time_async = time.time()
 TOKENs_num_NLF_pages_async = asyncio.run(
 	get_num_NLF_pages_asynchronous_run(
