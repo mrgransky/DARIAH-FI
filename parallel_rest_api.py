@@ -119,7 +119,7 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 			if e.status == 429:  # Too Many Requests
 				retries += 1
 				retry_delay = min(retry_delay * 2, 60)  # Exponential backoff with a maximum delay of 60 seconds
-				print(f"<!> {e} URL: {URL:<150} Retrying in {retry_delay:<20} sec ({retries}/{max_retries})")
+				print(f"<!> {e} URL: {URL:<150} Retrying in {retry_delay:<5} sec ({retries}/{max_retries})")
 				await asyncio.sleep(retry_delay + random.uniform(0, 1))  # Add a random delay to avoid synchronizing with other clients
 			else:
 				print(f"ERR < {e} > URL: {URL}")
@@ -181,7 +181,7 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 # print("#"*100)
 
 # asynchronous implementation: efficient
-batchSZ = min(len(my_list), 100)
+batchSZ = min(len(my_list), int(1e+5))
 # batchSZ = min(len(my_list), np.inf)
 print(f"< Asynchronous approach>  using <{batchSZ}> batches, [might take a while]...")
 start_time_async = time.time()
