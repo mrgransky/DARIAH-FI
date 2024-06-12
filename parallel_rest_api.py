@@ -1,27 +1,27 @@
 from utils import *
 
+# run using nohup:
+# nohup python -u parallel_rest_api.py > rest_api_all_length_batch.out 2>&1 &
+
 # import numpy as np
 # import urllib
 # import time
 # import re
 
-# import requests
 # import aiohttp
 # import asyncio
 
 # from typing import List, Set, Dict, Tuple
 
+# import requests
 # from requests.adapters import HTTPAdapter
 # from requests.packages.urllib3.util.retry import Retry
 # session = requests.Session()
 # retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
 # session.mount('https://', HTTPAdapter(max_retries=retries))
 
-# SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
-# DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
-
-# run using nohup:
-# nohup python -u parallel_rest_api.py > rest_api_all_length_batch.out 2>&1 & 
+SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
+DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
 
 headers = {
 	'Content-type': 'application/json',
@@ -84,24 +84,48 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 	search_page_request_url = f"{DIGI_HOME_PAGE_URL}/rest/binding-search/search/binding?offset={offset_pg}&count=20"
 	payload["query"] = parameters.get('query')[0] if parameters.get('query') else ""
 	payload["requireAllKeywords"] = parameters.get('requireAllKeywords')[0] if parameters.get('requireAllKeywords') else "false"
-	try:
-		async with session.post(
-			url=search_page_request_url,
-			json=payload,
-			headers=headers,
-		) as response:
+
+	# try:
+	# 	async with session.post(
+	# 		url=search_page_request_url,
+	# 		json=payload,
+	# 		headers=headers,
+	# 	) as response:
+	# 			response.raise_for_status()
+	# 			res = await response.json()
+	# 			TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
+	# 			# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
+	# 			return TOTAL_NUM_NLF_RESULTs
+	# except (
+	# 	aiohttp.ClientError,
+	# 	asyncio.TimeoutError,
+	# 	# Exception,
+	# 	) as e:
+	# 		print(f"<!> ERR < {e} > URL: {URL}")
+	# 		return
+
+	retry_delay = 1  # Initial retry delay in seconds
+	max_retries = 5  # Maximum number of retries
+	retries = 0
+
+	while retries < max_retries:
+		try:
+			async with session.post(url=search_page_request_url, json=payload, headers=headers) as response:
 				response.raise_for_status()
 				res = await response.json()
 				TOTAL_NUM_NLF_RESULTs = res.get("totalResults")
-				# print(f"Found NLF tot_page(s): {TOTAL_NUM_NLF_RESULTs:<10} in {time.time() - st_t:.1f} sec")
 				return TOTAL_NUM_NLF_RESULTs
-	except (
-		aiohttp.ClientError,
-		asyncio.TimeoutError,
-		Exception,
-		) as e:
-			print(f"<!> ERR < {e} > URL: {URL}")
-			return
+		except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+			if e.status == 429:  # Too Many Requests
+				retries += 1
+				retry_delay = min(retry_delay * 2, 60)  # Exponential backoff with a maximum delay of 60 seconds
+				print(f"<!> {e} URL: {URL:<150} Retrying in {retry_delay:<20} sec ({retries}/{max_retries})")
+				await asyncio.sleep(retry_delay + random.uniform(0, 1))  # Add a random delay to avoid synchronizing with other clients
+			else:
+				print(f"ERR < {e} > URL: {URL}")
+				return
+	print(f"ERR: Max retries ({max_retries}) exceeded for URL: {URL}")
+	return
 
 async def get_num_NLF_pages_asynchronous_run(qu: str = "global warming", TOKENs_list: List[str] = ["tk1", "tk2"], batch_size: int = 25):
 	async with aiohttp.ClientSession() as session:
@@ -157,9 +181,8 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 # print("#"*100)
 
 # asynchronous implementation: efficient
-# batchSZ = min(len(my_list), 100)
-batchSZ = min(len(my_list), np.inf)
-
+batchSZ = min(len(my_list), 100)
+# batchSZ = min(len(my_list), np.inf)
 print(f"< Asynchronous approach>  using <{batchSZ}> batches, [might take a while]...")
 start_time_async = time.time()
 TOKENs_num_NLF_pages_async = asyncio.run(
