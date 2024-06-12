@@ -65,7 +65,8 @@ my_list = ['finland', 'öppen', 'komma', 'svensk', 'fartyg', 'regering', 'meddel
 
 # # large:
 # MY_QUERY_PHRASE : str = "Suomen kommunistinen puolue"
-vb = load_vocab(fname="/home/farid/datasets/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_shrinked_spMtx_x_7642122_BoWs.json")
+vb_fpath = "/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_shrinked_spMtx_x_7642122_BoWs.json" if os.environ['USER']=="alijanif" else "/home/farid/datasets/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_shrinked_spMtx_x_7642122_BoWs.json"
+vb = load_vocab(fname=f"{vb_fpath}")
 my_list = list(vb.keys())
 print(len(my_list), type(my_list))
 # sys.exit()
