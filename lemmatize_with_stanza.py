@@ -143,9 +143,9 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		# print(type(all_))
-		# print(all_)
-		# print("#"*100)
+		print(type(all_))
+		print(all_)
+		print("#"*100)
 
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
@@ -301,19 +301,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+Vaalit
 Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
 Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
-Ellemme ota huomioon höyryllä taivutettua puuta, joka soveltuu ainoastaan joukkovalmistukseen ja ristivaneerin enentynyttä käyttöä, ei tietysti puun käytössä ammoin käytettynä materiaalina olekaan myöhempi aika voinut tuoda mitään positiivisesti uutta. 
-Huonekalujen parannetut käytännöinsimmät muodot ovat usein puhtaasti näennäisiä ja tarjoavat tuskin minkäänlaisia etuisuuksia arkielämän käytännössä mukavuuteensa nähden, ja useat muodot päinvastoin ovat pahimmassa tapauksessa edeltäjiään epämukavammat. 
-Myöskin suuremmat hygieeniset arvot, kuten tomuvapaus, todellisuudessa ovat ainoastaan tunteeseen eli mieltymykseen vetoavia eivätkä omiaan nostamaan kansan terveystasoa. 
-Muussa tapauksessa olisivat kai lääkäritkin funktionalismin ensimmäisiä profeettojaOriveden Kenkätehdas |
-machinery turku abo marin rauma maury amp son helsinki
-svinhufvud tasavallan presidentiksi tuurna otto arno kaupunginjohtaja vara uoman viipuri
-bambuputkihuonekutehda
-tietävän asiasta mitään schmidt lähti alakertaan ferguson seurasi myöhemmin juoma oli hyvää loistava
-kuhmoinen lahti lammi luopioinen orivesi nokia riihimäki ruovesi somero tampers turenki
-klo tiistaina torstaina lauantaina uukuniemelle kautta klo tiistaina torstaina
-Rahikka, Elna Ester, omp., Ensimäinenk. 8. EM, rouva, Mariank. 5 as. 8, Nn. Ester, omp., Hirvik. 6 B 6. lnes, omp., Ensimäinenk. 8 as. 2, So. 
 Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
 huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
 '''

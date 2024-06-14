@@ -135,7 +135,7 @@ async def get_recommendation_num_NLF_pages_async(session, INPUT_QUERY: str="glob
 		except asyncio.TimeoutError:
 			retries += 1
 			retry_delay = min(retry_delay * 2, 60)  # Exponential backoff with a maximum delay of 60 seconds
-			print(f"<!Timeout ERROR!> {URL:<150} Retrying in {retry_delay:<5} s ({retries}/{max_retries})")
+			print(f"<!> Timeout ERROR {URL:<150} Retrying in {retry_delay:<5} s ({retries}/{max_retries})")
 			await asyncio.sleep(retry_delay + random.uniform(0, 1))  # Add a random delay to avoid synchronizing with other clients
 		except aiohttp.ClientError as e:
 			if e.status == 429:  # Too Many Requests
