@@ -20,6 +20,25 @@ from utils import *
 # retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
 # session.mount('https://', HTTPAdapter(max_retries=retries))
 
+# TODO: add parser for vb_fpath:
+parser = argparse.ArgumentParser(
+	description='User-based Recommendation System developed based on National Library of Finland (NLF) dataset', 
+	prog='RecSys Concatenated DFs', 
+	epilog='Developed by Farid Alijani',
+)
+parser.add_argument(
+	'-vb',
+	'--vbfpath',
+	type=str, 
+	required=True,
+	help='Path to vocab.json',
+)
+args = parser.parse_args()
+
+vb = load_vocab(fname=args.vbfpath)
+dataset_fpath = "/".join(args.vbfpath.split("/")[:-1])
+print(dataset_fpath)
+
 SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
 DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
 
@@ -65,11 +84,7 @@ TOKENs_num_NLF_pages = None
 # MY_LIST = ['osake', 'agentuuri', 'huoltotili', 'ahvionsaari', 'hyvittää', 'grundlagsutskottet', 'osuuskassa', 'varioja', 'palovakuutuslaitos', 'huoltokonttori', 'maakuntai', 'antolainausehto', 'osuuskauppaväki', 'pankkiliike', 'korko', 'luotto', 'siltasaarenko', 'jordbruksmaskiner', 'uskela', 'rahalaitos', 'laivapäällystö', 'sinisalo', 'kansallis', 'kassa', 'vakavarainen', 'talletustili', 'pulikko', 'käyttäjä', 'vienti', 'osakeyhtiö', 'ottolaina', 'automa', 'keskus', 'slags', 'föreslag', 'siirtokansa', 'vakuutusvirkailija', 'laululintu', 'osuustoimintakuoro', 'vuorimiehenkatu', 'kpllä', 'pääomatili', 'maksupäivä', 'täydellinen', 'hallitus', 'helsinki', 'vuosi', 'tampere', 'pikkulintu', 'säästövara', 'fabritius', 'tarkoitus', 'vallila', 'redskap', 'veloittaa', 'pääoma', 'säästöpankki', 'siirtomaatavara', 'puolivuosittain', 'seutu', 'töölö', 'velkakirjasaatava', 'hartikainen', 'haliko', 'toiminta', 'lounaissuomi', 'luiskahtaa', 'juhani', 'sähköosoite', 'toimia', 'keskuslainarahasto', 'tehtävä', 'lisäys', 'hukkua', 'kuiti', 'puristus', 'kokous', 'häkki', 'teatteri', 'perustaa', 'yleishyödyllinen', 'pohjola', 'tarvike', 'postitse', 'osuuskassanhoitaja', 'henkivakuutus', 'kerääminen', 'haarakonttori', 'konttori', 'sanottavasti', 'saada', 'honkala', 'karjala', 'täydelleen', 'yrjönkatu', 'liikeapulainen', 'sijoittaminen', 'mikonkatu', 'edullisesti', 'esittää', 'johtaja', 'jäsenmäärä', 'fimbenne', 'toimintataipaleetta', 'sopiva', 'maksu', 'kuulumiset', 'ompelu', 'tilinpito', 'shekinkäyttöoikeus', 'suorittaa', 'pitää', 'gaspe', 'vakuuskysymys', 'isotupa', 'harjoittaa', 'kertomusvuonna', 'säänöinen', 'jäsenkassa', 'maalaisapteekki', 'hmiti', 'hanki', 'huolto', 'maanviljelijä', 'sanomalehtimies', 'keskusliitto', 'velkakirja', 'esitelmä', 'turku', 'vankka', 'vaatia', 'lunastaa', 'eilen', 'selänne', 'markka', 'eloma', 'asiakas', 'perustaja', 'lakka', 'päälle', 'aleksanterinkatu', 'murto', 'tunma', 'agentuuriliike', 'maksaa', 'laivanselvitys', 'kevätkokous', 'osuuskassi', 'luona', 'jäsen', 'hajapiirre', 'suuri', 'jäsenmaksu', 'luennoima', 'muinaishistoria', 'nivelkipu', 'liike', 'tilinpäätös', 'tällöin', 'kallio', 'matta', 'luotontarvi', 'juusto', 'osuustoimintaperiaate', 'lisääntyki', 'tulla', 'naurunremahdus', 'toteuttaminen', 'viitanen', 'soini', 'illanvietto', 'talousalue', 'lehtimäki', 'tavallisesti', 'tenttinen', 'kiinteä', 'turva', 'myöntää', 'lointaa', 'omari', 'osuuskassamies', 'päättää', 'edullinen', 'ottaa', 'ansiokkainen', 'kuulua', 'länsi', 'koskemintaa', 'maito', 'keskustella', 'myydä', 'juokseva', 'parhaiten', 'juhtaa', 'silloin', 'uudistushanke', 'huolinta', 'loppusumma', 'kamppi', 'osuuskassaväki', 'kehitys', 'välittää', 'ylitarkastaja', 'lähettää', 'kurssi', 'rangelli', 'elämänrohkeus', 'tuomari', 'järjestö', 'perustamispäivä', 'kulua', 'pakkari', 'osuuskassaliikki', 'santaoja', 'hoito', 'halikko', 'viime', 'hedelmä', 'toimihenkilö', 'kania', 'reumatismi', 'valita', 'henkilötyyppi', 'ryhtyä', 'jämsä', 'dahlbergi', 'taara', 'puheenjohtaja', 'johtokunta', 'taitella', 'tilintarkastaja', 'tuomela', 'sahlstedt', 'liitto', 'mainita', 'käyttää', 'avoinna', 'toistaiseksi', 'luonnollinen', 'eteläranta', 'tapahtuma', 'lasipalatsi', 'sähinen', 'hyväksyä', 'tuure', 'täysi', 'käräjä', 'päivä', 'lisätä', 'seurata', 'hinta', 'meijeri', 'liikemuoto', 'jakaa', 'tikka', 'ilmoittaa', 'antaa', 'koskeminen', 'hoitokulu', 'alkaa', 'valitsemi', 'kerta', 'piiri', 'nitoa', 'osasto', 'omistaja', 'yhteys', 'määrä', 'rahtaus', 'savonlinta', 'lainata', 'erovuoro', 'osoittaa', 'suoruus', 'esitys', 'erikoinen', 'kuten', 'hanna', 'yksityinen', 'laajentaminen', 'lindegre', 'asianomainen', 'paljon', 'jalka', 'hermokivu', 'laine', 'savonlinna', 'erottaja', 'seuraintalo', 'vuosiylijäämä', 'vuosikertomus', 'edellinen', 'kunnallislehti', 'kannatusmaksu', 'sääminki', 'aarne', 'historiikka', 'nopeasti', 'lukea', 'sihteeri', 'kiinteäkorkoinen', 'yliopistonkatu', 'tanssi', 'käsitellä', 'pirstoutua', 'unettomuus', 'sikatalous', 'maatalous', 'munuainen', 'mahdollinen', 'edelleen', 'tärkeä', 'kruunuhaka', 'kangas', 'kosmeettinen', 'isännöitsijä', 'talletuspaikka', 'odottaa', 'kuorittua', 'lyhyttavara', 'nykytärkeä', 'yleisö', 'hämeentie', 'seura', 'paikka', 'pysyvästi', 'hoitaa', 'osuuskunta', 'tuoda', 'kasso', 'bulevardi', 'iskias', 'alusia', 'tapaan', 'tarkkailija', 'kunta', 'togali', 'tyydyttää', 'vaikuttaa', 'osuusteurastamo', 'toimi', 'alennus', 'jokinen', 'käytyä', 'uudelleen', 'perustamiskirja', 'lähteä', 'varajäsen', 'maksuttomasti', 'paras', 'toimintapiiri', 'metsäalue', 'kerimäki', 'perniö', 'nuorisoseuralainen', 'puoli', 'virtsahappo', 'viinamäki', 'tukkuliike', 'kihti', 'duetto', 'ranki', 'keskikorko', 'numero', 'lopuksi', 'valittu', 'kiikala', 'konttorikone', 'yolanda', 'järjestää', 'alennusmyynti', 'ohjelma', 'vararahasto', 'paikkakunta', 'osuusmaksu', 'pertteli', 'näytelmä', 'kankea', 'tabletti', 'joutua', 'kuolla', 'seuraava', 'kirjapaino', 'kaitila', 'piiritarkastaja', 'opettaja', 'tilivuosi', 'miime', 'autotarvike', 'luennoida', 'lämminhenkinen', 'autonjäähdyttäjätehdas', 'kuulla', 'seppälä', 'päänsärky', 'tarkastaja', 'pyytää', 'suuruinen', 'suunnitella', 'tarkkailu', 'entinen', 'teollisuustarvike', 'osanottaja', 'historiikki', 'netti', 'rautakauppatavaro', 'astua', 'tekstiilitavara', 'räjähtää', 'rahasto', 'tehdä', 'ruumis', 'keskihinta', 'erittää', 'lausunto', 'juhlavieras', 'liikevaihto', 'merkkitapaus', 'tilapäisesti', 'lausua', 'solmiotehdas', 'onnistuneesti', 'kansantanhu', 'merkityksellinen', 'pyyntö', 'alunperin', 'resepti', 'toimittaa', 'sikala', 'ammatillinen', 'paavo', 'toimitalo', 'kehittyä', 'käsinetehdas', 'vapaa', 'loimaa', 'osuuskauppa', 'valtio', 'luennoitsija', 'huomattava', 'kuisma', 'makeistehdas', 'vastata', 'lääke', 'viikko', 'päättyä', 'soitin', 'onnistua', 'pietarsaari', 'juosta', 'jäädä', 'pajula', 'joten', 'tänään', 'käytäntö', 'muuttaa', 'teknokem', 'jatkua', 'laajakantoinen', 'sitten', 'penni', 'laaja', 'rahamäärä', 'obstbaum', 'lieventää', 'kutomateollisuustuste', 'tamperelainen', 'vekseli', 'kiintoisa', 'nasta', 'joukko', 'vaaraton', 'arkipäivä', 'laulu', 'maatalousnäyttely', 'loppu', 'hannu', 'kysymys', 'avata', 'kansa', 'suunta', 'ravintola', 'mieltymys', 'kaava', 'kolkontaipale', 'laukansaari', 'alkuaika', 'pienviljelijä', 'lausunta', 'leipomo', 'ostaa', 'valaiseva', 'vahingollinen', 'osuustoiminta', 'juhlapäivä', 'apteeki']
 
 # # large:
-dataset_fpath = "/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" if os.environ['USER']=="alijanif" else "/home/farid/datasets/Nationalbiblioteket/dataframes_x732"
-concat_BOWs_fname = "concatinated_732_SPMs_lm_stanza_shrinked_spMtx_x_7642122_BoWs.json"
-vb_fpath = os.path.join(dataset_fpath, concat_BOWs_fname)
-vb = load_vocab(fname=f"{vb_fpath}")
-MY_LIST = list(vb.keys())#[:2941]
+MY_LIST = list(vb.keys())#[:12941]
 print(len(MY_LIST))
 
 async def get_recommendation_num_NLF_pages_async(session, REC_TK: str="pollution"):
@@ -169,11 +184,11 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 
 # asynchronous implementation: efficient for LARGE sized lists (>10K):
 prev_s = 0
-slices = int(8e+3)
+slices = int(5e+3)
 meaningless_tokens_zero_NLF_pages = list()
 total_num_batches = int(len(MY_LIST)/slices)+1
 for s in range( total_num_batches ):
-	print(f"[batch: {s}/{total_num_batches}] previous slice: {prev_s} current slice: {prev_s+slices}")
+	print(f"[batch: {s+1}/{total_num_batches}] previous slice: {prev_s} current slice: {prev_s+slices}")
 	my_list = MY_LIST[prev_s:prev_s+slices]
 	print(f"< Asynchronous approach > for a list of {len(my_list)} elemensts...")
 	start_time_async = time.time()
@@ -196,9 +211,9 @@ for s in range( total_num_batches ):
 	meaningless_tokens_zero_NLF_pages.extend(meaningless_tokens_zero_NLF_pages_per_list)
 	print(
 		len(meaningless_tokens_zero_NLF_pages),
-		meaningless_tokens_zero_NLF_pages[:10],
+		meaningless_tokens_zero_NLF_pages[-10:],
 	)
-	print("#"*120)
+	print("#"*150)
 
 print(
 	len(meaningless_tokens_zero_NLF_pages), 

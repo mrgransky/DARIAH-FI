@@ -30,9 +30,9 @@ echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
 echo "$SLURM_SUBMIT_HOST conda env from tykky module..."
-files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
-ddir="/scratch/project_2004072/Nationalbiblioteket/preprocessed_dataframes_XX" # x58: 30-80 & 725-731
-python -u parallel_rest_api.py
+vocab_fpath="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_shrinked_spMtx_x_7642122_BoWs.json"
+
+python -u parallel_rest_api.py --vbfpath $vocab_fpath
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"
