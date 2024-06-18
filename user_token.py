@@ -586,6 +586,7 @@ def main():
 	sparse_matrix_users_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_rows.gz")
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
 	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
+	lemmas_with_zero_nlf_pages_fname = os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
 	try:
 		usr_tk_spm = load_pickle(fpath=sparse_matrix_fname)
 		usr_tk_spm_usrNames = load_pickle(fpath=sparse_matrix_users_names_fname)
@@ -599,6 +600,7 @@ def main():
 			spm_rows_fname=sparse_matrix_users_names_fname,
 			spm_cols_fname=sparse_matrix_tokens_names_fname,
 			df_unpacked_fname=dataframe_user_token_fname,
+			meaningless_lemmas_zero_nlf_pages_fname=,
 		)
 	print(
 		f"spMtx {usr_tk_spm.shape} "

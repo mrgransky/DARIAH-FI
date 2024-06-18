@@ -71,6 +71,7 @@ vb_fpath = os.path.join(dataset_fpath, concat_BOWs_fname)
 vb = load_vocab(fname=f"{vb_fpath}")
 MY_LIST = list(vb.keys())#[:2941]
 print(len(MY_LIST))
+
 async def get_recommendation_num_NLF_pages_async(session, REC_TK: str="pollution"):
 	st_t = time.time()
 	URL = f"{SEARCH_QUERY_DIGI_URL}" + urllib.parse.quote_plus(REC_TK)
@@ -168,10 +169,11 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 
 # asynchronous implementation: efficient for LARGE sized lists (>10K):
 prev_s = 0
-slices = int(1e+4)
+slices = int(8e+3)
 meaningless_tokens_zero_NLF_pages = list()
-for s in range( int(len(MY_LIST)/slices)+1 ):
-	print(s, prev_s, prev_s+slices)
+total_num_batches = int(len(MY_LIST)/slices)+1
+for s in range( total_num_batches ):
+	print(f"[batch: {s}/{total_num_batches}] previous slice: {prev_s} current slice: {prev_s+slices}")
 	my_list = MY_LIST[prev_s:prev_s+slices]
 	print(f"< Asynchronous approach > for a list of {len(my_list)} elemensts...")
 	start_time_async = time.time()
@@ -193,14 +195,14 @@ for s in range( int(len(MY_LIST)/slices)+1 ):
 	# print(len(meaningless_tokens_zero_NLF_pages_per_list), meaningless_tokens_zero_NLF_pages_per_list)
 	meaningless_tokens_zero_NLF_pages.extend(meaningless_tokens_zero_NLF_pages_per_list)
 	print(
-		len(meaningless_tokens_zero_NLF_pages), 
-		# meaningless_tokens_zero_NLF_pages,
+		len(meaningless_tokens_zero_NLF_pages),
+		meaningless_tokens_zero_NLF_pages[:10],
 	)
 	print("#"*120)
 
 print(
 	len(meaningless_tokens_zero_NLF_pages), 
-	meaningless_tokens_zero_NLF_pages,
+	meaningless_tokens_zero_NLF_pages[:100],
 )
 save_pickle(
 	pkl=meaningless_tokens_zero_NLF_pages, 

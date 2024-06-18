@@ -143,9 +143,9 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		print(type(all_))
-		print(all_)
-		print("#"*100)
+		# print(type(all_))
+		# print(all_)
+		# print("#"*100)
 
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
@@ -277,36 +277,37 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-# orig_text = '''
-# sVenskA idrottsförbundet
-# < arbetets krävande natur ><
-# 21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 
-# kl. 6 e. m. i handl. A. Argillanders, Wiborg, hos J. Hallenberg, i:sta dividend. (83, 84, 85). 23 Fredag, kl. 6 e. m. i A. 
-# Halonens och Petter Rautiainens, Wiborg, hos J. Hallenberg, slutredovisning och slutdividend (83, 84, 85). — kl. 6 e. m. i handl. Otto Hartmans, 
-# Tammerfors, hos W. Palander, slutredovisning (104, 105, 106). — kl. 7 e. m. i Hugo W. Rönnqvists, d:o, hos d:o, d:o. — kl. 8 e. nr. i E. A. Hildens, d:o, hos d:o, d:o.
-# En yngling gick med dröjande steg uppför backen mot kyrkan , som stolt reste sin höga spira mot himlen.
-# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna,
-# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-# Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi,
-# Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
-# men tillika började han fundera på, vad sången kunde betyda.
-# 24 Mandag, kl. 5 e. m. i postförvaltaren O. Järnefelts i Nykarleby, hos K. F. Spolander slutredovisning (256, 257, 258.) 25 Tisdag, 
-# kl. 1 e. m. i bagaren Otto Holmbergs, /\bo, å Alfred Holmströms advokatkontor, slutredovisning (260, 261, 262.) — kl. 6 e. m. i fabrikanten Alb. 
-# Holmqvists, från Rimito i Åbo, a Alfred Holmströms advokatkontor slutredovisning (260, 261, 262., — i kantorn A. A. Nordlund, Wasa, a Sandelin & Bouchts, advokatkontor, 
-# slutredovisning (264, 265, 266.) — i gårdsegar. Leander Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) — i gårdsegar. Jakob Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) — i gårdsegar. 
-# Matts Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) 26 Onsdag, kl. 1 e. m. i handl. Konst Granboms, Åbo, å Alfred Holmströms advokatkontor, slutredovisning (260, 261, 262.) 27 Torsdag, kl. 6 e. m. i handl. J. A. Sjöströms, 
-# Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
-# J. Wikmans i Jyväskylä å hotel Wahlgren, slutdividend (256, 257, 258.) — i skrädderi firman Georg Wikströms- Helsingfors, hos Gunnar Hjelt, dividend (261.)
-# '''
-
 orig_text = '''
-SUomI
-Vaalit
-Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
-Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
-Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
-huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+sVenskA idrottsförbundet
+myntgat
+< arbetets krävande natur ><
+21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 
+kl. 6 e. m. i handl. A. Argillanders, Wiborg, hos J. Hallenberg, i:sta dividend. (83, 84, 85). 23 Fredag, kl. 6 e. m. i A. 
+Halonens och Petter Rautiainens, Wiborg, hos J. Hallenberg, slutredovisning och slutdividend (83, 84, 85). — kl. 6 e. m. i handl. Otto Hartmans, 
+Tammerfors, hos W. Palander, slutredovisning (104, 105, 106). — kl. 7 e. m. i Hugo W. Rönnqvists, d:o, hos d:o, d:o. — kl. 8 e. nr. i E. A. Hildens, d:o, hos d:o, d:o.
+En yngling gick med dröjande steg uppför backen mot kyrkan , som stolt reste sin höga spira mot himlen.
+Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna,
+EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
+Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi,
+Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
+men tillika började han fundera på, vad sången kunde betyda.
+24 Mandag, kl. 5 e. m. i postförvaltaren O. Järnefelts i Nykarleby, hos K. F. Spolander slutredovisning (256, 257, 258.) 25 Tisdag, 
+kl. 1 e. m. i bagaren Otto Holmbergs, /\bo, å Alfred Holmströms advokatkontor, slutredovisning (260, 261, 262.) — kl. 6 e. m. i fabrikanten Alb. 
+Holmqvists, från Rimito i Åbo, a Alfred Holmströms advokatkontor slutredovisning (260, 261, 262., — i kantorn A. A. Nordlund, Wasa, a Sandelin & Bouchts, advokatkontor, 
+slutredovisning (264, 265, 266.) — i gårdsegar. Leander Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) — i gårdsegar. Jakob Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) — i gårdsegar. 
+Matts Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) 26 Onsdag, kl. 1 e. m. i handl. Konst Granboms, Åbo, å Alfred Holmströms advokatkontor, slutredovisning (260, 261, 262.) 27 Torsdag, kl. 6 e. m. i handl. J. A. Sjöströms, 
+Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
+J. Wikmans i Jyväskylä å hotel Wahlgren, slutdividend (256, 257, 258.) — i skrädderi firman Georg Wikströms- Helsingfors, hos Gunnar Hjelt, dividend (261.)
 '''
+
+# orig_text = '''
+# SUomI
+# Vaalit
+# Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
+# Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
+# Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
+# huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+# '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)

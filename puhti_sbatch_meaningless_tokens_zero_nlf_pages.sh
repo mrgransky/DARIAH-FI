@@ -8,9 +8,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=24G
-#SBATCH --partition=small
-#SBATCH --time=03-00:00:00
+#SBATCH --mem=5G
+#SBATCH --partition=interactive
+#SBATCH --time=07-00:00:00
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -20,7 +20,7 @@ ch="#"
 echo -e "${txt//?/$ch}\n${txt}\n${txt//?/$ch}"
 echo "${stars// /*}"
 echo "CPUS/NODE: $SLURM_JOB_CPUS_PER_NODE, MEM/NODE(--mem): $SLURM_MEM_PER_NODE"
-echo "HOST: $SLURM_SUBMIT_HOST @ $SLURM_JOB_ACCOUNT, CLUSTER: $SLURM_CLUSTER_NAME, Partition: $SLURM_JOB_PARTITION"
+echo "HOST: $SLURM_SUBMIT_HOST @ $SLURM_JOB_ACCOUNT, Partition: $SLURM_JOB_PARTITION"
 echo "JOBname: $SLURM_JOB_NAME, ID: $SLURM_JOB_ID, WRK_DIR: $SLURM_SUBMIT_DIR"
 echo "nNODES: $SLURM_NNODES, NODELIST: $SLURM_JOB_NODELIST, NODE_ID: $SLURM_NODEID"
 echo "nTASKS: $SLURM_NTASKS, TASKS/NODE: $SLURM_TASKS_PER_NODE, nPROCS: $SLURM_NPROCS"
@@ -29,7 +29,7 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
-echo "$SLURM_CLUSTER_NAME conda env from tykky module..."
+echo "$SLURM_SUBMIT_HOST conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/datasets/*.dump)
 ddir="/scratch/project_2004072/Nationalbiblioteket/preprocessed_dataframes_XX" # x58: 30-80 & 725-731
 python -u parallel_rest_api.py

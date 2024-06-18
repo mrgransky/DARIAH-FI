@@ -997,13 +997,13 @@ async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2
 			num_NLF_pages = await asyncio.gather(*tasks)
 		return num_NLF_pages
 
-def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked"):
+def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked", meaningless_lemmas_zero_nlf_pages_fname: str="meaningless_lemmas_zero_nlf"):
 	print(f"SciPy Sparse Matrix Generating from (detailed) user_df {type(df)} {df.shape}".center(160, " "))
 	user_token_df = get_unpacked_user_token_interest(
 		df=df,
 		usr_tk_unpacked_df_fname=df_unpacked_fname,
 	)
-	#######################################################################################################################
+	################################################################################################################################################################
 	print(f">>>> Apllying Extra Cleaning on RAW unpacked_df {type(user_token_df)} {user_token_df.shape} before generating SPM...")
 	ttime_start = time.time()
 	print(f"USERs (rows) with << ALL NonZero Cols >> : {np.sum(np.sum(user_token_df > 0, axis=1) > 0 )}/{user_token_df.shape[0]}")
@@ -1016,8 +1016,17 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	# Print the number of columns and their names for debugging
 	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
 	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
+
 	##################################################################################################################
-	# # TODO: remove cols with zero results of NLF (Timeout Session): # XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	# # TODO: remove cols with zero results of NLF
+	print(f">> Removing cols with zero nlf...")
+	try:
+		# load
+		zero_nlf_results_columns_to_be_removed = load_pickle(fpath=meaningless_lemmas_zero_nlf_pages_fname)
+	except Exception as e:
+		print(f"<!> ERROR: {e}")
+		pass
+		# apply
 	# batch_sz: int = min(len(user_token_df.columns), 200)
 	# print(
 	# 	f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages"
@@ -1034,12 +1043,12 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	# 	for num in TOKENs_num_NLF_pages_async 
 	# 	if num in [None, 0]
 	# ]
-	# print(
-	# 	f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n"
-	# 	f"{zero_nlf_results_columns_to_be_removed}"
-	# )
-	# user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed)
-	##################################################################################################################
+	print(
+		f"< {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed:\n"
+		# f"{zero_nlf_results_columns_to_be_removed}"
+	)
+	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed, errors='ignore')
+	################################################################################################################################################################
 
 	if user_token_df.isnull().values.any():
 		t=time.time()
