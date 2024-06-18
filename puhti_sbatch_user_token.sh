@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_trankit_additional_sparse
+#SBATCH --job-name=nikeQ_stanza_additional_sparse
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=108G
+#SBATCH --mem=101G
 #SBATCH --partition=large
-#SBATCH --time=00-05:00:00
+#SBATCH --time=00-01:00:00
 #SBATCH --array=400-731
 ##SBATCH --gres=gpu:v100:1
 
@@ -40,8 +40,8 @@ ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" # x58: 30-80
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 
-# LEMMATIZER="stanza"
-LEMMATIZER="trankit"
+LEMMATIZER="stanza"
+# LEMMATIZER="trankit"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 
