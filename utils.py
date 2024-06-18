@@ -1044,9 +1044,9 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	# 	if num in [None, 0]
 	# ]
 	print(
-		f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result to be removed (if any?!):\n"
+		f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result, to be removed (if any?!): "
+		f"{len(list(set(zero_nlf_results_columns_to_be_removed).intersection(user_token_df.columns)))}"
 		# f"{zero_nlf_results_columns_to_be_removed}"
-		f"{list(set(zero_nlf_results_columns_to_be_removed).intersection(user_token_df.columns))}"
 	)
 	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed, errors='ignore')
 	################################################################################################################################################################
