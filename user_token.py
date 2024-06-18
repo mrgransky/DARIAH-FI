@@ -49,7 +49,7 @@ print(device)
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
 
 # (Puhti) NEWLY created dataset with gz extension:
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1 --lmMethod 'trankit'
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1 --lmMethod 'stanza'
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
@@ -600,7 +600,7 @@ def main():
 			spm_rows_fname=sparse_matrix_users_names_fname,
 			spm_cols_fname=sparse_matrix_tokens_names_fname,
 			df_unpacked_fname=dataframe_user_token_fname,
-			meaningless_lemmas_zero_nlf_pages_fname=,
+			meaningless_lemmas_zero_nlf_pages_fname=lemmas_with_zero_nlf_pages_fname,
 		)
 	print(
 		f"spMtx {usr_tk_spm.shape} "
