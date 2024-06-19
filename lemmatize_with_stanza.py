@@ -279,6 +279,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA idrottsförbundet
+befallning kungörelser bestyrelsen anteckningslistor till årsledamöter uti bildningscirkeln finnas numera allenast hos handlanden thulin utan och boklådor allmänheten döde kommissarien
 myntgat
 < arbetets krävande natur ><
 21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 

@@ -1575,7 +1575,7 @@ def get_preprocessed_doc(dframe, preprocessed_docs_fpath: str="/path/2/prerocess
 		preprocessed_df = load_pickle(fpath=preprocessed_df_fpath)
 		preprocessed_docs = load_pickle(fpath=preprocessed_docs_fpath)
 	except Exception as e:
-		print(f"<!> preprocessed NOT found\n{e}")
+		print(f"<!> preprocessed file NOT found\n{e}")
 		preprocessed_df = dframe.copy()
 		
 		print(f"{f'Extracting Raw collection query phrase(s)':<80}", end="")
