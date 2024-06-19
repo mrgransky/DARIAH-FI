@@ -1044,11 +1044,14 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	# 	if num in [None, 0]
 	# ]
 	print(
-		f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > column(s) with zero page NLF result, to be removed (if any?!): "
+		f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > "
+		f"how many of current {len(user_token_df.columns)} column(s) with zero page NLF result, to be removed (if any?!): "
 		f"{len(list(set(zero_nlf_results_columns_to_be_removed).intersection(user_token_df.columns)))}"
 		# f"{zero_nlf_results_columns_to_be_removed}"
 	)
+	ttt = time.time()
 	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed, errors='ignore')
+	print(f"\t>>> returning {len(user_token_df.columns)} meaningfull TOKENs (column(s)) Elapsed_t: {time.time()-ttt:.2f} sec")
 	################################################################################################################################################################
 
 	if user_token_df.isnull().values.any():
