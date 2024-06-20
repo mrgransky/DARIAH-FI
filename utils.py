@@ -1012,7 +1012,7 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	user_token_df = user_token_df.dropna(axis=0, how='all') # drop rows with all cols zeros
 
 	# Identify columns (from meaningless lemmas txt file) to be removed:
-	print(f"Checking {len(user_token_df.columns)} column(s) if they are in meaningless lemmas txt file...")
+	print(f"Checking {len(user_token_df.columns)} column(s) if they are in {len(list(meaningless_lemmas))} meaningless lemmas txt file...")
 	meaningless_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
 	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
