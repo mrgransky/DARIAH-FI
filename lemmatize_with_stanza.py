@@ -279,7 +279,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 sVenskA idrottsförbundet
-befallning kungörelser bestyrelsen anteckningslistor till årsledamöter uti bildningscirkeln finnas numera allenast hos handlanden thulin utan och boklådor allmänheten döde kommissarien
+befallning kungörelser bestyrelsen anteckningslistor till årsledamöter rådsledamöter rådsledamot uti bildningscirkeln finnas numera allenast hos handlanden thulin utan och boklådor allmänheten döde kommissarien
 myntgat
 < arbetets krävande natur ><
 21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 
@@ -292,17 +292,17 @@ EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga Ti
 Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi,
 Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
 men tillika började han fundera på, vad sången kunde betyda.
-24 Mandag, kl. 5 e. m. i postförvaltaren O. Järnefelts i Nykarleby, hos K. F. Spolander slutredovisning (256, 257, 258.) 25 Tisdag, 
-kl. 1 e. m. i bagaren Otto Holmbergs, /\bo, å Alfred Holmströms advokatkontor, slutredovisning (260, 261, 262.) — kl. 6 e. m. i fabrikanten Alb. 
-Holmqvists, från Rimito i Åbo, a Alfred Holmströms advokatkontor slutredovisning (260, 261, 262., — i kantorn A. A. Nordlund, Wasa, a Sandelin & Bouchts, advokatkontor, 
-slutredovisning (264, 265, 266.) — i gårdsegar. Leander Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) — i gårdsegar. Jakob Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) — i gårdsegar. 
-Matts Westerlunds, Wasa, å d:o d:o d:o (264, 265, 266.) 26 Onsdag, kl. 1 e. m. i handl. Konst Granboms, Åbo, å Alfred Holmströms advokatkontor, slutredovisning (260, 261, 262.) 27 Torsdag, kl. 6 e. m. i handl. J. A. Sjöströms, 
 Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
-J. Wikmans i Jyväskylä å hotel Wahlgren, slutdividend (256, 257, 258.) — i skrädderi firman Georg Wikströms- Helsingfors, hos Gunnar Hjelt, dividend (261.)
 '''
 
 # orig_text = '''
 # SUomI
+# Lehden tilaus- ja jakopaikat kaupungissa: Kosken länsipuolella: I. F. Olanin kirjakaup. Kaup- ½ rawintoyhdist. kauppapuod., K. G. Liljeroos Paperiteht. piaat M. 
+# Granberg, H. Mäkinen, G. Lindderg, Julin, K. L Frans Örling ja I. Hagman Pumpuliteht. I. Granqwist, A. Helander, K. O. Wallin, V. Kandell, N. Kosken itäpuolella: 
+# Kauppiaat K. Öhman, I. G. IlRaittinen, I. A. Pietilä, H. Grönlund. S. Andersson, Ka- ) moni, A. Jaatinen, neiti Eklund, K. Ojanen, W. Salorolina Pulliainen, K. O. Renfors, B. 
+# Rosenqwist, Aug. ( nen, I. G. Estola, F. K. Brandthill. Katarina LindKatajisto, I. Öster, I. A. Lilja, O. Tuominen Makasiini- gren, B. E. Martin Sorinaht., B. E. Martin ja I. Grönkatu, 
+# Tampereen Rakennuskontt., 
+# Willelm. Hoppe, I. F. Fi- bergin leipäpuod. Uudenmaant. warr., wahtim. Lindström, lenius, I, Ceder, I. B. Lindroos, G. Linna, Työläisten I. B. Linden, hra K. F. Toiwonen Leweek.
 # Vaalit
 # Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
 # Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
