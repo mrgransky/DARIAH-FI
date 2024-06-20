@@ -48,7 +48,18 @@ with HiddenPrints():
 	with open('meaningless_lemmas.txt', 'r') as file_:
 		my_custom_stopwords=[line.strip() for line in file_]
 	STOPWORDS.extend(my_custom_stopwords)
-	# UNQ_STW = list(set(STOPWORDS))
+
+	############################ meaningless_tokens_with_zero_NLF_page ############################
+	try:
+		# load lemmas_with_zero_nlf_results:
+		vb = load_vocab(fname="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/meaningless_tokens_with_zero_NLF_page.gz")
+		lemmas_with_zero_nlf_pages = list(vb.keys())#[:12941]
+		STOPWORDS.extend(lemmas_with_zero_nlf_pages)
+	except Exception as e:
+		print(f"<!> {e}")
+		pass
+	############################ meaningless_tokens_with_zero_NLF_page ############################
+
 	UNQ_STW = set(STOPWORDS)
 
 # Function to create the MultilingualPipeline object if not already created

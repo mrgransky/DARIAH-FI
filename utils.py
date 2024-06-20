@@ -997,7 +997,8 @@ async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2
 			num_NLF_pages = await asyncio.gather(*tasks)
 		return num_NLF_pages
 
-def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked", meaningless_lemmas_zero_nlf_pages_fname: str="meaningless_lemmas_zero_nlf"):
+# def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked", meaningless_lemmas_zero_nlf_pages_fname: str="meaningless_lemmas_zero_nlf"):
+def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked"):
 	print(f"SciPy Sparse Matrix Generating from (detailed) user_df {type(df)} {df.shape}".center(160, " "))
 	user_token_df = get_unpacked_user_token_interest(
 		df=df,
@@ -1015,44 +1016,27 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	meaningless_columns_to_be_removed = [col for col in user_token_df.columns if col in meaningless_lemmas]
 	# Print the number of columns and their names for debugging
 	print(f"< {len(meaningless_columns_to_be_removed)} > column(s) to be removed from meaningless lemmas:\n{meaningless_columns_to_be_removed}")
-	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed)
+	user_token_df = user_token_df.drop(columns=meaningless_columns_to_be_removed, errors='ignore')
+	# ##################################################################################################################
 
-	##################################################################################################################
-	# # TODO: remove cols with zero results of NLF
-	print(f">> Removing cols with zero nlf...")
-	try:
-		# load
-		zero_nlf_results_columns_to_be_removed = load_pickle(fpath=meaningless_lemmas_zero_nlf_pages_fname)
-	except Exception as e:
-		print(f"<!> ERROR: {e}")
-		pass
-		# apply
-	# batch_sz: int = min(len(user_token_df.columns), 200)
-	# print(
-	# 	f"Checking {len(user_token_df.columns)} column(s) for ZERO NLF result pages"
-	# 	f" with batch_size: {batch_sz} [might take a while]..."
-	# )
-	# TOKENs_num_NLF_pages_async = asyncio.run(
-	# 	get_num_NLF_pages_asynchronous_run(
-	# 		TOKENs_list=user_token_df.columns, 
-	# 		batch_size=batch_sz,
+	# ##################################################################################################################
+	# # # TODO: remove cols with zero results of NLF
+	# print(f">> Removing cols with zero nlf...")
+	# try:
+	# 	zero_nlf_results_columns_to_be_removed = load_pickle(fpath=meaningless_lemmas_zero_nlf_pages_fname)
+	# 	print(
+	# 		f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > "
+	# 		f"how many of current {len(user_token_df.columns)} column(s) with zero page NLF result, to be removed (if any?!): "
+	# 		f"{len(list(set(zero_nlf_results_columns_to_be_removed).intersection(user_token_df.columns)))}"
+	# 		# f"{zero_nlf_results_columns_to_be_removed}"
 	# 	)
-	# )
-	# zero_nlf_results_columns_to_be_removed = [
-	# 	word 
-	# 	for num in TOKENs_num_NLF_pages_async 
-	# 	if num in [None, 0]
-	# ]
-	print(
-		f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > "
-		f"how many of current {len(user_token_df.columns)} column(s) with zero page NLF result, to be removed (if any?!): "
-		f"{len(list(set(zero_nlf_results_columns_to_be_removed).intersection(user_token_df.columns)))}"
-		# f"{zero_nlf_results_columns_to_be_removed}"
-	)
-	ttt = time.time()
-	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed, errors='ignore')
-	print(f"\t>>> returning {len(user_token_df.columns)} meaningfull TOKENs (column(s)) Elapsed_t: {time.time()-ttt:.2f} sec")
-	################################################################################################################################################################
+	# 	ttt = time.time()
+	# 	user_token_df = user_token_df.drop(columns=zero_nlf_results_columns_to_be_removed, errors='ignore')
+	# 	print(f"\t>>> returning {len(user_token_df.columns)} meaningfull TOKENs (column(s)) Elapsed_t: {time.time()-ttt:.2f} sec")
+	# except Exception as e:
+	# 	print(f"<!> ERROR: {e}")
+	# 	pass
+	# ################################################################################################################################################################
 
 	if user_token_df.isnull().values.any():
 		t=time.time()

@@ -600,7 +600,7 @@ def main():
 			spm_rows_fname=sparse_matrix_users_names_fname,
 			spm_cols_fname=sparse_matrix_tokens_names_fname,
 			df_unpacked_fname=dataframe_user_token_fname,
-			meaningless_lemmas_zero_nlf_pages_fname=lemmas_with_zero_nlf_pages_fname,
+			# meaningless_lemmas_zero_nlf_pages_fname=lemmas_with_zero_nlf_pages_fname,
 		)
 	print(
 		f"spMtx {usr_tk_spm.shape} "
