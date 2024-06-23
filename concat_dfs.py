@@ -815,24 +815,17 @@ def run():
 	)
 	# assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files)==len(sp_mtx_concat_BoWs), f"<!> Error: 4 SPMs files (+1 BoWs) have different length!"
 	assert len(sp_mtx_files)==len(sp_mtx_rows_files)==len(sp_mtx_cols_files), f"<!> Error: 3 SPMs files have different length!"
-	if (len(sp_mtx_files)==0 or len(sp_mtx_rows_files)==0 or len(sp_mtx_cols_files)==0):
-		print(f"<!> Error! no SPMs found!")
-		return
+	# if (
+	# 	len(sp_mtx_files)==0 
+	# 	or len(sp_mtx_rows_files)==0 
+	# 	or len(sp_mtx_cols_files)==0
+	# ):
+	# 	print(f"<!> Error! no SPMs found!")
+	# 	return
 
 	global fprefix, RES_DIR
 	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs_lm_{args.lmMethod}"
-	# fprefix=f"concatinated_732_SPMs" # temporary
-
-	RES_DIR=make_result_dir(infile=fprefix)
-	# print(fprefix, RES_DIR)
-	
-	# for idx, (sp_mtx, sp_mtx_rows, sp_mtx_cols) in enumerate( zip(sp_mtx_files, sp_mtx_rows_files, sp_mtx_cols_files) ):
-	# 	print(f"SPMs[{idx+1}/{len(sp_mtx_files)}]")
-	# 	print(sp_mtx)
-	# 	print(sp_mtx_rows)
-	# 	print(sp_mtx_cols)
-	# 	print("-"*180)
-	
+	RES_DIR = make_result_dir(infile=fprefix)	
 	try:
 		concat_spm_U_x_T = load_pickle(
 			fpath=glob.glob( args.dfsPath+'/'+f'{fprefix}'+'_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz')[0]
