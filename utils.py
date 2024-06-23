@@ -738,7 +738,7 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	with open(fname, mode="r", encoding="utf-8") as fr:
 		vb = json.load(fr)
 	fsize_dump = os.stat( fname ).st_size / 1e6
-	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(vb)} | {fsize_dump:.2f} MB".center(120, " "))
+	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(vb)} | {fsize_dump:.3f} MB".center(120, " "))
 	return vb
 
 def save_pickle(pkl, fname:str=""):
@@ -769,7 +769,7 @@ def load_pickle(fpath:str="unknown",):
 		pkl = pd.read_pickle(fpath)
 	elpt = time.time()-st_t
 	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loaded in: {elpt:.3f} s | {type(pkl)} | {fsize:.2f} MB".center(130, " "))
+	print(f"Loaded in: {elpt:.2f} s | {type(pkl)} | {fsize:.3f} MB".center(130, " "))
 	return pkl
 
 def get_parsed_url_parameters(inp_url):
@@ -1271,12 +1271,19 @@ def get_user_token_spm_concat(SPMs, save_dir: str="saving_dir", prefix_fname: st
 		matrix, rownames, colnames=val
 		ROWs.extend(rownames)
 		COLs.extend(colnames)
-	print(f"(ROWs, COLs): ({len(ROWs)}, {len(COLs)})")
+	print(f"(ROWs {type(ROWs)}, COLs {type(COLs)}): ({len(ROWs)}, {len(COLs)})")
 
 	#rownames_all,row_reverseindex=np.unique(ROWs,return_inverse=True)# ip1, ip11, ip2, ip24, ip3, ...
-	_,ii,row_reverseindex=np.unique([int(x[2:]) for x in ROWs],return_index=True,return_inverse=True)# ip1, ip2, ip3, ip11, ip24, ...
-	rownames_all=np.array(ROWs)[ii]
-	colnames_all,col_reverseindex=np.unique(COLs,return_inverse=True)
+	_, ii, row_reverseindex = np.unique(
+		[int(x[2:]) for x in ROWs],
+		return_index=True,
+		return_inverse=True,
+	)# ip1, ip2, ip3, ip11, ip24, ...
+	rownames_all = np.array(ROWs)[ii]
+	colnames_all, col_reverseindex = np.unique(
+		COLs,
+		return_inverse=True,
+	)
 
 	newmatrix=lil_matrix((len(rownames_all), len(colnames_all)), dtype=np.float32)
 	# print(newmatrix.shape)

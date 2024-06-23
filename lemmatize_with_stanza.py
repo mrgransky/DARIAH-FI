@@ -277,38 +277,38 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 # Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
 # '''
 
-orig_text = '''
-sVenskA idrottsförbundet
-befallning kungörelser bestyrelsen anteckningslistor till årsledamöter rådsledamöter rådsledamot uti bildningscirkeln finnas numera allenast hos handlanden thulin utan och boklådor allmänheten döde kommissarien
-myntgat
-< arbetets krävande natur ><
-21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 
-kl. 6 e. m. i handl. A. Argillanders, Wiborg, hos J. Hallenberg, i:sta dividend. (83, 84, 85). 23 Fredag, kl. 6 e. m. i A. 
-Halonens och Petter Rautiainens, Wiborg, hos J. Hallenberg, slutredovisning och slutdividend (83, 84, 85). — kl. 6 e. m. i handl. Otto Hartmans, 
-Tammerfors, hos W. Palander, slutredovisning (104, 105, 106). — kl. 7 e. m. i Hugo W. Rönnqvists, d:o, hos d:o, d:o. — kl. 8 e. nr. i E. A. Hildens, d:o, hos d:o, d:o.
-En yngling gick med dröjande steg uppför backen mot kyrkan , som stolt reste sin höga spira mot himlen.
-Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna,
-EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi,
-Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
-men tillika började han fundera på, vad sången kunde betyda.
-Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
-'''
-
 # orig_text = '''
-# SUomI
-# Lehden tilaus- ja jakopaikat kaupungissa: Kosken länsipuolella: I. F. Olanin kirjakaup. Kaup- ½ rawintoyhdist. kauppapuod., K. G. Liljeroos Paperiteht. piaat M. 
-# Granberg, H. Mäkinen, G. Lindderg, Julin, K. L Frans Örling ja I. Hagman Pumpuliteht. I. Granqwist, A. Helander, K. O. Wallin, V. Kandell, N. Kosken itäpuolella: 
-# Kauppiaat K. Öhman, I. G. IlRaittinen, I. A. Pietilä, H. Grönlund. S. Andersson, Ka- ) moni, A. Jaatinen, neiti Eklund, K. Ojanen, W. Salorolina Pulliainen, K. O. Renfors, B. 
-# Rosenqwist, Aug. ( nen, I. G. Estola, F. K. Brandthill. Katarina LindKatajisto, I. Öster, I. A. Lilja, O. Tuominen Makasiini- gren, B. E. Martin Sorinaht., B. E. Martin ja I. Grönkatu, 
-# Tampereen Rakennuskontt., 
-# Willelm. Hoppe, I. F. Fi- bergin leipäpuod. Uudenmaant. warr., wahtim. Lindström, lenius, I, Ceder, I. B. Lindroos, G. Linna, Työläisten I. B. Linden, hra K. F. Toiwonen Leweek.
-# Vaalit
-# Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
-# Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
-# Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
-# huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+# sVenskA idrottsförbundet
+# befallning kungörelser bestyrelsen anteckningslistor till årsledamöter rådsledamöter rådsledamot uti bildningscirkeln finnas numera allenast hos handlanden thulin utan och boklådor allmänheten döde kommissarien
+# myntgat
+# < arbetets krävande natur ><
+# 21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 
+# kl. 6 e. m. i handl. A. Argillanders, Wiborg, hos J. Hallenberg, i:sta dividend. (83, 84, 85). 23 Fredag, kl. 6 e. m. i A. 
+# Halonens och Petter Rautiainens, Wiborg, hos J. Hallenberg, slutredovisning och slutdividend (83, 84, 85). — kl. 6 e. m. i handl. Otto Hartmans, 
+# Tammerfors, hos W. Palander, slutredovisning (104, 105, 106). — kl. 7 e. m. i Hugo W. Rönnqvists, d:o, hos d:o, d:o. — kl. 8 e. nr. i E. A. Hildens, d:o, hos d:o, d:o.
+# En yngling gick med dröjande steg uppför backen mot kyrkan , som stolt reste sin höga spira mot himlen.
+# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna,
+# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
+# Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi,
+# Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
+# men tillika började han fundera på, vad sången kunde betyda.
+# Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
 # '''
+
+orig_text = '''
+SUomI
+Lehden tilaus- ja jakopaikat kaupungissa: Kosken länsipuolella: I. F. Olanin kirjakaup. Kaup- ½ rawintoyhdist. kauppapuod., K. G. Liljeroos Paperiteht. piaat M. 
+Granberg, H. Mäkinen, G. Lindderg, Julin, K. L Frans Örling ja I. Hagman Pumpuliteht. I. Granqwist, A. Helander, K. O. Wallin, V. Kandell, N. Kosken itäpuolella: 
+Kauppiaat K. Öhman, I. G. IlRaittinen, I. A. Pietilä, H. Grönlund. S. Andersson, Ka- ) moni, A. Jaatinen, neiti Eklund, K. Ojanen, W. Salorolina Pulliainen, K. O. Renfors, B. 
+Rosenqwist, Aug. ( nen, I. G. Estola, F. K. Brandthill. Katarina LindKatajisto, I. Öster, I. A. Lilja, O. Tuominen Makasiini- gren, B. E. Martin Sorinaht., B. E. Martin ja I. Grönkatu, 
+Tampereen Rakennuskontt., 
+Willelm. Hoppe, I. F. Fi- bergin leipäpuod. Uudenmaant. warr., wahtim. Lindström, lenius, I, Ceder, I. B. Lindroos, G. Linna, Työläisten I. B. Linden, hra K. F. Toiwonen Leweek.
+Vaalit
+Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
+Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
+Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
+huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
