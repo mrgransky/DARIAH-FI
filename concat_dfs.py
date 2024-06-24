@@ -824,7 +824,8 @@ def run():
 		return
 
 	global fprefix, RES_DIR
-	fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs_lm_{args.lmMethod}"
+	# fprefix=f"concatinated_{len(sp_mtx_files)}_SPMs_lm_{args.lmMethod}"
+	fprefix=f"concatinated_732_SPMs_lm_{args.lmMethod}" # temporary!
 	RES_DIR = make_result_dir(infile=fprefix)	
 	try:
 		concat_spm_U_x_T = load_pickle(
