@@ -297,7 +297,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
-hissia
+Pian jen jälleen lun hän palasi yliopistosta tuoli hänen isänsä. Hemerin seuralunta ei mielestään moinut paremmin lunnioittaa ralaStetun pastorinsa muistoa, 
+luin malitjemalla pojan hänen jeuraajaalseen. 
+18 p. toulol. 1727 otti hän maStaan luisun ja pian jen jälleen alotti hän jaarnaiviran, ainoastaan 21 muoden Marthana. Hän saarnasi silloin, tulen hän itse sanoo,
 eristettyä kontaktikiskoa ja joka kerrokselle, minkä kohdalla hissin on pysähdyttävä, kontaktikappale, 
 jotka kontaktikiskot...sellainen järjestely, että joka kerrokseen, jonka kohdalla hissin on pysähdyttävä, 
 kuuluu kontaktilla varustettu virran...vahvistajat ovat asetetut kerroksia, joiden kohdalla hissin on pysähdyttävä, 
