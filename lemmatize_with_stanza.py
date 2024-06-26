@@ -297,6 +297,11 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
+hissia
+eristettyä kontaktikiskoa ja joka kerrokselle, minkä kohdalla hissin on pysähdyttävä, kontaktikappale, 
+jotka kontaktikiskot...sellainen järjestely, että joka kerrokseen, jonka kohdalla hissin on pysähdyttävä, 
+kuuluu kontaktilla varustettu virran...vahvistajat ovat asetetut kerroksia, joiden kohdalla hissin on pysähdyttävä, 
+vastaaville suhteellisille etäisyyksille...
 Lehden tilaus- ja jakopaikat kaupungissa: Kosken länsipuolella: I. F. Olanin kirjakaup. Kaup- ½ rawintoyhdist. kauppapuod., K. G. Liljeroos Paperiteht. piaat M. 
 Granberg, H. Mäkinen, G. Lindderg, Julin, K. L Frans Örling ja I. Hagman Pumpuliteht. I. Granqwist, A. Helander, K. O. Wallin, V. Kandell, N. Kosken itäpuolella: 
 Kauppiaat K. Öhman, I. G. IlRaittinen, I. A. Pietilä, H. Grönlund. S. Andersson, Ka- ) moni, A. Jaatinen, neiti Eklund, K. Ojanen, W. Salorolina Pulliainen, K. O. Renfors, B. 
