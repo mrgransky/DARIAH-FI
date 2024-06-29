@@ -6,12 +6,12 @@
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks=0
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=88G
-#SBATCH --partition=small
+#SBATCH --partition=large
 #SBATCH --time=00-01:00:00
-#SBATCH --array=0-399
+#SBATCH --array=400-731
 ###SBATCH --gres=gpu:v100:1
 
 #### SBATCH --array=39,48-49
