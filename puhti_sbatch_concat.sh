@@ -1,17 +1,17 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=spMtx_x732_concat_stanza_gpu
+#SBATCH --job-name=spMtx_x732_concat_stanza
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%N_%j.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
-#SBATCH --nodes=2
-#SBATCH --ntasks=2
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=373G
-#SBATCH --partition=gpu
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=489G
+#SBATCH --partition=hugemem
 #SBATCH --time=03-00:00:00
-#SBATCH --gres=gpu:v100:1
+####SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
