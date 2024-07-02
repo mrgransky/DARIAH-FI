@@ -9711,6 +9711,8 @@ tersdagen
 käräj
 feministie
 feminismiä
+feminismin
+feminismillä
 invalidi
 sentim
 romane
@@ -9860,7 +9862,6 @@ hitlers
 hitlerin
 sisäministeriä
 naiskara
-kommuniste
 internationalki
 internationalji
 amsterdaminternad
@@ -10658,6 +10659,9 @@ kommissionsmöt
 kommittémöt
 kommunalmöt
 kommunistmöt
+kommuniste
+kommunistin
+kommunistista
 kommunmöt
 kompanimöt
 kompletteringsmöt
@@ -11985,3 +11989,4 @@ aviborgs
 mörtmarks
 cityn
 cityssä
+missions
