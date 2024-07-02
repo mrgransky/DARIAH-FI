@@ -297,24 +297,7 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 orig_text = '''
 SUomI
-Pian jen jälleen lun hän palasi yliopistosta tuoli hänen isänsä. Hemerin seuralunta ei mielestään moinut paremmin lunnioittaa ralaStetun pastorinsa muistoa, 
-luin malitjemalla pojan hänen jeuraajaalseen. 
-18 p. toulol. 1727 otti hän maStaan luisun ja pian jen jälleen alotti hän jaarnaiviran, ainoastaan 21 muoden Marthana. Hän saarnasi silloin, tulen hän itse sanoo,
-eristettyä kontaktikiskoa ja joka kerrokselle, minkä kohdalla hissin on pysähdyttävä, kontaktikappale, 
-jotka kontaktikiskot...sellainen järjestely, että joka kerrokseen, jonka kohdalla hissin on pysähdyttävä, 
-kuuluu kontaktilla varustettu virran...vahvistajat ovat asetetut kerroksia, joiden kohdalla hissin on pysähdyttävä, 
-vastaaville suhteellisille etäisyyksille...
-Lehden tilaus- ja jakopaikat kaupungissa: Kosken länsipuolella: I. F. Olanin kirjakaup. Kaup- ½ rawintoyhdist. kauppapuod., K. G. Liljeroos Paperiteht. piaat M. 
-Granberg, H. Mäkinen, G. Lindderg, Julin, K. L Frans Örling ja I. Hagman Pumpuliteht. I. Granqwist, A. Helander, K. O. Wallin, V. Kandell, N. Kosken itäpuolella: 
-Kauppiaat K. Öhman, I. G. IlRaittinen, I. A. Pietilä, H. Grönlund. S. Andersson, Ka- ) moni, A. Jaatinen, neiti Eklund, K. Ojanen, W. Salorolina Pulliainen, K. O. Renfors, B. 
-Rosenqwist, Aug. ( nen, I. G. Estola, F. K. Brandthill. Katarina LindKatajisto, I. Öster, I. A. Lilja, O. Tuominen Makasiini- gren, B. E. Martin Sorinaht., B. E. Martin ja I. Grönkatu, 
-Tampereen Rakennuskontt., 
-Willelm. Hoppe, I. F. Fi- bergin leipäpuod. Uudenmaant. warr., wahtim. Lindström, lenius, I, Ceder, I. B. Lindroos, G. Linna, Työläisten I. B. Linden, hra K. F. Toiwonen Leweek.
-Vaalit
-Huonekaluteollisuudelle ei funktionalismilla ollut käytännöllisiä syitä silmälläpitäen paljoakaan annettavaa. 
-Jos pidämme funktionalismia lähipitäen samana kuin käytännöllisyys ja järkevä, voimme väittää, että vanha suomalainen pirtin pöytä ja ettonelepoon mukavat pirtin pitkät penkit ovat yhä maalaistalon elämää silmälläpitäen ainehankintaan, valmistukseen ja kestävyyteen nähden maalaistalon funktionalistisimmat huonekalut. 
-Hugo Anselm, työm., Työm.k. 5 as. 2. Selma, rouva, Työmiesk. 5 as. 2, Ko. Rahkonen, Aino Aili, rouva, Soimak. 22 as. 3. Aleksander, asioitsija, 
-huutajaksi piti olla kemijärven höyrysaha seuraa vassa tehdään selkoa siitä kuka
+Suomen Sosialidemokraatti
 '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
