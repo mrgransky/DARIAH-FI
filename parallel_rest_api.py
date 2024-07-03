@@ -217,7 +217,7 @@ for s in range( total_num_batches ):
 
 print(
 	len(meaningless_tokens_zero_NLF_pages), 
-	meaningless_tokens_zero_NLF_pages[:100],
+	meaningless_tokens_zero_NLF_pages[:150],
 )
 save_pickle(
 	pkl=meaningless_tokens_zero_NLF_pages, 
