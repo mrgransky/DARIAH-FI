@@ -45,9 +45,6 @@ print(device)
 # how to run (local Ubuntu 22.04.4 LTS):
 # python user_token.py --inputDF ~/datasets/Nationalbiblioteket/NLF_DATASET/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log.gz --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1 --lmMethod 'trankit'
 
-# how to run (Puhti):
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/datasets/nikeY.docworks.lib.helsinki.fi_access_log.07_02_2021.log.dump --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1
-
 # (Puhti) NEWLY created dataset with gz extension:
 # python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1 --lmMethod 'stanza'
 
@@ -586,7 +583,11 @@ def main():
 	sparse_matrix_users_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_rows.gz")
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
 	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
-	lemmas_with_zero_nlf_pages_fname = os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
+	# lemmas_with_zero_nlf_pages_fname = os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
+	lemmas_with_zero_nlf_pages_fname = glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_page.gz')[0]
+	# os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
+	print(lemmas_with_zero_nlf_pages_fname)
+	
 	try:
 		usr_tk_spm = load_pickle(fpath=sparse_matrix_fname)
 		usr_tk_spm_usrNames = load_pickle(fpath=sparse_matrix_users_names_fname)

@@ -220,8 +220,8 @@ print(
 	meaningless_tokens_zero_NLF_pages[:150],
 )
 save_pickle(
-	pkl=meaningless_tokens_zero_NLF_pages, 
-	fname=os.path.join(dataset_fpath, f"meaningless_tokens_with_zero_NLF_page.gz"),
+	pkl=meaningless_tokens_zero_NLF_pages,
+	fname=os.path.join(dataset_fpath, f"tk_x_{len(meaningless_tokens_zero_NLF_pages)}_with_zero_NLF_page.gz"),
 )
 
 if TOKENs_num_NLF_pages:

@@ -1021,7 +1021,7 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	##################################################################################################################
 	# # TODO: remove cols with zero results of NLF
 	try:
-		print(f">> Removing cols with zero nlf...")
+		print(f">> Removing columns with <ZERO> NLF page(s)...")
 		zero_nlf_results_columns_to_be_removed = load_pickle(fpath=meaningless_lemmas_zero_nlf_pages_fname)
 		print(
 			f"Checking out of < {len(zero_nlf_results_columns_to_be_removed)} > "
