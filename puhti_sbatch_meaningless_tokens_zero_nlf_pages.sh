@@ -9,8 +9,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=6G
-#SBATCH --partition=interactive
-#SBATCH --time=07-00:00:00
+#SBATCH --partition=longrun
+#SBATCH --time=14-00:00:00
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
@@ -30,7 +30,8 @@ echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 
 echo "$SLURM_SUBMIT_HOST conda env from tykky module..."
-vocab_fpath="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_spMtx_x_8702764_BoWs.json"
+# vocab_fpath="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_spMtx_x_8702764_BoWs.json" # big BoWs
+vocab_fpath="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_spMtx_x_6567120_BoWs.json" # small BoWs
 
 python -u parallel_rest_api.py --vbfpath $vocab_fpath
 
