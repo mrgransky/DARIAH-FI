@@ -184,7 +184,7 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 
 # asynchronous implementation: efficient for LARGE sized lists (>10K):
 prev_s = 0
-slices = int(3e+3)
+slices = int(2e+3)
 meaningless_tokens_zero_NLF_pages = list()
 total_num_batches = int(len(MY_LIST)/slices)+1
 for s in range( total_num_batches ):
@@ -221,7 +221,7 @@ print(
 )
 save_pickle(
 	pkl=meaningless_tokens_zero_NLF_pages,
-	fname=os.path.join(dataset_fpath, f"tk_x_{len(meaningless_tokens_zero_NLF_pages)}_with_zero_NLF_page.gz"),
+	fname=os.path.join(dataset_fpath, f"tk_x_{len(meaningless_tokens_zero_NLF_pages)}_with_zero_NLF_pages.gz"),
 )
 
 if TOKENs_num_NLF_pages:
