@@ -241,7 +241,7 @@ num_TOKENS_NONE_NLF_PAGES = np.inf
 qu_lst = QUERY_LIST
 total_tokens_with_zero_nlf_pages = list()
 while num_TOKENS_NONE_NLF_PAGES > 0:
-	current_tokens_with_zero_nlf_pages, current_tokens_with_none_nlf_pages = get_asynch_zero_nlf_pages(MY_LIST=qu_lst, slices=int(9e+3))
+	current_tokens_with_zero_nlf_pages, current_tokens_with_none_nlf_pages = get_asynch_zero_nlf_pages(MY_LIST=qu_lst, slices=int(5e+3))
 	total_tokens_with_zero_nlf_pages.extend(current_tokens_with_zero_nlf_pages)
 	qu_lst = current_tokens_with_none_nlf_pages
 	num_TOKENS_NONE_NLF_PAGES = len(current_tokens_with_none_nlf_pages)
