@@ -33,7 +33,7 @@ echo "$SLURM_SUBMIT_HOST conda env from tykky module..."
 vocab_fpath="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_spMtx_x_9777748_BoWs.json" # big BoWs
 # vocab_fpath="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_shrinked_spMtx_x_6567120_BoWs.json" # small BoWs
 
-python -u parallel_rest_api.py --vbfpath $vocab_fpath
+python -u parallel_rest_api.py --vbfpath $vocab_fpath --numslices 15000
 
 done_txt="$user finished Slurm job: `date`"
 echo -e "${done_txt//?/$ch}\n${done_txt}\n${done_txt//?/$ch}"

@@ -3,6 +3,9 @@ from utils import *
 # run using nohup:
 # nohup python -u parallel_rest_api.py > rest_api_all_length_batch.out 2>&1 &
 
+# run code:
+# python parallel_rest_api.py --vbfpath ~/datasets/Nationalbiblioteket/dataframes_x732/concatinated_732_SPMs_lm_stanza_spMtx_x_9777748_BoWs.json --numslices 1000
+
 # import numpy as np
 # import urllib
 # import time
@@ -27,12 +30,19 @@ parser = argparse.ArgumentParser(
 	epilog='Developed by Farid Alijani',
 )
 parser.add_argument(
-	'-vb',
 	'--vbfpath',
 	type=str, 
 	required=True,
 	help='Path to vocab.json',
 )
+
+parser.add_argument(
+	'--numslices',
+	type=int, 
+	default=600,
+	help='Number of Slices to batch large list (def: 100)',
+)
+
 args = parser.parse_args()
 
 vb = load_vocab(fname=args.vbfpath)
@@ -84,7 +94,7 @@ TOKENs_num_NLF_pages = None
 # QUERY_LIST = ['osake', 'agentuuri', 'huoltotili', 'ahvionsaari', 'hyvittää', 'grundlagsutskottet', 'osuuskassa', 'varioja', 'palovakuutuslaitos', 'huoltokonttori', 'maakuntai', 'antolainausehto', 'osuuskauppaväki', 'pankkiliike', 'korko', 'luotto', 'siltasaarenko', 'jordbruksmaskiner', 'uskela', 'rahalaitos', 'laivapäällystö', 'sinisalo', 'kansallis', 'kassa', 'vakavarainen', 'talletustili', 'pulikko', 'käyttäjä', 'vienti', 'osakeyhtiö', 'ottolaina', 'automa', 'keskus', 'slags', 'föreslag', 'siirtokansa', 'vakuutusvirkailija', 'laululintu', 'osuustoimintakuoro', 'vuorimiehenkatu', 'kpllä', 'pääomatili', 'maksupäivä', 'täydellinen', 'hallitus', 'helsinki', 'vuosi', 'tampere', 'pikkulintu', 'säästövara', 'fabritius', 'tarkoitus', 'vallila', 'redskap', 'veloittaa', 'pääoma', 'säästöpankki', 'siirtomaatavara', 'puolivuosittain', 'seutu', 'töölö', 'velkakirjasaatava', 'hartikainen', 'haliko', 'toiminta', 'lounaissuomi', 'luiskahtaa', 'juhani', 'sähköosoite', 'toimia', 'keskuslainarahasto', 'tehtävä', 'lisäys', 'hukkua', 'kuiti', 'puristus', 'kokous', 'häkki', 'teatteri', 'perustaa', 'yleishyödyllinen', 'pohjola', 'tarvike', 'postitse', 'osuuskassanhoitaja', 'henkivakuutus', 'kerääminen', 'haarakonttori', 'konttori', 'sanottavasti', 'saada', 'honkala', 'karjala', 'täydelleen', 'yrjönkatu', 'liikeapulainen', 'sijoittaminen', 'mikonkatu', 'edullisesti', 'esittää', 'johtaja', 'jäsenmäärä', 'fimbenne', 'toimintataipaleetta', 'sopiva', 'maksu', 'kuulumiset', 'ompelu', 'tilinpito', 'shekinkäyttöoikeus', 'suorittaa', 'pitää', 'gaspe', 'vakuuskysymys', 'isotupa', 'harjoittaa', 'kertomusvuonna', 'säänöinen', 'jäsenkassa', 'maalaisapteekki', 'hmiti', 'hanki', 'huolto', 'maanviljelijä', 'sanomalehtimies', 'keskusliitto', 'velkakirja', 'esitelmä', 'turku', 'vankka', 'vaatia', 'lunastaa', 'eilen', 'selänne', 'markka', 'eloma', 'asiakas', 'perustaja', 'lakka', 'päälle', 'aleksanterinkatu', 'murto', 'tunma', 'agentuuriliike', 'maksaa', 'laivanselvitys', 'kevätkokous', 'osuuskassi', 'luona', 'jäsen', 'hajapiirre', 'suuri', 'jäsenmaksu', 'luennoima', 'muinaishistoria', 'nivelkipu', 'liike', 'tilinpäätös', 'tällöin', 'kallio', 'matta', 'luotontarvi', 'juusto', 'osuustoimintaperiaate', 'lisääntyki', 'tulla', 'naurunremahdus', 'toteuttaminen', 'viitanen', 'soini', 'illanvietto', 'talousalue', 'lehtimäki', 'tavallisesti', 'tenttinen', 'kiinteä', 'turva', 'myöntää', 'lointaa', 'omari', 'osuuskassamies', 'päättää', 'edullinen', 'ottaa', 'ansiokkainen', 'kuulua', 'länsi', 'koskemintaa', 'maito', 'keskustella', 'myydä', 'juokseva', 'parhaiten', 'juhtaa', 'silloin', 'uudistushanke', 'huolinta', 'loppusumma', 'kamppi', 'osuuskassaväki', 'kehitys', 'välittää', 'ylitarkastaja', 'lähettää', 'kurssi', 'rangelli', 'elämänrohkeus', 'tuomari', 'järjestö', 'perustamispäivä', 'kulua', 'pakkari', 'osuuskassaliikki', 'santaoja', 'hoito', 'halikko', 'viime', 'hedelmä', 'toimihenkilö', 'kania', 'reumatismi', 'valita', 'henkilötyyppi', 'ryhtyä', 'jämsä', 'dahlbergi', 'taara', 'puheenjohtaja', 'johtokunta', 'taitella', 'tilintarkastaja', 'tuomela', 'sahlstedt', 'liitto', 'mainita', 'käyttää', 'avoinna', 'toistaiseksi', 'luonnollinen', 'eteläranta', 'tapahtuma', 'lasipalatsi', 'sähinen', 'hyväksyä', 'tuure', 'täysi', 'käräjä', 'päivä', 'lisätä', 'seurata', 'hinta', 'meijeri', 'liikemuoto', 'jakaa', 'tikka', 'ilmoittaa', 'antaa', 'koskeminen', 'hoitokulu', 'alkaa', 'valitsemi', 'kerta', 'piiri', 'nitoa', 'osasto', 'omistaja', 'yhteys', 'määrä', 'rahtaus', 'savonlinta', 'lainata', 'erovuoro', 'osoittaa', 'suoruus', 'esitys', 'erikoinen', 'kuten', 'hanna', 'yksityinen', 'laajentaminen', 'lindegre', 'asianomainen', 'paljon', 'jalka', 'hermokivu', 'laine', 'savonlinna', 'erottaja', 'seuraintalo', 'vuosiylijäämä', 'vuosikertomus', 'edellinen', 'kunnallislehti', 'kannatusmaksu', 'sääminki', 'aarne', 'historiikka', 'nopeasti', 'lukea', 'sihteeri', 'kiinteäkorkoinen', 'yliopistonkatu', 'tanssi', 'käsitellä', 'pirstoutua', 'unettomuus', 'sikatalous', 'maatalous', 'munuainen', 'mahdollinen', 'edelleen', 'tärkeä', 'kruunuhaka', 'kangas', 'kosmeettinen', 'isännöitsijä', 'talletuspaikka', 'odottaa', 'kuorittua', 'lyhyttavara', 'nykytärkeä', 'yleisö', 'hämeentie', 'seura', 'paikka', 'pysyvästi', 'hoitaa', 'osuuskunta', 'tuoda', 'kasso', 'bulevardi', 'iskias', 'alusia', 'tapaan', 'tarkkailija', 'kunta', 'togali', 'tyydyttää', 'vaikuttaa', 'osuusteurastamo', 'toimi', 'alennus', 'jokinen', 'käytyä', 'uudelleen', 'perustamiskirja', 'lähteä', 'varajäsen', 'maksuttomasti', 'paras', 'toimintapiiri', 'metsäalue', 'kerimäki', 'perniö', 'nuorisoseuralainen', 'puoli', 'virtsahappo', 'viinamäki', 'tukkuliike', 'kihti', 'duetto', 'ranki', 'keskikorko', 'numero', 'lopuksi', 'valittu', 'kiikala', 'konttorikone', 'yolanda', 'järjestää', 'alennusmyynti', 'ohjelma', 'vararahasto', 'paikkakunta', 'osuusmaksu', 'pertteli', 'näytelmä', 'kankea', 'tabletti', 'joutua', 'kuolla', 'seuraava', 'kirjapaino', 'kaitila', 'piiritarkastaja', 'opettaja', 'tilivuosi', 'miime', 'autotarvike', 'luennoida', 'lämminhenkinen', 'autonjäähdyttäjätehdas', 'kuulla', 'seppälä', 'päänsärky', 'tarkastaja', 'pyytää', 'suuruinen', 'suunnitella', 'tarkkailu', 'entinen', 'teollisuustarvike', 'osanottaja', 'historiikki', 'netti', 'rautakauppatavaro', 'astua', 'tekstiilitavara', 'räjähtää', 'rahasto', 'tehdä', 'ruumis', 'keskihinta', 'erittää', 'lausunto', 'juhlavieras', 'liikevaihto', 'merkkitapaus', 'tilapäisesti', 'lausua', 'solmiotehdas', 'onnistuneesti', 'kansantanhu', 'merkityksellinen', 'pyyntö', 'alunperin', 'resepti', 'toimittaa', 'sikala', 'ammatillinen', 'paavo', 'toimitalo', 'kehittyä', 'käsinetehdas', 'vapaa', 'loimaa', 'osuuskauppa', 'valtio', 'luennoitsija', 'huomattava', 'kuisma', 'makeistehdas', 'vastata', 'lääke', 'viikko', 'päättyä', 'soitin', 'onnistua', 'pietarsaari', 'juosta', 'jäädä', 'pajula', 'joten', 'tänään', 'käytäntö', 'muuttaa', 'teknokem', 'jatkua', 'laajakantoinen', 'sitten', 'penni', 'laaja', 'rahamäärä', 'obstbaum', 'lieventää', 'kutomateollisuustuste', 'tamperelainen', 'vekseli', 'kiintoisa', 'nasta', 'joukko', 'vaaraton', 'arkipäivä', 'laulu', 'maatalousnäyttely', 'loppu', 'hannu', 'kysymys', 'avata', 'kansa', 'suunta', 'ravintola', 'mieltymys', 'kaava', 'kolkontaipale', 'laukansaari', 'alkuaika', 'pienviljelijä', 'lausunta', 'leipomo', 'ostaa', 'valaiseva', 'vahingollinen', 'osuustoiminta', 'juhlapäivä', 'apteeki']
 
 # # large:
-QUERY_LIST = list(vb.keys())#[:29900]
+QUERY_LIST = list(vb.keys())[:37690]
 print(len(QUERY_LIST))
 
 async def get_recommendation_num_NLF_pages_async(session, REC_TK: str="pollution"):
@@ -185,7 +195,7 @@ def get_num_NLF_pages(INPUT_QUERY: str="query", INPUT_TOKEN: str="token"):
 # print(len(TOKENs_num_NLF_pages_async), TOKENs_num_NLF_pages_async)
 
 # asynchronous implementation: efficient for LARGE sized lists (>10K):
-def get_asynch_zero_nlf_pages(MY_LIST: List, slices: int=100):
+def get_zero_nlf_pages_asynch_fcn(MY_LIST: List, slices: int=100):
 	prev_s = 0
 	tk_zero_nlf_pg = list()
 	tk_NONEs_nlf_pg = list()
@@ -226,31 +236,71 @@ def get_asynch_zero_nlf_pages(MY_LIST: List, slices: int=100):
 		print("-"*180)
 	return tk_zero_nlf_pg, tk_NONEs_nlf_pg
 
+def get_all_unique_elements(*args: List[Union[int, float, str]]) -> List[Union[int, float, str]]:
+	"""
+	Returns a list containing all unique elements from an arbitrary number of input lists.
+
+	Args:
+			*args: A variable number of lists containing elements.
+
+	Returns:
+			A list containing all unique elements from the input lists.
+	"""
+	# Combine all elements from input lists into a single set
+	all_elements = set(element for arg in args for element in arg)
+	return list(all_elements)
 ##########################################################################################################
-# nones are not taken care of!
-# tokens_with_zero_nlf_pages, tokens_with_none_nlf_pages = get_asynch_zero_nlf_pages(MY_LIST=QUERY_LIST)
+# nones will not be taken care of!
+# tokens_with_zero_nlf_pages, tokens_with_none_nlf_pages = get_zero_nlf_pages_asynch_fcn(MY_LIST=QUERY_LIST)
 # print(
 # 	len(total_tokens_with_zero_nlf_pages), 
 # 	total_tokens_with_zero_nlf_pages[:150],
 # )
 ##########################################################################################################
 
-# TODO: send NONEs to REST API over and over until disappear!:
+# Send NONEs to REST API over and over until disappear!:
 print(f">> while loop to get rid of Nones...")
 num_TOKENS_NONE_NLF_PAGES = np.inf
 qu_lst = QUERY_LIST
 total_tokens_with_zero_nlf_pages = list()
 while num_TOKENS_NONE_NLF_PAGES > 0:
-	current_tokens_with_zero_nlf_pages, current_tokens_with_none_nlf_pages = get_asynch_zero_nlf_pages(MY_LIST=qu_lst, slices=int(5e+3))
+	current_tokens_with_zero_nlf_pages, current_tokens_with_none_nlf_pages = get_zero_nlf_pages_asynch_fcn(MY_LIST=qu_lst, slices=args.numslices)
 	total_tokens_with_zero_nlf_pages.extend(current_tokens_with_zero_nlf_pages)
 	qu_lst = current_tokens_with_none_nlf_pages
 	num_TOKENS_NONE_NLF_PAGES = len(current_tokens_with_none_nlf_pages)
-	print(f"Found: {num_TOKENS_NONE_NLF_PAGES} tokens which resulted in None!".center(150, " "))
+	print(f"Found {num_TOKENS_NONE_NLF_PAGES} tokens which resulted in None!".center(150, " "))
+
 
 print(
 	len(total_tokens_with_zero_nlf_pages), 
 	total_tokens_with_zero_nlf_pages[:150],
 )
+
+# TODO: if some meaningless already available, extend and union:
+avail_zero_nlf_pages_list = list()
+avail_0_nlf_pages_filepath_list = get_files(pth=dataset_fpath+'/'+'tk_x_*_with_zero_NLF_pages.gz')
+if len(avail_0_nlf_pages_filepath_list) > 0:
+	print(f"Found {len(avail_0_nlf_pages_filepath_list)} {type(avail_0_nlf_pages_filepath_list)} list(s) of zero NLF page files".center(100, "-"))
+	for fpath in avail_0_nlf_pages_filepath_list:
+		print(fpath)
+		lst = load_pickle(fpath=fpath)
+		avail_zero_nlf_pages_list.extend(lst)
+
+	print(f"Found {len(avail_zero_nlf_pages_list)} avail_zero_nlf_pages_list: {avail_zero_nlf_pages_list[:10]}")
+	duplicate_counts_avail_0_nlf_pages = Counter(avail_zero_nlf_pages_list)
+	# print(counts)
+	total_duplicates_avail_0_nlf_pages = sum(duplicate_counts_avail_0_nlf_pages>1 for duplicate_counts_avail_0_nlf_pages in duplicate_counts_avail_0_nlf_pages.values())
+	print(f"\t\t>>>> duplicates [available zero nlf pages list]: {total_duplicates_avail_0_nlf_pages}")
+
+	total_tokens_with_zero_nlf_pages = get_all_unique_elements(total_tokens_with_zero_nlf_pages, avail_zero_nlf_pages_list)
+	print(f"Found {len(total_tokens_with_zero_nlf_pages)} tot_zero_nlf_pages_list: {total_tokens_with_zero_nlf_pages[:10]}")
+
+	duplicate_counts_total_tokens_with_zero_nlf_pages = Counter(total_tokens_with_zero_nlf_pages)
+	# print(counts)
+	total_duplicates_tot_0_nlf_pages = sum(duplicate_counts_total_tokens_with_zero_nlf_pages>1 for duplicate_counts_total_tokens_with_zero_nlf_pages in duplicate_counts_total_tokens_with_zero_nlf_pages.values())
+	print(f"\t\t>>>> duplicates [< TOTAL > zero nlf pages list]: {total_duplicates_tot_0_nlf_pages} <<<<=== MUST BE ZERO ===>>>>")
+
+	print(f"#"*100)
 
 save_pickle(
 	pkl=total_tokens_with_zero_nlf_pages,

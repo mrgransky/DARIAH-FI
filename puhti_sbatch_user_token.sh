@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_additional_sparse_trankit
+#SBATCH --job-name=nikeQ_additional_sparse_stanza
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -39,8 +39,8 @@ files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz) # newly sc
 ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" # x58: 30-80 & 725-731
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
-# LEMMATIZER="stanza"
-LEMMATIZER="trankit"
+LEMMATIZER="stanza"
+# LEMMATIZER="trankit"
 
 echo "Query[$SLURM_ARRAY_TASK_ID]: ${files[$SLURM_ARRAY_TASK_ID]}"
 

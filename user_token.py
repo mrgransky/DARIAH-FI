@@ -584,6 +584,7 @@ def main():
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
 	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
 	# lemmas_with_zero_nlf_pages_fname = os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
+	# TODO: [0] MUST be replaced by [-1] to consider the biggest!!!
 	lemmas_with_zero_nlf_pages_fname = glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')[0]
 	# os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
 	print(lemmas_with_zero_nlf_pages_fname)

@@ -37,7 +37,7 @@ from numba import cuda
 
 from natsort import natsorted
 from collections import Counter, defaultdict
-from typing import List, Set, Dict, Tuple
+from typing import List, Set, Dict, Tuple, Union
 
 from scipy.sparse import csr_matrix, coo_matrix, lil_matrix, linalg
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
@@ -1211,9 +1211,8 @@ def get_df_files(fpath: str="MUST_BE_DEFINED"):
 	print(f"Found {len(df_files)} Pandas DataFrame {type(df_files)} files")
 	return df_files
 
-def get_spm_files(fpath: str="MUST_BE_DEFINED"):
-	spm_files = natsorted( glob.glob( fpath ) )
-	# print(f"Found {len(spm_files)} Sparse Matrices {type(spm_files)} files:")
+def get_files(pth: str="MUST_BE_DEFINED"):
+	spm_files = natsorted( glob.glob( pth ) )
 	return spm_files
 
 def get_idfed_users_norm(spMtx, idf_vec, exponent: float=1.0, save_dir: str="savin_dir", prefix_fname: str="file_prefix"):
