@@ -12497,3 +12497,5 @@ rautateillä
 kontrollileimaama
 kukkanenko
 kukkonenko
+bukmuskl
+bukma

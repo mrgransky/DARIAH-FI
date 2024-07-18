@@ -21,7 +21,7 @@ args = parser.parse_args()
 
 fprefix: str = "FILE_PREFIXname_TBR"
 
-# how to run:
+# how to run (Puhti):
 # python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "feodalismi" --lmMethod "stanza"
 
 # in Pouta:
