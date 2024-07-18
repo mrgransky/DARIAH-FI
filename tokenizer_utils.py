@@ -159,7 +159,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				(wlm:=vw.lemma)
 				and 5 <= len(wlm) <= 43
 				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
-				# and wlm not re.search(, wlm)
+				and not re.search(r"(ille|llä|illa|ssa|ssä|lta|ltä|nens)$", wlm) # TODO: checking...
 				and vw.upos not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
