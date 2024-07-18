@@ -583,12 +583,16 @@ def main():
 	sparse_matrix_users_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_rows.gz")
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
 	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
-	# lemmas_with_zero_nlf_pages_fname = os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
+
 	# TODO: [0] MUST be replaced by [-1] to consider the biggest!!!
-	lemmas_with_zero_nlf_pages_fname = glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')[0]
+	print(f"TODO: fix for zero nlf pages".center(100, " "))
+	print(glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz'))
+	# lemmas_with_zero_nlf_pages_fname = glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')[0]
+	lemmas_with_zero_nlf_pages_fname = glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')[-1]
 	# os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
 	print(lemmas_with_zero_nlf_pages_fname)
-	
+	print("#"*100)
+
 	try:
 		usr_tk_spm = load_pickle(fpath=sparse_matrix_fname)
 		usr_tk_spm_usrNames = load_pickle(fpath=sparse_matrix_users_names_fname)

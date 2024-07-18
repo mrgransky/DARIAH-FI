@@ -46,8 +46,8 @@ with HiddenPrints():
 	]
 	STOPWORDS = nltk.corpus.stopwords.words(nltk.corpus.stopwords.fileids())
 	with open('meaningless_lemmas.txt', 'r') as file_:
-		my_custom_stopwords=[line.strip() for line in file_]
-	STOPWORDS.extend(my_custom_stopwords)
+		customized_meaningless_lemmas=[line.strip().lower() for line in file_]
+	STOPWORDS.extend(customized_meaningless_lemmas)
 
 	############################ meaningless_tokens_with_zero_NLF_page ############################
 	try:
@@ -158,9 +158,8 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 			if (
 				(wlm:=vw.lemma)
 				and 5 <= len(wlm) <= 43
-				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # original stanza xx with no problems xx!
-				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # does not exclude words containing digits!
-				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # excludes words containing digits!
+				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
+				# and wlm not re.search(, wlm)
 				and vw.upos not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
@@ -214,8 +213,7 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 			if (
 				(wlm:=vw.get("lemma"))
 				and 5 <= len(wlm) <= 43
-				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # does not exclude words containing digits! 
-				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits! 
+				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
 				and vw.get("upos") not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
