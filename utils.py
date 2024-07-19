@@ -1021,13 +1021,16 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 	# ##################################################################################################################
 # TODO: re.search(r"(ille|illä|ssa|ssä|lta|ltä|nens|gatans|gatan|grens|sons|stads|stadens)$", wlm)
 	print(f"Checking {len(user_token_df.columns)} column(s) if they have certain suffixes...")
-	columns_with_suffixes_2_be_removed = [
+	columns_with_certain_suffixes_2_be_removed = [
 		col 
 		for col in user_token_df.columns 
 		if re.search(r"(ille|illä|ssa|ssä|lta|ltä|nens|gatans|gatan|grens|sons|stads|stadens)$", col)
 	]
-	print(f"< {len(columns_with_suffixes_2_be_removed)} > column(s) to be removed from meaningless lemmas:\n{columns_with_suffixes_2_be_removed}")
-	user_token_df = user_token_df.drop(columns=columns_with_suffixes_2_be_removed, errors='ignore')
+	print(
+		f"< {len(columns_with_certain_suffixes_2_be_removed)} > column(s) with certain suffixes to be removed:\n"
+		f"{columns_with_certain_suffixes_2_be_removed}"
+	)
+	user_token_df = user_token_df.drop(columns=columns_with_certain_suffixes_2_be_removed, errors='ignore')
 	##################################################################################################################
 	# Remove cols with zero results of NLF
 	try:
