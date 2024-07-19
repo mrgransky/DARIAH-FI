@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_XY_without_suffixes
+#SBATCH --job-name=nikeQ_additional_sparse_stanza
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
@@ -10,8 +10,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=70G
 #SBATCH --partition=gpu
-#SBATCH --time=03-00:00:00
-#SBATCH --array=730-731
+#SBATCH --time=00-01:00:00
+#SBATCH --array=0-399
 #SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
@@ -31,7 +31,7 @@ echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 echo "$SLURM_SUBMIT_HOST conda env from tykky module..."
 files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz) # newly scraped NLF data (17.04.2024)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_XY" # x58: 30-80 & 725-731
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" # x58: 30-80 & 725-731
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 LEMMATIZER="stanza"
