@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=70G
 #SBATCH --partition=gpu
-#SBATCH --time=00-01:00:00
+#SBATCH --time=03-00:00:00
 #SBATCH --array=0-399
 #SBATCH --gres=gpu:v100:1
 
