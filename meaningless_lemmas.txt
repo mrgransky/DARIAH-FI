@@ -12590,3 +12590,6 @@ gammelstan
 halkeilles
 rödberge
 forsbergin
+kadulla
+kadulta
+kadulle
