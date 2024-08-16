@@ -8567,6 +8567,10 @@ tirsdag
 tuesday
 tonsdag
 keskiviikko
+viikko
+kuukausi
+vuosi
+vousi
 onsdag
 wednesday
 torstai
@@ -12593,3 +12597,10 @@ forsbergin
 kadulla
 kadulta
 kadulle
+naisa
+kvinnor
+naist
+funktionalismille
+funktionalismien
+funktionalismikin
+dolla
