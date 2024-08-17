@@ -9,10 +9,10 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=90G
-#SBATCH --partition=small
+#SBATCH --partition=gpu
 #SBATCH --time=00-01:00:00
-#SBATCH --array=0-399
-###SBATCH --gres=gpu:v100:1
+#SBATCH --array=400-732
+#SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
