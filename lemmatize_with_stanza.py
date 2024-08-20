@@ -143,16 +143,16 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		# print(type(all_))
-		# print(all_)
-		# print("#"*100)
+		print(type(all_))
+		print(all_)
+		print("#"*100)
 
-		# for i, v in enumerate(all_.sentences):
-		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
-		# 	for ii, vv in enumerate(v.words):
-		# 		# print(ii, vv.text, vv.lemma, vv.upos)
-		# 		print(f"<>")
-		# 	print('-'*50)
+		for i, v in enumerate(all_.sentences):
+			print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
+			for ii, vv in enumerate(v.words):
+				# print(ii, vv.text, vv.lemma, vv.upos)
+				print(f"<>")
+			print('-'*50)
 
 		lemmas_list = [
 			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
@@ -162,7 +162,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 				(wlm:=vw.lemma)
 				and 5 <= len(wlm) <= 43
 				# and not re.search(r'\b(?:\w*(\w)(\1{2,})\w*)\b|<eos>|<EOS>|<sos>|<SOS>|<UNK>|\$|\^|<unk>|\s+', wlm) 
-				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\^|\s+', wlm) # excludes words containing digits! 
+				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
 				and vw.upos not in useless_upos_tags 
 				and wlm not in UNQ_STW
 				# and get_nlf_pages(INPUT_QUERY=wlm) # time consuming approach like for loop!
@@ -298,6 +298,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 orig_text = '''
 SUomI
 Suomen Sosialidemokraatti
+kolonia
+kolonier
+kolonin
 '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
