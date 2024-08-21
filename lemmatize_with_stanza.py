@@ -147,12 +147,12 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		print(all_)
 		print("#"*100)
 
-		for i, v in enumerate(all_.sentences):
-			print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
-			for ii, vv in enumerate(v.words):
-				# print(ii, vv.text, vv.lemma, vv.upos)
-				print(f"<>")
-			print('-'*50)
+		# for i, v in enumerate(all_.sentences):
+		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
+		# 	for ii, vv in enumerate(v.words):
+		# 		# print(ii, vv.text, vv.lemma, vv.upos)
+		# 		print(f"<>")
+		# 	print('-'*50)
 
 		lemmas_list = [
 			re.sub(r'[";&#<>_\-\+\^\.\$\[\]]', '', wlm.lower())
@@ -279,19 +279,9 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 
 # orig_text = '''
 # sVenskA idrottsförbundet
-# befallning kungörelser bestyrelsen anteckningslistor till årsledamöter rådsledamöter rådsledamot uti bildningscirkeln finnas numera allenast hos handlanden thulin utan och boklådor allmänheten döde kommissarien
+# vårtermin
 # myntgat
 # < arbetets krävande natur ><
-# 21 Onsdag, kl. 2-e. m. i afl. öfverinspektorn Alex. Strengs, Helsingfors, å Dittmar & Indrenius' advokatkontor, slutredovisning (102, 103, io4), 22 Torsdag, 
-# kl. 6 e. m. i handl. A. Argillanders, Wiborg, hos J. Hallenberg, i:sta dividend. (83, 84, 85). 23 Fredag, kl. 6 e. m. i A. 
-# Halonens och Petter Rautiainens, Wiborg, hos J. Hallenberg, slutredovisning och slutdividend (83, 84, 85). — kl. 6 e. m. i handl. Otto Hartmans, 
-# Tammerfors, hos W. Palander, slutredovisning (104, 105, 106). — kl. 7 e. m. i Hugo W. Rönnqvists, d:o, hos d:o, d:o. — kl. 8 e. nr. i E. A. Hildens, d:o, hos d:o, d:o.
-# En yngling gick med dröjande steg uppför backen mot kyrkan , som stolt reste sin höga spira mot himlen.
-# Den svenska »krigsbibliotekarier» tycks kunna sin sak Posten innehas f. n. märkligt nog av en kvinna,
-# EnChriftcm <em>Flyttning</em> ur Tiden i Evigheten och dirpl följande SaTiga TilftJnd
-# Medan han gick uppför kyrkbacken, hade han tänkt på sången och gnolat på dess melodi,
-# Då han satte sig i kyrkbänken på sin vanliga plats, voro tankarna ännu sysselsatta med den, 
-# men tillika började han fundera på, vad sången kunde betyda.
 # Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
 # '''
 
@@ -299,8 +289,10 @@ orig_text = '''
 SUomI
 Suomen Sosialidemokraatti
 kolonia
+naisasia
 kolonier
 kolonin
+naisasian
 '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
