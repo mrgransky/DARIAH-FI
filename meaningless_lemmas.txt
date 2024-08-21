@@ -14253,3 +14253,5 @@ oista
 hulkolu
 hallinte
 uskot
+esikuv
+notto
