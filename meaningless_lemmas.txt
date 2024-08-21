@@ -14250,3 +14250,5 @@ tallqva
 jeesu
 uutis
 oista
+hulkolu
+hallinte
