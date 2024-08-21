@@ -215,6 +215,7 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				(wlm:=vw.get("lemma"))
 				and 5 <= len(wlm) <= 43
 				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
+				and not re.search(r"(nens|kaupungissa|kaupungista|kaupungit|gatans|bergs|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", wlm) # safer...
 				and vw.get("upos") not in useless_upos_tags 
 				and wlm not in UNQ_STW
 			)
