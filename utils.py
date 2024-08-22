@@ -1025,7 +1025,10 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 		col 
 		for col in user_token_df.columns
 		# if re.search(r"(ille|illä|ssa|ssä|lta|ltä|nens|gatans|gatan|grens|sons|stads|stadens)$", col)
-		if re.search(r"(nens|kaupungissa|kaupungista|kaupungit|gatans|bergs|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", col)
+		if re.search(
+			r"(nens|skolan|skolans|skillnaden|erna|ernas|arna|arnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|regeringen|regeringa|gens|regeringene|regeringar|regeringarna|regeringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
+			col
+		)
 	]
 	print(
 		f"< {len(columns_with_certain_suffixes_2_be_removed)} > column(s) with certain suffixes to be removed:\n"
