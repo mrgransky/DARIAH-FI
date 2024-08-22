@@ -161,7 +161,7 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
 				# and not re.search(r"(ille|illä|ssa|ssä|lta|ltä|nens|gatans|gatan|grens|sons|stads|stadens)$", wlm) # TODO: checking...
 				and not re.search(
-					r"(nens|dagar|dagars|dagen|dagens|dagens|daga|agaren|agarna|agarens|agares|borga|borgs|borge|dott|skolan|skolans|skillnaden|erna|ernas|garna|garnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|ingen|ingana|regeringa|ingaina|ingania|ingens|ingene|ingar|ingarna|ingarnas|ringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
+					r"(nens|manista|manille|manilla|manill|manilta|manilt|mania|mans|manin|dagar|dagars|dagen|dagens|dagens|daga|agaren|agarna|agarens|agares|borga|borgs|borge|dott|skolan|skolans|skillnaden|erna|ernas|garna|garnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|ingen|ingana|regeringa|ingaina|ingania|ingens|ingene|ingar|ingarna|ingarnas|ringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
 					wlm
 				) # safer...
 				and vw.upos not in useless_upos_tags
@@ -219,7 +219,7 @@ def trankit_lemmatizer(docs: str="This is a <NORMAL> document!", device=None):
 				and 5 <= len(wlm) <= 43
 				and not re.search(r'\b(?=\d|\w)(?:\w*(?<!\b)(\w)(\1{2,})\w*|\d+\w*|\w*\d\w*)\b|<ros>|<eos>|/|<EOS>|<sos>|<SOS>|<UNK>|<unk>|\?|\^|\s+', wlm) # excludes words containing digits!
 				and not re.search(
-					r"(nens|dagar|dagars|dagen|dagens|dagens|daga|agaren|agarna|agarens|agares|borga|borgs|borge|dott|skolan|skolans|skillnaden|erna|ernas|garna|garnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|ingen|ingana|regeringa|ingaina|ingania|ingens|ingene|ingar|ingarna|ingarnas|ringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
+					r"(nens|manista|manille|manilla|manill|manilta|manilt|mania|mans|manin|dagar|dagars|dagen|dagens|dagens|daga|agaren|agarna|agarens|agares|borga|borgs|borge|dott|skolan|skolans|skillnaden|erna|ernas|garna|garnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|ingen|ingana|regeringa|ingaina|ingania|ingens|ingene|ingar|ingarna|ingarnas|ringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
 					wlm
 				) # safer...
 				and vw.get("upos") not in useless_upos_tags 
