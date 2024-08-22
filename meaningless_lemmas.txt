@@ -14331,3 +14331,4 @@ anmälningsavgif
 antydningarn
 arbetsgivareförenin
 avelsförenin
+behandlingea
