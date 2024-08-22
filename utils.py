@@ -1026,7 +1026,7 @@ def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", s
 		for col in user_token_df.columns
 		# if re.search(r"(ille|illä|ssa|ssä|lta|ltä|nens|gatans|gatan|grens|sons|stads|stadens)$", col)
 		if re.search(
-			r"(nens|manista|manille|manilla|manill|manilta|manilt|mania|mans|manin|dagar|dagars|dagen|dagens|dagens|daga|agaren|agarna|agarens|agares|borga|borgs|borge|dott|skolan|skolans|skillnaden|erna|ernas|garna|garnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|ingen|ingana|regeringa|ingaina|ingania|ingens|ingene|ingar|ingarna|ingarnas|ringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
+			r"(nens|hyrans|hyran|huset|husets|hemmet|hemmets|hems|ters|handl|hamns|hamna|kvinn|pojkens|pojkar|pojkars|kvinnan|kvinnans|kvinnor|litets|manista|manille|manilla|manill|manilta|manilt|mania|mans|manin|dagar|dagars|dagen|dagens|dagens|daga|agaren|agarna|agarens|agares|borga|borgs|borge|dotters|dott|skolan|skolans|skillnaden|erna|ernas|garna|garnas|skillnader|heten|heter|hetens|avgiften|avgiftens|avgifter|kaupungissa|kaupungista|kaupungit|gatans|bergs|stationen|stationens|statio|stationa|stations|stationer|stationernas|stationerne|ingen|ingana|regeringa|ingaina|ingania|ingens|ingene|ingar|ingarna|ingarnas|ringarne|systems|principen|principer|bergin|gatan|grens|sons|lunde|lunda|lunds|lundille|lundilta|lundilla|lundiin|lundia|lundin|lundissa|holms|holmens|holme|stads|stadens)$", 
 			col
 		)
 	]
