@@ -1761,7 +1761,12 @@ def get_compressed_concatenated_path(base_path: str) -> str:
 def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="destination/path/to/comp_dir"):
 	print(f"Compressing file {os.path.join(save_dir, compressed_fname)}".center(150, "-"))
 	t0 = time.time()
-	concat_files = [fname for fname in os.listdir(save_dir) if fname.startswith("concatinated") and fname.endswith(".gz")]
+	concat_files = [
+		fname 
+		for fname in os.listdir(save_dir) 
+		if fname.startswith("concatinated") 
+		# and fname.endswith(".gz")
+	]
 	compressed_fpath = os.path.join(save_dir, compressed_fname)
 	with tarfile.open(compressed_fpath, 'w:gz') as tfile:
 		for file_ in concat_files:
