@@ -9972,7 +9972,6 @@ alfre
 alfredsso
 andersso
 anderssom
-anderssons
 andesso
 andreasso
 aronsso
@@ -11176,7 +11175,6 @@ ylistaron
 työväke
 työväkeä
 Karlssonia
-karlssons
 holmströmil
 hitlerin
 afganistanin
@@ -14410,3 +14408,8 @@ badhusgat
 söndagfredag
 söndagfrån
 söndagg
+messag
+messaga
+minlä
+propagandan
+specim
