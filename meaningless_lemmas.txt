@@ -14303,7 +14303,6 @@ telegrafstadg
 telegrafstadga
 telegrafstatione
 telegrafstationerne
-telegrafstations
 telegrafsti
 telegrafstil
 tautien
@@ -14413,3 +14412,6 @@ messaga
 minlä
 propagandan
 specim
+consul
+stridsd
+stridsc
