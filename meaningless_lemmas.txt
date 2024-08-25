@@ -14427,3 +14427,7 @@ parga
 lösegendomm
 kostna
 byggna
+motors
+motorsegl
+privatba
+sparba
