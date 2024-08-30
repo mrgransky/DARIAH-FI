@@ -92,10 +92,11 @@ def get_BoWs(preprocessed_docs, saveDIR: str="DIR", fprefix: str="fname_prefix",
 	print(f"#"*100)
 
 	tfidf_vec_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_vec.gz")
-	tfidf_rf_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
+	#TODO: tfidf_matrix must be changed to corpus_matrix
+	corpus_matrix_fpath = os.path.join(saveDIR, f"{fprefix}_lemmaMethod_{lm}_tfidf_matrix.gz")
 
 	try:
-		tfidf_matrix = load_pickle(fpath=tfidf_rf_matrix_fpath)
+		tfidf_matrix = load_pickle(fpath=corpus_matrix_fpath)
 		tfidf_vec = load_pickle(fpath=tfidf_vec_fpath)
 	except Exception as e:
 		print(f"<!> TFIDF does not exist\n{e}")
@@ -136,9 +137,11 @@ def get_BoWs(preprocessed_docs, saveDIR: str="DIR", fprefix: str="fname_prefix",
 		tfidf_matrix = tfidf_vec.fit_transform(raw_documents=preprocessed_docs)
 		print(f"Elapsed_t: {time.time()-st_t:.2f} s".center(80, " "))
 		save_pickle(pkl=tfidf_vec, fname=tfidf_vec_fpath)
-		save_pickle(pkl=tfidf_matrix, fname=tfidf_rf_matrix_fpath)
+		save_pickle(pkl=tfidf_matrix, fname=corpus_matrix_fpath)
 	
-	print(f"Creating [sorted] BoWs: (token: idx) TFID: {type(tfidf_matrix)} {tfidf_matrix.dtype} {tfidf_matrix.shape}")
+	print(
+		f"Creating [sorted] BoWs: (token: idx) "
+		f"TFID: {type(tfidf_matrix)} {tfidf_matrix.dtype} {tfidf_matrix.shape}")
 	
 	# BOWs = dict( sorted( tfidf_vec.vocabulary_.items(), key=lambda x:x[1], reverse=False ) ) # ascending
 	BOWs = {k: int(v) for k, v in sorted(tfidf_vec.vocabulary_.items(), key=lambda item: item[1])} # ascending
