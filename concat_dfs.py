@@ -39,14 +39,15 @@ def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 def sum_all_tokens_appearance_in_vb(dframe, weights: List[float], vb: Dict[str, int]):
 	w_qu, w_hw_sn, w_sn, w_hw_cnt, w_pt_cnt, w_cnt = weights
 	updated_vocab = dict.fromkeys(vb.keys(), 0.0)
-	print(f"{dframe.user_ip}: "
-				f"qu: {len(dframe.qu_tokens)}, "
-				f"snHW: {len(dframe.snippets_hw_token)}, "
-				f"sn: {len(dframe.snippets_token)}, "
-				f"cntHW: {len(dframe.nwp_content_hw_token)}, "
-				f"cntPT: {len(dframe.nwp_content_pt_token)}, "
-				f"cnt: {len(dframe.nwp_content_lemma_all)}".center(130, " ")
-			)
+	print(
+		f"{dframe.user_ip}: "
+		f"qu: {len(dframe.qu_tokens)}, "
+		f"snHW: {len(dframe.snippets_hw_token)}, "
+		f"sn: {len(dframe.snippets_token)}, "
+		f"cntHW: {len(dframe.nwp_content_hw_token)}, "
+		f"cntPT: {len(dframe.nwp_content_pt_token)}, "
+		f"cnt: {len(dframe.nwp_content_lemma_all)}".center(130, " ")
+	)
 	for i, q_tk in enumerate(dframe.qu_tokens): # [qtk1, qtk2, qtk3, ...]
 		#print(f"QU[{i}]: {q_tk:<25}w: {w_qu} | vb_exist? {updated_vocab.get(q_tk) is not None} ")
 		if updated_vocab.get(q_tk) is not None:
