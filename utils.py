@@ -24,8 +24,8 @@ import shutil
 import aiohttp
 import asyncio
 import random
-
 import requests
+
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from pandas.api.types import is_datetime64_any_dtype
