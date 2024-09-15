@@ -9591,6 +9591,7 @@ väärre
 hämeenli
 hämeenläin
 hameenlinna
+hameenli
 studentsang
 tielihti
 iwerskela
@@ -14481,3 +14482,17 @@ quebecin
 quebeciini
 quebecs
 joutsen
+loiselle
+loinenko
+iisalma
+iisalme
+hangon
+lucialle
+lucias
+lucian
+lucies
+fester
+tulitikkutehta
+sunia
+tulitikkutehda
+kommunistis
