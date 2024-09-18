@@ -143,9 +143,9 @@ def stanza_lemmatizer(docs: str="This is a <NORMAL> sentence in document."):
 		# print(f">> smp elasped_t: {time.time()-smp_t:.3f} sec")
 
 		all_ = smp(docs) # <class 'stanza.models.common.doc.Document'> convertable to Dict
-		print(type(all_))
-		print(all_)
-		print("#"*100)
+		# print(type(all_))
+		# print(all_)
+		# print("#"*100)
 
 		# for i, v in enumerate(all_.sentences):
 		# 	print(i, v, type(v)) # shows <class 'stanza.models.common.doc.Sentence'> entire dict of id, text, lemma, upos, ...
@@ -293,6 +293,10 @@ naisasia
 kolonier
 kolonin
 naisasian
+Hän käänsi suomeksi erään merkkiteoksen uskonpuhdistuksen historian alalta ja julkaisi uudestaan suomentamansa luterilaisen kirkkomme tunnustuskirjat sekä useita Martti Lutherin kirjoja. Latinankieli, kuten yleensä klassilliset kielet, oli vainajalle erityisen harrastuksen esineenä. Monen monet latinankieliset kirjeet, sähkösanomat ja tervehdykset tovereille ovat siitä todistuksena. Mainittakoon tämän yhteydessä vielä Hedbergin valmistama ja julkaisema ansiokas kreikkalais-suomalainen Uuden Testamentin sanakirja, joka etupäässä lienee tuottanutkin hänelle teologian kunniatohtorin arvon vuoden 1907 tohtorinvihkijäisissä.
+Saarnamiehenä Hedberg oli etevä ja suosittu, edustaen sellaisenakin horjumatonta evankelisluterilaisen kirkkomme tunnustuksellista kantaa. Loppuijälläänkin vielä Hecjberg Turun tuomiorovastina saarnasi ahkerasti, eikä vain omassa seurakunnassaan, vaan oli hän, kuten leikillisesti itse sanoi, koko tuomiorovastikuntansa papiston yhteinen saarnaapulainen, tarjoutuen saarnoillaan auttamaan milloin missäkin apua kaivattiin.
+Maamme perustuslakitaistelussa Hedberg seisoi voimainsa ja mahdollisuuksien mukaan kaiken aikaa horjumatta niiden kanssa ja puolella, jotka pelkäämättä nousivat maatamme ja kansaamme vastaan tähdättyjä sortotoimenpiteitä vastustamaan. Parhaansa mukaan hän pyysi samanlaista henkeä istuttaa tovereihinsakin, missä ikinä hän liikkui. Keskustelut valtiopäivillä niiltä ajoilta ja vainajan esiintyminen sortovuosina Savonlinnan tuomiokapitulissa ovat todistuksena hänen horjumattomasta uskollisuudestaan maamme lainalaista järjestystä kohtaan.
+Hedbergin konservatiivisesta katsantokannasta johtui, että hän varsin vastenmielisesti suostui yksikamarisen eduskunnan luomiseen.
 '''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
