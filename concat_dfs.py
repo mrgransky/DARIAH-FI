@@ -800,7 +800,7 @@ def get_users_tokens_ddf():
 
 def run():
 	print(f"Running {__file__} with {args.lmMethod.upper()} lemmatizer & {nb.get_num_threads()} CPU core(s)")
-	make_folder(folder_name=args.dfsPath)
+	os.makedirs(args.dfsPath, exist_ok=True) # make_folder(folder_name=args.dfsPath)
 
 	sp_mtx_concat_BoWs = get_files(pth=args.dfsPath+'/'+'nike*_'+args.lmMethod+'_*_vocabs.json')
 	sp_mtx_files = get_files(pth=args.dfsPath+'/'+'nike*_'+args.lmMethod+'*_SPM_UxT.gz')

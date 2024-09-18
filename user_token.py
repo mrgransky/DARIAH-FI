@@ -521,7 +521,7 @@ def main():
 	if args.maxNumFeat:
 		args.outDIR+=f"_maxNumFeatures_{args.maxNumFeat}"
 	
-	os.makedirs(args.outDIR, exist_ok=True) # make_folder(folder_name=args.outDIR)
+	os.makedirs(args.outDIR, exist_ok=True)
 	
 	preprocessed_docs_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_listed_docs.gz")
 	preprocessed_df_fpath = os.path.join(args.outDIR, f"{fprefix}_preprocessed_df.gz")
