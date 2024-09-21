@@ -11,7 +11,7 @@
 #SBATCH --mem=90G
 #SBATCH --partition=gpu
 #SBATCH --time=03-00:00:00
-#SBATCH --array=248-398
+#SBATCH --array=248-599
 #SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
