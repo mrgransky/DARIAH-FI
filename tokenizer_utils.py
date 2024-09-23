@@ -5,6 +5,34 @@ lemmatizer_multi_lingual_pipeline = None
 # with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
 with HiddenPrints():
 	import nltk
+	lang_id_config={
+			"langid_lang_subset": [
+				'fi', 
+				'sv', 
+				'en',
+				'da',
+				# 'nb', 
+				'ru',
+				# 'et', # causes wrong lemmas: 
+				'de',
+				'fr',
+			]
+	}
+
+	# with lemma store option: (must be faster)
+	lang_configs = {
+			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True, "lemma_store_results":True}, # TDT
+			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True, "lemma_store_results":True}, # FTB
+			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True, "lemma_store_results":True}, # errors!!!
+			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
+			# "et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True, "lemma_store_results":True},
+			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True, "lemma_store_results":True},
+			"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True, "lemma_store_results":True},
+	}
 
 	nltk_modules = [
 		'punkt',
@@ -66,35 +94,6 @@ def create_stanza_multilingual_pipeline(device: str):
 	global lemmatizer_multi_lingual_pipeline
 	if lemmatizer_multi_lingual_pipeline is None:
 		print(f"Initialize Stanza {stanza.__version__} Multilingual Pipeline using {device}".center(130, "-"))
-		lang_id_config={
-			"langid_lang_subset": [
-				'fi', 
-				'sv', 
-				'en',
-				'da',
-				# 'nb', 
-				'ru',
-				# 'et', # causes wrong lemmas: 
-				'de',
-				'fr',
-			]
-		}
-
-		# with lemma store option: (must be faster)
-		lang_configs = {
-			"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True, "lemma_store_results":True},
-			# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True, "lemma_store_results":True}, # TDT
-			"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True, "lemma_store_results":True}, # FTB
-			"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
-			# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True, "lemma_store_results":True}, # errors!!!
-			"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
-			# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
-			"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True, "lemma_store_results":True},
-			# "et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True, "lemma_store_results":True},
-			"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True, "lemma_store_results":True},
-			"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True, "lemma_store_results":True},
-		}
-
 		tt = time.time()
 		# Create the MultilingualPipeline object
 		lemmatizer_multi_lingual_pipeline = MultilingualPipeline( 
