@@ -6,21 +6,21 @@ lemmatizer_multi_lingual_pipeline = None
 with HiddenPrints():
 	import nltk
 
-	# nltk_modules = [
-	# 	'punkt',
-	# 	'wordnet',
-	# 	'averaged_perceptron_tagger', 
-	# 	'omw-1.4',
-	# 	'stopwords',
-	# ]
+	nltk_modules = [
+		'punkt',
+		'wordnet',
+		'averaged_perceptron_tagger', 
+		'omw-1.4',
+		'stopwords',
+	]
 
-	# nltk.download(
-	# 	# 'all',
-	# nltk_modules,
-	# 'stopwords',
-	# 	quiet=True,
-	# 	# raise_on_error=True,
-	# )
+	nltk.download(
+		# 'all',
+		# nltk_modules,
+		'stopwords',
+		quiet=True,
+		# raise_on_error=True,
+	)
 
 	import trankit
 	from trankit import Pipeline
@@ -62,7 +62,6 @@ with HiddenPrints():
 
 	UNQ_STW = set(STOPWORDS)
 
-# Function to create the MultilingualPipeline object if not already created
 def create_stanza_multilingual_pipeline(device: str):
 	global lemmatizer_multi_lingual_pipeline
 	if lemmatizer_multi_lingual_pipeline is None:
@@ -80,21 +79,6 @@ def create_stanza_multilingual_pipeline(device: str):
 				'fr',
 			]
 		}
-
-		# # without lemma store option: (must be slower)
-		# lang_configs = {
-		# 	"en": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True},
-		# 	# "fi": {"processors":"tokenize,lemma,pos,mwt", "package":'tdt',"tokenize_no_ssplit":True}, # TDT
-		# 	"fi": {"processors":"tokenize,lemma,pos,mwt", "package":'ftb',"tokenize_no_ssplit":True}, # FTB
-		# 	"sv": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		# 	# "sv": {"processors":"tokenize,lemma,pos", "package":'lines',"tokenize_no_ssplit":True}, # errors!!!
-		# 	"da": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		# 	# "nb": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		# 	"ru": {"processors":"tokenize,lemma,pos","tokenize_no_ssplit":True},
-		# 	# "et": {"processors":"tokenize,lemma,pos", "package":'edt',"tokenize_no_ssplit":True},
-		# 	"de": {"processors":"tokenize,lemma,pos", "package":'hdt',"tokenize_no_ssplit":True},
-		# 	"fr": {"processors":"tokenize,lemma,pos,mwt", "package":'sequoia',"tokenize_no_ssplit":True},
-		# }
 
 		# with lemma store option: (must be faster)
 		lang_configs = {
