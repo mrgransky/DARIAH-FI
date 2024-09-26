@@ -1,18 +1,18 @@
 #!/bin/bash
 
 #SBATCH --account=project_2004072
-#SBATCH --job-name=nikeQ_stanza
+#SBATCH --job-name=nikeQ_stanza_additional
 #SBATCH --output=/scratch/project_2004072/Nationalbiblioteket/trash/NLF_logs/%x_%a_%N_%j_%A.out
 #SBATCH --mail-user=farid.alijani@gmail.com
 #SBATCH --mail-type=END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=90G
-#SBATCH --partition=gpu
-#SBATCH --time=03-00:00:00
-#SBATCH --array=446-732
-#SBATCH --gres=gpu:v100:1
+#SBATCH --mem=89G
+#SBATCH --partition=small
+#SBATCH --time=00-01:00:00
+#SBATCH --array=0-399
+###SBATCH --gres=gpu:v100:1
 
 user="`whoami`"
 stars=$(printf '%*s' 100 '')
