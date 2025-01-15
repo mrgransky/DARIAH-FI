@@ -154,8 +154,8 @@ if __name__ == "__main__":
 	# n_users = 306357
 	# n_features = 6504704
 
-	n_users = int(3e+5)
-	n_features = int(8e+6)
+	n_users = int(3e+4)
+	n_features = int(8e+5)
 
 	spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float32)
 	query_vec = np.random.rand(1, n_features).astype(np.float32)
