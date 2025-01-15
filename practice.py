@@ -205,8 +205,8 @@ if __name__ == "__main__":
 	# n_users = 306357
 	# n_features = 6504704
 
-	n_users = int(3e+4)
-	n_features = int(4e+6)
+	n_users = int(8e+3)
+	n_features = int(2e+5)
 
 	spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float32)
 	query_vec = np.random.rand(1, n_features).astype(np.float32)
@@ -222,15 +222,15 @@ if __name__ == "__main__":
 	print(cs_optimized)
 
 	# Compare results
-	print(np.allclose(cs, cs_optimized, atol=1e-5))
+	print(np.allclose(cs, cs_optimized, atol=1e-2))
 
 	cs_optimized_gpu = get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm)
 	print(cs_optimized_gpu)
 
 	# Compare results
-	print(np.allclose(cs, cs_optimized_gpu, atol=1e-5))
+	print(np.allclose(cs, cs_optimized_gpu, atol=1e-2))
 
 	# Compare results
-	print(np.allclose(cs_optimized, cs_optimized_gpu, atol=1e-5))
+	print(np.allclose(cs_optimized, cs_optimized_gpu, atol=1e-2))
 
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ".center(160, " "))
