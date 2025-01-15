@@ -25,7 +25,7 @@ fprefix: str = "FILE_PREFIXname_TBR"
 # python concat_dfs.py --dfsPath /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --qphrase "feodalismi" --lmMethod "stanza"
 
 # in Pouta:
-# $ nohup python -u concat_dfs.py --dfsPath /media/volume/Nationalbiblioteket/dataframes_yy > concat_x19_check.out & 
+# $ nohup python -u concat_dfs.py --dfsPath /media/volume/Nationalbiblioteket/dataframes_yy >> concat_x19_check.out & 
 
 def sum_tk_apperance_vb(dframe, qcol, wg, vb):
 	updated_vb = dict.fromkeys(vb.keys(), 0.0)

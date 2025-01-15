@@ -1,6 +1,12 @@
 from utils import *
 from nlp_utils import *
 
+# how to run (local Ubuntu 22.04.4 LTS):
+# python user_token.py --inputDF ~/datasets/Nationalbiblioteket/NLF_DATASET/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log.gz --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1 --lmMethod 'trankit'
+
+# How to run in Puhti:
+# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1 --lmMethod 'stanza'
+
 parser = argparse.ArgumentParser(	
 	description='User-Item Recommendation system developed based on National Library of Finland (NLF) dataset', 
 	prog='RecSys USER-TOKEN', 
@@ -41,12 +47,6 @@ if torch.cuda.is_available() and args.cudaNum + 1 > torch.cuda.device_count():
 device = torch.device(f"cuda:{args.cudaNum}") if torch.cuda.is_available() else torch.device("cpu")
 print(args)
 print(device)
-
-# how to run (local Ubuntu 22.04.4 LTS):
-# python user_token.py --inputDF ~/datasets/Nationalbiblioteket/NLF_DATASET/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log.gz --outDIR ~/datasets/Nationalbiblioteket/trash/dataframes_XXX --maxNumFeat -1 --lmMethod 'trankit'
-
-# How to run in Puhti:
-# python user_token.py --inputDF /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/nikeX.docworks.lib.helsinki.fi_access_log.07_02_2021.log.gz --outDIR /scratch/project_2004072/Nationalbiblioteket/dataframes_x2 --maxNumFeat -1 --lmMethod 'stanza'
 
 fprefix = get_filename_prefix(dfname=args.inputDF) # nikeY_docworks_lib_helsinki_fi_access_log_07_02_2021
 RES_DIR = make_result_dir(infile=fprefix)
