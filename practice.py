@@ -9,6 +9,8 @@ import time
 from numba import njit, prange
 import cupy as cp
 
+# $ nohup python -u practice.py > logs/practice_results.out &
+
 def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0):
 	print(f"Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(130, "-"))
 	print(
@@ -206,7 +208,7 @@ if __name__ == "__main__":
 	# n_features = 6504704
 
 	n_users = int(8e+3)
-	n_features = int(2e+6)
+	n_features = int(2e+5)
 
 	spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float32)
 	query_vec = np.random.rand(1, n_features).astype(np.float32)
