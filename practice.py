@@ -164,7 +164,7 @@ def get_customized_cosine_similarity_optimized(spMtx, query_vec, idf_vec, spMtx_
 def get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm, exponent:float=1.0, batch_size:int=512):
 		print(f"[GPU Optimized] Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]}) batch_size={batch_size}".center(130, "-"))
 		print(
-				f"Query: {query_vec.shape} {type(query_vec)} {query_vec.dtype}\n"
+				f"Query: {query_vec.shape} {type(query_vec)} {query_vec.dtype} non_zeros={np.count_nonzero(query_vec)} non_zero_ratio={np.count_nonzero(query_vec) / query_vec.size:.2f}\n"
 				f"spMtx {type(spMtx)} {spMtx.shape} {spMtx.dtype}\n"
 				f"spMtxNorm: {type(spMtx_norm)} {spMtx_norm.shape} {spMtx_norm.dtype}\n"
 				f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}"
