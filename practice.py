@@ -8,8 +8,9 @@ import scipy.sparse as sp
 import time
 from numba import njit, prange
 import cupy as cp
+import argparse
 
-# $ nohup python -u practice.py > logs/practice_results.out &
+# $ nohup python -u practice.py -nu 1e+5 -nt 2e+6 -bs 512 > logs/practice_results.out &
 
 def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0):
 	print(f"Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(130, "-"))
@@ -270,42 +271,40 @@ def print_ip_info(addr=None):
 				# print the data line by line
 				print(attr, ' '*13 + '\t->\t', data[attr])
 
-if __name__ == "__main__":
-	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(160, " "))
-	get_ip_info()
-	print_ip_info()
-	device = get_device_with_most_free_memory()
-	print(device)
+def main():
+	parser = argparse.ArgumentParser(description="Process some sparse matrix.")
+	parser.add_argument('--batch_size', '-bs', type=int, default=512, help='')
+	parser.add_argument('--num_users', '-nu', type=lambda x: int(float(x)), default=int(1e+4), help='number of users')
+	parser.add_argument('--num_tokens', '-nt', type=lambda x: int(float(x)), default=int(1e+6), help='number of tokens')
+
+	args, unknown = parser.parse_known_args()
+	print(args)
+
 	# Example data
 	# n_users = 306357
 	# n_features = 6504704
 
-	n_users = int(1e+5)
-	n_features = int(3e+6)
+	n_users = int(args.num_users)
+	n_features = int(args.num_tokens)
 
 	spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float32)
 	query_vec = np.random.rand(1, n_features).astype(np.float32)
 	idf_vec = np.random.rand(1, n_features).astype(np.float32)
 	spMtx_norm = np.random.rand(n_users).astype(np.float32)
 
-	# spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float16)
-	# query_vec = np.random.rand(1, n_features).astype(np.float16)
-	# idf_vec = np.random.rand(1, n_features).astype(np.float16)
-	# spMtx_norm = np.random.rand(n_users).astype(np.float16)
-
 	# Compute cosine similarity
 	cs = get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm)
-	print(cs)
+	print(cs[:10])
 
 	# Compute optimized cosine similarity
 	cs_optimized = get_customized_cosine_similarity_optimized(spMtx, query_vec, idf_vec, spMtx_norm)
-	print(cs_optimized)
+	print(cs_optimized[:10])
 
 	# Compare results
 	print(np.allclose(cs, cs_optimized, atol=1e-2))
 
 	cs_optimized_gpu = get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm)
-	print(cs_optimized_gpu)
+	print(cs_optimized_gpu[:10])
 
 	# Compare results
 	print(np.allclose(cs, cs_optimized_gpu, atol=1e-2))
@@ -314,3 +313,11 @@ if __name__ == "__main__":
 	print(np.allclose(cs_optimized, cs_optimized_gpu, atol=1e-2))
 
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ".center(160, " "))
+
+if __name__ == "__main__":
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(160, " "))
+	get_ip_info()
+	print_ip_info()
+	device = get_device_with_most_free_memory()
+	print(device)
+	main()
