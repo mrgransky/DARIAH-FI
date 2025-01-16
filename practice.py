@@ -26,7 +26,7 @@ SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAl
 DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
 
 
-def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0):
+def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, exponent:float=1.0):
 	print(f"Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(130, "-"))
 	print(
 		f"Query: {query_vec.shape} {type(query_vec)} {query_vec.dtype}\n"
@@ -64,7 +64,7 @@ def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, expo
 	return cs
 	################################### Vectorized Implementation ##########################################
 
-def get_customized_cosine_similarity_optimized(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float = 1.0):
+def get_customized_cosine_similarity_optimized(spMtx, query_vec, idf_vec, spMtx_norm, exponent:float=1.0):
 		print(f"[Optimized] Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(130, "-"))
 		print(
 				f"Query: {query_vec.shape} {type(query_vec)} {query_vec.dtype}\n"
@@ -322,6 +322,16 @@ def main():
 	)
 	query_vec = np.random.rand(1, n_features).astype(np.float32)
 
+	# Compute optimized cosine similarity using GPU acceleration[cupy]
+	cs_optimized_gpu = get_customized_cosine_similarity_gpu(
+		spMtx, 
+		query_vec, 
+		idf_vec, 
+		spMtx_norm, 
+		batch_size=args.batch_size,
+	)
+	print(cs_optimized_gpu[:10])
+
 	# Compute cosine similarity
 	cs = get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm)
 	print(cs[:10])
@@ -330,16 +340,8 @@ def main():
 	cs_optimized = get_customized_cosine_similarity_optimized(spMtx, query_vec, idf_vec, spMtx_norm)
 	print(cs_optimized[:10])
 
-	# Compare results
 	print(np.allclose(cs, cs_optimized, atol=1e-2))
-
-	cs_optimized_gpu = get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm)
-	print(cs_optimized_gpu[:10])
-
-	# Compare results
 	print(np.allclose(cs, cs_optimized_gpu, atol=1e-2))
-
-	# Compare results
 	print(np.allclose(cs_optimized, cs_optimized_gpu, atol=1e-2))
 
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ".center(160, " "))
