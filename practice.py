@@ -6,11 +6,25 @@ import torch
 import numpy as np
 import scipy.sparse as sp
 import time
-from numba import njit, prange
 import cupy as cp
 import argparse
+from numba import njit, prange
+from utils import *
 
 # $ nohup python -u practice.py -nu 1e+5 -nt 2e+6 -bs 512 > logs/practice_results.out &
+
+HOME: str = os.getenv('HOME') # echo $HOME
+USER: str = os.getenv('USER') # echo $USER
+Files_DIR: str = "/media/volume" if USER == "ubuntu" else HOME
+lmMethod: str="stanza"
+nSPMs: int = 732 if USER == "ubuntu" else 2 # dynamic changing of nSPMs due to Rahti CPU memory issues!
+DATASET_DIR: str = f"Nationalbiblioteket/compressed_concatenated_SPMs" if USER == "ubuntu" else f"datasets/compressed_concatenated_SPMs"
+compressed_spm_file = os.path.join(Files_DIR, DATASET_DIR, f"concat_x{nSPMs}_lm_{lmMethod}.tar.gz")
+fprefix: str = f"concatinated_{nSPMs}_SPMs_lm_{lmMethod}"
+spm_files_dir = os.path.join(Files_DIR, DATASET_DIR, f"concat_x{nSPMs}_lm_{lmMethod}")
+SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
+DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
+
 
 def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, exponent: float=1.0):
 	print(f"Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(130, "-"))
@@ -286,11 +300,27 @@ def main():
 
 	n_users = int(args.num_users)
 	n_features = int(args.num_tokens)
+	print(f"Creating sparse matrix with {n_users} users and {n_features} features...")
+	st_t = time.time()
+	# Random sparse matrix:
+	# spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float32)
+	# idf_vec = np.random.rand(1, n_features).astype(np.float32)
+	# spMtx_norm = np.random.rand(n_users).astype(np.float32)
+	# print(f"Sparse matrix created in {time.time() - st_t:.2f} seconds")
 
-	spMtx = sp.random(n_users, n_features, density=0.01, format='csr', dtype=np.float32)
+	spMtx = load_pickle(
+		fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'_shrinked_spMtx_USERs_vs_TOKENs_*_nUSRs_x_*_nTOKs.gz' )[0]
+	)
+	n_users, n_features = spMtx.shape
+	print(f"Sparse Matrix: {spMtx.shape}")
+	idf_vec = load_pickle(
+		fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'_shrinked_idf_vec_1_x_*_nTOKs.gz')[0]
+	)
+
+	spMtx_norm=load_pickle(
+		fpath=glob.glob( spm_files_dir+'/'+f'{fprefix}'+'_shrinked_users_norm_1_x_*_nUSRs.gz')[0]
+	)
 	query_vec = np.random.rand(1, n_features).astype(np.float32)
-	idf_vec = np.random.rand(1, n_features).astype(np.float32)
-	spMtx_norm = np.random.rand(n_users).astype(np.float32)
 
 	# Compute cosine similarity
 	cs = get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm)
@@ -319,5 +349,4 @@ if __name__ == "__main__":
 	get_ip_info()
 	print_ip_info()
 	device = get_device_with_most_free_memory()
-	print(device)
 	main()
