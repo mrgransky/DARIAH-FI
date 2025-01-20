@@ -170,7 +170,7 @@ def get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm, 
 			torch.cuda.empty_cache() # Clear CUDA cache
 			# torch.cuda.synchronize() # Ensure all CUDA operations are complete
 			# Print memory usage after each batch
-			print(f"Batch {i // batch_size + 1}: Free GPU Memory: {device.mem_info[0] / 1024 ** 3:.2f} GB")
+			# print(f"Batch {i // batch_size + 1}: Free GPU Memory: {device.mem_info[0] / 1024 ** 3:.2f} GB")
 
 	print(f"Elapsed_t: {time.time() - st_t:.2f} s {type(cs)} {cs.dtype} {cs.shape}".center(130, " "))
 	return cp.asnumpy(cs)  # Convert result back to NumPy for compatibility
