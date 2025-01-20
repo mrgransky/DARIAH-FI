@@ -140,19 +140,15 @@ def get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm, 
 				),
 				shape=spMtx_csr.shape
 			)
-			# Free CPU memory
-			del spMtx_csr
+			del spMtx_csr # # Free CPU memory
 			# Compute interest and normalization
 			quInterest = query_vec_squeezed * idf_squeezed
 			quInterestNorm = cp.linalg.norm(quInterest)
 			idx_nonzeros = cp.nonzero(quInterest)[0]
 			quInterest_nonZeros = quInterest[idx_nonzeros] / quInterestNorm
 			usrInterestNorm = spMtx_norm_gpu + cp.float32(1e-4)
-			# Free unnecessary arrays
-			del query_vec_squeezed, quInterest
-			# Initialize result array
-			cs = cp.zeros(spMtx_gpu.shape[0], dtype=cp.float32)
-			# Process in batches
+			del query_vec_squeezed, quInterest # Free unnecessary arrays
+			cs = cp.zeros(spMtx_gpu.shape[0], dtype=cp.float32) # initialize result array
 			for i in range(0, spMtx_gpu.shape[0], batch_size):
 					start_idx = i
 					end_idx = min(i + batch_size, spMtx_gpu.shape[0])
@@ -366,23 +362,31 @@ def get_customized_recsys_avg_vec_gpu(spMtx, cosine_sim, idf_vec, spMtx_norm, ba
 		# Clear memory before starting
 		cp.get_default_memory_pool().free_all_blocks()
 		torch.cuda.empty_cache()
-		with cp.cuda.Device(0):
+		device = cp.cuda.Device()
+		print(f"Using GPU: {cp.cuda.runtime.getDeviceProperties(device.id)['name'].decode('utf-8')}")
+		print(f"Initial Free GPU Memory: {device.mem_info[0] / 1024 ** 3:.2f} GB")
+		with cp.cuda.Device(0): # 
 			# Move data to GPU efficiently
 			idf_squeezed = cp.asarray(idf_vec.ravel(), dtype=cp.float32)
 			cosine_sim_gpu = cp.asarray(cosine_sim, dtype=cp.float32)
 			spMtx_norm_gpu = cp.asarray(spMtx_norm, dtype=cp.float32)
-			# Find non-zero cosine similarities
 			non_zero_cosines = cp.nonzero(cosine_sim_gpu)[0]
 			non_zero_values = cosine_sim_gpu[non_zero_cosines]
-			# Free unnecessary arrays
+			print(
+				f"spMtx {type(spMtx)} {spMtx.shape} {spMtx.dtype}\n"
+				f"spMtxNorm: {type(spMtx_norm)} {spMtx_norm.shape} {spMtx_norm.dtype}\n"
+				f"CS {type(cosine_sim)} {cosine_sim.shape} {cosine_sim.dtype} NonZero(s): {non_zero_cosines.shape[0]}\n"
+				f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}"
+			)
 			del cosine_sim_gpu
-			# Convert sparse matrix efficiently
 			spMtx_csr = spMtx.tocsr()
 			spMtx_gpu = cp.sparse.csr_matrix(
-					(cp.asarray(spMtx_csr.data, dtype=cp.float32),
-					 cp.asarray(spMtx_csr.indices),
-					 cp.asarray(spMtx_csr.indptr)),
-					shape=spMtx_csr.shape
+				(
+					cp.asarray(spMtx_csr.data, dtype=cp.float32),
+				 	cp.asarray(spMtx_csr.indices),
+				 	cp.asarray(spMtx_csr.indptr)
+				),
+				shape=spMtx_csr.shape
 			)
 			del spMtx_csr
 			# Initialize result array
