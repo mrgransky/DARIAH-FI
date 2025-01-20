@@ -11,6 +11,8 @@ import argparse
 from numba import njit, prange
 from utils import *
 import gc  # For explicit garbage collection
+
+# run in the background using the following command in the terminal:
 # $ nohup python -u practice.py -nu 1e+5 -nt 2e+6 -bs 2048 > logs/practice_results.out &
 
 HOME: str = os.getenv('HOME') # echo $HOME
