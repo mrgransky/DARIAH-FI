@@ -8658,7 +8658,6 @@ belkrtfning
 itler
 kuv
 kuw
-porvo
 porvaa
 porwo
 porvoc
@@ -14556,4 +14555,17 @@ chicagon
 chicagos
 bobriko
 aaani
-naislys
+virtan
+rauman
+amerikan
+amerikalle
+tidings
+patentin
+patentit
+patentteja
+överlåtits
+paavos
+psalm
+työasiain
+bergenstråles
+karjaa
