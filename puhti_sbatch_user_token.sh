@@ -30,8 +30,8 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 echo "$SLURM_SUBMIT_HOST conda env from tykky module..."
-files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz) # newly scraped NLF data (17.04.2024)
-ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" # x58: 30-80 & 725-731
+files=(/scratch/project_2004072/Nationalbiblioteket/NLF_DATASET/*.gz)
+ddir="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732"
 # maxNumFeatures=$(awk -v x="1.9e+6" 'BEGIN {printf("%d\n",x)}') # adjust values 2.2e+6
 maxNumFeatures=-1
 LEMMATIZER="stanza"
