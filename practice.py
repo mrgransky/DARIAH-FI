@@ -27,7 +27,6 @@ spm_files_dir = os.path.join(Files_DIR, DATASET_DIR, f"concat_x{nSPMs}_lm_{lmMet
 SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
 DIGI_HOME_PAGE_URL : str = "https://digi.kansalliskirjasto.fi"
 
-
 def get_customized_cosine_similarity(spMtx, query_vec, idf_vec, spMtx_norm, exponent:float=1.0):
 	print(f"Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]})".center(130, "-"))
 	print(
@@ -112,18 +111,22 @@ def get_customized_cosine_similarity_optimized(spMtx, query_vec, idf_vec, spMtx_
 def get_customized_cosine_similarity_gpu(spMtx, query_vec, idf_vec, spMtx_norm, exponent:float=1.0, batch_size:int=2048):
 	try:
 		print(f"[GPU Optimized] Customized Cosine Similarity (1 x nUsers={spMtx.shape[0]}) batch_size={batch_size}".center(130, "-"))
+		# Clear memory before starting
+		cp.get_default_memory_pool().free_all_blocks()
+		torch.cuda.empty_cache()
+		device = cp.cuda.Device()
+		device_id = device.id
+		device_name = cp.cuda.runtime.getDeviceProperties(device_id)['name'].decode('utf-8')
+		print(
+			f"GPU [cuda:{device_id}]: {device_name} "
+			f"Memory [Free/Total]: ({device.mem_info[0] / 1024 ** 3:.3f} / {device.mem_info[1] / 1024 ** 3:.3f}) GB"
+		)
 		print(
 			f"Query: {query_vec.shape} {type(query_vec)} {query_vec.dtype} non_zeros={np.count_nonzero(query_vec)} (ratio={np.count_nonzero(query_vec) / query_vec.size})\n"
 			f"spMtx {type(spMtx)} {spMtx.shape} {spMtx.dtype}\n"
 			f"spMtxNorm: {type(spMtx_norm)} {spMtx_norm.shape} {spMtx_norm.dtype}\n"
 			f"IDF {type(idf_vec)} {idf_vec.shape} {idf_vec.dtype}"
 		)
-		# Clear memory before starting
-		cp.get_default_memory_pool().free_all_blocks()
-		torch.cuda.empty_cache()
-		device = cp.cuda.Device()
-		print(f"Using GPU: {cp.cuda.runtime.getDeviceProperties(device.id)['name'].decode('utf-8')}")
-		print(f"Initial Free GPU Memory: {device.mem_info[0] / 1024 ** 3:.2f} GB")
 		st_t = time.time()
 		# Convert inputs to GPU with memory management
 		with cp.cuda.Device(0):
@@ -362,9 +365,15 @@ def get_customized_recsys_avg_vec_gpu(spMtx, cosine_sim, idf_vec, spMtx_norm, ba
 		# Clear memory before starting
 		cp.get_default_memory_pool().free_all_blocks()
 		torch.cuda.empty_cache()
+
 		device = cp.cuda.Device()
-		print(f"Using GPU: {cp.cuda.runtime.getDeviceProperties(device.id)['name'].decode('utf-8')}")
-		print(f"Initial Free GPU Memory: {device.mem_info[0] / 1024 ** 3:.2f} GB")
+		device_id = device.id
+		device_name = cp.cuda.runtime.getDeviceProperties(device_id)['name'].decode('utf-8')
+		print(
+			f"GPU [cuda:{device_id}]: {device_name} "
+			f"Memory [Free/Total]: ({device.mem_info[0] / 1024 ** 3:.3f} / {device.mem_info[1] / 1024 ** 3:.3f}) GB"
+		)
+
 		with cp.cuda.Device(0): # 
 			# Move data to GPU efficiently
 			idf_squeezed = cp.asarray(idf_vec.ravel(), dtype=cp.float32)
@@ -442,6 +451,15 @@ def get_device_with_most_free_memory():
 	else:
 		device = torch.device("cpu")
 		print("No GPU available, using CPU")
+	return device
+
+def get_device():
+	if torch.cuda.is_available():
+		cuda_num = 3 if USER == "ubuntu" else 0
+		device = torch.device(f"cuda:{cuda_num}")
+	else:
+		device = torch.device("cpu")
+	print(f"Using device: {device}")
 	return device
 
 def get_ip_info():
@@ -562,6 +580,7 @@ if __name__ == "__main__":
 	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(160, " "))
 	get_ip_info()
 	print_ip_info()
-	device = get_device_with_most_free_memory()
+	# device = get_device_with_most_free_memory()
+	device = get_device()
 	main()
 	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ".center(160, " "))

@@ -12,20 +12,8 @@ parser = argparse.ArgumentParser(
 	prog='RecSys USER-TOKEN', 
 	epilog='Developed by Farid Alijani',
 )
-parser.add_argument(
-	'-idf', 
-	'--inputDF', 
-	required=True,
-	type=str,
-	help="Input DataFrame",
-)
-parser.add_argument(
-	'-odir', 
-	'--outDIR', 
-	type=str, 
-	required=True, 
-	help='output directory to save files',
-)
+parser.add_argument('-idf', '--inputDF', required=True, type=str, help="Input DataFrame",)
+parser.add_argument('-odir', '--outDIR', type=str, required=True, help='Saving Directory',)
 parser.add_argument('--qphrase', default="Suomalaisten suhtautuminen konservatismiin", type=str)
 parser.add_argument('--lmMethod', default="stanza", type=str)
 parser.add_argument('--normSP', default=False, type=bool)
@@ -500,6 +488,7 @@ def get_user_df(dframe: pd.DataFrame, bow: Dict[str, int], learned_weights: bool
 	save_pickle(pkl=user_df, fname=user_df_fname)
 	return user_df
 
+@measure_execution_time
 def main():
 	qu_phrase=args.qphrase
 	topK=5
@@ -1404,16 +1393,7 @@ def plot_tokens_distribution(sparseMat, users_tokens_df, queryVec, recSysVec, bo
 	plt.close(f)
 	print(">> Done!")
 
-if __name__ == '__main__':
-	print(
-		f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-		.center(160, " ")
-	)
-	START_EXECUTION_TIME = time.time()
+if __name__ == "__main__":
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(160, " "))
 	main()
-	END_EXECUTION_TIME = time.time()
-	print(
-		f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} "
-		f"TOTAL_ELAPSED_TIME: {END_EXECUTION_TIME-START_EXECUTION_TIME:.1f} sec"
-		.center(160, " ")
-	)
+	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(160, " "))
