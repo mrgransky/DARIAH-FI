@@ -576,7 +576,7 @@ def main():
 
 	# # TODO: [0] MUST be replaced by [-1] to consider the biggest!!!
 	# print(f"TODO: fix for zero nlf pages".center(100, " "))
-	# print( natsorted(glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')) )
+	print( natsorted(glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')) )
 	lemmas_with_zero_nlf_pages_fname = natsorted( glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz') )[-1]
 	# os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")
 	print(lemmas_with_zero_nlf_pages_fname)
