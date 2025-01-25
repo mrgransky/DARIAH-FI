@@ -574,8 +574,8 @@ def main():
 	sparse_matrix_tokens_names_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_TOKENs_SPM_cols.gz")	
 	dataframe_user_token_fname = os.path.join(args.outDIR, f"{fprefix}_lemmaMethod_{args.lmMethod}_USERs_x_TOKENs_df_unpacked.gz")
 
-	# # TODO: [0] MUST be replaced by [-1] to consider the biggest!!!
-	# print(f"TODO: fix for zero nlf pages".center(100, " "))
+	# # TODO: fix for zero nlf pages
+	# try except block is added to handle the case when there are no NLF pages in the dataset
 	print( natsorted(glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz')) )
 	lemmas_with_zero_nlf_pages_fname = natsorted( glob.glob( args.outDIR+'/'+'tk_x_*_with_zero_NLF_pages.gz') )[-1]
 	# os.path.join(args.outDIR, "meaningless_tokens_with_zero_NLF_page.gz")

@@ -29,8 +29,8 @@ parser = argparse.ArgumentParser(
 	prog='RecSys Concatenated DFs', 
 	epilog='Developed by Farid Alijani',
 )
-parser.add_argument('--vbfpath',type=str, required=True,help='Path to vocab.json',)
-parser.add_argument('--numslices',type=int, default=600, help='Number of Slices to batch large list (def: 100)',)
+parser.add_argument('--vbfpath', type=str, required=True,help='Path to vocab.json',)
+parser.add_argument('--numslices', type=int, default=600, help='Number of Slices to batch large list (def: 100)',)
 
 args = parser.parse_args()
 

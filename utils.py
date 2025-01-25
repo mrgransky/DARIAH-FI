@@ -1025,7 +1025,15 @@ async def get_num_NLF_pages_asynchronous_run(TOKENs_list: List[str]=["tk1", "tk2
 			num_NLF_pages = await asyncio.gather(*tasks)
 		return num_NLF_pages
 
-def get_spMtx(df: pd.DataFrame, meaningless_lemmas: Set, spm_fname: str="SPM", spm_rows_fname: str="SPM_rows", spm_cols_fname: str="SPM_cols", df_unpacked_fname: str="df_unpacked", meaningless_lemmas_zero_nlf_pages_fname: str="meaningless_lemmas_zero_nlf"):
+def get_spMtx(
+	df: pd.DataFrame, 
+	meaningless_lemmas: Set, 
+	spm_fname: str="SPM", 
+	spm_rows_fname: str="SPM_rows", 
+	spm_cols_fname: str="SPM_cols", 
+	df_unpacked_fname: str="df_unpacked", 
+	meaningless_lemmas_zero_nlf_pages_fname: str="meaningless_lemmas_zero_nlf",
+	):
 	print(f"SciPy Sparse Matrix Generating from (detailed) user_df {type(df)} {df.shape}".center(160, " "))
 	user_token_df = get_unpacked_user_token_interest(
 		df=df,
