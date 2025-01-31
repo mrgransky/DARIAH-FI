@@ -268,14 +268,14 @@ def remove_misspelled_(documents: str="This is a sample sentence."):
 	# print(f"Elapsed_t: {time.time()-t0:.3f} sec".center(100, " "))
 	return cleaned_doc
 
-orig_text = '''
-enGliSH with Swedish genealogists
-the reliability helsingin sanomat advertising paper helsingin sanomat only finnish paper with own
-Poitzell Genealogy and Poitzell Family History Information 
-Finnish and Swedish Cellulose Unions helped genealogists
-The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
-Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
-'''
+# orig_text = '''
+# enGliSH with Swedish genealogists
+# the reliability helsingin sanomat advertising paper helsingin sanomat only finnish paper with own
+# Poitzell Genealogy and Poitzell Family History Information 
+# Finnish and Swedish Cellulose Unions helped genealogists
+# The Finnish Woodpulp <em>and</em> Board Union, Owners of: <em>Myllykoski</em> Paper <em>and</em> Mechanical wood pulp mill. Establ<<
+# Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 3206), Lessnessock Landseer (A 3408), South Craig
+# '''
 
 # orig_text = '''
 # sVenskA idrottsförbundet
@@ -285,19 +285,20 @@ Snowball (AA3399), Bargenoch Blue Blood (AA3529), <em>Dunlop Talisman</em> (A 32
 # Åbo, å Alfred Holmströms advokatkont, slutredovisning (260, 261, 262.) 28 Fredag, kl. 6 e. m. i handl. 
 # '''
 
-# orig_text = '''
-# SUomI
-# Suomen Sosialidemokraatti
-# kolonia
-# naisasia
-# kolonier
-# kolonin
-# naisasian
-# Hän käänsi suomeksi erään merkkiteoksen uskonpuhdistuksen historian alalta ja julkaisi uudestaan suomentamansa luterilaisen kirkkomme tunnustuskirjat sekä useita Martti Lutherin kirjoja. Latinankieli, kuten yleensä klassilliset kielet, oli vainajalle erityisen harrastuksen esineenä. Monen monet latinankieliset kirjeet, sähkösanomat ja tervehdykset tovereille ovat siitä todistuksena. Mainittakoon tämän yhteydessä vielä Hedbergin valmistama ja julkaisema ansiokas kreikkalais-suomalainen Uuden Testamentin sanakirja, joka etupäässä lienee tuottanutkin hänelle teologian kunniatohtorin arvon vuoden 1907 tohtorinvihkijäisissä.
-# Saarnamiehenä Hedberg oli etevä ja suosittu, edustaen sellaisenakin horjumatonta evankelisluterilaisen kirkkomme tunnustuksellista kantaa. Loppuijälläänkin vielä Hecjberg Turun tuomiorovastina saarnasi ahkerasti, eikä vain omassa seurakunnassaan, vaan oli hän, kuten leikillisesti itse sanoi, koko tuomiorovastikuntansa papiston yhteinen saarnaapulainen, tarjoutuen saarnoillaan auttamaan milloin missäkin apua kaivattiin.
-# Maamme perustuslakitaistelussa Hedberg seisoi voimainsa ja mahdollisuuksien mukaan kaiken aikaa horjumatta niiden kanssa ja puolella, jotka pelkäämättä nousivat maatamme ja kansaamme vastaan tähdättyjä sortotoimenpiteitä vastustamaan. Parhaansa mukaan hän pyysi samanlaista henkeä istuttaa tovereihinsakin, missä ikinä hän liikkui. Keskustelut valtiopäivillä niiltä ajoilta ja vainajan esiintyminen sortovuosina Savonlinnan tuomiokapitulissa ovat todistuksena hänen horjumattomasta uskollisuudestaan maamme lainalaista järjestystä kohtaan.
-# Hedbergin konservatiivisesta katsantokannasta johtui, että hän varsin vastenmielisesti suostui yksikamarisen eduskunnan luomiseen.
-# '''
+orig_text = '''
+SUomI
+Suomen Sosialidemokraatti
+kolonia
+Naisasia isänmaan elämän kysymyksenä.
+naisasia
+kolonier
+kolonin
+naisasian
+Hän käänsi suomeksi erään merkkiteoksen uskonpuhdistuksen historian alalta ja julkaisi uudestaan suomentamansa luterilaisen kirkkomme tunnustuskirjat sekä useita Martti Lutherin kirjoja. Latinankieli, kuten yleensä klassilliset kielet, oli vainajalle erityisen harrastuksen esineenä. Monen monet latinankieliset kirjeet, sähkösanomat ja tervehdykset tovereille ovat siitä todistuksena. Mainittakoon tämän yhteydessä vielä Hedbergin valmistama ja julkaisema ansiokas kreikkalais-suomalainen Uuden Testamentin sanakirja, joka etupäässä lienee tuottanutkin hänelle teologian kunniatohtorin arvon vuoden 1907 tohtorinvihkijäisissä.
+Saarnamiehenä Hedberg oli etevä ja suosittu, edustaen sellaisenakin horjumatonta evankelisluterilaisen kirkkomme tunnustuksellista kantaa. Loppuijälläänkin vielä Hecjberg Turun tuomiorovastina saarnasi ahkerasti, eikä vain omassa seurakunnassaan, vaan oli hän, kuten leikillisesti itse sanoi, koko tuomiorovastikuntansa papiston yhteinen saarnaapulainen, tarjoutuen saarnoillaan auttamaan milloin missäkin apua kaivattiin.
+Maamme perustuslakitaistelussa Hedberg seisoi voimainsa ja mahdollisuuksien mukaan kaiken aikaa horjumatta niiden kanssa ja puolella, jotka pelkäämättä nousivat maatamme ja kansaamme vastaan tähdättyjä sortotoimenpiteitä vastustamaan. Parhaansa mukaan hän pyysi samanlaista henkeä istuttaa tovereihinsakin, missä ikinä hän liikkui. Keskustelut valtiopäivillä niiltä ajoilta ja vainajan esiintyminen sortovuosina Savonlinnan tuomiokapitulissa ovat todistuksena hänen horjumattomasta uskollisuudestaan maamme lainalaista järjestystä kohtaan.
+Hedbergin konservatiivisesta katsantokannasta johtui, että hän varsin vastenmielisesti suostui yksikamarisen eduskunnan luomiseen.
+'''
 
 cleaned_fin_text = clean_(docs=orig_text, del_misspelled=True)
 cleaned_fin_text = stanza_lemmatizer(docs=cleaned_fin_text)
