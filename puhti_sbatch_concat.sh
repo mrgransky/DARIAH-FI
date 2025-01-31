@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=460G
+#SBATCH --mem=459G
 #SBATCH --partition=hugemem
 #SBATCH --time=03-00:00:00
 ####SBATCH --gres=gpu:v100:1
@@ -29,7 +29,7 @@ echo "nTASKS/CORE: $SLURM_NTASKS_PER_CORE, nTASKS/NODE: $SLURM_NTASKS_PER_NODE"
 echo "THREADS/CORE: $SLURM_THREADS_PER_CORE"
 echo "${stars// /*}"
 echo "<> Using $SLURM_CLUSTER_NAME conda env from tykky module..."
-dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732" ########## must be adjusted! ##########
+dfsDIR="/scratch/project_2004072/Nationalbiblioteket/dataframes_x732_" ########## must be adjusted! ##########
 LEMMATIZER="stanza"
 # LEMMATIZER="trankit"
 
