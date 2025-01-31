@@ -918,7 +918,7 @@ def run():
 
 	print(f"Concatenated < Original BIG > Sparse Matrix".center(120, "-"))
 	print(
-		f"spMtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {concat_spm_U_x_T.dtype}"
+		f"spMtx {type(concat_spm_U_x_T)} {concat_spm_U_x_T.shape} {concat_spm_U_x_T.dtype} "
 		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_spm_U_x_T.data])/1e9:.3f} GB\n"
 		f"spMtx_rows {type(concat_spm_usrNames)} {concat_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
 		f"spMtx_cols {type(concat_spm_tokNames)} {concat_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
@@ -929,7 +929,7 @@ def run():
 
 	print(f"Concatenated < SHRINKED > Sparse Matrix".center(120, "-"))
 	print(
-		f"spMtx {type(concat_shrinked_spm_U_x_T)} {concat_shrinked_spm_U_x_T.shape} {concat_shrinked_spm_U_x_T.dtype}"
+		f"spMtx {type(concat_shrinked_spm_U_x_T)} {concat_shrinked_spm_U_x_T.shape} {concat_shrinked_spm_U_x_T.dtype} "
 		f"byte size[memory footage]: {sum([sys.getsizeof(i) for i in concat_shrinked_spm_U_x_T.data])/1e9:.3f} GB\n"
 		f"spMtx_rows {type(concat_shrinked_spm_usrNames)} {concat_shrinked_spm_usrNames.shape} "	# <class 'numpy.ndarray'> (nUsers,)
 		f"spMtx_cols {type(concat_shrinked_spm_tokNames)} {concat_shrinked_spm_tokNames.shape}\n"	# <class 'numpy.ndarray'> (nTokens,)
@@ -942,7 +942,6 @@ def run():
 	# comp_dir: str= "/scratch/project_2004072/Nationalbiblioteket/compressed_concatenated_SPMs"
 	comp_dir = get_compressed_concatenated_path(base_path=args.dfsPath)
 	concat_compressed_fname = f"concat_x{len(sp_mtx_files)}_lm_{args.lmMethod}.tar.gz"
-	
 	if not os.path.isfile(os.path.join(args.dfsPath, concat_compressed_fname)):
 		print(f'>> fpath: {os.path.join(args.dfsPath, concat_compressed_fname)} does not exist, creating...')
 		print(f">> comp_dir: {comp_dir}")

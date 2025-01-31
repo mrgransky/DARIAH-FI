@@ -1629,7 +1629,12 @@ def get_compressed_concatenated_path(base_path: str) -> str:
 
 	return comp_path
 
-def get_compressed_archive(save_dir: str="saving_dir", compressed_fname: str="concat_xN.tar.gz", upload_2_gdrive: bool=False, compressed_dir: str="destination/path/to/comp_dir"):
+def get_compressed_archive(
+	save_dir:str="saving_dir",
+	compressed_fname:str="concat_xN.tar.gz",
+	upload_2_gdrive:bool=False,
+	compressed_dir:str="destination/path/to/comp_dir",
+	):
 	print(f"Compressing file {os.path.join(save_dir, compressed_fname)}".center(150, "-"))
 	t0 = time.time()
 	concat_files = [
