@@ -2,21 +2,21 @@ from url_scraping import *
 from utils import *
 
 # how to run in background:
-# nohup python -u information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dsPath /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX > logNEW_q0.out &
+# nohup python -u information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dataset_dir /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX > logNEW_q0.out &
 
 # how to run Puhti:
-# python information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dsPath /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX
+# python information_retrieval.py --queryLogFile /scratch/project_2004072/Nationalbiblioteket/NLF_Pseudonymized_Logs/nike5.docworks.lib.helsinki.fi_access_log.2021-01-01.log --dataset_dir /scratch/project_2004072/Nationalbiblioteket/NLF_DATASET_XXX
 
-parser = argparse.ArgumentParser(description='National Library of Finland (NLF)')
-parser.add_argument('-qlf', '--queryLogFile', required=True, type=str, help="Query log file") # smallest
-parser.add_argument('--dsPath', required=True, type=str, help='Save DataFrame in directory')
+def scrape_log_(
+		fpath: str,
+		dataset_dir: str,
+		ts: List[str]=None,
+	):
+	os.makedirs(dataset_dir, exist_ok=True)
 
-args = parser.parse_args()
-
-def scrape_log_(fpath: str=args.queryLogFile, ts: List[str]=None):
 	print(f"Input Query Log File: {fpath}")
 	qeury_log_raw_fname = fpath[fpath.rfind("/")+1:] # nike6.docworks.lib.helsinki.fi_access_log.2021-10-13.log
-	scraped_query_fname = os.path.join(args.dsPath, f'{qeury_log_raw_fname}.gz')
+	scraped_query_fname = os.path.join(dataset_dir, f'{qeury_log_raw_fname}.gz')
 
 	if os.path.isfile(scraped_query_fname):
 		print(f"{scraped_query_fname} already exist, exiting...")
@@ -80,26 +80,28 @@ def scrape_log_(fpath: str=args.queryLogFile, ts: List[str]=None):
 	print("-"*100)
 
 	print(df.info(verbose=True, memory_usage="deep", show_counts=True, ))
+	print(df.head(10))
+	print("*"*100)
+	print(df.tail(10))
+	print("*"*100)
 	save_pickle( pkl=df, fname=scraped_query_fname )
 
-def run():
-	os.makedirs(args.dsPath, exist_ok=True) # make_folder(folder_name=args.dsPath)
+@measure_execution_time
+def main():
+	parser = argparse.ArgumentParser(description='National Library of Finland (NLF) Log Data Extraction')
+	parser.add_argument('--queryLogFile', '-f', required=True, type=str, help="Query log file")
+	parser.add_argument('--dataset_dir', '-ddir', required=True, type=str, help='Save DataFrame in directory')
+	args, unknown = parser.parse_known_args()
+	args = parser.parse_args()
+	print_args_table(args=args, parser=parser)
+
 	scrape_log_(
 		fpath=args.queryLogFile,
+		dataset_dir=args.dataset_dir,
 		#ts=["14:30:00", "14:56:59"],
 	)
 
-if __name__ == '__main__':
-	# os.system("clear")
-	print(
-		f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-		.center(160, " ")
-	)
-	START_EXECUTION_TIME = time.time()
-	run()
-	END_EXECUTION_TIME = time.time()
-	print(
-		f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} "
-		f"TOTAL_ELAPSED_TIME: {END_EXECUTION_TIME-START_EXECUTION_TIME:.1f} sec"
-		.center(160, " ")
-	)
+if __name__ == "__main__":
+	print(f"Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(160, " "))
+	main()
+	print(f"Finished: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ".center(160, " "))

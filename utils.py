@@ -25,7 +25,7 @@ import aiohttp
 import asyncio
 import random
 import requests
-
+import tabulate
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from pandas.api.types import is_datetime64_any_dtype
@@ -54,7 +54,8 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import Colormap as cm
-# matplotlib.use("Agg")
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 torch.backends.cudnn.benchmark = True
 
 SEARCH_QUERY_DIGI_URL: str = "https://digi.kansalliskirjasto.fi/search?requireAllKeywords=true&query="
@@ -256,6 +257,18 @@ def numba_exp(array, exponent=1e-1):
 	for i in nb.prange(array.size):
 		res[i] = array[i] ** exponent
 	return res
+
+def print_args_table(args, parser):
+	args_dict = vars(args)
+	table_data = []
+	for key, value in args_dict.items():
+		action = parser._option_string_actions.get(f'--{key}') or parser._option_string_actions.get(f'-{key}')
+		if action and hasattr(action, 'type') and action.type:
+			arg_type = action.type.__name__
+		else:
+			arg_type = type(value).__name__
+		table_data.append([key, value, arg_type])
+	print(tabulate.tabulate(table_data, headers=['Argument', 'Value', 'Type'], tablefmt='orgtbl'))
 
 def format_elapsed_time(seconds):
 	"""
@@ -745,12 +758,6 @@ def checking_(url, prms=None):
 		logging.exception(e)
 		return
 
-def make_folder(folder_name:str="MUST_BE_RENAMED"):
-	try:
-		os.makedirs( folder_name )
-	except Exception as e:
-		print(f"<!> {e}")
-
 def save_vocab(vb, fname:str=""):
 	print(f"Saving {len(vb)} BoWs {fname}")
 	st_t = time.time()
@@ -769,36 +776,81 @@ def load_vocab(fname: str="VOCABULARY_FILE.json"):
 	print(f"Elapsed_t: {time.time()-st_t:.1f} s {type(vb)} | {fsize_dump:.3f} MB".center(120, " "))
 	return vb
 
-def save_pickle(pkl, fname:str=""):
+# def save_pickle(pkl, fname:str):
+# 	print(f"\nSaving {type(pkl)}\n{fname}")
+# 	st_t = time.time()
+# 	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
+# 		pkl.to_pickle(path=fname)
+# 	else:
+# 		# with open(fname , mode="wb") as f:
+# 		with gzip.open(fname , mode="wb") as f:
+# 			dill.dump(pkl, f)
+# 	elpt = time.time()-st_t
+# 	fsize_dump = os.stat( fname ).st_size / 1e6
+# 	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(120, " "))
+
+# def load_pickle(fpath:str="unknown",):
+# 	print(f"Checking for existence? {fpath}")
+# 	st_t = time.time()
+# 	try:
+# 		with gzip.open(fpath, mode='rb') as f:
+# 			pkl=dill.load(f)
+# 	except gzip.BadGzipFile as ee:
+# 		print(f"<!> {ee} gzip.open() NOT functional => traditional openning...")
+# 		with open(fpath, mode='rb') as f:
+# 			pkl=dill.load(f)
+# 	except Exception as e:
+# 		print(f"<<!>> {e} pandas read_pkl...")
+# 		pkl = pd.read_pickle(fpath)
+# 	elpt = time.time()-st_t
+# 	fsize = os.stat( fpath ).st_size / 1e6
+# 	print(f"Loaded in: {elpt:.2f} s | {type(pkl)} | {fsize:.3f} MB".center(130, " "))
+# 	return pkl
+
+def save_pickle(pkl, fname:str):
 	print(f"\nSaving {type(pkl)}\n{fname}")
 	st_t = time.time()
-	if isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
+	if isinstance(pkl, dict):
+		with open(fname, mode="w") as f:
+			json.dump(pkl, f)
+	elif isinstance(pkl, ( pd.DataFrame, pd.Series ) ):
 		pkl.to_pickle(path=fname)
 	else:
 		# with open(fname , mode="wb") as f:
 		with gzip.open(fname , mode="wb") as f:
 			dill.dump(pkl, f)
 	elpt = time.time()-st_t
-	fsize_dump = os.stat( fname ).st_size / 1e6
+	fsize_dump = os.path.getsize(fname) / 1e6
 	print(f"Elapsed_t: {elpt:.3f} s | {fsize_dump:.2f} MB".center(120, " "))
 
-def load_pickle(fpath:str="unknown",):
-	print(f"Checking for existence? {fpath}")
-	st_t = time.time()
+def load_pickle(fpath: str) -> object:
+	print(f"Loading {fpath}")
+	if not os.path.exists(fpath):
+		raise FileNotFoundError(f"File not found: {fpath}")
+	start_time = time.time()
 	try:
-		with gzip.open(fpath, mode='rb') as f:
-			pkl=dill.load(f)
-	except gzip.BadGzipFile as ee:
-		print(f"<!> {ee} gzip.open() NOT functional => traditional openning...")
-		with open(fpath, mode='rb') as f:
-			pkl=dill.load(f)
-	except Exception as e:
-		print(f"<<!>> {e} pandas read_pkl...")
-		pkl = pd.read_pickle(fpath)
-	elpt = time.time()-st_t
-	fsize = os.stat( fpath ).st_size / 1e6
-	print(f"Loaded in: {elpt:.2f} s | {type(pkl)} | {fsize:.3f} MB".center(130, " "))
-	return pkl
+		with open(fpath, mode='r') as f:
+			pickle_obj = json.load(f)
+	except Exception as exerror:
+		# print(f"not a JSON file: {exerror}")
+		try:
+			with gzip.open(fpath, mode='rb') as f:
+				pickle_obj = dill.load(f)
+		except gzip.BadGzipFile as ee:
+			print(f"Error BadGzipFile: {ee}")
+			with open(fpath, mode='rb') as f:
+				pickle_obj = dill.load(f)
+		except Exception as eee:
+			print(f"Error dill: {eee}")
+			try:
+				pickle_obj = pd.read_pickle(fpath)
+			except Exception as err:
+				print(f"Error pandas pkl: {err}")
+				raise
+	elapsed_time = time.time() - start_time
+	file_size_mb = os.path.getsize(fpath) / 1e6
+	print(f"Elapsed_t: {elapsed_time:.3f} s | {type(pickle_obj)} | {file_size_mb:.3f} MB".center(150, " "))
+	return pickle_obj
 
 def get_parsed_url_parameters(inp_url):
 	#print(f"\nParsing {inp_url}")
